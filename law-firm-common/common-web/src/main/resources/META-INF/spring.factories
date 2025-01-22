@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.lawfirm.common.web.config.WebAutoConfiguration 
