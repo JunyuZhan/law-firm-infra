@@ -46,7 +46,7 @@ public class StrUtils {
         }
         
         return name.charAt(0) + 
-               "*".repeat(name.length() - 2) + 
+               "***" +
                name.charAt(name.length() - 1) + 
                "@" + domain;
     }

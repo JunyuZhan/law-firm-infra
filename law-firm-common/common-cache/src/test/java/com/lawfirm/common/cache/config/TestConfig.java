@@ -1,6 +1,7 @@
 package com.lawfirm.common.cache.config;
 
 import org.mockito.Mockito;
+import org.redisson.api.RedissonClient;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -17,7 +18,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @EnableAutoConfiguration(exclude = {
     DataSourceAutoConfiguration.class,
     DataSourceTransactionManagerAutoConfiguration.class,
-    RedisRepositoriesAutoConfiguration.class
+    RedisRepositoriesAutoConfiguration.class,
+    org.redisson.spring.starter.RedissonAutoConfiguration.class
 })
 @ComponentScan("com.lawfirm.common.cache")
 public class TestConfig {
@@ -39,5 +41,11 @@ public class TestConfig {
     @Primary
     public RedisConnectionFactory redisConnectionFactory() {
         return Mockito.mock(RedisConnectionFactory.class);
+    }
+
+    @Bean
+    @Primary
+    public RedissonClient redissonClient() {
+        return Mockito.mock(RedissonClient.class);
     }
 } 
