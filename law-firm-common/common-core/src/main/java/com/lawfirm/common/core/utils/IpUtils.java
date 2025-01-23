@@ -1,7 +1,7 @@
 package com.lawfirm.common.core.utils;
 
 import org.springframework.util.StringUtils;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 

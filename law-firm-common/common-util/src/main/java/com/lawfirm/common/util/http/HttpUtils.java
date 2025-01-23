@@ -6,27 +6,12 @@ import cn.hutool.http.HttpUtil;
 import com.lawfirm.common.util.json.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import java.io.File;
 import java.util.Map;
 
 @Slf4j
 public class HttpUtils {
-    private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER;
-    private static final CloseableHttpClient HTTP_CLIENT;
-    
-    static {
-        CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
-        CONNECTION_MANAGER.setMaxTotal(200);
-        CONNECTION_MANAGER.setDefaultMaxPerRoute(20);
-        
-        HTTP_CLIENT = HttpClients.custom()
-                .setConnectionManager(CONNECTION_MANAGER)
-                .build();
-    }
     
     public static String get(String url) {
         try {

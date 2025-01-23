@@ -2,8 +2,8 @@ package com.lawfirm.common.web.request;
 
 import lombok.Data;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 分页请求对象
@@ -29,6 +29,11 @@ public class PageRequest {
      * 排序字段
      */
     private String orderBy;
+
+    /**
+     * 排序方式：asc/desc
+     */
+    private String orderType;
 
     /**
      * 是否升序

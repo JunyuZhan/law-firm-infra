@@ -44,7 +44,7 @@ class CacheUtilTest {
         when(redisTemplate.hasKey(anyString())).thenReturn(true);
         
         // 测试设置和获取
-        cacheUtil.set(key, value);
+        cacheUtil.set(key, value, 60, TimeUnit.SECONDS);
         String result = (String) cacheUtil.get(key);
         assert value.equals(result);
         
@@ -53,7 +53,7 @@ class CacheUtilTest {
         cacheUtil.delete(key);
         
         // 验证方法调用
-        Mockito.verify(valueOperations).set(key, value);
+        Mockito.verify(valueOperations).set(key, value, 60, TimeUnit.SECONDS);
         Mockito.verify(redisTemplate).delete(key);
     }
 

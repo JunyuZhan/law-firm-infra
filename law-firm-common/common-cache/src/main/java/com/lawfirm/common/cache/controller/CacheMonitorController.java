@@ -21,15 +21,7 @@ public class CacheMonitorController {
      * 获取Redis信息
      */
     @GetMapping("/info")
-    public R<?> info() {
+    public R<?> getRedisInfo() {
         return R.ok(cacheMonitor.getRedisInfo());
-    }
-
-    /**
-     * 获取Redis统计信息
-     */
-    @GetMapping("/stats")
-    public R<?> stats() {
-        return R.ok(cacheMonitor.getRedisStats());
     }
 } 

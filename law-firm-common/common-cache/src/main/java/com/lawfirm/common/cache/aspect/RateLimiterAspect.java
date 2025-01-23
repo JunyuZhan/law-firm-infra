@@ -3,13 +3,13 @@ package com.lawfirm.common.cache.aspect;
 import com.lawfirm.common.cache.annotation.RateLimiter;
 import com.lawfirm.common.cache.utils.RateLimiterUtil;
 import com.lawfirm.common.core.exception.BusinessException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -20,10 +20,10 @@ import java.lang.reflect.Method;
 @Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class RateLimiterAspect {
 
-    @Autowired
-    private RateLimiterUtil rateLimiterUtil;
+    private final RateLimiterUtil rateLimiterUtil;
 
     @Pointcut("@annotation(com.lawfirm.common.cache.annotation.RateLimiter)")
     public void rateLimiterPointcut() {

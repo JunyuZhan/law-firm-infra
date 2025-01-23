@@ -75,33 +75,21 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // 禁用 CSRF
-        http.csrf().disable()
-            // 认证失败处理类
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            // 基于token，不需要session
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            // 过滤请求
-            .authorizeRequests()
-            // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-            .antMatchers("/auth/login", "/auth/register", "/captcha/image").anonymous()
-            // 静态资源，可匿名访问
-            .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
-            .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
-            // 除上面外的所有请求全部需要鉴权认证
-            .anyRequest().authenticated()
-            .and()
-            .headers().frameOptions().disable();
+        http.csrf(csrf -> csrf.disable())
+            .exceptionHandling(handling -> handling
+                .authenticationEntryPoint(unauthorizedHandler))
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**", "/api/v1/auth/**", "/swagger-ui/**").permitAll()
+                .anyRequest().authenticated())
+            .logout(logout -> logout
+                .logoutUrl("/auth/logout")
+                .logoutSuccessHandler(logoutSuccessHandler));
 
-        // 添加Logout filter
-        http.logout().logoutUrl("/auth/logout").logoutSuccessHandler(logoutSuccessHandler);
-        
-        // 添加JWT filter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        
-        // 添加CORS filter
-        http.addFilterBefore(corsFilter(), JwtAuthenticationFilter.class);
-        
+        http.addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 } 

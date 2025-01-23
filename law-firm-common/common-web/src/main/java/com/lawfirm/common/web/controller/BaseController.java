@@ -4,10 +4,12 @@ import com.lawfirm.common.web.request.PageRequest;
 import com.lawfirm.common.web.response.PageResponse;
 import com.lawfirm.common.web.response.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * 基础控制器
@@ -22,6 +24,34 @@ public abstract class BaseController {
 
     @Autowired
     protected HttpSession session;
+
+    /**
+     * 获取当前请求对象
+     */
+    protected HttpServletRequest getRequest() {
+        return getRequestAttributes().getRequest();
+    }
+
+    /**
+     * 获取当前响应对象
+     */
+    protected HttpServletResponse getResponse() {
+        return getRequestAttributes().getResponse();
+    }
+
+    /**
+     * 获取当前会话对象
+     */
+    protected HttpSession getSession() {
+        return getRequest().getSession();
+    }
+
+    /**
+     * 获取请求属性
+     */
+    protected ServletRequestAttributes getRequestAttributes() {
+        return (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    }
 
     /**
      * 获取当前页码
@@ -59,10 +89,17 @@ public abstract class BaseController {
      */
     protected PageRequest getPageRequest() {
         PageRequest pageRequest = new PageRequest();
-        pageRequest.setPageNum(getPageNum());
-        pageRequest.setPageSize(getPageSize());
-        pageRequest.setOrderBy(getOrderBy());
-        pageRequest.setIsAsc(getIsAsc());
+        Integer pageNum = getPageNum();
+        Integer pageSize = getPageSize();
+        String orderBy = getOrderBy();
+        Boolean isAsc = getIsAsc();
+        if (pageRequest != null) {
+            pageRequest.setPageNum(pageNum);
+            pageRequest.setPageSize(pageSize);
+            pageRequest.setOrderBy(orderBy);
+            pageRequest.setOrderType(isAsc ? "asc" : "desc");
+            pageRequest.setIsAsc(isAsc);
+        }
         return pageRequest;
     }
 
