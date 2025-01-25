@@ -5,26 +5,24 @@ import lombok.Getter;
 
 @Getter
 public enum CaseStatusEnum implements BaseEnum<String> {
-    
-    DRAFT("DRAFT", "草稿"),
-    PENDING("PENDING", "待处理"),
-    IN_PROGRESS("IN_PROGRESS", "进行中"),
-    SUSPENDED("SUSPENDED", "暂停"),
-    COMPLETED("COMPLETED", "已完成"),
-    CLOSED("CLOSED", "已结案"),
-    ARCHIVED("ARCHIVED", "已归档");
+    DRAFT("草稿"),
+    PENDING("待处理"),
+    IN_PROGRESS("处理中"),
+    SUSPENDED("已暂停"),
+    COMPLETED("已完成"),
+    CLOSED("已关闭"),
+    ARCHIVED("已归档"),
+    CANCELLED("已取消");
 
-    private final String value;
     private final String description;
 
-    CaseStatusEnum(String value, String description) {
-        this.value = value;
+    CaseStatusEnum(String description) {
         this.description = description;
     }
 
     @Override
     public String getValue() {
-        return this.value;
+        return this.name();
     }
 
     @Override

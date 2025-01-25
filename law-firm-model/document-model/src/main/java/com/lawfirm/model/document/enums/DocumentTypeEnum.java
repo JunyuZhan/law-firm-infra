@@ -1,6 +1,7 @@
 package com.lawfirm.model.document.enums;
 
 import com.lawfirm.model.base.enums.BaseEnum;
+
 import lombok.Getter;
 
 @Getter
@@ -22,5 +23,10 @@ public enum DocumentTypeEnum implements BaseEnum<String> {
     DocumentTypeEnum(String value, String description) {
         this.value = value;
         this.description = description;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
     }
 } 

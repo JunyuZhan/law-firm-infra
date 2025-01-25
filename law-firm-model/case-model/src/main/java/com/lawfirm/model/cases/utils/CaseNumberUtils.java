@@ -20,7 +20,7 @@ public class CaseNumberUtils {
      * 规则：案件类型缩写(2位) + 日期(8位) + 序号(4位)
      */
     public static String generateCaseNumber(CaseTypeEnum caseType, int sequence) {
-        String prefix = caseType.getValue().substring(0, 2);
+        String prefix = caseType.getValue();
         String date = LocalDateTime.now().format(FORMATTER);
         String sequenceStr = String.format("%04d", sequence);
         return prefix + date + sequenceStr;

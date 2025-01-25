@@ -1,0 +1,3 @@
+app:
+  file-storage:
+    base-path: ${user.home}/law-firm/files 

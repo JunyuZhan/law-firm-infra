@@ -38,14 +38,14 @@ public abstract class BaseEntity implements Serializable, TenantAware, StatusAwa
     private LocalDateTime createTime;
 
     @CreatedBy
-    @Column(updatable = false, length = 50)
+    @Column(updatable = false, length = 64)
     private String createBy;
 
     @LastModifiedDate
     private LocalDateTime updateTime;
 
     @LastModifiedBy
-    @Column(length = 50)
+    @Column(length = 64)
     private String updateBy;
 
     @Column(nullable = false)
@@ -54,14 +54,14 @@ public abstract class BaseEntity implements Serializable, TenantAware, StatusAwa
     @Column(nullable = false)
     private Long tenantId;  // 租户ID
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
     private StatusEnum status = StatusEnum.ENABLED;  // 状态
 
     @Min(0)
     @Column(nullable = false)
     private Integer sort = 0;  // 排序号
 
-    @Column(length = 500)
+    @Column(length = 512)
     private String remark;  // 备注
 } 

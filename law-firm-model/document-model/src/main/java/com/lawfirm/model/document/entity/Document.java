@@ -1,17 +1,24 @@
 package com.lawfirm.model.document.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import java.time.LocalDateTime;
+
+import com.lawfirm.common.data.entity.BaseEntity;
 import com.lawfirm.model.base.enums.StatusEnum;
 import com.lawfirm.model.base.status.StatusAware;
-import com.lawfirm.model.document.enums.*;
-import jakarta.persistence.*;
+import com.lawfirm.model.document.enums.DocumentSecurityLevelEnum;
+import com.lawfirm.model.document.enums.DocumentStatusEnum;
+import com.lawfirm.model.document.enums.DocumentTypeEnum;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 @Data
 @Entity

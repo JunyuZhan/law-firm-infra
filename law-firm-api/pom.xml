@@ -16,10 +16,6 @@
 
     <modules>
         <module>admin-api</module>
-        <module>lawyer-api</module>
-        <module>client-api</module>
-        <module>mini-api</module>
-        <module>app-api</module>
     </modules>
 
     <dependencies>

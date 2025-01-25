@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>law-firm</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <groupId>com.lawfirm</groupId>
+  <artifactId>law-firm-model</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <modules>
+    <module>base-model</module>
+    <module>case-model</module>
+    <module>system-model</module>
+    <module>auth-model</module>
+    <module>document-model</module>
+    <module>finance-model</module>
+    <module>organization-model</module>
+    <module>client-model</module>
+  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>com.lawfirm</groupId>
+      <artifactId>common-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct-processor</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>

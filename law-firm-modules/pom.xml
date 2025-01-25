@@ -12,42 +12,63 @@
     </parent>
 
     <artifactId>law-firm-modules</artifactId>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
+    <description>律所业务模块集合</description>
+
+    <properties>
+        <springdoc.version>2.3.0</springdoc.version>
+    </properties>
 
     <modules>
+        <module>law-firm-auth</module>
         <module>law-firm-case</module>
         <module>law-firm-client</module>
         <module>law-firm-system</module>
-        <module>law-firm-office</module>
         <module>law-firm-knowledge</module>
         <module>law-firm-contract</module>
-        <module>law-firm-analysis</module>
-        <module>law-firm-schedule</module>
         <module>law-firm-finance</module>
-        <module>law-firm-common</module>
+        <module>law-firm-document</module>
+        <module>law-firm-personnel</module>
+        <module>law-firm-archive</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- API文档 -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <!-- Web基础依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-common</artifactId>
+            <artifactId>common-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-core</artifactId>
+            <artifactId>common-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>base-model</artifactId>
         </dependency>
     </dependencies>
 </project> 
