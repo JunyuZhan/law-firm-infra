@@ -1,6 +1,6 @@
 package com.lawfirm.cases.model.query;
 
-import com.lawfirm.cases.model.enums.CaseStatus;
+import com.lawfirm.model.cases.enums.CaseStatusEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,7 +14,7 @@ public class CaseQuery {
     private String caseType; // 案件类型
     private String client;   // 委托人
     private String lawyer;   // 律师
-    private CaseStatus status; // 案件状态
+    private CaseStatusEnum status; // 案件状态
     private Boolean isMajor;   // 是否重大案件
     private Boolean hasConflict; // 是否有利益冲突
     private LocalDateTime acceptTimeStart; // 受理时间起始

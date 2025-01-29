@@ -23,6 +23,7 @@
         <module>finance-model</module>
         <module>organization-model</module>
         <module>client-model</module>
+        <module>personnel-model</module>
     </modules>
 
     <dependencies>

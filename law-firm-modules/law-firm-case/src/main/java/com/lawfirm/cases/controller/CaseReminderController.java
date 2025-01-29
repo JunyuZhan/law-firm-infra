@@ -1,87 +1,75 @@
 package com.lawfirm.cases.controller;
 
-import com.lawfirm.model.cases.entity.CaseReminder;
 import com.lawfirm.cases.service.CaseReminderService;
-import com.lawfirm.common.core.domain.R;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.lawfirm.common.core.model.Result;
+import com.lawfirm.model.cases.entity.CaseReminder;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * 案件提醒Controller
  */
-@Slf4j
 @RestController
 @RequestMapping("/case/reminder")
-@Tag(name = "案件提醒")
 @RequiredArgsConstructor
 public class CaseReminderController {
 
-    private final CaseReminderService reminderService;
+    private final CaseReminderService caseReminderService;
 
-    @Operation(summary = "创建案件提醒")
-    @PostMapping
-    public R<CaseReminder> createReminder(@RequestBody CaseReminder reminder) {
-        log.info("Creating reminder: {}", reminder);
-        return R.ok(reminderService.createReminder(reminder));
+    @PostMapping("/create")
+    public Result<Void> createReminder(@RequestBody CaseReminder reminder) {
+        caseReminderService.createReminder(reminder);
+        return Result.ok();
     }
 
-    @Operation(summary = "更新案件提醒")
-    @PutMapping
-    public R<CaseReminder> updateReminder(@RequestBody CaseReminder reminder) {
-        log.info("Updating reminder: {}", reminder);
-        return R.ok(reminderService.updateReminder(reminder));
+    @PostMapping("/update")
+    public Result<Void> updateReminder(@RequestBody CaseReminder reminder) {
+        caseReminderService.updateReminder(reminder);
+        return Result.ok();
     }
 
-    @Operation(summary = "删除案件提醒")
-    @DeleteMapping("/{id}")
-    public R<Void> deleteReminder(@PathVariable Long id) {
-        log.info("Deleting reminder: {}", id);
-        reminderService.deleteReminder(id);
-        return R.ok();
+    @PostMapping("/delete/{id}")
+    public Result<Void> deleteReminder(@PathVariable Long id) {
+        caseReminderService.deleteReminder(id);
+        return Result.ok();
     }
 
-    @Operation(summary = "标记提醒为已完成")
-    @PutMapping("/{id}/complete")
-    public R<Void> completeReminder(@PathVariable Long id, @RequestParam String operator) {
-        log.info("Completing reminder: {}, operator: {}", id, operator);
-        reminderService.completeReminder(id, operator);
-        return R.ok();
+    @PostMapping("/confirm/{id}")
+    public Result<Void> confirmReminder(@PathVariable Long id, @RequestParam String remark) {
+        caseReminderService.confirmReminder(id, remark);
+        return Result.ok();
     }
 
-    @Operation(summary = "获取案件的所有提醒")
-    @GetMapping("/case/{caseId}")
-    public R<List<CaseReminder>> getCaseReminders(@PathVariable Long caseId) {
-        return R.ok(reminderService.getCaseReminders(caseId));
+    @PostMapping("/complete/{id}")
+    public Result<Void> completeReminder(@PathVariable Long id, @RequestParam String remark) {
+        caseReminderService.completeReminder(id, remark);
+        return Result.ok();
     }
 
-    @Operation(summary = "获取律师的所有提醒")
-    @GetMapping("/lawyer/{lawyer}")
-    public R<List<CaseReminder>> getLawyerReminders(@PathVariable String lawyer) {
-        return R.ok(reminderService.getLawyerReminders(lawyer));
+    @GetMapping("/list/case/{caseId}")
+    public Result<List<CaseReminder>> listByCaseId(@PathVariable Long caseId) {
+        return Result.ok(caseReminderService.listByCaseId(caseId));
     }
 
-    @Operation(summary = "获取未完成的提醒")
-    @GetMapping("/pending")
-    public R<List<CaseReminder>> getPendingReminders() {
-        return R.ok(reminderService.getPendingReminders());
+    @GetMapping("/list/lawyer/{lawyerId}")
+    public Result<List<CaseReminder>> listByLawyerId(@PathVariable String lawyerId) {
+        return Result.ok(caseReminderService.getLawyerReminders(lawyerId));
     }
 
-    @Operation(summary = "获取即将到期的提醒")
-    @GetMapping("/upcoming")
-    public R<List<CaseReminder>> getUpcomingReminders() {
-        return R.ok(reminderService.getUpcomingReminders());
+    @GetMapping("/list/pending")
+    public Result<List<CaseReminder>> listPendingReminders() {
+        return Result.ok(caseReminderService.listPendingReminders());
     }
 
-    @Operation(summary = "获取已过期的提醒")
-    @GetMapping("/overdue")
-    public R<List<CaseReminder>> getOverdueReminders() {
-        return R.ok(reminderService.getOverdueReminders());
+    @GetMapping("/list/upcoming")
+    public Result<List<CaseReminder>> listUpcomingReminders() {
+        return Result.ok(caseReminderService.getUpcomingReminders());
+    }
+
+    @GetMapping("/list/overdue")
+    public Result<List<CaseReminder>> listOverdueReminders() {
+        return Result.ok(caseReminderService.getOverdueReminders());
     }
 } 

@@ -1,6 +1,6 @@
 package com.lawfirm.model.cases.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "case_workload")
 @EqualsAndHashCode(callSuper = true)
-public class CaseWorkload extends BaseEntity {
+public class CaseWorkload extends ModelBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -23,4 +23,10 @@ public interface CommonConstants {
     Integer DOC_STATUS_REVIEW = 1;      // 审核中
     Integer DOC_STATUS_APPROVED = 2;    // 已批准
     Integer DOC_STATUS_REJECTED = 3;    // 已拒绝
+
+    // 分页默认值
+    Long DEFAULT_CURRENT = 1L;    // 默认当前页
+    Long DEFAULT_SIZE = 10L;      // 默认每页大小
+    String ASC = "asc";          // 升序
+    String DESC = "desc";        // 降序
 } 

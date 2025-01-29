@@ -1,6 +1,6 @@
 package com.lawfirm.model.cases.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.cases.enums.CaseStatusEnum;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "case_status_log")
 @EqualsAndHashCode(callSuper = true)
-public class CaseStatusLog extends BaseEntity {
+public class CaseStatusLog extends ModelBaseEntity {
 
     @Column(nullable = false)
     private Long caseId;

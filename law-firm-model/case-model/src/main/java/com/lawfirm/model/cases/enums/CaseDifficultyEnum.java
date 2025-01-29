@@ -7,7 +7,7 @@ import lombok.Getter;
  * 案件难度等级枚举
  */
 @Getter
-public enum CaseDifficultyEnum implements BaseEnum<String>, Comparable<CaseDifficultyEnum> {
+public enum CaseDifficultyEnum implements BaseEnum<String> {
     
     VERY_HARD("特别复杂", 100, 2.0),
     HARD("复杂", 80, 1.5),
@@ -78,8 +78,7 @@ public enum CaseDifficultyEnum implements BaseEnum<String>, Comparable<CaseDiffi
      * @param other 其他难度等级
      * @return 比较结果
      */
-    @Override
-    public int compareTo(CaseDifficultyEnum other) {
+    public int compareByScore(CaseDifficultyEnum other) {
         return this.score.compareTo(other.score);
     }
 

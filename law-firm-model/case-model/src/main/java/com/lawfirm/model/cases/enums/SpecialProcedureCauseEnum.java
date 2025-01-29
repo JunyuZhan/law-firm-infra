@@ -62,7 +62,7 @@ public enum SpecialProcedureCauseEnum implements BaseEnum<String> {
     OTHER_SPECIAL("其他特别程序案件");
 
     private final String description;
-    private final CaseCauseEnum parentCause = CaseCauseEnum.SPECIAL_PROCEDURE;
+    private final CaseCauseEnum parentCause = CaseCauseEnum.SPECIAL_LITIGATION;
 
     SpecialProcedureCauseEnum(String description) {
         this.description = description;

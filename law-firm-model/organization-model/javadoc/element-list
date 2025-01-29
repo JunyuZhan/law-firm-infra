@@ -1,0 +1,5 @@
+com.lawfirm.model.organization.entity
+com.lawfirm.model.organization.enums
+com.lawfirm.model.organization.query
+com.lawfirm.model.organization.vo
+com.lawfirm.organization.entity

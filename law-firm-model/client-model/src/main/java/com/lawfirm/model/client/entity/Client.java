@@ -1,8 +1,6 @@
 package com.lawfirm.model.client.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
-import com.lawfirm.model.base.enums.StatusEnum;
-import com.lawfirm.model.base.status.StatusAware;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.client.enums.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -16,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "client_info")
 @EqualsAndHashCode(callSuper = true)
-public class Client extends BaseEntity implements StatusAware {
+public class Client extends ModelBaseEntity {
 
     @NotBlank(message = "客户编号不能为空")
     @Size(max = 50, message = "客户编号长度不能超过50个字符")
@@ -37,11 +35,6 @@ public class Client extends BaseEntity implements StatusAware {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ClientStatusEnum clientStatus = ClientStatusEnum.ACTIVE;
-
-    @NotNull(message = "系统状态不能为空")
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private StatusEnum status = StatusEnum.ENABLED;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

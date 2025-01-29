@@ -6,12 +6,10 @@ import lombok.Getter;
 @Getter
 public enum ClientTypeEnum implements BaseEnum<String> {
     
-    INDIVIDUAL("INDIVIDUAL", "个人客户"),
-    ENTERPRISE("ENTERPRISE", "企业客户"),
+    INDIVIDUAL("INDIVIDUAL", "个人"),
+    COMPANY("COMPANY", "公司"),
     GOVERNMENT("GOVERNMENT", "政府机构"),
     NON_PROFIT("NON_PROFIT", "非营利组织"),
-    FOREIGN("FOREIGN", "境外客户"),
-    VIP("VIP", "重点客户"),
     OTHER("OTHER", "其他");
 
     private final String value;
@@ -20,5 +18,15 @@ public enum ClientTypeEnum implements BaseEnum<String> {
     ClientTypeEnum(String value, String description) {
         this.value = value;
         this.description = description;
+    }
+
+    @Override
+    public String getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
     }
 } 

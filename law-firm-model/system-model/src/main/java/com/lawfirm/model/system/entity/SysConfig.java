@@ -1,6 +1,6 @@
 package com.lawfirm.model.system.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.base.enums.StatusEnum;
 import com.lawfirm.model.base.status.StatusAware;
 import com.lawfirm.model.system.enums.ConfigStatusEnum;
@@ -9,14 +9,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "sys_config")
-public class SysConfig extends BaseEntity implements StatusAware {
+@EqualsAndHashCode(callSuper = true)
+public class SysConfig extends ModelBaseEntity implements StatusAware {
 
     private Long lawFirmId;  // 所属律所ID，为空表示全局配置
 

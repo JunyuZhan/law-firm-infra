@@ -2,7 +2,7 @@ package com.lawfirm.model.document.entity;
 
 import java.time.LocalDateTime;
 
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.base.enums.StatusEnum;
 import com.lawfirm.model.base.status.StatusAware;
 import com.lawfirm.model.document.enums.DocumentSecurityLevelEnum;
@@ -22,9 +22,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "document_info")
+@Table(name = "doc_document")
 @EqualsAndHashCode(callSuper = true)
-public class Document extends BaseEntity implements StatusAware {
+public class Document extends ModelBaseEntity implements StatusAware {
 
     @NotBlank(message = "文档编号不能为空")
     @Size(max = 50, message = "文档编号长度不能超过50个字符")

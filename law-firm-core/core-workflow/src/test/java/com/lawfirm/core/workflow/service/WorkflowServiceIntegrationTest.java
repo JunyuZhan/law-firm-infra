@@ -1,5 +1,6 @@
 package com.lawfirm.core.workflow.service;
 
+import com.lawfirm.core.workflow.WorkflowApplication;
 import com.lawfirm.core.workflow.model.ProcessDefinition;
 import com.lawfirm.core.workflow.model.ProcessInstance;
 import com.lawfirm.core.workflow.model.Task;
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 工作流服务集成测试
  */
-@SpringBootTest
+@SpringBootTest(classes = WorkflowApplication.class)
 @ActiveProfiles("test")
 class WorkflowServiceIntegrationTest {
 

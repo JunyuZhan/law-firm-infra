@@ -2,8 +2,8 @@ package com.lawfirm.document.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lawfirm.common.data.service.impl.BaseServiceImpl;
-import com.lawfirm.common.exception.BusinessException;
-import com.lawfirm.common.log.OperationLog;
+import com.lawfirm.common.core.exception.BusinessException;
+import com.lawfirm.common.core.log.annotation.OperationLog;
 import com.lawfirm.document.mapper.DocumentMapper;
 import com.lawfirm.document.service.DocumentService;
 import com.lawfirm.model.document.entity.Document;
@@ -257,5 +257,43 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, Documen
         LambdaQueryWrapper<Document> wrapper = new LambdaQueryWrapper<>();
         // TODO: 根据查询条件构建wrapper
         return wrapper;
+    }
+
+    @Override
+    protected void beforeCreate(Document entity) {
+        // 文档创建前的验证逻辑
+        if (entity.getDocumentNumber() == null) {
+            entity.setDocumentNumber(generateDocumentNumber());
+        }
+        if (entity.getVersion() == null) {
+            entity.setVersion("1.0");
+        }
+    }
+
+    @Override
+    protected void beforeUpdate(Document entity) {
+        // 文档更新前的验证逻辑
+        Document existingDoc = getById(entity.getId());
+        if (existingDoc == null) {
+            throw new BusinessException("文档不存在");
+        }
+    }
+
+    @Override
+    protected void afterLoad(DocumentVO dto, Document entity) {
+        // 文档加载后的处理逻辑
+        if (entity != null) {
+            // 可以在这里添加额外的处理逻辑，比如设置文档状态描述等
+        }
+    }
+
+    @Override
+    protected DocumentVO createDTO() {
+        return new DocumentVO();
+    }
+
+    @Override
+    protected Document createEntity() {
+        return new Document();
     }
 } 

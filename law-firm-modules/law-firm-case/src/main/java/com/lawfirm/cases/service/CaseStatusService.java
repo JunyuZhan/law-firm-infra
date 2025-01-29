@@ -1,7 +1,7 @@
 package com.lawfirm.cases.service;
 
 import com.lawfirm.model.cases.enums.CaseStatusEnum;
-import com.lawfirm.model.cases.vo.CaseStatusVO;
+import com.lawfirm.model.cases.vo.CaseStatusEnumVO;
 
 import java.util.List;
 
@@ -28,5 +28,5 @@ public interface CaseStatusService {
     /**
      * 获取案件状态列表
      */
-    List<CaseStatusVO> getCaseStatus();
+    List<CaseStatusEnumVO> getCaseStatus();
 } 

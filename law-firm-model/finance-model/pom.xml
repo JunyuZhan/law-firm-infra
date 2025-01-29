@@ -17,6 +17,11 @@
         <!-- 基础模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
+            <artifactId>common-data</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
             <version>${project.version}</version>
         </dependency>

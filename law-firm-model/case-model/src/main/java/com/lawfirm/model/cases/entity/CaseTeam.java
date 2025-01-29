@@ -1,6 +1,6 @@
 package com.lawfirm.model.cases.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "case_team")
 @EqualsAndHashCode(callSuper = true)
-public class CaseTeam extends BaseEntity {
+public class CaseTeam extends ModelBaseEntity {
 
     @NotNull(message = "案件ID不能为空")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,6 +1,6 @@
 package com.lawfirm.model.personnel.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,9 +9,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "contact")
+@Table(name = "per_contact")
 @EqualsAndHashCode(callSuper = true)
-public class Contact extends BaseEntity {
+public class Contact extends ModelBaseEntity {
 
     @NotNull(message = "关联ID不能为空")
     @Column(nullable = false)

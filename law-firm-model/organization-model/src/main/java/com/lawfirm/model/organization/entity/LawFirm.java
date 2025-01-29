@@ -1,6 +1,6 @@
 package com.lawfirm.model.organization.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "law_firm")
 @EqualsAndHashCode(callSuper = true)
-public class LawFirm extends BaseEntity {
+public class LawFirm extends ModelBaseEntity {
 
     @NotBlank(message = "律所名称不能为空")
     @Size(max = 100, message = "律所名称长度不能超过100个字符")

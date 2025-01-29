@@ -1,6 +1,6 @@
 package com.lawfirm.model.document.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "document_version")
+@Table(name = "doc_document_version")
 @EqualsAndHashCode(callSuper = true)
-public class DocumentVersion extends BaseEntity {
+public class DocumentVersion extends ModelBaseEntity {
 
     @NotNull(message = "文档ID不能为空")
     @Column(nullable = false)

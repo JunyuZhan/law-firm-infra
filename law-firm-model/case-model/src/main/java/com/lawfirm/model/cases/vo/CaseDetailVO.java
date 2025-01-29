@@ -1,16 +1,25 @@
 package com.lawfirm.model.cases.vo;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.lawfirm.model.base.vo.BaseVO;
 import com.lawfirm.model.cases.entity.CaseDocument;
 import com.lawfirm.model.cases.entity.CaseFile;
 import com.lawfirm.model.cases.entity.CaseTeam;
-import com.lawfirm.model.cases.enums.*;
+import com.lawfirm.model.cases.enums.CaseDifficultyEnum;
+import com.lawfirm.model.cases.enums.CaseFeeTypeEnum;
+import com.lawfirm.model.cases.enums.CaseHandleTypeEnum;
+import com.lawfirm.model.cases.enums.CaseImportanceEnum;
+import com.lawfirm.model.cases.enums.CasePriorityEnum;
+import com.lawfirm.model.cases.enums.CaseProgressEnum;
+import com.lawfirm.model.cases.enums.CaseSourceEnum;
+import com.lawfirm.model.cases.enums.CaseStatusEnum;
+import com.lawfirm.model.cases.enums.CaseTypeEnum;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -22,14 +31,14 @@ public class CaseDetailVO extends BaseVO {
     private String description;
     private CaseTypeEnum caseType;
     private CaseStatusEnum caseStatus;
-    private CaseProgressEnum progress;
-    private CaseHandleTypeEnum handleType;
-    private CaseDifficultyEnum difficulty;
-    private CaseImportanceEnum importance;
-    private CasePriorityEnum priority;
-    private CaseFeeTypeEnum feeType;
-    private CaseSourceEnum source;
-    private String lawyer;
+    private CaseProgressEnum caseProgress;
+    private CaseHandleTypeEnum caseHandleType;
+    private CaseDifficultyEnum caseDifficulty;
+    private CaseImportanceEnum caseImportance;
+    private CasePriorityEnum casePriority;
+    private CaseFeeTypeEnum caseFeeType;
+    private CaseSourceEnum caseSource;
+    private String lawyerName;
     private String operator;
     private Long clientId;
     private Long lawFirmId;

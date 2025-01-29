@@ -1,6 +1,6 @@
 package com.lawfirm.model.finance.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.base.enums.StatusEnum;
 import com.lawfirm.model.base.status.StatusAware;
 import com.lawfirm.model.finance.enums.InvoiceStatusEnum;
@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "invoice_info")
+@Table(name = "fin_invoice")
 @EqualsAndHashCode(callSuper = true)
-public class Invoice extends BaseEntity implements StatusAware {
+public class Invoice extends ModelBaseEntity implements StatusAware {
 
     @NotBlank(message = "发票编号不能为空")
     @Size(max = 50, message = "发票编号长度不能超过50个字符")

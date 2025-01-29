@@ -7,10 +7,13 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 树形实体基类
+ */
 @Data
 @MappedSuperclass
 @EqualsAndHashCode(callSuper = true)
-public abstract class TreeEntity extends BaseEntity {
+public abstract class TreeEntity extends ModelBaseEntity {
 
     @NotBlank(message = "名称不能为空")
     @Size(max = 100, message = "名称长度不能超过100个字符")

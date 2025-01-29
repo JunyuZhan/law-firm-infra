@@ -1,8 +1,7 @@
 package com.lawfirm.model.cases.query;
 
 import com.lawfirm.model.base.query.PageQuery;
-import com.lawfirm.model.cases.enums.CaseStatusEnum;
-import com.lawfirm.model.cases.enums.CaseTypeEnum;
+import com.lawfirm.model.cases.enums.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,4 +38,13 @@ public class CaseQuery extends PageQuery {
     private String judgeName;   // 法官姓名
 
     private String courtCaseNumber;  // 法院案号
+
+    private String keyword;
+    private CaseProgressEnum caseProgress;
+    private CaseHandleTypeEnum caseHandleType;
+    private CaseDifficultyEnum caseDifficulty;
+    private CaseImportanceEnum caseImportance;
+    private CasePriorityEnum casePriority;
+    private CaseFeeTypeEnum caseFeeType;
+    private CaseSourceEnum caseSource;
 } 

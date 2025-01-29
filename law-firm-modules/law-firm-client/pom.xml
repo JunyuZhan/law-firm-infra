@@ -18,11 +18,23 @@
         <!-- 项目依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-common</artifactId>
+            <artifactId>common-data</artifactId>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-model</artifactId>
+            <artifactId>common-log</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>client-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-web</artifactId>
         </dependency>
 
         <!-- Spring Boot -->

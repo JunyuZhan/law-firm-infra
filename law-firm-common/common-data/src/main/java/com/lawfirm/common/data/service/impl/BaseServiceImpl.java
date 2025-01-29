@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.common.core.model.page.PageResult;
 import com.lawfirm.common.data.entity.BaseEntity;
 import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.common.data.processor.EntityProcessor;
 import com.lawfirm.common.data.service.BaseService;
 import org.springframework.beans.BeanUtils;
 
@@ -20,9 +21,18 @@ import java.util.stream.Collectors;
 public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity, D extends BaseDTO> 
         extends ServiceImpl<M, T> implements BaseService<T, D> {
 
+    protected EntityProcessor<T, D> entityProcessor;
+
+    public void setEntityProcessor(EntityProcessor<T, D> entityProcessor) {
+        this.entityProcessor = entityProcessor;
+    }
+
     @Override
     public D create(D dto) {
         T entity = toEntity(dto);
+        if (entityProcessor != null) {
+            entityProcessor.beforeCreate(entity);
+        }
         save(entity);
         return toDTO(entity);
     }
@@ -30,6 +40,9 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEnt
     @Override
     public D update(D dto) {
         T entity = toEntity(dto);
+        if (entityProcessor != null) {
+            entityProcessor.beforeUpdate(entity);
+        }
         updateById(entity);
         return toDTO(entity);
     }
@@ -46,7 +59,12 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEnt
 
     @Override
     public D findById(Long id) {
-        return toDTO(getById(id));
+        T entity = getById(id);
+        D dto = toDTO(entity);
+        if (entityProcessor != null && dto != null) {
+            entityProcessor.afterLoad(dto, entity);
+        }
+        return dto;
     }
 
     @Override

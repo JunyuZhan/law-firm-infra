@@ -1,6 +1,6 @@
 package com.lawfirm.model.organization.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.organization.enums.DepartmentTypeEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -11,9 +11,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "department")
+@Table(name = "org_department")
 @EqualsAndHashCode(callSuper = true)
-public class Department extends BaseEntity {
+public class Department extends ModelBaseEntity {
 
     @NotNull(message = "律所ID不能为空")
     @Column(nullable = false)

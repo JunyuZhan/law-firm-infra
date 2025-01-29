@@ -23,4 +23,14 @@ public enum EmployeeTypeEnum implements BaseEnum<String> {
         this.value = value;
         this.description = description;
     }
+
+    @Override
+    public String getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
 } 

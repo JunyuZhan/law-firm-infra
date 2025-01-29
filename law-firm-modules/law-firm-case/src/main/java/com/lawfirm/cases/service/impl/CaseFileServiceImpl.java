@@ -1,7 +1,7 @@
 package com.lawfirm.cases.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.cases.model.entity.CaseFile;
+import com.lawfirm.model.cases.entity.CaseFile;
 import com.lawfirm.cases.mapper.CaseFileMapper;
 import com.lawfirm.cases.service.CaseFileService;
 import com.lawfirm.common.core.exception.BusinessException;
@@ -53,7 +53,7 @@ public class CaseFileServiceImpl extends ServiceImpl<CaseFileMapper, CaseFile> i
             caseFile.setFileName(fileName);
             caseFile.setFilePath(storePath);
             caseFile.setFileSize(file.getSize());
-            caseFile.setFileType(fileExtension);
+            caseFile.setContentType(file.getContentType());
             caseFile.setDescription(description);
             caseFile.setIsConfidential(isConfidential);
             caseFile.setFileMd5(DigestUtils.md5DigestAsHex(file.getInputStream()));

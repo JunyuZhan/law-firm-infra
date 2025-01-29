@@ -3,13 +3,15 @@ package com.lawfirm.cases.model.entity;
 import com.lawfirm.common.data.entity.BaseEntity;
 import com.lawfirm.model.cases.entity.Case;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "case_assignment")
 @EqualsAndHashCode(callSuper = true)

@@ -1,6 +1,6 @@
 package com.lawfirm.model.auth.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "auth_role")
 @EqualsAndHashCode(callSuper = true)
-public class Role extends BaseEntity {
+public class Role extends ModelBaseEntity {
 
     @NotBlank(message = "角色名称不能为空")
     @Size(max = 50, message = "角色名称长度不能超过50个字符")

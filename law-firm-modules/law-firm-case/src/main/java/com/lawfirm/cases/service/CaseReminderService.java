@@ -1,15 +1,13 @@
 package com.lawfirm.cases.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.lawfirm.model.cases.entity.CaseReminder;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * 案件提醒Service接口
  */
-public interface CaseReminderService extends IService<CaseReminder> {
+public interface CaseReminderService {
 
     /**
      * 创建提醒
@@ -55,4 +53,34 @@ public interface CaseReminderService extends IService<CaseReminder> {
      * 查询待处理的提醒列表
      */
     List<CaseReminder> listPendingReminders();
+
+    /**
+     * 完成提醒
+     */
+    void completeReminder(Long id, String remark);
+
+    /**
+     * 获取案件提醒列表
+     */
+    List<CaseReminder> getCaseReminders(Long caseId);
+
+    /**
+     * 获取律师提醒列表
+     */
+    List<CaseReminder> getLawyerReminders(String lawyerId);
+
+    /**
+     * 获取待处理提醒列表
+     */
+    List<CaseReminder> getPendingReminders();
+
+    /**
+     * 获取即将到期提醒列表
+     */
+    List<CaseReminder> getUpcomingReminders();
+
+    /**
+     * 获取已过期提醒列表
+     */
+    List<CaseReminder> getOverdueReminders();
 } 

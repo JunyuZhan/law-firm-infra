@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Getter
 public enum CaseTypeEnum implements BaseEnum<String> {
-    
+
     // 民事案件
     CIVIL("民事案件"),
     

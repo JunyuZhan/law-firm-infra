@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -23,7 +24,8 @@ public class WorkflowAutoConfiguration {
     private final WorkflowProperties workflowProperties;
     
     @Bean
-    public ProcessEngineConfiguration processEngineConfiguration(DataSource dataSource) {
+    @Primary
+    public ProcessEngineConfiguration springProcessEngineConfiguration(DataSource dataSource) {
         SpringProcessEngineConfiguration configuration = new SpringProcessEngineConfiguration();
         configuration.setDataSource(dataSource);
         configuration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);

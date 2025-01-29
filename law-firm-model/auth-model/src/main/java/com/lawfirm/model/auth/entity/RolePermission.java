@@ -1,6 +1,6 @@
 package com.lawfirm.model.auth.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "auth_role_permission")
 @EqualsAndHashCode(callSuper = true)
-public class RolePermission extends BaseEntity {
+public class RolePermission extends ModelBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)

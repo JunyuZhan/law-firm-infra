@@ -1,18 +1,20 @@
 package com.lawfirm.cases.model.entity;
 
-import com.lawfirm.cases.model.enums.CaseStatus;
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
+import com.lawfirm.model.cases.enums.CaseStatusEnum;
 import com.lawfirm.model.cases.entity.Case;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Comment;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table(name = "case_status_log")
 @EqualsAndHashCode(callSuper = true)
-public class CaseStatusLog extends BaseEntity {
+public class CaseStatusLog extends ModelBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +27,12 @@ public class CaseStatusLog extends BaseEntity {
     @Comment("原状态")
     @Column(nullable = false, length = 32)
     @Enumerated(EnumType.STRING)
-    private CaseStatus fromStatus;
+    private CaseStatusEnum fromStatus;
 
     @Comment("新状态")
     @Column(nullable = false, length = 32)
     @Enumerated(EnumType.STRING)
-    private CaseStatus toStatus;
+    private CaseStatusEnum toStatus;
 
     @Comment("操作人")
     @Column(nullable = false, length = 64)
@@ -39,6 +41,10 @@ public class CaseStatusLog extends BaseEntity {
     @Comment("变更原因")
     @Column(length = 512)
     private String reason;
+
+    @Comment("变更时间")
+    @Column(nullable = false)
+    private LocalDateTime changeTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "case_id", insertable = false, updatable = false)

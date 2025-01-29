@@ -1,6 +1,6 @@
 package com.lawfirm.model.organization.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,9 +11,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "branch")
+@Table(name = "org_branch")
 @EqualsAndHashCode(callSuper = true)
-public class Branch extends BaseEntity {
+public class Branch extends ModelBaseEntity {
 
     @NotNull(message = "律所ID不能为空")
     @Column(nullable = false)

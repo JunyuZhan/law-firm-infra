@@ -1,6 +1,7 @@
 package com.lawfirm.model.cases.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.base.enums.StatusEnum;
 import com.lawfirm.model.base.status.StatusAware;
 import com.lawfirm.model.cases.enums.CaseStatusEnum;
@@ -25,147 +26,144 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "law_case")
+@Table(name = "case_info")
 @EqualsAndHashCode(callSuper = true)
-public class Case extends BaseEntity implements StatusAware {
+public class Case extends ModelBaseEntity implements StatusAware {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     @NotBlank(message = "案件编号不能为空")
-    @Column(name = "case_number", unique = true, length = 32)
+    @TableField("case_number")
     @Comment("案件编号")
     private String caseNumber;
 
     @NotBlank(message = "案件名称不能为空")
-    @Column(name = "case_name", length = 128)
+    @TableField("case_name")
     @Comment("案件名称")
     private String caseName;
 
-    @Column(name = "description", length = 512)
+    @TableField("description")
     @Comment("案件描述")
     private String description;
 
     @NotNull(message = "案件类型不能为空")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "case_type", length = 32)
+    @TableField("case_type")
     @Comment("案件类型")
     private CaseTypeEnum caseType;
 
     @NotNull(message = "案件状态不能为空")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "case_status", length = 32)
+    @TableField("case_status")
     @Comment("案件状态")
     private CaseStatusEnum caseStatus;
 
     @NotNull(message = "案件进展不能为空")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "progress", length = 32)
+    @TableField("case_progress")
     @Comment("案件进展")
-    private CaseProgressEnum progress;
+    private CaseProgressEnum caseProgress;
 
     @NotNull(message = "办理方式不能为空")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "handle_type", length = 32)
+    @TableField("case_handle_type")
     @Comment("办理方式")
-    private CaseHandleTypeEnum handleType;
+    private CaseHandleTypeEnum caseHandleType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "difficulty", length = 32)
+    @TableField("case_difficulty")
     @Comment("难度等级")
-    private CaseDifficultyEnum difficulty;
+    private CaseDifficultyEnum caseDifficulty;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "importance", length = 32)
+    @TableField("case_importance")
     @Comment("重要程度")
-    private CaseImportanceEnum importance;
+    private CaseImportanceEnum caseImportance;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "priority", length = 32)
+    @TableField("case_priority")
     @Comment("优先级")
-    private CasePriorityEnum priority;
+    private CasePriorityEnum casePriority;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "fee_type", length = 32)
+    @TableField("case_fee_type")
     @Comment("收费方式")
-    private CaseFeeTypeEnum feeType;
+    private CaseFeeTypeEnum caseFeeType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "source", length = 32)
+    @TableField("case_source")
     @Comment("案件来源")
-    private CaseSourceEnum source;
+    private CaseSourceEnum caseSource;
 
     @NotBlank(message = "主办律师不能为空")
-    @Column(name = "lawyer", length = 64)
+    @TableField("lawyer")
     @Comment("主办律师")
     private String lawyer;
 
-    @Column(name = "operator", length = 64)
+    @TableField("operator")
     @Comment("操作人")
     private String operator;
 
     @NotNull(message = "委托人ID不能为空")
-    @Column(name = "client_id")
+    @TableField("client_id")
     @Comment("委托人ID")
     private Long clientId;
 
-    @Column(name = "law_firm_id")
+    @TableField("law_firm_id")
     @Comment("律所ID")
     private Long lawFirmId;
 
-    @Column(name = "branch_id")
+    @TableField("branch_id")
     @Comment("分所ID")
     private Long branchId;
 
-    @Column(name = "department_id")
+    @TableField("department_id")
     @Comment("部门ID")
     private Long departmentId;
 
-    @Column(name = "filing_time")
+    @TableField("filing_time")
     @Comment("立案时间")
     private LocalDateTime filingTime;
 
-    @Column(name = "closing_time")
+    @TableField("closing_time")
     @Comment("结案时间")
     private LocalDateTime closingTime;
 
-    @Column(name = "fee")
+    @TableField("fee")
     @Comment("收费金额")
     private BigDecimal fee;
 
-    @Column(name = "court_name", length = 50)
+    @TableField("court_name")
     @Comment("法院名称")
     private String courtName;
 
-    @Column(name = "judge_name", length = 50)
+    @TableField("judge_name")
     @Comment("法官姓名")
     private String judgeName;
 
-    @Column(name = "court_case_number", length = 50)
+    @TableField("court_case_number")
     @Comment("法院案号")
     private String courtCaseNumber;
 
-    @Column(name = "is_major")
+    @TableField("is_major")
     @Comment("是否重大案件")
     private Boolean isMajor;
 
-    @Column(name = "has_conflict")
-    @Comment("是否存在利益冲突")
+    @TableField("has_conflict")
+    @Comment("是否有利益冲突")
     private Boolean hasConflict;
 
+    @TableField("conflict_reason")
+    @Comment("利益冲突原因")
+    private String conflictReason;
+
+    @TableField("remark")
+    @Comment("备注")
+    private String remark;
+
     @NotNull(message = "系统状态不能为空")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 50)
-    private StatusEnum statusEnum;
+    @TableField("status")
+    private StatusEnum status;
 
     @Override
     public StatusEnum getStatus() {
-        return statusEnum;
+        return status;
     }
 
     @Override
     public void setStatus(StatusEnum status) {
-        this.statusEnum = status;
+        this.status = status;
     }
 } 

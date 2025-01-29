@@ -7,7 +7,7 @@ import lombok.Getter;
  * 案件重要程度枚举
  */
 @Getter
-public enum CaseImportanceEnum implements BaseEnum<String>, Comparable<CaseImportanceEnum> {
+public enum CaseImportanceEnum implements BaseEnum<String> {
     
     CRITICAL("重大案件", 5, true),
     SIGNIFICANT("重要案件", 4, true),
@@ -93,8 +93,7 @@ public enum CaseImportanceEnum implements BaseEnum<String>, Comparable<CaseImpor
      * @param other 其他重要程度
      * @return 比较结果
      */
-    @Override
-    public int compareTo(CaseImportanceEnum other) {
+    public int compareByLevel(CaseImportanceEnum other) {
         return this.level.compareTo(other.level);
     }
 

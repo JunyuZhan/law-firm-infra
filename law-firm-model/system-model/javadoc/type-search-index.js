@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"com.lawfirm.model.system.enums","l":"ConfigStatusEnum"},{"p":"com.lawfirm.model.system.enums","l":"ConfigTypeEnum"},{"p":"com.lawfirm.model.system.entity","l":"SysConfig"},{"p":"com.lawfirm.model.system.query","l":"SysConfigQuery"},{"p":"com.lawfirm.model.system.vo","l":"SysConfigVO"},{"l":"所有类和接口","u":"allclasses-index.html"}];updateSearchResults();

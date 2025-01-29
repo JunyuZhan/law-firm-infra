@@ -1,6 +1,6 @@
 package com.lawfirm.model.personnel.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.personnel.enums.EmployeeTypeEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -14,10 +14,9 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "employee")
+@Table(name = "per_employee")
 @EqualsAndHashCode(callSuper = true)
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Employee extends BaseEntity {
+public class Employee extends ModelBaseEntity {
 
     @NotNull(message = "律所ID不能为空")
     @Column(nullable = false)

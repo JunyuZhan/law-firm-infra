@@ -7,7 +7,7 @@ import lombok.Getter;
  * 案件优先级枚举
  */
 @Getter
-public enum CasePriorityEnum implements BaseEnum<String>, Comparable<CasePriorityEnum> {
+public enum CasePriorityEnum implements BaseEnum<String> {
     
     URGENT("紧急", 5),
     HIGH("高优先级", 4),
@@ -70,8 +70,7 @@ public enum CasePriorityEnum implements BaseEnum<String>, Comparable<CasePriorit
      * @param other 其他优先级
      * @return 比较结果
      */
-    @Override
-    public int compareTo(CasePriorityEnum other) {
+    public int compareByPriority(CasePriorityEnum other) {
         return this.priority.compareTo(other.priority);
     }
 

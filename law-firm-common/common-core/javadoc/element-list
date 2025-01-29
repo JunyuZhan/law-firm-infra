@@ -1,0 +1,12 @@
+com.lawfirm.common.core.api
+com.lawfirm.common.core.base
+com.lawfirm.common.core.config
+com.lawfirm.common.core.constant
+com.lawfirm.common.core.context
+com.lawfirm.common.core.domain
+com.lawfirm.common.core.exception
+com.lawfirm.common.core.model
+com.lawfirm.common.core.model.page
+com.lawfirm.common.core.result
+com.lawfirm.common.core.util
+com.lawfirm.common.core.utils

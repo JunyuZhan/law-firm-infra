@@ -1,6 +1,6 @@
 package com.lawfirm.model.auth.entity;
 
-import com.lawfirm.model.base.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "auth_user")
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseEntity {
+public class User extends ModelBaseEntity {
 
     @NotBlank(message = "用户名不能为空")
     @Size(min = 4, max = 30, message = "用户名长度必须在4-30个字符之间")

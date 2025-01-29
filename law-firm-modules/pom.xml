@@ -41,6 +41,13 @@
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${springdoc.version}</version>
             </dependency>
+            
+            <!-- 模型依赖 -->
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>client-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
