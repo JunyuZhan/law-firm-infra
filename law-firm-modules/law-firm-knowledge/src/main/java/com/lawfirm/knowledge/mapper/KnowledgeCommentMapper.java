@@ -18,7 +18,20 @@ public interface KnowledgeCommentMapper extends BaseMapper<KnowledgeComment> {
      * 获取子评论列表
      */
     @Select("SELECT * FROM knowledge_comment WHERE parent_id = #{parentId} AND deleted = 0 ORDER BY create_time DESC")
-    List<KnowledgeComment> listChildren(Long parentId);
+    List<KnowledgeComment> selectChildren(Long parentId);
+
+    /**
+     * 获取评论树
+     */
+    @Select("WITH RECURSIVE comment_tree AS (" +
+            "SELECT * FROM knowledge_comment WHERE knowledge_id = #{knowledgeId} AND parent_id IS NULL AND deleted = 0 " +
+            "UNION ALL " +
+            "SELECT c.* FROM knowledge_comment c " +
+            "INNER JOIN comment_tree ct ON c.parent_id = ct.id " +
+            "WHERE c.deleted = 0" +
+            ") " +
+            "SELECT * FROM comment_tree")
+    List<KnowledgeComment> selectCommentTree(Long knowledgeId);
 
     /**
      * 增加点赞数

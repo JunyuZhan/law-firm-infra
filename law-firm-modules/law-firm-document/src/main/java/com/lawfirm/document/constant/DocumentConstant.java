@@ -65,4 +65,16 @@ public class DocumentConstant {
     private DocumentConstant() {
         throw new IllegalStateException("Constant class");
     }
+    
+    public static final String IMAGE_FORMAT_PNG = "PNG";
+    public static final String IMAGE_FORMAT_JPG = "JPG";
+    public static final String IMAGE_FORMAT_PDF = "PDF";
+    
+    public static final String CONTENT_TYPE_PDF = "application/pdf";
+    public static final String CONTENT_TYPE_PNG = "image/png";
+    public static final String CONTENT_TYPE_JPG = "image/jpeg";
+    
+    public static final String FILE_EXTENSION_PDF = ".pdf";
+    public static final String FILE_EXTENSION_PNG = ".png";
+    public static final String FILE_EXTENSION_JPG = ".jpg";
 } 

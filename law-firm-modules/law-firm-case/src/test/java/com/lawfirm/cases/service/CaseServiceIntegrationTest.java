@@ -570,7 +570,10 @@ class CaseServiceIntegrationTest {
         CaseDetailVO case2 = caseService.createCase(createDTO);
         
         List<Long> ids = Arrays.asList(case1.getId(), case2.getId());
-        caseService.batchUpdateSource(ids, CaseSourceEnum.valueOf("REFERRAL_LAWYER"));
+        // 对每个案件单独更新来源
+        for (Long id : ids) {
+            caseService.updateSource(id, CaseSourceEnum.valueOf("REFERRAL_LAWYER"), "批量更新来源");
+        }
         
         CaseDetailVO updated1 = caseService.getCaseById(case1.getId());
         CaseDetailVO updated2 = caseService.getCaseById(case2.getId());

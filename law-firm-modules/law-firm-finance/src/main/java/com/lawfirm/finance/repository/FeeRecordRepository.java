@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -19,4 +20,6 @@ public interface FeeRecordRepository extends JpaRepository<FeeRecord, Long>, Jpa
     List<FeeRecord> findByFeeStatus(String feeStatus);
     
     List<FeeRecord> findByFeeType(String feeType);
+    
+    List<FeeRecord> findByLawFirmIdAndCreateTimeBetween(Long lawFirmId, LocalDateTime startTime, LocalDateTime endTime);
 } 

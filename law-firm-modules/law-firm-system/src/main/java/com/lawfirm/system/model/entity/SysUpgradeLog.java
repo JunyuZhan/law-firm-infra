@@ -29,7 +29,7 @@ public class SysUpgradeLog extends BaseEntity {
     private String operation;
     
     /**
-     * 详细信息
+     * 操作详情
      */
     private String detail;
     

@@ -1,84 +1,95 @@
 package com.lawfirm.admin.controller.auth;
 
 import com.lawfirm.common.core.model.ApiResult;
-import com.lawfirm.auth.model.dto.SysDeptDTO;
-import com.lawfirm.auth.model.vo.SysDeptVO;
-import com.lawfirm.auth.service.SysDeptService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.lawfirm.common.security.utils.SecurityUtils;
+import com.lawfirm.organization.model.dto.DeptDTO;
+import com.lawfirm.organization.model.entity.Dept;
+import com.lawfirm.organization.service.DeptService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 系统部门Controller
+ * 部门管理Controller
  */
-@Api(tags = "系统部门")
+@Tag(name = "部门管理")
 @RestController
-@RequestMapping("/auth/dept")
+@RequestMapping("/organization/dept")
 @RequiredArgsConstructor
 public class SysDeptController {
 
-    private final SysDeptService deptService;
+    private final DeptService deptService;
 
-    @ApiOperation("创建部门")
+    @Operation(summary = "创建部门")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<Void> createDept(@Valid @RequestBody SysDeptDTO dto) {
-        deptService.createDept(dto);
+    public ApiResult<Void> createDept(@Valid @RequestBody DeptDTO dto) {
+        deptService.create(dto.toEntity(Dept.class));
         return ApiResult.ok();
     }
 
-    @ApiOperation("更新部门")
+    @Operation(summary = "更新部门")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<Void> updateDept(@PathVariable Long id, @Valid @RequestBody SysDeptDTO dto) {
-        deptService.updateDept(id, dto);
+    public ApiResult<Void> updateDept(@PathVariable Long id, @Valid @RequestBody DeptDTO dto) {
+        dto.setId(id);
+        deptService.update(dto.toEntity(Dept.class));
         return ApiResult.ok();
     }
 
-    @ApiOperation("删除部门")
+    @Operation(summary = "删除部门")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResult<Void> deleteDept(@PathVariable Long id) {
-        deptService.deleteDept(id);
+        deptService.delete(id);
         return ApiResult.ok();
     }
 
-    @ApiOperation("获取部门详情")
+    @Operation(summary = "获取部门详情")
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<SysDeptVO> getDept(@PathVariable Long id) {
-        return ApiResult.ok(deptService.getDept(id));
+    public ApiResult<DeptDTO> getDept(@PathVariable Long id) {
+        return ApiResult.ok(deptService.getById(id).toDTO(DeptDTO.class));
     }
 
-    @ApiOperation("获取部门树")
+    @Operation(summary = "获取部门树")
     @GetMapping("/tree")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<List<SysDeptVO>> getDeptTree() {
+    public ApiResult<List<DeptDTO>> getDeptTree() {
         return ApiResult.ok(deptService.getDeptTree());
     }
 
-    @ApiOperation("获取当前用户的部门树")
+    @Operation(summary = "获取当前用户的部门树")
     @GetMapping("/current/tree")
-    public ApiResult<List<SysDeptVO>> getCurrentUserDeptTree() {
-        return ApiResult.ok(deptService.getCurrentUserDeptTree());
+    public ApiResult<List<DeptDTO>> getCurrentUserDeptTree() {
+        return ApiResult.ok(deptService.getUserDepts(getCurrentUserId()));
     }
 
-    @ApiOperation("检查部门编码是否存在")
-    @GetMapping("/check/{code}")
+    @Operation(summary = "移动部门")
+    @PutMapping("/{id}/parent/{parentId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<Boolean> checkDeptCodeExists(@PathVariable String code) {
-        return ApiResult.ok(deptService.checkDeptCodeExists(code));
+    public ApiResult<Void> moveDept(@PathVariable Long id, @PathVariable Long parentId) {
+        deptService.moveDept(id, parentId);
+        return ApiResult.ok();
     }
 
-    @ApiOperation("导出部门数据")
-    @GetMapping("/export")
+    @Operation(summary = "调整部门顺序")
+    @PutMapping("/{id}/order/{orderNum}")
     @PreAuthorize("hasRole('ADMIN')")
-    public void exportDepts() {
-        deptService.exportDepts();
+    public ApiResult<Void> reorderDept(@PathVariable Long id, @PathVariable Integer orderNum) {
+        deptService.reorderDept(id, orderNum);
+        return ApiResult.ok();
+    }
+
+    /**
+     * 获取当前用户ID
+     */
+    private Long getCurrentUserId() {
+        return SecurityUtils.getCurrentUserId();
     }
 } 

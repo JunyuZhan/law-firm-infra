@@ -57,4 +57,14 @@ public class SysUpgradePackage extends BaseEntity {
      * 错误信息
      */
     private String errorMessage;
+
+    /**
+     * 是否需要备份
+     */
+    private Boolean needBackup;
+
+    /**
+     * 备份路径
+     */
+    private String backupPath;
 } 

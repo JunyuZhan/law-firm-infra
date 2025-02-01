@@ -39,6 +39,34 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client, Cli
     }
 
     @Override
+    @OperationLog(description = "根据查询条件查询客户", operationType = "QUERY")
+    public List<ClientVO> findByQuery(ClientQuery query) {
+        QueryWrapper<Client> wrapper = new QueryWrapper<>();
+        if (query != null) {
+            if (query.getStatus() != null) {
+                wrapper.eq("status", query.getStatus());
+            }
+            if (query.getClientType() != null) {
+                wrapper.eq("client_type", query.getClientType());
+            }
+            if (query.getClientNumber() != null) {
+                wrapper.like("client_number", query.getClientNumber());
+            }
+            if (query.getClientName() != null) {
+                wrapper.like("client_name", query.getClientName());
+            }
+            if (query.getContactPhone() != null) {
+                wrapper.like("contact_phone", query.getContactPhone());
+            }
+            if (query.getIdNumber() != null) {
+                wrapper.like("id_number", query.getIdNumber());
+            }
+        }
+        List<Client> clients = baseMapper.selectList(wrapper);
+        return super.toDTOList(clients);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     @OperationLog(description = "启用客户")
     public void enableClient(Long id, String operator) {

@@ -1,7 +1,7 @@
 package com.lawfirm.system.controller;
 
 import com.lawfirm.common.core.domain.R;
-import com.lawfirm.model.system.entity.SysUser;
+import com.lawfirm.system.model.dto.SysUserDTO;
 import com.lawfirm.system.service.SysUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,11 +38,11 @@ class SysUserControllerTest {
 
     @Test
     void createUser() throws Exception {
-        SysUser user = new SysUser();
+        SysUserDTO user = new SysUserDTO();
         user.setUsername("test");
         user.setPassword("123456");
         
-        doNothing().when(userService).createUser(any(SysUser.class));
+        when(userService.createUser(any(SysUserDTO.class))).thenReturn(user);
 
         mockMvc.perform(post("/system/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,16 +51,16 @@ class SysUserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
 
-        verify(userService).createUser(any(SysUser.class));
+        verify(userService).createUser(any(SysUserDTO.class));
     }
 
     @Test
     void updateUser() throws Exception {
-        SysUser user = new SysUser();
+        SysUserDTO user = new SysUserDTO();
         user.setId(1L);
         user.setUsername("test");
         
-        doNothing().when(userService).updateUser(any(SysUser.class));
+        when(userService.updateUser(any(SysUserDTO.class))).thenReturn(user);
 
         mockMvc.perform(put("/system/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +69,7 @@ class SysUserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
 
-        verify(userService).updateUser(any(SysUser.class));
+        verify(userService).updateUser(any(SysUserDTO.class));
     }
 
     @Test
@@ -114,7 +114,7 @@ class SysUserControllerTest {
 
     @Test
     void getByUsername() throws Exception {
-        SysUser user = new SysUser();
+        SysUserDTO user = new SysUserDTO();
         user.setId(1L);
         user.setUsername("test");
         
@@ -132,9 +132,9 @@ class SysUserControllerTest {
 
     @Test
     void listByDeptId() throws Exception {
-        List<SysUser> users = Arrays.asList(
-            new SysUser(){{setId(1L); setUsername("test1");}},
-            new SysUser(){{setId(2L); setUsername("test2");}}
+        List<SysUserDTO> users = Arrays.asList(
+            createUserDTO(1L, "test1"),
+            createUserDTO(2L, "test2")
         );
         
         when(userService.listByDeptId(anyLong())).thenReturn(users);
@@ -153,9 +153,9 @@ class SysUserControllerTest {
 
     @Test
     void listByRoleId() throws Exception {
-        List<SysUser> users = Arrays.asList(
-            new SysUser(){{setId(1L); setUsername("test1");}},
-            new SysUser(){{setId(2L); setUsername("test2");}}
+        List<SysUserDTO> users = Arrays.asList(
+            createUserDTO(1L, "test1"),
+            createUserDTO(2L, "test2")
         );
         
         when(userService.listByRoleId(anyLong())).thenReturn(users);
@@ -186,5 +186,12 @@ class SysUserControllerTest {
                 .andExpect(jsonPath("$.code").value(200));
 
         verify(userService).assignRoles(1L, roleIds);
+    }
+
+    private SysUserDTO createUserDTO(Long id, String username) {
+        SysUserDTO user = new SysUserDTO();
+        user.setId(id);
+        user.setUsername(username);
+        return user;
     }
 } 

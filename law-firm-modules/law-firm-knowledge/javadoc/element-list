@@ -1,0 +1,5 @@
+com.lawfirm.knowledge.controller
+com.lawfirm.knowledge.entity
+com.lawfirm.knowledge.mapper
+com.lawfirm.knowledge.service
+com.lawfirm.knowledge.service.impl

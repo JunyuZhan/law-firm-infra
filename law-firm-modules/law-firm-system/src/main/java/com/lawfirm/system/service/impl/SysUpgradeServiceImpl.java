@@ -13,6 +13,7 @@ import com.lawfirm.system.model.entity.SysUpgradePackage;
 import com.lawfirm.system.model.vo.UpgradeLogVO;
 import com.lawfirm.system.model.vo.UpgradePackageVO;
 import com.lawfirm.system.service.SysUpgradeService;
+import com.lawfirm.system.upgrade.UpgradeExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -41,6 +42,7 @@ public class SysUpgradeServiceImpl implements SysUpgradeService {
     
     private final SysUpgradePackageMapper upgradePackageMapper;
     private final SysUpgradeLogMapper upgradeLogMapper;
+    private final UpgradeExecutor upgradeExecutor;
     
     @Value("${upgrade.package.path}")
     private String upgradePackagePath;
@@ -207,20 +209,6 @@ public class SysUpgradeServiceImpl implements SysUpgradeService {
         log.setSuccess(success);
         log.setErrorMessage(errorMessage);
         upgradeLogMapper.insert(log);
-    }
-    
-    /**
-     * 执行升级脚本
-     */
-    private void executeUpgradeScripts(SysUpgradePackage upgradePackage) {
-        // TODO: 实现升级脚本执行逻辑
-    }
-    
-    /**
-     * 执行回滚脚本
-     */
-    private void executeRollbackScripts(SysUpgradePackage upgradePackage) {
-        // TODO: 实现回滚脚本执行逻辑
     }
     
     /**

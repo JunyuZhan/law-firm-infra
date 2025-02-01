@@ -1,9 +1,13 @@
 package com.lawfirm.document.service;
 
-import com.lawfirm.common.data.service.BaseService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.lawfirm.common.core.model.page.PageResult;
 import com.lawfirm.model.document.entity.Document;
 import com.lawfirm.model.document.query.DocumentQuery;
 import com.lawfirm.model.document.vo.DocumentVO;
+import com.lawfirm.model.document.enums.DocumentStatusEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +22,7 @@ import java.util.List;
 
 @Tag(name = "文档管理服务", description = "提供文档的基本操作和版本管理功能")
 @Validated
-public interface DocumentService extends BaseService<Document, DocumentVO> {
+public interface DocumentService extends IService<Document> {
     
     @Operation(summary = "上传文档", description = "上传新文档，自动生成版本号")
     DocumentVO upload(
@@ -63,4 +67,26 @@ public interface DocumentService extends BaseService<Document, DocumentVO> {
     @Operation(summary = "导出文档列表", description = "将文档列表导出为Excel")
     byte[] exportToExcel(
             @Parameter(description = "查询条件") @Valid DocumentQuery query);
+
+    @Operation(summary = "根据状态查询文档", description = "根据文档状态查询文档列表")
+    List<DocumentVO> listByStatus(
+            @Parameter(description = "文档状态") @NotNull(message = "文档状态不能为空") DocumentStatusEnum status);
+
+    @Operation(summary = "分页查询文档", description = "分页查询文档列表")
+    PageResult<DocumentVO> pageDocuments(Page<Document> page, QueryWrapper<Document> wrapper);
+
+    @Operation(summary = "查询文档列表", description = "查询文档列表")
+    List<DocumentVO> listDocuments(QueryWrapper<Document> wrapper);
+
+    @Operation(summary = "根据ID查询文档", description = "根据ID查询文档")
+    DocumentVO findById(Long id);
+
+    @Operation(summary = "创建文档", description = "创建文档")
+    DocumentVO create(DocumentVO dto);
+
+    @Operation(summary = "更新文档", description = "更新文档")
+    DocumentVO update(DocumentVO dto);
+
+    @Operation(summary = "批量删除文档", description = "批量删除文档")
+    void deleteBatch(List<Long> ids);
 } 

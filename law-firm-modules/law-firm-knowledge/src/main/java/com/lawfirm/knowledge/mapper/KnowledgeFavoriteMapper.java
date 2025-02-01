@@ -17,13 +17,13 @@ public interface KnowledgeFavoriteMapper extends BaseMapper<KnowledgeFavorite> {
      * 获取用户收藏列表
      */
     @Select("SELECT * FROM knowledge_favorite WHERE user_id = #{userId} AND deleted = 0 ORDER BY create_time DESC")
-    List<KnowledgeFavorite> listByUser(Long userId);
+    List<KnowledgeFavorite> selectByUserId(Long userId);
 
     /**
      * 获取知识收藏列表
      */
     @Select("SELECT * FROM knowledge_favorite WHERE knowledge_id = #{knowledgeId} AND deleted = 0 ORDER BY create_time DESC")
-    List<KnowledgeFavorite> listByKnowledge(Long knowledgeId);
+    List<KnowledgeFavorite> selectByKnowledgeId(Long knowledgeId);
 
     /**
      * 检查是否已收藏

@@ -146,7 +146,7 @@ class CaseServiceImplTest {
         CaseUpdateDTO updateDTO = new CaseUpdateDTO();
         updateDTO.setId(created.getId());
         updateDTO.setCaseSource(CaseSourceEnum.valueOf("REFERRAL_LAWYER"));
-        CaseDetailVO updated = caseService.updateCase(updateDTO);
+        CaseDetailVO updated = caseService.updateCase(created.getId(), updateDTO);
         assertEquals(CaseSourceEnum.valueOf("REFERRAL_LAWYER"), updated.getCaseSource());
     }
 } 

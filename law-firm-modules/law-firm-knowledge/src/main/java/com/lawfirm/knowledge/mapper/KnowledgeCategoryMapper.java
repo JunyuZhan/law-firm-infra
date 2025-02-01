@@ -17,7 +17,7 @@ public interface KnowledgeCategoryMapper extends BaseMapper<KnowledgeCategory> {
      * 获取子分类列表
      */
     @Select("SELECT * FROM knowledge_category WHERE parent_id = #{parentId} AND deleted = 0 ORDER BY order_num")
-    List<KnowledgeCategory> listChildren(Long parentId);
+    List<KnowledgeCategory> selectChildren(Long parentId);
 
     /**
      * 获取分类路径
@@ -31,7 +31,7 @@ public interface KnowledgeCategoryMapper extends BaseMapper<KnowledgeCategory> {
             "  WHERE c.deleted = 0" +
             ")" +
             "SELECT * FROM category_path ORDER BY level DESC")
-    List<KnowledgeCategory> getPath(Long id);
+    List<KnowledgeCategory> selectPath(Long id);
 
     /**
      * 查询分类树

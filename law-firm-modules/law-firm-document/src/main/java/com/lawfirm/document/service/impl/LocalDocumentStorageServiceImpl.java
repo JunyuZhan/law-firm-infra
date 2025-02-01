@@ -1,7 +1,8 @@
 package com.lawfirm.document.service.impl;
 
-import com.lawfirm.common.storage.LocalStorageService;
-import com.lawfirm.common.util.HashUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import com.lawfirm.core.storage.model.FileMetadata;
+import com.lawfirm.core.storage.service.StorageService;
 import com.lawfirm.document.constant.DocumentConstant;
 import com.lawfirm.document.exception.DocumentException;
 import com.lawfirm.document.service.DocumentStorageService;
@@ -14,21 +15,23 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Service
 public class LocalDocumentStorageServiceImpl implements DocumentStorageService {
 
-    private final LocalStorageService storageService;
+    private final StorageService storageService;
     
     @Value("${document.storage.root-path}")
     private String rootPath;
     
-    public LocalDocumentStorageServiceImpl(LocalStorageService storageService) {
+    public LocalDocumentStorageServiceImpl(StorageService storageService) {
         this.storageService = storageService;
     }
 
@@ -40,7 +43,8 @@ public class LocalDocumentStorageServiceImpl implements DocumentStorageService {
         String relativePath = buildRelativePath(documentNumber, fileName);
         
         // 使用底层存储服务保存文件
-        return storageService.store(file.getInputStream(), relativePath);
+        FileMetadata metadata = storageService.upload(file, "document", documentNumber);
+        return metadata.getPath();
     }
 
     @Override
@@ -50,8 +54,10 @@ public class LocalDocumentStorageServiceImpl implements DocumentStorageService {
 
     @Override
     public void deleteAllVersions(String documentNumber) throws IOException {
-        String dirPath = buildDocumentPath(documentNumber);
-        storageService.deleteDirectory(dirPath);
+        List<FileMetadata> files = storageService.listByBusiness("document", documentNumber);
+        for (FileMetadata file : files) {
+            storageService.delete(file.getId());
+        }
     }
 
     @Override
@@ -62,22 +68,63 @@ public class LocalDocumentStorageServiceImpl implements DocumentStorageService {
 
     @Override
     public byte[] getContent(String filePath) throws IOException {
-        return storageService.getContent(filePath);
+        try (InputStream is = storageService.download(filePath)) {
+            return is.readAllBytes();
+        }
     }
 
     @Override
     public boolean exists(String filePath) {
-        return storageService.exists(filePath);
+        try {
+            FileMetadata metadata = storageService.getMetadata(filePath);
+            return metadata != null;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public long getSize(String filePath) throws IOException {
-        return storageService.getSize(filePath);
+        FileMetadata metadata = storageService.getMetadata(filePath);
+        return metadata != null ? metadata.getSize() : 0L;
     }
 
     @Override
     public String calculateHash(String filePath) throws IOException {
-        return HashUtil.calculateSHA256(new File(filePath));
+        return DigestUtil.sha256Hex(new File(filePath));
+    }
+    
+    @Override
+    public String uploadFile(String documentNumber, InputStream inputStream, long size, String contentType) {
+        try {
+            String fileName = buildFileName(documentNumber + ".tmp", documentNumber, "1.0");
+            FileMetadata metadata = storageService.upload(inputStream, fileName, contentType, "document", documentNumber);
+            return metadata.getPath();
+        } catch (Exception e) {
+            log.error("上传文件失败: documentNumber={}, size={}, contentType={}", documentNumber, size, contentType, e);
+            throw new DocumentException(DocumentException.ERROR_FILE_UPLOAD_FAILED, "上传文件失败");
+        }
+    }
+    
+    @Override
+    public boolean deleteFile(String filePath) {
+        try {
+            storageService.delete(filePath);
+            return true;
+        } catch (Exception e) {
+            log.error("删除文件失败: filePath={}", filePath, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public String getFileUrl(String filePath) {
+        try {
+            return storageService.getUrl(filePath);
+        } catch (Exception e) {
+            log.error("获取文件URL失败: filePath={}", filePath, e);
+            throw new DocumentException(DocumentException.ERROR_FILE_URL_FAILED, "获取文件URL失败");
+        }
     }
     
     private void validateFile(MultipartFile file) {
@@ -125,7 +172,7 @@ public class LocalDocumentStorageServiceImpl implements DocumentStorageService {
     }
     
     private String buildRelativePath(String documentNumber, String fileName) {
-        return documentNumber + DocumentConstant.Storage.PATH_SEPARATOR + fileName;
+        return documentNumber + "/" + fileName;
     }
     
     private String buildDocumentPath(String documentNumber) {

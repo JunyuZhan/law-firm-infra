@@ -1,5 +1,6 @@
 package com.lawfirm.model.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.base.enums.StatusEnum;
 import com.lawfirm.model.base.status.StatusAware;
@@ -12,10 +13,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 系统配置实体类
+ */
 @Data
 @Entity
 @Table(name = "sys_config")
 @EqualsAndHashCode(callSuper = true)
+@TableName("sys_config")
 public class SysConfig extends ModelBaseEntity implements StatusAware {
 
     private Long lawFirmId;  // 所属律所ID，为空表示全局配置

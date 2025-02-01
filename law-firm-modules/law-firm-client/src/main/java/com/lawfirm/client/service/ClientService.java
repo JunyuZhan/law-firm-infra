@@ -20,6 +20,9 @@ import java.util.Map;
 @Validated
 public interface ClientService extends BaseService<Client, ClientVO> {
     
+    @Operation(summary = "根据查询条件查询客户", description = "根据查询条件查询客户列表")
+    List<ClientVO> findByQuery(@Valid ClientQuery query);
+    
     @Operation(summary = "启用客户", description = "将客户状态改为启用")
     void enableClient(
             @Parameter(description = "客户ID") @NotNull(message = "客户ID不能为空") Long id,

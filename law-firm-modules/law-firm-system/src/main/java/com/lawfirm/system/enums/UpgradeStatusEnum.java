@@ -1,13 +1,11 @@
 package com.lawfirm.system.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 系统升级状态枚举
+ * 升级状态枚举
  */
 @Getter
-@AllArgsConstructor
 public enum UpgradeStatusEnum {
     
     PENDING(0, "待升级"),
@@ -17,6 +15,11 @@ public enum UpgradeStatusEnum {
     
     private final Integer code;
     private final String desc;
+    
+    UpgradeStatusEnum(Integer code, String desc) {
+        this.code = code;
+        this.desc = desc;
+    }
     
     public static UpgradeStatusEnum getByCode(Integer code) {
         if (code == null) {

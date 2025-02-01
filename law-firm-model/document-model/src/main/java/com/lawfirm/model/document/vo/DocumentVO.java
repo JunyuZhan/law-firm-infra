@@ -1,6 +1,6 @@
 package com.lawfirm.model.document.vo;
 
-import com.lawfirm.common.data.vo.BaseVO;
+import com.lawfirm.common.data.dto.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DocumentVO extends BaseVO {
+public class DocumentVO extends BaseDTO {
     
     private String documentNumber;
     private String documentName;

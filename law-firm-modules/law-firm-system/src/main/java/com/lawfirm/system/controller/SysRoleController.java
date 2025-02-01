@@ -1,7 +1,7 @@
 package com.lawfirm.system.controller;
 
 import com.lawfirm.common.core.domain.R;
-import com.lawfirm.model.system.entity.SysRole;
+import com.lawfirm.system.model.dto.SysRoleDTO;
 import com.lawfirm.system.service.SysRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,14 +24,14 @@ public class SysRoleController {
 
     @Operation(summary = "创建角色")
     @PostMapping
-    public R<Void> createRole(@Validated @RequestBody SysRole role) {
+    public R<Void> createRole(@Validated @RequestBody SysRoleDTO role) {
         roleService.createRole(role);
         return R.ok();
     }
 
     @Operation(summary = "更新角色")
     @PutMapping
-    public R<Void> updateRole(@Validated @RequestBody SysRole role) {
+    public R<Void> updateRole(@Validated @RequestBody SysRoleDTO role) {
         roleService.updateRole(role);
         return R.ok();
     }
@@ -45,19 +45,19 @@ public class SysRoleController {
 
     @Operation(summary = "根据用户ID查询角色列表")
     @GetMapping("/user/{userId}")
-    public R<List<SysRole>> listByUserId(@PathVariable Long userId) {
+    public R<List<SysRoleDTO>> listByUserId(@PathVariable Long userId) {
         return R.ok(roleService.listByUserId(userId));
     }
 
     @Operation(summary = "根据角色编码查询角色")
     @GetMapping("/code/{code}")
-    public R<SysRole> getByCode(@PathVariable String code) {
+    public R<SysRoleDTO> getByCode(@PathVariable String code) {
         return R.ok(roleService.getByCode(code));
     }
 
     @Operation(summary = "查询默认角色列表")
     @GetMapping("/default")
-    public R<List<SysRole>> listDefaultRoles() {
+    public R<List<SysRoleDTO>> listDefaultRoles() {
         return R.ok(roleService.listDefaultRoles());
     }
 

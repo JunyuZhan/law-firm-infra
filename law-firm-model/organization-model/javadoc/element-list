@@ -2,4 +2,10 @@ com.lawfirm.model.organization.entity
 com.lawfirm.model.organization.enums
 com.lawfirm.model.organization.query
 com.lawfirm.model.organization.vo
+com.lawfirm.organization.controller
 com.lawfirm.organization.entity
+com.lawfirm.organization.mapper
+com.lawfirm.organization.model.dto
+com.lawfirm.organization.model.entity
+com.lawfirm.organization.service
+com.lawfirm.organization.service.impl

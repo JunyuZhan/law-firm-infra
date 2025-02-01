@@ -2,6 +2,7 @@ package com.lawfirm.system.controller;
 
 import com.lawfirm.common.core.domain.R;
 import com.lawfirm.model.system.entity.SysConfig;
+import com.lawfirm.system.model.dto.SysConfigDTO;
 import com.lawfirm.system.service.SysConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,14 +25,14 @@ public class SysConfigController {
 
     @Operation(summary = "创建参数配置")
     @PostMapping
-    public R<Void> createConfig(@Validated @RequestBody SysConfig config) {
+    public R<Void> createConfig(@Validated @RequestBody SysConfigDTO config) {
         configService.createConfig(config);
         return R.ok();
     }
 
     @Operation(summary = "更新参数配置")
     @PutMapping
-    public R<Void> updateConfig(@Validated @RequestBody SysConfig config) {
+    public R<Void> updateConfig(@Validated @RequestBody SysConfigDTO config) {
         configService.updateConfig(config);
         return R.ok();
     }
@@ -45,13 +46,13 @@ public class SysConfigController {
 
     @Operation(summary = "根据参数键名查询参数配置")
     @GetMapping("/key/{configKey}")
-    public R<SysConfig> getByKey(@PathVariable String configKey) {
+    public R<SysConfigDTO> getByKey(@PathVariable String configKey) {
         return R.ok(configService.getByKey(configKey));
     }
 
     @Operation(summary = "根据参数分组查询参数配置列表")
     @GetMapping("/group/{groupName}")
-    public R<List<SysConfig>> listByGroup(@PathVariable String groupName) {
+    public R<List<SysConfigDTO>> listByGroup(@PathVariable String groupName) {
         return R.ok(configService.listByGroup(groupName));
     }
 

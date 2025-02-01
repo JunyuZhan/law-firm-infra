@@ -18,13 +18,13 @@ public interface KnowledgeViewMapper extends BaseMapper<KnowledgeView> {
      * 获取用户浏览记录
      */
     @Select("SELECT * FROM knowledge_view WHERE user_id = #{userId} AND deleted = 0 ORDER BY view_time DESC")
-    List<KnowledgeView> listByUser(Long userId);
+    List<KnowledgeView> selectByUserId(Long userId);
 
     /**
      * 获取知识浏览记录
      */
     @Select("SELECT * FROM knowledge_view WHERE knowledge_id = #{knowledgeId} AND deleted = 0 ORDER BY view_time DESC")
-    List<KnowledgeView> listByKnowledge(Long knowledgeId);
+    List<KnowledgeView> selectByKnowledgeId(Long knowledgeId);
 
     /**
      * 统计时间段内的浏览次数

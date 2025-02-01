@@ -1,114 +1,168 @@
 package com.lawfirm.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.common.exception.BusinessException;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.data.service.impl.BaseServiceImpl;
+import com.lawfirm.common.core.exception.BusinessException;
+import com.lawfirm.common.core.model.page.PageResult;
 import com.lawfirm.model.system.entity.SysUser;
+import com.lawfirm.system.model.dto.SysUserDTO;
 import com.lawfirm.system.mapper.SysUserMapper;
 import com.lawfirm.system.service.SysUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * 系统用户服务实现类
+ * 用户服务实现类
  */
 @Service
 @RequiredArgsConstructor
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser, SysUserDTO> implements SysUserService {
 
-    private final SysUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    protected SysUser createEntity() {
+        return new SysUser();
+    }
+
+    @Override
+    protected SysUserDTO createDTO() {
+        return new SysUserDTO();
+    }
+
+    @Override
+    public SysUser toEntity(SysUserDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        SysUser entity = new SysUser();
+        BeanUtils.copyProperties(dto, entity);
+        return entity;
+    }
+
+    @Override
+    public SysUserDTO toDTO(SysUser entity) {
+        if (entity == null) {
+            return null;
+        }
+        SysUserDTO dto = new SysUserDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
+    }
+
+    @Override
+    public List<SysUser> toEntityList(List<SysUserDTO> dtoList) {
+        if (dtoList == null) {
+            return null;
+        }
+        return dtoList.stream()
+                .map(this::toEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SysUserDTO> toDTOList(List<SysUser> entityList) {
+        if (entityList == null) {
+            return null;
+        }
+        return entityList.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createUser(SysUser user) {
-        // 校验用户名是否已存在
-        if (isUsernameExists(user.getUsername())) {
-            throw new BusinessException("用户名已存在");
+    public SysUserDTO createUser(SysUserDTO userDTO) {
+        // 检查用户名是否重复
+        if (lambdaQuery().eq(SysUser::getUsername, userDTO.getUsername()).exists()) {
+            throw new IllegalArgumentException("用户名已存在");
         }
 
+        SysUser user = toEntity(userDTO);
         // 加密密码
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
-        // 保存用户
         save(user);
+        return toDTO(user);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateUser(SysUser user) {
-        // 校验用户是否存在
-        SysUser existingUser = getById(user.getId());
+    public SysUserDTO updateUser(SysUserDTO userDTO) {
+        // 检查用户是否存在
+        SysUser existingUser = getById(userDTO.getId());
         if (existingUser == null) {
-            throw new BusinessException("用户不存在");
+            throw new IllegalArgumentException("用户不存在");
         }
 
-        // 如果修改了用户名,校验新用户名是否已存在
-        if (!existingUser.getUsername().equals(user.getUsername()) 
-            && isUsernameExists(user.getUsername())) {
-            throw new BusinessException("用户名已存在");
+        // 检查用户名是否重复
+        if (!existingUser.getUsername().equals(userDTO.getUsername()) &&
+                lambdaQuery().eq(SysUser::getUsername, userDTO.getUsername()).exists()) {
+            throw new IllegalArgumentException("用户名已存在");
         }
 
-        // 不更新密码
-        user.setPassword(null);
-        
-        // 更新用户
+        SysUser user = toEntity(userDTO);
+        // 如果密码不为空，则加密密码
+        if (user.getPassword() != null && !user.getPassword().equals(existingUser.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        updateById(user);
+        return toDTO(user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteUser(Long userId) {
+        removeById(userId);
+    }
+
+    @Override
+    public SysUserDTO getByUsername(String username) {
+        return toDTO(lambdaQuery().eq(SysUser::getUsername, username).one());
+    }
+
+    @Override
+    public List<SysUserDTO> listByDeptId(Long deptId) {
+        return toDTOList(baseMapper.selectByDeptId(deptId));
+    }
+
+    @Override
+    public List<SysUserDTO> listByRoleId(Long roleId) {
+        return toDTOList(baseMapper.selectByRoleId(roleId));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateAvatar(Long userId, String avatar) {
+        SysUser user = getById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+
+        user.setAvatar(avatar);
         updateById(user);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteUser(Long id) {
-        // 校验用户是否存在
-        if (!existsById(id)) {
-            throw new BusinessException("用户不存在");
-        }
-        
-        // 删除用户
-        removeById(id);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void resetPassword(Long id, String password) {
-        // 校验用户是否存在
-        SysUser user = getById(id);
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+        SysUser user = getById(userId);
         if (user == null) {
-            throw new BusinessException("用户不存在");
+            throw new IllegalArgumentException("用户不存在");
         }
 
-        // 校验密码是否为空
-        if (!StringUtils.hasText(password)) {
-            throw new BusinessException("密码不能为空");
-        }
-
-        // 更新密码
-        user.setPassword(passwordEncoder.encode(password));
-        updateById(user);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void changePassword(Long id, String oldPassword, String newPassword) {
-        // 校验用户是否存在
-        SysUser user = getById(id);
-        if (user == null) {
-            throw new BusinessException("用户不存在");
-        }
-
-        // 校验旧密码是否正确
+        // 验证旧密码
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new BusinessException("原密码不正确");
-        }
-
-        // 校验新密码是否为空
-        if (!StringUtils.hasText(newPassword)) {
-            throw new BusinessException("新密码不能为空");
+            throw new IllegalArgumentException("旧密码错误");
         }
 
         // 更新密码
@@ -117,43 +171,65 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUser getByUsername(String username) {
-        return userMapper.selectByUsername(username);
+    public void resetPassword(Long userId, String password) {
+        SysUser user = getById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+
+        // 更新密码
+        user.setPassword(passwordEncoder.encode(password));
+        updateById(user);
     }
 
     @Override
-    public List<SysUser> listByDeptId(Long deptId) {
-        return userMapper.selectByDeptId(deptId);
+    public SysUserDTO updateProfile(SysUserDTO userDTO) {
+        // 检查用户是否存在
+        SysUser existingUser = getById(userDTO.getId());
+        if (existingUser == null) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+
+        SysUser user = toEntity(userDTO);
+        // 只更新允许的字段
+        existingUser.setNickname(user.getNickname());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setMobile(user.getMobile());
+        existingUser.setSex(user.getSex());
+
+        updateById(existingUser);
+        return toDTO(existingUser);
     }
 
     @Override
-    public List<SysUser> listByRoleId(Long roleId) {
-        return userMapper.selectByRoleId(roleId);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     public void assignRoles(Long userId, List<Long> roleIds) {
-        // 校验用户是否存在
-        if (!existsById(userId)) {
-            throw new BusinessException("用户不存在");
+        // 检查用户是否存在
+        if (!exists(userId)) {
+            throw new IllegalArgumentException("用户不存在");
         }
 
-        // 删除原有角色关联
-        userMapper.deleteUserRoles(userId);
-
-        // 添加新的角色关联
+        // 更新用户角色
+        baseMapper.deleteUserRoles(userId);
         if (roleIds != null && !roleIds.isEmpty()) {
-            userMapper.insertUserRoles(userId, roleIds);
+            baseMapper.insertUserRoles(userId, roleIds);
         }
     }
 
-    /**
-     * 判断用户名是否已存在
-     */
-    private boolean isUsernameExists(String username) {
-        return lambdaQuery()
-                .eq(SysUser::getUsername, username)
-                .exists();
+    @Override
+    public void updateUserRoles(Long userId, List<Long> roleIds) {
+        // 检查用户是否存在
+        if (!exists(userId)) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+
+        // 更新用户角色
+        baseMapper.deleteUserRoles(userId);
+        if (roleIds != null && !roleIds.isEmpty()) {
+            baseMapper.insertUserRoles(userId, roleIds);
+        }
+    }
+
+    private boolean exists(Long id) {
+        return lambdaQuery().eq(SysUser::getId, id).exists();
     }
 } 

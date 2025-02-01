@@ -1,6 +1,9 @@
 package com.lawfirm.finance.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.finance.entity.FeeRecord;
+import com.lawfirm.finance.mapper.FeeRecordMapper;
 import com.lawfirm.finance.repository.FeeRecordRepository;
 import com.lawfirm.finance.service.FeeRecordService;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,7 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FeeRecordServiceImpl implements FeeRecordService {
+public class FeeRecordServiceImpl extends ServiceImpl<FeeRecordMapper, FeeRecord> implements FeeRecordService {
 
     private final FeeRecordRepository feeRecordRepository;
 
@@ -95,5 +98,39 @@ public class FeeRecordServiceImpl implements FeeRecordService {
         return feeRecordRepository.findByLawFirmId(lawFirmId).stream()
                 .map(FeeRecord::getPaidAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    @Transactional
+    public void payFee(Long feeId, BigDecimal amount) {
+        FeeRecord feeRecord = getFeeRecord(feeId);
+        BigDecimal newPaidAmount = feeRecord.getPaidAmount().add(amount);
+        
+        // 更新支付状态和已支付金额
+        if (newPaidAmount.compareTo(feeRecord.getAmount()) >= 0) {
+            updatePaymentStatus(feeId, "PAID", newPaidAmount);
+        } else {
+            updatePaymentStatus(feeId, "PARTIAL", newPaidAmount);
+        }
+    }
+
+    @Override
+    public List<FeeRecord> getLawFirmFeeRecords(Long lawFirmId) {
+        return feeRecordRepository.findByLawFirmId(lawFirmId);
+    }
+
+    @Override
+    public List<FeeRecord> getLawFirmFeeRecordsByTimeRange(Long lawFirmId, LocalDateTime startTime, LocalDateTime endTime) {
+        return feeRecordRepository.findByLawFirmIdAndCreateTimeBetween(lawFirmId, startTime, endTime);
+    }
+
+    @Override
+    public BigDecimal getTotalIncome(Long lawFirmId) {
+        return calculateTotalAmount(lawFirmId);
+    }
+
+    @Override
+    public BigDecimal getTotalPaidAmount(Long lawFirmId) {
+        return calculateTotalPaidAmount(lawFirmId);
     }
 } 

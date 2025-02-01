@@ -1,104 +1,110 @@
 package com.lawfirm.system.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.common.exception.BusinessException;
+import com.lawfirm.common.data.service.impl.BaseServiceImpl;
+import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.model.system.entity.SysConfig;
 import com.lawfirm.system.mapper.SysConfigMapper;
+import com.lawfirm.system.model.dto.SysConfigDTO;
 import com.lawfirm.system.service.SysConfigService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
- * 系统参数配置服务实现类
+ * 系统配置服务实现类
  */
 @Service
 @RequiredArgsConstructor
-public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
+public class SysConfigServiceImpl extends BaseServiceImpl<SysConfigMapper, SysConfig, SysConfigDTO> implements SysConfigService {
 
     private final SysConfigMapper configMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = "config", allEntries = true)
-    public void createConfig(SysConfig config) {
-        // 校验参数键是否已存在
-        if (isKeyExists(config.getConfigKey())) {
-            throw new BusinessException("参数键已存在");
-        }
-        
-        // 保存参数配置
-        save(config);
+    protected SysConfigDTO createDTO() {
+        return new SysConfigDTO();
+    }
+
+    @Override
+    protected SysConfig createEntity() {
+        return new SysConfig();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = "config", allEntries = true)
-    public void updateConfig(SysConfig config) {
-        // 校验参数是否存在
-        if (!existsById(config.getId())) {
-            throw new BusinessException("参数不存在");
+    public void createConfig(SysConfigDTO configDTO) {
+        // 校验配置键是否已存在
+        if (configMapper.existsByKey(configDTO.getConfigKey())) {
+            throw new BusinessException("配置键已存在");
+        }
+        
+        // 保存配置
+        save(toEntity(configDTO));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateConfig(SysConfigDTO configDTO) {
+        // 校验配置是否存在
+        if (!exists(configDTO.getId())) {
+            throw new BusinessException("配置不存在");
         }
 
-        // 校验参数键是否已存在
-        SysConfig existingConfig = getById(config.getId());
-        if (!existingConfig.getConfigKey().equals(config.getConfigKey())) {
-            if (isKeyExists(config.getConfigKey())) {
-                throw new BusinessException("参数键已存在");
+        // 校验配置键是否已存在
+        SysConfig existingConfig = getById(configDTO.getId());
+        if (!existingConfig.getConfigKey().equals(configDTO.getConfigKey())) {
+            if (configMapper.existsByKey(configDTO.getConfigKey())) {
+                throw new BusinessException("配置键已存在");
             }
         }
         
-        // 更新参数配置
-        updateById(config);
+        // 更新配置
+        updateById(toEntity(configDTO));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = "config", allEntries = true)
     public void deleteConfig(Long id) {
-        // 校验参数是否存在
-        if (!existsById(id)) {
-            throw new BusinessException("参数不存在");
+        // 校验配置是否存在
+        if (!exists(id)) {
+            throw new BusinessException("配置不存在");
         }
         
-        // 删除参数配置
+        // 删除配置
         removeById(id);
     }
 
     @Override
-    @Cacheable(value = "config", key = "#configKey")
-    public SysConfig getByKey(String configKey) {
-        return configMapper.selectByKey(configKey);
+    public SysConfigDTO getByKey(String key) {
+        return toDTO(configMapper.selectByKey(key));
     }
 
     @Override
-    @Cacheable(value = "config", key = "#groupName")
-    public List<SysConfig> listByGroup(String groupName) {
-        return configMapper.selectByGroup(groupName);
+    public List<SysConfigDTO> listByGroup(String group) {
+        return toDTOList(configMapper.selectByGroup(group));
     }
 
     @Override
-    @Cacheable(value = "config", key = "'groups'")
     public List<String> listAllGroups() {
         return configMapper.selectAllGroups();
     }
 
     @Override
-    @CacheEvict(value = "config", allEntries = true)
     public void refreshCache() {
-        // 刷新缓存,无需实际操作
+        List<SysConfig> configs = list();
+        for (SysConfig config : configs) {
+            String key = "sys:config:" + config.getConfigKey();
+            redisTemplate.opsForValue().set(key, config.getConfigValue());
+        }
     }
 
     /**
-     * 判断参数键是否已存在
+     * 判断记录是否存在
      */
-    private boolean isKeyExists(String configKey) {
-        return lambdaQuery()
-                .eq(SysConfig::getConfigKey, configKey)
-                .exists();
+    private boolean exists(Long id) {
+        return lambdaQuery().eq(SysConfig::getId, id).exists();
     }
 } 

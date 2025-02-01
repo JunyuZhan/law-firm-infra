@@ -1,7 +1,8 @@
 package com.lawfirm.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.common.exception.BusinessException;
+
+import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.model.system.entity.SysDict;
 import com.lawfirm.system.mapper.SysDictMapper;
 import com.lawfirm.system.service.SysDictService;
@@ -27,7 +28,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
     @CacheEvict(value = "dict", allEntries = true)
     public void createDict(SysDict dict) {
         // 校验字典类型和值是否已存在
-        if (isTypeAndValueExists(dict.getType(), dict.getValue())) {
+        if (isTypeAndValueExists(dict.getDictType(), dict.getDictValue())) {
             throw new BusinessException("字典类型和值已存在");
         }
         
@@ -40,15 +41,15 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
     @CacheEvict(value = "dict", allEntries = true)
     public void updateDict(SysDict dict) {
         // 校验字典是否存在
-        if (!existsById(dict.getId())) {
+        if (!exists(dict.getId())) {
             throw new BusinessException("字典不存在");
         }
 
         // 校验字典类型和值是否已存在
         SysDict existingDict = getById(dict.getId());
-        if (!existingDict.getType().equals(dict.getType()) 
-            || !existingDict.getValue().equals(dict.getValue())) {
-            if (isTypeAndValueExists(dict.getType(), dict.getValue())) {
+        if (!existingDict.getDictType().equals(dict.getDictType()) 
+            || !existingDict.getDictValue().equals(dict.getDictValue())) {
+            if (isTypeAndValueExists(dict.getDictType(), dict.getDictValue())) {
                 throw new BusinessException("字典类型和值已存在");
             }
         }
@@ -62,7 +63,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
     @CacheEvict(value = "dict", allEntries = true)
     public void deleteDict(Long id) {
         // 校验字典是否存在
-        if (!existsById(id)) {
+        if (!exists(id)) {
             throw new BusinessException("字典不存在");
         }
         
@@ -99,8 +100,15 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      */
     private boolean isTypeAndValueExists(String type, String value) {
         return lambdaQuery()
-                .eq(SysDict::getType, type)
-                .eq(SysDict::getValue, value)
+                .eq(SysDict::getDictType, type)
+                .eq(SysDict::getDictValue, value)
                 .exists();
+    }
+
+    /**
+     * 判断记录是否存在
+     */
+    private boolean exists(Long id) {
+        return lambdaQuery().eq(SysDict::getId, id).exists();
     }
 } 

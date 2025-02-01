@@ -1,0 +1,12 @@
+com.lawfirm.system.controller
+com.lawfirm.system.entity
+com.lawfirm.system.enums
+com.lawfirm.system.mapper
+com.lawfirm.system.model
+com.lawfirm.system.model.dto
+com.lawfirm.system.model.entity
+com.lawfirm.system.model.vo
+com.lawfirm.system.service
+com.lawfirm.system.service.impl
+com.lawfirm.system.upgrade
+com.lawfirm.system.util

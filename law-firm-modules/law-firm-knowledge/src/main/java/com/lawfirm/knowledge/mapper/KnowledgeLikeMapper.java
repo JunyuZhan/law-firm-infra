@@ -17,13 +17,13 @@ public interface KnowledgeLikeMapper extends BaseMapper<KnowledgeLike> {
      * 获取用户点赞列表
      */
     @Select("SELECT * FROM knowledge_like WHERE user_id = #{userId} AND deleted = 0 ORDER BY create_time DESC")
-    List<KnowledgeLike> listByUser(Long userId);
+    List<KnowledgeLike> selectByUserId(Long userId);
 
     /**
      * 获取知识点赞列表
      */
     @Select("SELECT * FROM knowledge_like WHERE knowledge_id = #{knowledgeId} AND deleted = 0 ORDER BY create_time DESC")
-    List<KnowledgeLike> listByKnowledge(Long knowledgeId);
+    List<KnowledgeLike> selectByKnowledgeId(Long knowledgeId);
 
     /**
      * 检查是否已点赞

@@ -1,74 +1,79 @@
 package com.lawfirm.document.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.lawfirm.common.data.service.impl.BaseServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.common.core.exception.BusinessException;
-import com.lawfirm.common.core.log.annotation.OperationLog;
+import com.lawfirm.common.core.model.page.PageResult;
+import com.lawfirm.common.log.annotation.OperationLog;
 import com.lawfirm.document.mapper.DocumentMapper;
 import com.lawfirm.document.service.DocumentService;
 import com.lawfirm.model.document.entity.Document;
 import com.lawfirm.model.document.query.DocumentQuery;
 import com.lawfirm.model.document.vo.DocumentVO;
+import com.lawfirm.model.document.enums.DocumentStatusEnum;
+import com.lawfirm.model.document.enums.DocumentTypeEnum;
+import com.lawfirm.model.base.enums.StatusEnum;
+import com.lawfirm.common.data.storage.StorageService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, Document, DocumentVO> implements DocumentService {
+@RequiredArgsConstructor
+public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> implements DocumentService {
 
-    @Value("${document.storage.path}")
-    private String storagePath;
+    private final DocumentMapper documentMapper;
+    private final StorageService storageService;
+
+    @Value("${storage.bucket.document}")
+    private String documentBucket;
 
     @Override
     @Transactional
-    @OperationLog(description = "上传文档", type = "DOCUMENT_UPLOAD")
+    @OperationLog(description = "上传文档", operationType = "DOCUMENT_UPLOAD")
     public DocumentVO upload(MultipartFile file, Document document, String operator) {
         try {
-            // 生成文档编号和版本号
-            document.setDocumentNumber(generateDocumentNumber());
-            document.setVersion("1.0");
-            document.setFileName(file.getOriginalFilename());
-            document.setFileSize(file.getSize());
-            document.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
-            document.setUploadTime(LocalDateTime.now());
-            document.setUploadBy(operator);
-            document.setStatus(0); // 待审核状态
+            String fileName = file.getOriginalFilename();
+            String fileId = UUID.randomUUID().toString();
+            String filePath = storageService.uploadFile(documentBucket, fileId, file.getInputStream(), file.getSize(), file.getContentType());
 
-            // 保存文件
-            String filePath = saveFile(file, document.getDocumentNumber(), document.getVersion());
+            document.setDocumentName(fileName);
             document.setFilePath(filePath);
-
-            // 保存文档信息
+            document.setFileSize(file.getSize());
+            document.setFileType(file.getContentType());
+            document.setLastModifiedTime(LocalDateTime.now());
+            document.setLastModifiedBy(operator);
+            document.setStatus(StatusEnum.ENABLED);
+            
             save(document);
-
-            return toVO(document);
+            return convertToVO(document);
         } catch (IOException e) {
-            log.error("Failed to upload document", e);
-            throw new BusinessException("上传文档失败");
+            log.error("文件上传失败", e);
+            throw new BusinessException("文件上传失败");
         }
     }
 
     @Override
     @Transactional
-    @OperationLog(description = "批量上传文档", type = "DOCUMENT_BATCH_UPLOAD")
+    @OperationLog(description = "批量上传文档", operationType = "DOCUMENT_BATCH_UPLOAD")
     public List<DocumentVO> batchUpload(List<MultipartFile> files, List<Document> documents, String operator) {
         if (files.size() != documents.size()) {
             throw new BusinessException("文件数量与文档信息数量不匹配");
@@ -83,7 +88,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, Documen
 
     @Override
     @Transactional
-    @OperationLog(description = "更新文档", type = "DOCUMENT_UPDATE")
+    @OperationLog(description = "更新文档", operationType = "DOCUMENT_UPDATE")
     public DocumentVO update(Long id, MultipartFile file, Document document, String operator) {
         Document existingDoc = getById(id);
         if (existingDoc == null) {
@@ -91,34 +96,32 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, Documen
         }
 
         try {
-            // 更新版本号
-            String newVersion = incrementVersion(existingDoc.getVersion());
             document.setId(id);
-            document.setVersion(newVersion);
-            document.setUpdateTime(LocalDateTime.now());
-            document.setUpdateBy(operator);
-
             if (file != null) {
-                // 保存新文件
-                String filePath = saveFile(file, existingDoc.getDocumentNumber(), newVersion);
+                String fileName = file.getOriginalFilename();
+                String fileId = UUID.randomUUID().toString();
+                String filePath = storageService.uploadFile(documentBucket, fileId, file.getInputStream(), file.getSize(), file.getContentType());
+
+                document.setDocumentName(fileName);
                 document.setFilePath(filePath);
-                document.setFileName(file.getOriginalFilename());
                 document.setFileSize(file.getSize());
-                document.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
+                document.setFileType(file.getContentType());
             }
-
-            // 更新文档信息
+            
+            document.setLastModifiedTime(LocalDateTime.now());
+            document.setLastModifiedBy(operator);
+            document.setVersion(existingDoc.getVersion() + 1);
+            
             updateById(document);
-
-            return toVO(document);
+            return convertToVO(document);
         } catch (IOException e) {
-            log.error("Failed to update document", e);
+            log.error("更新文档失败", e);
             throw new BusinessException("更新文档失败");
         }
     }
 
     @Override
-    @OperationLog(description = "下载文档", type = "DOCUMENT_DOWNLOAD")
+    @OperationLog(description = "下载文档", operationType = "DOCUMENT_DOWNLOAD")
     public byte[] download(Long id, String version) {
         try {
             Document document = getById(id);
@@ -126,59 +129,75 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, Documen
                 throw new BusinessException("文档不存在");
             }
 
-            String filePath = version == null ? 
+            String objectName = version == null ? 
                 document.getFilePath() : 
                 getVersionFilePath(document.getDocumentNumber(), version);
 
-            Path path = Paths.get(filePath);
-            if (!Files.exists(path)) {
-                throw new BusinessException("文件不存在");
-            }
-
-            return Files.readAllBytes(path);
+            return storageService.downloadFile(documentBucket, objectName).readAllBytes();
         } catch (IOException e) {
-            log.error("Failed to download document", e);
+            log.error("下载文档失败", e);
             throw new BusinessException("下载文档失败");
         }
     }
 
     @Override
     @Transactional
-    @OperationLog(description = "删除文档", type = "DOCUMENT_DELETE")
+    @OperationLog(description = "删除文档", operationType = "DOCUMENT_DELETE")
     public void delete(Long id, String operator) {
         Document document = getById(id);
         if (document == null) {
             throw new BusinessException("文档不存在");
         }
 
-        // 删除所有版本的文件
-        deleteAllVersions(document.getDocumentNumber());
+        document.setStatus(StatusEnum.DELETED);
+        document.setLastModifiedTime(LocalDateTime.now());
+        document.setLastModifiedBy(operator);
+        updateById(document);
 
-        // 删除数据库记录
-        removeById(id);
+        storageService.deleteFile(documentBucket, document.getFilePath());
     }
 
     @Override
     @Transactional
-    @OperationLog(description = "审核文档", type = "DOCUMENT_AUDIT")
+    @OperationLog(description = "审核文档", operationType = "DOCUMENT_AUDIT")
     public DocumentVO audit(Long id, Integer status, String comment, String operator) {
         Document document = getById(id);
         if (document == null) {
             throw new BusinessException("文档不存在");
         }
 
-        document.setStatus(status);
-        document.setAuditComment(comment);
-        document.setAuditTime(LocalDateTime.now());
-        document.setAuditBy(operator);
+        StatusEnum newStatus;
+        switch (status) {
+            case 1:
+                newStatus = StatusEnum.ENABLED;
+                break;
+            case 2:
+                newStatus = StatusEnum.ENABLED;
+                break;
+            case 3:
+                newStatus = StatusEnum.DISABLED;
+                break;
+            case 4:
+                newStatus = StatusEnum.ENABLED;
+                break;
+            case 5:
+                newStatus = StatusEnum.LOCKED;
+                break;
+            default:
+                newStatus = StatusEnum.ENABLED;
+        }
 
+        document.setStatus(newStatus);
+        document.setRemark(comment);
+        document.setLastModifiedTime(LocalDateTime.now());
+        document.setLastModifiedBy(operator);
+        
         updateById(document);
-
-        return toVO(document);
+        return convertToVO(document);
     }
 
     @Override
-    @OperationLog(description = "获取文档版本历史", type = "DOCUMENT_VERSION_HISTORY")
+    @OperationLog(description = "获取文档版本历史", operationType = "DOCUMENT_VERSION_HISTORY")
     public List<DocumentVO> getVersionHistory(Long id) {
         Document document = getById(id);
         if (document == null) {
@@ -189,111 +208,195 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, Documen
         wrapper.eq(Document::getDocumentNumber, document.getDocumentNumber())
                .orderByDesc(Document::getVersion);
 
-        return toVO(list(wrapper));
+        return list(wrapper).stream()
+            .map(this::convertToVO)
+            .collect(Collectors.toList());
     }
 
     @Override
-    @OperationLog(description = "导出文档列表", type = "DOCUMENT_EXPORT")
+    @OperationLog(description = "导出文档列表", operationType = "DOCUMENT_EXPORT")
     public byte[] exportToExcel(DocumentQuery query) {
-        try {
-            List<Document> documents = list(buildQueryWrapper(query));
-            
-            Workbook workbook = new XSSFWorkbook();
-            // TODO: 实现Excel导出逻辑
-            
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            workbook.write(outputStream);
-            return outputStream.toByteArray();
-        } catch (IOException e) {
-            log.error("Failed to export documents", e);
-            throw new BusinessException("导出文档失败");
+        List<Document> documents = list(buildQueryWrapper(query));
+        
+        // TODO: 实现Excel导出逻辑
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        return outputStream.toByteArray();
+    }
+
+    @Override
+    public List<DocumentVO> listByStatus(DocumentStatusEnum status) {
+        StatusEnum baseStatus;
+        switch (status) {
+            case DRAFT:
+            case REVIEWING:
+            case APPROVED:
+            case PUBLISHED:
+                baseStatus = StatusEnum.ENABLED;
+                break;
+            case REJECTED:
+                baseStatus = StatusEnum.DISABLED;
+                break;
+            case ARCHIVED:
+                baseStatus = StatusEnum.LOCKED;
+                break;
+            case DELETED:
+                baseStatus = StatusEnum.DELETED;
+                break;
+            default:
+                baseStatus = StatusEnum.DISABLED;
         }
+
+        LambdaQueryWrapper<Document> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Document::getStatus, baseStatus);
+        return list(wrapper).stream()
+            .map(this::convertToVO)
+            .collect(Collectors.toList());
     }
 
     private String generateDocumentNumber() {
         return "DOC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
-    private String saveFile(MultipartFile file, String documentNumber, String version) throws IOException {
-        String fileName = String.format("%s_v%s.%s", 
-            documentNumber, 
-            version,
-            FilenameUtils.getExtension(file.getOriginalFilename()));
-        
-        Path directory = Paths.get(storagePath, documentNumber);
-        Files.createDirectories(directory);
-        
-        Path filePath = directory.resolve(fileName);
-        Files.copy(file.getInputStream(), filePath);
-        
-        return filePath.toString();
-    }
-
-    private String incrementVersion(String version) {
-        String[] parts = version.split("\\.");
-        int major = Integer.parseInt(parts[0]);
-        int minor = Integer.parseInt(parts[1]);
-        return String.format("%d.%d", major, minor + 1);
-    }
-
     private String getVersionFilePath(String documentNumber, String version) {
-        return Paths.get(storagePath, documentNumber, 
-            String.format("%s_v%s", documentNumber, version)).toString();
-    }
-
-    private void deleteAllVersions(String documentNumber) {
-        try {
-            Path directory = Paths.get(storagePath, documentNumber);
-            if (Files.exists(directory)) {
-                FileUtils.deleteDirectory(new File(directory.toString()));
-            }
-        } catch (IOException e) {
-            log.error("Failed to delete document versions", e);
-            throw new BusinessException("删除文档版本失败");
-        }
+        return String.format("%s/%s", documentNumber, version);
     }
 
     private LambdaQueryWrapper<Document> buildQueryWrapper(DocumentQuery query) {
         LambdaQueryWrapper<Document> wrapper = new LambdaQueryWrapper<>();
-        // TODO: 根据查询条件构建wrapper
+        
+        if (StringUtils.isNotBlank(query.getDocumentNumber())) {
+            wrapper.eq(Document::getDocumentNumber, query.getDocumentNumber());
+        }
+        
+        if (StringUtils.isNotBlank(query.getDocumentName())) {
+            wrapper.like(Document::getDocumentName, query.getDocumentName());
+        }
+        
+        if (StringUtils.isNotBlank(query.getFileType())) {
+            wrapper.eq(Document::getFileType, query.getFileType());
+        }
+        
+        if (StringUtils.isNotBlank(query.getVersion())) {
+            wrapper.eq(Document::getVersion, Integer.valueOf(query.getVersion()));
+        }
+        
+        if (query.getStatus() != null) {
+            wrapper.eq(Document::getStatus, StatusEnum.values()[query.getStatus()]);
+        }
+        
+        if (query.getUploadTimeStart() != null) {
+            wrapper.ge(Document::getCreateTime, query.getUploadTimeStart());
+        }
+        
+        if (query.getUploadTimeEnd() != null) {
+            wrapper.le(Document::getCreateTime, query.getUploadTimeEnd());
+        }
+        
+        if (StringUtils.isNotBlank(query.getUploadBy())) {
+            wrapper.eq(Document::getCreateBy, query.getUploadBy());
+        }
+        
+        if (query.getAuditTimeStart() != null) {
+            wrapper.ge(Document::getLastModifiedTime, query.getAuditTimeStart());
+        }
+        
+        if (query.getAuditTimeEnd() != null) {
+            wrapper.le(Document::getLastModifiedTime, query.getAuditTimeEnd());
+        }
+        
+        if (StringUtils.isNotBlank(query.getAuditBy())) {
+            wrapper.eq(Document::getLastModifiedBy, query.getAuditBy());
+        }
+        
+        if (StringUtils.isNotBlank(query.getDocumentType())) {
+            wrapper.eq(Document::getDocumentType, DocumentTypeEnum.valueOf(query.getDocumentType()));
+        }
+        
         return wrapper;
     }
 
-    @Override
-    protected void beforeCreate(Document entity) {
-        // 文档创建前的验证逻辑
-        if (entity.getDocumentNumber() == null) {
-            entity.setDocumentNumber(generateDocumentNumber());
+    private DocumentVO convertToVO(Document document) {
+        if (document == null) {
+            return null;
         }
-        if (entity.getVersion() == null) {
-            entity.setVersion("1.0");
-        }
+        DocumentVO vo = new DocumentVO();
+        BeanUtils.copyProperties(document, vo);
+        vo.setStatus(document.getStatus().ordinal());
+        vo.setStatusName(document.getStatus().getDescription());
+        vo.setDocumentType(document.getDocumentType().getValue());
+        vo.setVersion(String.valueOf(document.getVersion()));
+        return vo;
     }
 
     @Override
-    protected void beforeUpdate(Document entity) {
-        // 文档更新前的验证逻辑
-        Document existingDoc = getById(entity.getId());
-        if (existingDoc == null) {
+    public DocumentVO create(DocumentVO dto) {
+        Document entity = toEntity(dto);
+        save(entity);
+        return convertToVO(entity);
+    }
+
+    @Override
+    public DocumentVO update(DocumentVO dto) {
+        Document entity = getById(dto.getId());
+        if (entity == null) {
             throw new BusinessException("文档不存在");
         }
-    }
-
-    @Override
-    protected void afterLoad(DocumentVO dto, Document entity) {
-        // 文档加载后的处理逻辑
-        if (entity != null) {
-            // 可以在这里添加额外的处理逻辑，比如设置文档状态描述等
+        BeanUtils.copyProperties(dto, entity);
+        if (dto.getStatus() != null) {
+            entity.setStatus(StatusEnum.values()[dto.getStatus()]);
         }
+        if (dto.getVersion() != null) {
+            entity.setVersion(Integer.valueOf(dto.getVersion()));
+        }
+        if (dto.getDocumentType() != null) {
+            entity.setDocumentType(DocumentTypeEnum.valueOf(dto.getDocumentType()));
+        }
+        updateById(entity);
+        return convertToVO(entity);
     }
 
     @Override
-    protected DocumentVO createDTO() {
-        return new DocumentVO();
+    public void deleteBatch(List<Long> ids) {
+        removeByIds(ids);
     }
 
     @Override
-    protected Document createEntity() {
-        return new Document();
+    public DocumentVO findById(Long id) {
+        return convertToVO(getById(id));
+    }
+
+    @Override
+    public PageResult<DocumentVO> pageDocuments(Page<Document> page, QueryWrapper<Document> wrapper) {
+        Page<Document> documentPage = super.page(page, wrapper);
+        List<DocumentVO> records = documentPage.getRecords().stream()
+            .map(this::convertToVO)
+            .collect(Collectors.toList());
+        
+        return new PageResult<>(records, documentPage.getTotal());
+    }
+
+    @Override
+    public List<DocumentVO> listDocuments(QueryWrapper<Document> wrapper) {
+        return super.list(wrapper).stream()
+            .map(this::convertToVO)
+            .collect(Collectors.toList());
+    }
+
+    private Document toEntity(DocumentVO dto) {
+        if (dto == null) {
+            return null;
+        }
+        Document entity = new Document();
+        BeanUtils.copyProperties(dto, entity);
+        if (dto.getStatus() != null) {
+            entity.setStatus(StatusEnum.values()[dto.getStatus()]);
+        }
+        if (dto.getVersion() != null) {
+            entity.setVersion(Integer.valueOf(dto.getVersion()));
+        }
+        if (dto.getDocumentType() != null) {
+            entity.setDocumentType(DocumentTypeEnum.valueOf(dto.getDocumentType()));
+        }
+        return entity;
     }
 } 

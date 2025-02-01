@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +142,7 @@ class ContractClauseServiceTest {
         // 准备测试数据
         List<ContractClause> clauses = new ArrayList<>();
         clauses.add(contractClause);
-        when(contractClauseService.list(any())).thenReturn(clauses);
+        when(contractClauseService.list(any(LambdaQueryWrapper.class))).thenReturn(clauses);
 
         // 执行测试
         boolean result = contractClauseService.validateRequiredClauses(1L);
@@ -156,7 +157,7 @@ class ContractClauseServiceTest {
         contractClause.setType(ClauseType.SPECIAL);
         List<ContractClause> clauses = new ArrayList<>();
         clauses.add(contractClause);
-        when(contractClauseService.list(any())).thenReturn(clauses);
+        when(contractClauseService.list(any(LambdaQueryWrapper.class))).thenReturn(clauses);
 
         // 执行测试
         boolean result = contractClauseService.validateRequiredClauses(1L);

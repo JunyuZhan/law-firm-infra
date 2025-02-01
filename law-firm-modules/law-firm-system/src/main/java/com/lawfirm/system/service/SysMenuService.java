@@ -1,62 +1,59 @@
 package com.lawfirm.system.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.lawfirm.common.log.annotation.Log;
-import com.lawfirm.common.log.enums.BusinessType;
+import com.lawfirm.common.data.service.BaseService;
 import com.lawfirm.model.system.entity.SysMenu;
+import com.lawfirm.system.model.dto.SysMenuDTO;
+import com.lawfirm.system.model.vo.RouterVo;
 
 import java.util.List;
 
 /**
- * 系统菜单服务接口
+ * 菜单服务接口
  */
-public interface SysMenuService extends IService<SysMenu> {
+public interface SysMenuService extends BaseService<SysMenu, SysMenuDTO> {
 
     /**
      * 创建菜单
      */
-    @Log(module = "菜单管理", businessType = BusinessType.INSERT, description = "创建菜单")
-    void createMenu(SysMenu menu);
+    void createMenu(SysMenuDTO menu);
 
     /**
      * 更新菜单
      */
-    @Log(module = "菜单管理", businessType = BusinessType.UPDATE, description = "更新菜单")
-    void updateMenu(SysMenu menu);
+    void updateMenu(SysMenuDTO menu);
 
     /**
      * 删除菜单
      */
-    @Log(module = "菜单管理", businessType = BusinessType.DELETE, description = "删除菜单")
-    void deleteMenu(Long id);
+    void deleteMenu(Long menuId);
 
     /**
      * 根据角色ID查询菜单列表
      */
-    List<SysMenu> listByRoleId(Long roleId);
+    List<SysMenuDTO> listByRoleId(Long roleId);
 
     /**
      * 根据用户ID查询菜单列表
      */
-    List<SysMenu> listByUserId(Long userId);
+    List<SysMenuDTO> listByUserId(Long userId);
 
     /**
-     * 查询所有可见的菜单列表
+     * 查询可见的菜单列表
      */
-    List<SysMenu> listVisible();
+    List<SysMenuDTO> listVisible();
 
     /**
      * 查询子菜单列表
      */
-    List<SysMenu> listChildren(Long parentId);
+    List<SysMenuDTO> listChildren(Long parentId);
 
     /**
      * 构建菜单树
      */
-    List<SysMenu> buildMenuTree(List<SysMenu> menus);
+    List<SysMenuDTO> buildMenuTree(List<SysMenuDTO> menus);
 
     /**
      * 构建前端路由
      */
-    List<SysMenu> buildRouters(List<SysMenu> menus);
+    List<RouterVo> buildRouters(List<SysMenuDTO> menus);
 } 

@@ -9,4 +9,5 @@ com.lawfirm.common.core.model
 com.lawfirm.common.core.model.page
 com.lawfirm.common.core.result
 com.lawfirm.common.core.util
+com.lawfirm.common.core.util.file
 com.lawfirm.common.core.utils

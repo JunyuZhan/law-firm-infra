@@ -4,11 +4,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.system.entity.SysMenu;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
- * 系统菜单Mapper接口
+ * 菜单Mapper接口
  */
 @Mapper
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
@@ -16,21 +17,19 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
     /**
      * 根据角色ID查询菜单列表
      */
-    @Select("SELECT m.* FROM sys_menu m" +
-            " INNER JOIN sys_role_menu rm ON m.id = rm.menu_id" +
-            " WHERE rm.role_id = #{roleId} AND m.deleted = 0" +
-            " ORDER BY m.order_num")
-    List<SysMenu> selectByRoleId(Long roleId);
+    @Select("SELECT m.* FROM sys_menu m " +
+            "INNER JOIN sys_role_menu rm ON m.id = rm.menu_id " +
+            "WHERE rm.role_id = #{roleId}")
+    List<SysMenu> selectByRoleId(@Param("roleId") Long roleId);
 
     /**
      * 根据用户ID查询菜单列表
      */
-    @Select("SELECT DISTINCT m.* FROM sys_menu m" +
-            " INNER JOIN sys_role_menu rm ON m.id = rm.menu_id" +
-            " INNER JOIN sys_user_role ur ON rm.role_id = ur.role_id" +
-            " WHERE ur.user_id = #{userId} AND m.deleted = 0" +
-            " ORDER BY m.order_num")
-    List<SysMenu> selectByUserId(Long userId);
+    @Select("SELECT DISTINCT m.* FROM sys_menu m " +
+            "INNER JOIN sys_role_menu rm ON m.id = rm.menu_id " +
+            "INNER JOIN sys_user_role ur ON rm.role_id = ur.role_id " +
+            "WHERE ur.user_id = #{userId}")
+    List<SysMenu> selectByUserId(@Param("userId") Long userId);
 
     /**
      * 查询所有可见的菜单列表

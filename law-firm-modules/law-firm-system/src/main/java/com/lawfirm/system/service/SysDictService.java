@@ -15,19 +15,19 @@ public interface SysDictService extends IService<SysDict> {
     /**
      * 创建字典
      */
-    @Log(module = "字典管理", businessType = BusinessType.INSERT, description = "创建字典")
+    @Log(title = "字典管理", businessType = BusinessType.INSERT)
     void createDict(SysDict dict);
 
     /**
      * 更新字典
      */
-    @Log(module = "字典管理", businessType = BusinessType.UPDATE, description = "更新字典")
+    @Log(title = "字典管理", businessType = BusinessType.UPDATE)
     void updateDict(SysDict dict);
 
     /**
      * 删除字典
      */
-    @Log(module = "字典管理", businessType = BusinessType.DELETE, description = "删除字典")
+    @Log(title = "字典管理", businessType = BusinessType.DELETE)
     void deleteDict(Long id);
 
     /**
@@ -48,6 +48,6 @@ public interface SysDictService extends IService<SysDict> {
     /**
      * 刷新字典缓存
      */
-    @Log(module = "字典管理", businessType = BusinessType.OTHER, description = "刷新字典缓存")
+    @Log(title = "字典管理", businessType = BusinessType.OTHER)
     void refreshCache();
 } 

@@ -3,6 +3,7 @@ package com.lawfirm.document.service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 
 /**
@@ -81,4 +82,31 @@ public interface DocumentStorageService {
      * @throws IOException IO异常
      */
     String calculateHash(String filePath) throws IOException;
+    
+    /**
+     * 上传文件
+     *
+     * @param documentNumber 文档编号
+     * @param inputStream 文件输入流
+     * @param size 文件大小
+     * @param contentType 文件类型
+     * @return 文件存储路径
+     */
+    String uploadFile(String documentNumber, InputStream inputStream, long size, String contentType);
+    
+    /**
+     * 删除文件
+     *
+     * @param filePath 文件路径
+     * @return 是否删除成功
+     */
+    boolean deleteFile(String filePath);
+    
+    /**
+     * 获取文件访问URL
+     *
+     * @param filePath 文件路径
+     * @return 访问URL
+     */
+    String getFileUrl(String filePath);
 } 

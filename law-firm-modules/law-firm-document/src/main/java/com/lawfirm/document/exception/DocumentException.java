@@ -1,11 +1,15 @@
 package com.lawfirm.document.exception;
 
-import com.lawfirm.common.exception.BusinessException;
+import lombok.Getter;
 
 /**
  * 文档模块异常类
  */
-public class DocumentException extends BusinessException {
+@Getter
+public class DocumentException extends RuntimeException {
+    
+    private final String code;
+    private final String message;
     
     public static final String ERROR_DOCUMENT_NOT_FOUND = "DOC_001";
     public static final String ERROR_DOCUMENT_ALREADY_EXISTS = "DOC_002";
@@ -14,16 +18,24 @@ public class DocumentException extends BusinessException {
     public static final String ERROR_STORAGE_FAILED = "DOC_005";
     public static final String ERROR_PREVIEW_NOT_SUPPORTED = "DOC_006";
     public static final String ERROR_VERSION_INVALID = "DOC_007";
+    public static final String ERROR_FILE_UPLOAD_FAILED = "DOC_008";
+    public static final String ERROR_FILE_URL_FAILED = "DOC_009";
     
-    public DocumentException(String code) {
-        super(code);
+    public DocumentException(String message) {
+        super(message);
+        this.code = ERROR_STORAGE_FAILED;
+        this.message = message;
     }
     
     public DocumentException(String code, String message) {
-        super(code, message);
+        super(message);
+        this.code = code;
+        this.message = message;
     }
     
     public DocumentException(String code, String message, Throwable cause) {
-        super(code, message, cause);
+        super(message, cause);
+        this.code = code;
+        this.message = message;
     }
 } 

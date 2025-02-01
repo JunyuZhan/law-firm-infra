@@ -1,143 +1,176 @@
 package com.lawfirm.system.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.common.exception.BusinessException;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.lawfirm.common.data.service.impl.BaseServiceImpl;
+import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.model.system.entity.SysMenu;
+import com.lawfirm.system.model.dto.SysMenuDTO;
 import com.lawfirm.system.mapper.SysMenuMapper;
 import com.lawfirm.system.service.SysMenuService;
+import com.lawfirm.system.model.vo.MetaVo;
+import com.lawfirm.system.model.vo.RouterVo;
+import com.lawfirm.system.util.TreeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 /**
- * 系统菜单服务实现类
+ * 菜单服务实现类
  */
 @Service
 @RequiredArgsConstructor
-public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
+public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuMapper, SysMenu, SysMenuDTO> implements SysMenuService {
 
     private final SysMenuMapper menuMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void createMenu(SysMenu menu) {
-        // 校验上级菜单是否存在
-        if (menu.getParentId() != null && menu.getParentId() != 0L) {
-            if (!existsById(menu.getParentId())) {
-                throw new BusinessException("上级菜单不存在");
-            }
+    protected SysMenu createEntity() {
+        return new SysMenu();
+    }
+
+    @Override
+    protected SysMenuDTO createDTO() {
+        return new SysMenuDTO();
+    }
+
+    @Override
+    public SysMenu toEntity(SysMenuDTO dto) {
+        if (dto == null) {
+            return null;
         }
-        
-        // 保存菜单
+        SysMenu entity = createEntity();
+        BeanUtils.copyProperties(dto, entity);
+        return entity;
+    }
+
+    @Override
+    public SysMenuDTO toDTO(SysMenu entity) {
+        if (entity == null) {
+            return null;
+        }
+        SysMenuDTO dto = createDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
+    }
+
+    @Override
+    public List<SysMenu> toEntityList(List<SysMenuDTO> dtoList) {
+        if (dtoList == null) {
+            return null;
+        }
+        return dtoList.stream()
+                .map(this::toEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SysMenuDTO> toDTOList(List<SysMenu> entityList) {
+        if (entityList == null) {
+            return null;
+        }
+        return entityList.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createMenu(SysMenuDTO menuDTO) {
+        SysMenu menu = toEntity(menuDTO);
+        // 检查菜单名称是否重复
+        if (lambdaQuery().eq(SysMenu::getMenuName, menu.getMenuName()).exists()) {
+            throw new IllegalArgumentException("菜单名称已存在");
+        }
         save(menu);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateMenu(SysMenu menu) {
-        // 校验菜单是否存在
-        if (!existsById(menu.getId())) {
-            throw new BusinessException("菜单不存在");
+    public void updateMenu(SysMenuDTO menuDTO) {
+        SysMenu menu = toEntity(menuDTO);
+        // 检查菜单是否存在
+        if (!lambdaQuery().eq(SysMenu::getId, menu.getId()).exists()) {
+            throw new IllegalArgumentException("菜单不存在");
         }
-
-        // 校验上级菜单是否存在
-        if (menu.getParentId() != null && menu.getParentId() != 0L) {
-            if (!existsById(menu.getParentId())) {
-                throw new BusinessException("上级菜单不存在");
-            }
+        // 检查菜单名称是否重复
+        if (lambdaQuery()
+                .eq(SysMenu::getMenuName, menu.getMenuName())
+                .ne(SysMenu::getId, menu.getId())
+                .exists()) {
+            throw new IllegalArgumentException("菜单名称已存在");
         }
-        
-        // 更新菜单
         updateById(menu);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteMenu(Long id) {
-        // 校验菜单是否存在
-        if (!existsById(id)) {
-            throw new BusinessException("菜单不存在");
+    public void deleteMenu(Long menuId) {
+        // 检查是否有子菜单
+        if (hasChildren(menuId)) {
+            throw new IllegalArgumentException("存在子菜单,不允许删除");
         }
+        removeById(menuId);
+    }
 
-        // 校验是否存在子菜单
-        if (hasChildren(id)) {
-            throw new BusinessException("存在子菜单,不能删除");
+    @Override
+    public List<SysMenuDTO> listByRoleId(Long roleId) {
+        return toDTOList(menuMapper.selectByRoleId(roleId));
+    }
+
+    @Override
+    public List<SysMenuDTO> listByUserId(Long userId) {
+        return toDTOList(menuMapper.selectByUserId(userId));
+    }
+
+    @Override
+    public List<SysMenuDTO> listVisible() {
+        List<SysMenu> menus = lambdaQuery()
+                .eq(SysMenu::getVisible, "0")
+                .orderByAsc(SysMenu::getOrderNum)
+                .list();
+        return toDTOList(menus);
+    }
+
+    @Override
+    public List<SysMenuDTO> listChildren(Long parentId) {
+        List<SysMenu> menus = lambdaQuery()
+                .eq(SysMenu::getParentId, parentId)
+                .orderByAsc(SysMenu::getOrderNum)
+                .list();
+        return toDTOList(menus);
+    }
+
+    @Override
+    public List<SysMenuDTO> buildMenuTree(List<SysMenuDTO> menus) {
+        return TreeUtils.buildMenuTree(menus);
+    }
+
+    @Override
+    public List<RouterVo> buildRouters(List<SysMenuDTO> menuDTOs) {
+        List<RouterVo> routers = new ArrayList<>();
+        for (SysMenuDTO menu : menuDTOs) {
+            RouterVo router = new RouterVo();
+            router.setName(menu.getMenuName());
+            router.setPath(menu.getPath());
+            router.setComponent(menu.getComponent());
+            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), menu.getIsCache() == 1));
+            
+            List<SysMenuDTO> children = listChildren(menu.getId());
+            if (!children.isEmpty()) {
+                router.setChildren(buildRouters(children));
+            }
+            
+            routers.add(router);
         }
-        
-        // 删除菜单
-        removeById(id);
+        return routers;
     }
 
-    @Override
-    public List<SysMenu> listByRoleId(Long roleId) {
-        return menuMapper.selectByRoleId(roleId);
-    }
-
-    @Override
-    public List<SysMenu> listByUserId(Long userId) {
-        return menuMapper.selectByUserId(userId);
-    }
-
-    @Override
-    public List<SysMenu> listVisible() {
-        return menuMapper.selectVisible();
-    }
-
-    @Override
-    public List<SysMenu> listChildren(Long parentId) {
-        return menuMapper.selectChildren(parentId);
-    }
-
-    @Override
-    public List<SysMenu> buildMenuTree(List<SysMenu> menus) {
-        // 构建父子关系
-        Map<Long, List<SysMenu>> parentMap = menus.stream()
-                .collect(Collectors.groupingBy(SysMenu::getParentId));
-
-        // 递归构建树形结构
-        return buildTree(0L, parentMap);
-    }
-
-    @Override
-    public List<SysMenu> buildRouters(List<SysMenu> menus) {
-        // 过滤出目录和菜单
-        List<SysMenu> routerMenus = menus.stream()
-                .filter(m -> m.getType() <= 1)
-                .collect(Collectors.toList());
-
-        // 构建路由树
-        return buildMenuTree(routerMenus);
-    }
-
-    /**
-     * 递归构建树形结构
-     */
-    private List<SysMenu> buildTree(Long parentId, Map<Long, List<SysMenu>> parentMap) {
-        List<SysMenu> children = parentMap.get(parentId);
-        if (children == null) {
-            return new ArrayList<>();
-        }
-
-        List<SysMenu> tree = new ArrayList<>();
-        for (SysMenu menu : children) {
-            menu.setChildren(buildTree(menu.getId(), parentMap));
-            tree.add(menu);
-        }
-
-        return tree;
-    }
-
-    /**
-     * 判断是否存在子菜单
-     */
-    private boolean hasChildren(Long id) {
-        return lambdaQuery()
-                .eq(SysMenu::getParentId, id)
-                .exists();
+    private boolean hasChildren(Long menuId) {
+        return lambdaQuery().eq(SysMenu::getParentId, menuId).exists();
     }
 } 
