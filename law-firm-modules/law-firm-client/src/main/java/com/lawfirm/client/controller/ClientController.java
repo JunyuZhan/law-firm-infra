@@ -4,6 +4,7 @@ import com.lawfirm.client.service.ClientService;
 import com.lawfirm.common.core.result.R;
 import com.lawfirm.model.client.entity.Client;
 import com.lawfirm.model.client.query.ClientQuery;
+import com.lawfirm.model.client.dto.ClientDTO;
 import com.lawfirm.model.client.vo.ClientVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,27 +24,27 @@ public class ClientController {
 
     @Operation(summary = "创建客户")
     @PostMapping
-    public R<ClientVO> create(@RequestBody ClientVO clientVO) {
-        return R.ok(clientService.create(clientVO));
+    public R<ClientVO> create(@RequestBody ClientDTO clientDTO) {
+        return R.ok(clientService.create(clientDTO));
     }
 
     @Operation(summary = "批量创建客户")
     @PostMapping("/batch")
-    public R<List<ClientVO>> batchCreate(@RequestBody List<Client> clients) {
-        return R.ok(clientService.batchCreate(clients));
+    public R<List<ClientVO>> batchCreate(@RequestBody List<ClientDTO> clientDTOs) {
+        return R.ok(clientService.batchCreate(clientDTOs));
     }
 
     @Operation(summary = "更新客户")
     @PutMapping("/{id}")
-    public R<ClientVO> update(@PathVariable Long id, @RequestBody ClientVO clientVO) {
-        clientVO.setId(id);
-        return R.ok(clientService.update(clientVO));
+    public R<ClientVO> update(@PathVariable Long id, @RequestBody ClientDTO clientDTO) {
+        clientDTO.setId(id);
+        return R.ok(clientService.update(clientDTO));
     }
 
     @Operation(summary = "批量更新客户")
     @PutMapping("/batch")
-    public R<List<ClientVO>> batchUpdate(@RequestBody List<Client> clients) {
-        return R.ok(clientService.batchUpdate(clients));
+    public R<List<ClientVO>> batchUpdate(@RequestBody List<ClientDTO> clientDTOs) {
+        return R.ok(clientService.batchUpdate(clientDTOs));
     }
 
     @Operation(summary = "删除客户")

@@ -2,120 +2,111 @@ package com.lawfirm.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.core.domain.R;
 import com.lawfirm.common.core.model.page.PageResult;
+import com.lawfirm.common.core.domain.R;
 import com.lawfirm.model.system.entity.SysUser;
-import com.lawfirm.system.model.dto.SysUserDTO;
+import com.lawfirm.model.system.dto.SysUserDTO;
+import com.lawfirm.model.system.vo.SysUserVO;
 import com.lawfirm.system.service.SysUserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.common.web.controller.BaseController;
 
 import java.util.List;
 
 /**
  * 系统用户控制器
  */
-@Api(tags = "用户管理")
+@Tag(name = "系统用户管理")
 @RestController
 @RequestMapping("/system/user")
 @RequiredArgsConstructor
-public class SysUserController {
+public class SysUserController extends BaseController {
 
     private final SysUserService userService;
 
-    @ApiOperation("分页查询")
-    @GetMapping("/page")
-    public R<PageResult<SysUserDTO>> page(
-            @RequestParam(defaultValue = "1") Integer current,
-            @RequestParam(defaultValue = "10") Integer size,
-            SysUserDTO user) {
-        Page<SysUser> page = new Page<>(current, size);
-        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        // TODO: 根据DTO构建查询条件
-        return R.ok(userService.page(page, queryWrapper));
+    @Operation(summary = "创建用户")
+    @PostMapping
+    public R<SysUserVO> create(@Valid @RequestBody SysUserDTO user) {
+        return R.ok(userService.create(user));
     }
 
-    @ApiOperation("查询列表")
-    @GetMapping("/list")
-    public R<List<SysUserDTO>> list(SysUserDTO user) {
-        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        // TODO: 根据DTO构建查询条件
-        return R.ok(userService.list(queryWrapper));
+    @Operation(summary = "更新用户")
+    @PutMapping
+    public R<SysUserVO> update(@Valid @RequestBody SysUserDTO user) {
+        return R.ok(userService.update(user));
     }
 
-    @ApiOperation("根据ID查询")
+    @Operation(summary = "删除用户")
+    @DeleteMapping("/{id}")
+    public R<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return R.ok();
+    }
+
+    @Operation(summary = "批量删除用户")
+    @DeleteMapping("/batch")
+    public R<Void> deleteBatch(@RequestBody List<Long> ids) {
+        userService.deleteBatch(ids);
+        return R.ok();
+    }
+
+    @Operation(summary = "获取用户详情")
     @GetMapping("/{id}")
-    public R<SysUserDTO> getById(@PathVariable Long id) {
+    public R<SysUserVO> get(@PathVariable Long id) {
         return R.ok(userService.findById(id));
     }
 
-    @ApiOperation("新增")
-    @PostMapping
-    public R<SysUserDTO> add(@Validated @RequestBody SysUserDTO user) {
-        return R.ok(userService.createUser(user));
+    @Operation(summary = "获取用户列表")
+    @GetMapping("/list")
+    public R<List<SysUserVO>> list(SysUserDTO query) {
+        QueryWrapper<SysUser> wrapper = new QueryWrapper<>();
+        // TODO: 构建查询条件
+        return R.ok(userService.list(wrapper));
     }
 
-    @ApiOperation("修改")
-    @PutMapping
-    public R<SysUserDTO> update(@Validated @RequestBody SysUserDTO user) {
-        return R.ok(userService.updateUser(user));
+    @Operation(summary = "分页获取用户列表")
+    @GetMapping("/page")
+    public R<PageResult<SysUserVO>> page(@Valid SysUserDTO query,
+                                        @RequestParam(defaultValue = "1") Integer pageNum,
+                                        @RequestParam(defaultValue = "10") Integer pageSize) {
+        return R.ok(userService.pageUsers(pageNum, pageSize, query));
     }
 
-    @ApiOperation("删除")
-    @DeleteMapping("/{id}")
-    public R<Void> remove(@PathVariable Long id) {
-        userService.deleteUser(id);
+    @Operation(summary = "重置密码")
+    @PutMapping("/{userId}/password/reset")
+    public R<Void> resetPassword(@PathVariable Long userId, @RequestParam String password) {
+        userService.resetPassword(userId, password);
         return R.ok();
     }
 
-    @ApiOperation("修改密码")
+    @Operation(summary = "修改密码")
     @PutMapping("/password")
-    public R<Void> changePassword(
-            @RequestParam Long userId,
-            @RequestParam String oldPassword,
-            @RequestParam String newPassword) {
-        userService.changePassword(userId, oldPassword, newPassword);
+    public R<Void> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
+        userService.changePassword(oldPassword, newPassword);
         return R.ok();
     }
 
-    @ApiOperation("根据用户名查询用户")
-    @GetMapping("/username/{username}")
-    public R<SysUserDTO> getByUsername(@PathVariable String username) {
-        return R.ok(userService.getByUsername(username));
-    }
-
-    @ApiOperation("根据部门ID查询用户列表")
-    @GetMapping("/dept/{deptId}")
-    public R<List<SysUserDTO>> listByDeptId(@PathVariable Long deptId) {
-        return R.ok(userService.listByDeptId(deptId));
-    }
-
-    @ApiOperation("根据角色ID查询用户列表")
-    @GetMapping("/role/{roleId}")
-    public R<List<SysUserDTO>> listByRoleId(@PathVariable Long roleId) {
-        return R.ok(userService.listByRoleId(roleId));
-    }
-
-    @ApiOperation("分配用户角色")
-    @PutMapping("/{userId}/roles")
-    public R<Void> assignRoles(@PathVariable Long userId, @RequestBody List<Long> roleIds) {
-        userService.updateUserRoles(userId, roleIds);
+    @Operation(summary = "更新头像")
+    @PutMapping("/{userId}/avatar")
+    public R<Void> updateAvatar(@PathVariable Long userId, @RequestParam String avatar) {
+        userService.updateAvatar(userId, avatar);
         return R.ok();
     }
 
-    @ApiOperation("修改个人信息")
+    @Operation(summary = "更新个人信息")
     @PutMapping("/profile")
-    public R<SysUserDTO> updateProfile(@Validated @RequestBody SysUserDTO user) {
+    public R<SysUserVO> updateProfile(@Valid @RequestBody SysUserDTO user) {
         return R.ok(userService.updateProfile(user));
     }
 
-    @ApiOperation("修改头像")
-    @PutMapping("/avatar")
-    public R<Void> updateAvatar(@RequestParam Long userId, @RequestParam String avatar) {
-        userService.updateAvatar(userId, avatar);
+    @Operation(summary = "分配角色")
+    @PutMapping("/{userId}/roles")
+    public R<Void> assignRoles(@PathVariable Long userId, @RequestBody List<Long> roleIds) {
+        userService.assignRoles(userId, roleIds);
         return R.ok();
     }
 } 

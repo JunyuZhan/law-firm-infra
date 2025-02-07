@@ -1,21 +1,15 @@
 package com.lawfirm.system.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.core.model.page.PageResult;
-import com.lawfirm.common.data.service.impl.BaseServiceImpl;
-import com.lawfirm.model.system.entity.SysLog;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.lawfirm.common.log.domain.OperationLogDO;
+import com.lawfirm.common.log.service.impl.OperationLogServiceImpl;
 import com.lawfirm.system.mapper.SysLogMapper;
-import com.lawfirm.system.model.dto.SysLogDTO;
 import com.lawfirm.system.service.SysLogService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,29 +19,17 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class SysLogServiceImpl extends BaseServiceImpl<SysLogMapper, SysLog, SysLogDTO> implements SysLogService {
+public class SysLogServiceImpl extends OperationLogServiceImpl implements SysLogService {
 
     private final SysLogMapper logMapper;
 
-    // BaseServiceImpl abstract methods
     @Override
-    protected SysLogDTO createDTO() {
-        return new SysLogDTO();
-    }
-
-    @Override
-    protected SysLog createEntity() {
-        return new SysLog();
-    }
-
-    // SysLogService specific methods
-    @Override
-    public void createLog(SysLog log) {
+    public void createLog(OperationLogDO log) {
         save(log);
     }
 
     @Override
-    public void updateLog(SysLog log) {
+    public void updateLog(OperationLogDO log) {
         updateById(log);
     }
 
@@ -57,24 +39,28 @@ public class SysLogServiceImpl extends BaseServiceImpl<SysLogMapper, SysLog, Sys
     }
 
     @Override
-    public List<SysLog> listByUserId(Long userId) {
-        return logMapper.selectByUserId(userId);
+    public List<OperationLogDO> listByUserId(Long userId) {
+        return list(new LambdaQueryWrapper<OperationLogDO>()
+                .eq(OperationLogDO::getOperatorId, userId));
     }
 
     @Override
-    public List<SysLog> listByModule(String module) {
-        return logMapper.selectByModule(module);
+    public List<OperationLogDO> listByModule(String module) {
+        return list(new LambdaQueryWrapper<OperationLogDO>()
+                .eq(OperationLogDO::getModule, module));
     }
 
     @Override
-    public List<SysLog> listByTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
-        return logMapper.selectByTimeRange(startTime, endTime);
+    public List<OperationLogDO> listByTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
+        return list(new LambdaQueryWrapper<OperationLogDO>()
+                .between(OperationLogDO::getOperationTime, startTime, endTime));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void cleanLogs(LocalDateTime before) {
-        logMapper.cleanBefore(before);
+        remove(new LambdaQueryWrapper<OperationLogDO>()
+                .lt(OperationLogDO::getOperationTime, before));
     }
 
     @Override
@@ -94,73 +80,5 @@ public class SysLogServiceImpl extends BaseServiceImpl<SysLogMapper, SysLog, Sys
         LocalDateTime endTime = LocalDateTime.now();
         LocalDateTime startTime = endTime.minusDays(7);
         exportLogs(startTime, endTime);
-    }
-
-    // BaseService interface methods
-    @Override
-    public SysLogDTO create(SysLogDTO dto) {
-        return super.create(dto);
-    }
-
-    @Override
-    public SysLogDTO update(SysLogDTO dto) {
-        return super.update(dto);
-    }
-
-    @Override
-    public void deleteBatch(List<Long> ids) {
-        super.deleteBatch(ids);
-    }
-
-    @Override
-    public SysLogDTO findById(Long id) {
-        return super.findById(id);
-    }
-
-    @Override
-    public PageResult<SysLogDTO> page(Page<SysLog> page, QueryWrapper<SysLog> wrapper) {
-        return super.page(page, wrapper);
-    }
-
-    @Override
-    public List<SysLogDTO> list(QueryWrapper<SysLog> wrapper) {
-        return super.list(wrapper);
-    }
-
-    // Entity conversion methods
-    @Override
-    public SysLogDTO toDTO(SysLog entity) {
-        if (entity == null) {
-            return null;
-        }
-        SysLogDTO dto = createDTO();
-        BeanUtils.copyProperties(entity, dto);
-        return dto;
-    }
-
-    @Override
-    public List<SysLogDTO> toDTOList(List<SysLog> entityList) {
-        if (entityList == null) {
-            return new ArrayList<>();
-        }
-        return entityList.stream().map(this::toDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public SysLog toEntity(SysLogDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        SysLog entity = createEntity();
-        BeanUtils.copyProperties(dto, entity);
-        return entity;
-    }
-
-    @Override
-    public List<SysLog> toEntityList(List<SysLogDTO> dtoList) {
-        if (dtoList == null) {
-            return new ArrayList<>();
-        }
-        return dtoList.stream().map(this::toEntity).collect(Collectors.toList());
     }
 }

@@ -2,27 +2,27 @@ package com.lawfirm.system.service;
 
 import com.lawfirm.common.data.service.BaseService;
 import com.lawfirm.common.log.annotation.OperationLog;
-import com.lawfirm.system.model.entity.SysRole;
-import com.lawfirm.system.model.dto.SysRoleDTO;
+import com.lawfirm.model.system.entity.SysRole;
+import com.lawfirm.model.system.vo.SysRoleVO;
 
 import java.util.List;
 
 /**
  * 角色服务接口
  */
-public interface SysRoleService extends BaseService<SysRole, SysRoleDTO> {
+public interface SysRoleService extends BaseService<SysRole, SysRoleVO> {
 
     /**
      * 创建角色
      */
     @OperationLog(description = "创建角色", operationType = "CREATE")
-    SysRoleDTO createRole(SysRoleDTO role);
+    SysRoleVO createRole(SysRoleVO role);
 
     /**
      * 更新角色
      */
     @OperationLog(description = "更新角色", operationType = "UPDATE")
-    SysRoleDTO updateRole(SysRoleDTO role);
+    SysRoleVO updateRole(SysRoleVO role);
 
     /**
      * 删除角色
@@ -33,17 +33,17 @@ public interface SysRoleService extends BaseService<SysRole, SysRoleDTO> {
     /**
      * 根据角色编码查询角色
      */
-    SysRoleDTO getByCode(String code);
+    SysRoleVO getByCode(String code);
 
     /**
      * 根据用户ID查询角色列表
      */
-    List<SysRoleDTO> listByUserId(Long userId);
+    List<SysRoleVO> listByUserId(Long userId);
 
     /**
      * 查询默认角色列表
      */
-    List<SysRoleDTO> listDefaultRoles();
+    List<SysRoleVO> listDefaultRoles();
 
     /**
      * 分配角色菜单
@@ -56,4 +56,9 @@ public interface SysRoleService extends BaseService<SysRole, SysRoleDTO> {
      */
     @OperationLog(description = "分配角色数据权限", operationType = "GRANT")
     void assignDataScope(Long roleId, Integer dataScope);
+
+    /**
+     * 根据查询条件获取角色列表
+     */
+    List<SysRoleVO> list(SysRoleVO query);
 } 

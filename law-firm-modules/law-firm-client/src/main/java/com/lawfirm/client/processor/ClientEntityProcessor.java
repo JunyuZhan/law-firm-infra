@@ -5,12 +5,16 @@ import com.lawfirm.client.exception.ClientException;
 import com.lawfirm.client.mapper.ClientMapper;
 import com.lawfirm.common.data.processor.EntityProcessor;
 import com.lawfirm.model.client.entity.Client;
-import com.lawfirm.model.client.vo.ClientVO;
+import com.lawfirm.model.client.dto.ClientDTO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * 客户实体处理器
+ */
 @Component
-public class ClientEntityProcessor implements EntityProcessor<Client, ClientVO> {
+public class ClientEntityProcessor implements EntityProcessor<Client> {
     
     @Autowired
     private ClientMapper clientMapper;
@@ -45,18 +49,6 @@ public class ClientEntityProcessor implements EntityProcessor<Client, ClientVO> 
                 && !entity.getIdNumber().equals(existingClient.getIdNumber())
                 && checkIdNumberExists(entity.getIdNumber())) {
             throw new ClientException("证件号码已存在");
-        }
-    }
-
-    @Override
-    public void afterLoad(ClientVO dto, Client entity) {
-        if (entity != null) {
-            if (entity.getClientType() != null) {
-                dto.setClientTypeDesc(entity.getClientType().getDescription());
-            }
-            if (entity.getClientStatus() != null) {
-                dto.setClientStatusDesc(entity.getClientStatus().getDescription());
-            }
         }
     }
 

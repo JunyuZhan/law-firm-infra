@@ -5,24 +5,37 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lawfirm.common.core.model.page.PageResult;
 import com.lawfirm.common.data.entity.BaseEntity;
-import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.common.data.vo.BaseVO;
 
 import java.util.List;
 
 /**
  * 基础服务接口
+ *
+ * @param <T> 实体类型
+ * @param <V> VO类型
  */
-public interface BaseService<T extends BaseEntity, D extends BaseDTO> extends IService<T> {
+public interface BaseService<T extends BaseEntity, V extends BaseVO> extends IService<T> {
+
+    /**
+     * 分页查询
+     */
+    PageResult<V> pageVO(Page<T> page, QueryWrapper<T> wrapper);
+
+    /**
+     * 列表查询
+     */
+    List<V> listVO(QueryWrapper<T> wrapper);
 
     /**
      * 创建
      */
-    D create(D dto);
+    V create(V vo);
 
     /**
      * 更新
      */
-    D update(D dto);
+    V update(V vo);
 
     /**
      * 删除
@@ -37,35 +50,40 @@ public interface BaseService<T extends BaseEntity, D extends BaseDTO> extends IS
     /**
      * 根据ID查询
      */
-    D findById(Long id);
+    V findById(Long id);
 
     /**
-     * 分页查询
+     * 根据ID获取VO对象
      */
-    PageResult<D> page(Page<T> page, QueryWrapper<T> wrapper);
+    V getVOById(Long id);
 
     /**
-     * 列表查询
+     * 获取所有VO对象列表
      */
-    List<D> list(QueryWrapper<T> wrapper);
+    List<V> listVO();
 
     /**
-     * 实体转DTO
+     * 检查ID是否存在
      */
-    D toDTO(T entity);
+    boolean exists(Long id);
 
     /**
-     * DTO转实体
+     * 实体对象转VO
      */
-    T toEntity(D dto);
+    V entityToVO(T entity);
 
     /**
-     * 实体列表转DTO列表
+     * VO转实体对象
      */
-    List<D> toDTOList(List<T> entityList);
+    T voToEntity(V vo);
 
     /**
-     * DTO列表转实体列表
+     * 实体列表转VO列表
      */
-    List<T> toEntityList(List<D> dtoList);
+    List<V> entityListToVOList(List<T> entityList);
+
+    /**
+     * VO列表转实体列表
+     */
+    List<T> voListToEntityList(List<V> voList);
 } 

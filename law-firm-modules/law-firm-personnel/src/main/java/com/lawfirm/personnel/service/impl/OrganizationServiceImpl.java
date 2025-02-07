@@ -74,10 +74,10 @@ public class OrganizationServiceImpl implements OrganizationService {
             return false;
         }
 
-        // 校验部门是否属于分所
-        if (!department.getBranchId().equals(branchId)) {
-            log.warn("部门不属于指定分所, branchId: {}, departmentId: {}, departmentBranchId: {}", 
-                    branchId, departmentId, department.getBranchId());
+        // 校验部门和分所是否属于同一个律所
+        if (!department.getLawFirmId().equals(branch.getLawFirmId())) {
+            log.warn("部门和分所不属于同一个律所, branchId: {}, departmentId: {}, branchLawFirmId: {}, departmentLawFirmId: {}", 
+                    branchId, departmentId, branch.getLawFirmId(), department.getLawFirmId());
             return false;
         }
 

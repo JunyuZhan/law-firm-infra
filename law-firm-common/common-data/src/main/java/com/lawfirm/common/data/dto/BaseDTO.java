@@ -22,14 +22,14 @@ public class BaseDTO implements Serializable {
     private LocalDateTime createTime;
 
     /**
-     * 创建人
-     */
-    private String createBy;
-
-    /**
      * 更新时间
      */
     private LocalDateTime updateTime;
+
+    /**
+     * 创建人
+     */
+    private String createBy;
 
     /**
      * 更新人
@@ -37,7 +37,7 @@ public class BaseDTO implements Serializable {
     private String updateBy;
 
     /**
-     * 备注
+     * 删除标志
      */
-    private String remark;
+    private Integer deleted;
 } 

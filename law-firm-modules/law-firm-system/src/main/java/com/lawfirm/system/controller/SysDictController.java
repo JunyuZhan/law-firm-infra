@@ -8,17 +8,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.common.web.controller.BaseController;
 
 import java.util.List;
 
 /**
  * 系统字典控制器
  */
-@Tag(name = "字典管理")
+@Tag(name = "系统字典管理")
 @RestController
 @RequestMapping("/system/dict")
 @RequiredArgsConstructor
-public class SysDictController {
+public class SysDictController extends BaseController {
 
     private final SysDictService dictService;
 

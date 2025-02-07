@@ -3,26 +3,28 @@ package com.lawfirm.system.service;
 import com.lawfirm.common.data.service.BaseService;
 import com.lawfirm.common.log.annotation.OperationLog;
 import com.lawfirm.model.system.entity.SysConfig;
-import com.lawfirm.system.model.dto.SysConfigDTO;
+import com.lawfirm.model.system.enums.ConfigTypeEnum;
+import com.lawfirm.model.system.vo.SysConfigVO;
+import com.lawfirm.model.system.dto.SysConfigDTO;
 
 import java.util.List;
 
 /**
  * 系统配置服务接口
  */
-public interface SysConfigService extends BaseService<SysConfig, SysConfigDTO> {
+public interface SysConfigService extends BaseService<SysConfig, SysConfigVO> {
 
     /**
      * 创建配置
      */
     @OperationLog(description = "创建配置", operationType = "CREATE")
-    void createConfig(SysConfigDTO config);
+    SysConfigVO create(SysConfigDTO config);
 
     /**
      * 更新配置
      */
     @OperationLog(description = "更新配置", operationType = "UPDATE")
-    void updateConfig(SysConfigDTO config);
+    SysConfigVO update(SysConfigDTO config);
 
     /**
      * 删除配置
@@ -33,12 +35,17 @@ public interface SysConfigService extends BaseService<SysConfig, SysConfigDTO> {
     /**
      * 根据键名查询配置
      */
-    SysConfigDTO getByKey(String key);
+    SysConfigVO getByKey(String key);
 
     /**
      * 根据分组查询配置列表
      */
-    List<SysConfigDTO> listByGroup(String group);
+    List<SysConfigVO> listByGroup(String group);
+
+    /**
+     * 根据类型查询配置列表
+     */
+    List<SysConfigVO> listByType(ConfigTypeEnum type);
 
     /**
      * 查询所有参数分组

@@ -1,0 +1,31 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: root
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      password: 
+
+# 日志配置
+logging:
+  level:
+    com.lawfirm: debug
+    org.springframework: warn
+
+# Token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期（默认30分钟）
+  expireTime: 30 

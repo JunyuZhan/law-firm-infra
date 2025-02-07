@@ -1,7 +1,7 @@
 package com.lawfirm.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lawfirm.system.model.entity.SysUpgradeLog;
+import com.lawfirm.model.system.entity.SysUpgradeLog;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

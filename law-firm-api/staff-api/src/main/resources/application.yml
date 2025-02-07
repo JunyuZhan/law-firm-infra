@@ -1,0 +1,179 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /staff
+
+spring:
+  application:
+    name: staff-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 2000000
+      connection-timeout: 30000
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+# OpenAPI文档配置
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+    version: openapi-3-0
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    doc-expansion: none
+    tags-sorter: alpha
+    operations-sorter: alpha
+    disable-swagger-default-url: true
+    display-request-duration: true
+  packages-to-scan: com.lawfirm.staff.controller
+  paths-to-match: /**
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+  model-and-view-allowed: false
+  writer-with-default-pretty-printer: true
+  show-actuator: false
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.lawfirm.staff.controller
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.lawfirm: DEBUG
+    com.lawfirm.staff.client: debug
+  file:
+    name: logs/staff-api.log
+
+# MyBatis Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.**.model
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# Feign配置
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+  hystrix:
+    enabled: true
+
+# 请求参数配置
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+# 服务监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    hystrix:
+      stream:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+# 链路追踪配置
+spring:
+  sleuth:
+    sampler:
+      probability: 1.0
+    web:
+      client:
+        enabled: true
+  zipkin:
+    base-url: http://localhost:9411
+    sender:
+      type: web
+    service:
+      name: ${spring.application.name}
+
+# Hystrix配置
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+      circuitBreaker:
+        requestVolumeThreshold: 20
+        errorThresholdPercentage: 50
+        sleepWindowInMilliseconds: 5000
+  threadpool:
+    default:
+      coreSize: 10
+      maxQueueSize: 100
+      queueSizeRejectionThreshold: 100
+
+# Ribbon配置
+ribbon:
+  ConnectTimeout: 1000
+  ReadTimeout: 5000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 2
+  OkToRetryOnAllOperations: true 

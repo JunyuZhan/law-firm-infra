@@ -1,8 +1,6 @@
 package com.lawfirm.common.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
@@ -27,33 +25,28 @@ public class BaseEntity implements Serializable {
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 创建人
      */
-    @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
     /**
      * 更新人
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
 
     /**
      * 删除标记(0-正常,1-删除)
      */
     @TableLogic
-    @TableField(fill = FieldFill.INSERT)
-    private Integer delFlag;
+    private Integer deleted;
 
     /**
      * 备注

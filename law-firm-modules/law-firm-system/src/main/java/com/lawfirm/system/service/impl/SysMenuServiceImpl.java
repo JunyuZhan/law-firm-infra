@@ -1,32 +1,39 @@
 package com.lawfirm.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.core.model.page.PageResult;
 import com.lawfirm.common.data.service.impl.BaseServiceImpl;
-import com.lawfirm.common.core.exception.BusinessException;
-import com.lawfirm.model.system.entity.SysMenu;
-import com.lawfirm.system.model.dto.SysMenuDTO;
+import com.lawfirm.common.data.vo.BaseVO;
 import com.lawfirm.system.mapper.SysMenuMapper;
+import com.lawfirm.model.system.dto.SysMenuDTO;
+import com.lawfirm.model.system.entity.SysMenu;
+import com.lawfirm.model.system.vo.MetaVo;
+import com.lawfirm.model.system.vo.RouterVo;
+import com.lawfirm.model.system.vo.SysMenuVO;
 import com.lawfirm.system.service.SysMenuService;
-import com.lawfirm.system.model.vo.MetaVo;
-import com.lawfirm.system.model.vo.RouterVo;
 import com.lawfirm.system.util.TreeUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.Collections;
 
 /**
  * 菜单服务实现类
  */
 @Service
-@RequiredArgsConstructor
-public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuMapper, SysMenu, SysMenuDTO> implements SysMenuService {
+public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuMapper, SysMenu, SysMenuVO> implements SysMenuService {
 
-    private final SysMenuMapper menuMapper;
+    @Override
+    protected SysMenuVO createVO() {
+        return new SysMenuVO();
+    }
 
     @Override
     protected SysMenu createEntity() {
@@ -34,134 +41,170 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuMapper, SysMenu, 
     }
 
     @Override
-    protected SysMenuDTO createDTO() {
-        return new SysMenuDTO();
-    }
-
-    @Override
-    public SysMenu toEntity(SysMenuDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        SysMenu entity = createEntity();
-        BeanUtils.copyProperties(dto, entity);
-        return entity;
-    }
-
-    @Override
-    public SysMenuDTO toDTO(SysMenu entity) {
+    public SysMenuVO entityToVO(SysMenu entity) {
         if (entity == null) {
             return null;
         }
-        SysMenuDTO dto = createDTO();
-        BeanUtils.copyProperties(entity, dto);
+        SysMenuVO vo = createVO();
+        BeanUtils.copyProperties(entity, vo);
+        return vo;
+    }
+
+    @Override
+    public SysMenu voToEntity(SysMenuVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        SysMenu entity = createEntity();
+        BeanUtils.copyProperties(vo, entity);
+        return entity;
+    }
+
+    private SysMenuDTO voToDTO(SysMenuVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        SysMenuDTO dto = new SysMenuDTO();
+        BeanUtils.copyProperties(vo, dto);
+        if (!CollectionUtils.isEmpty(vo.getChildren())) {
+            dto.setChildren(vo.getChildren().stream()
+                    .map(this::voToDTO)
+                    .collect(Collectors.toList()));
+        }
         return dto;
     }
 
-    @Override
-    public List<SysMenu> toEntityList(List<SysMenuDTO> dtoList) {
-        if (dtoList == null) {
-            return null;
+    private List<SysMenuDTO> voListToDTOList(List<SysMenuVO> voList) {
+        if (CollectionUtils.isEmpty(voList)) {
+            return Collections.emptyList();
         }
-        return dtoList.stream()
-                .map(this::toEntity)
+        return voList.stream()
+                .map(this::voToDTO)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<SysMenuDTO> toDTOList(List<SysMenu> entityList) {
-        if (entityList == null) {
+    private SysMenuVO dtoToVO(SysMenuDTO dto) {
+        if (dto == null) {
             return null;
         }
-        return entityList.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        SysMenuVO vo = createVO();
+        BeanUtils.copyProperties(dto, vo);
+        if (!CollectionUtils.isEmpty(dto.getChildren())) {
+            vo.setChildren(dto.getChildren().stream()
+                    .map(this::dtoToVO)
+                    .collect(Collectors.toList()));
+        }
+        return vo;
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void createMenu(SysMenuDTO menuDTO) {
-        SysMenu menu = toEntity(menuDTO);
-        // 检查菜单名称是否重复
-        if (lambdaQuery().eq(SysMenu::getMenuName, menu.getMenuName()).exists()) {
-            throw new IllegalArgumentException("菜单名称已存在");
-        }
-        save(menu);
+    @Transactional
+    public void createMenu(SysMenuDTO menu) {
+        create(dtoToVO(menu));
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateMenu(SysMenuDTO menuDTO) {
-        SysMenu menu = toEntity(menuDTO);
-        // 检查菜单是否存在
-        if (!lambdaQuery().eq(SysMenu::getId, menu.getId()).exists()) {
-            throw new IllegalArgumentException("菜单不存在");
-        }
-        // 检查菜单名称是否重复
-        if (lambdaQuery()
-                .eq(SysMenu::getMenuName, menu.getMenuName())
-                .ne(SysMenu::getId, menu.getId())
-                .exists()) {
-            throw new IllegalArgumentException("菜单名称已存在");
-        }
-        updateById(menu);
+    @Transactional
+    public void updateMenu(SysMenuDTO menu) {
+        update(dtoToVO(menu));
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteMenu(Long menuId) {
-        // 检查是否有子菜单
-        if (hasChildren(menuId)) {
-            throw new IllegalArgumentException("存在子菜单,不允许删除");
-        }
         removeById(menuId);
     }
 
     @Override
     public List<SysMenuDTO> listByRoleId(Long roleId) {
-        return toDTOList(menuMapper.selectByRoleId(roleId));
+        List<SysMenu> menus = baseMapper.selectByRoleId(roleId);
+        return voListToDTOList(entityListToVOList(menus));
     }
 
     @Override
     public List<SysMenuDTO> listByUserId(Long userId) {
-        return toDTOList(menuMapper.selectByUserId(userId));
+        List<SysMenu> menus = baseMapper.selectByUserId(userId);
+        return voListToDTOList(entityListToVOList(menus));
     }
 
     @Override
     public List<SysMenuDTO> listVisible() {
-        List<SysMenu> menus = lambdaQuery()
+        List<SysMenu> menus = baseMapper.selectList(new LambdaQueryWrapper<SysMenu>()
                 .eq(SysMenu::getVisible, "0")
-                .orderByAsc(SysMenu::getOrderNum)
-                .list();
-        return toDTOList(menus);
+                .orderByAsc(SysMenu::getOrderNum));
+        return voListToDTOList(entityListToVOList(menus));
     }
 
     @Override
     public List<SysMenuDTO> listChildren(Long parentId) {
-        List<SysMenu> menus = lambdaQuery()
+        List<SysMenu> menus = baseMapper.selectList(new LambdaQueryWrapper<SysMenu>()
                 .eq(SysMenu::getParentId, parentId)
-                .orderByAsc(SysMenu::getOrderNum)
-                .list();
-        return toDTOList(menus);
+                .orderByAsc(SysMenu::getOrderNum));
+        return voListToDTOList(entityListToVOList(menus));
     }
 
     @Override
     public List<SysMenuDTO> buildMenuTree(List<SysMenuDTO> menus) {
-        return TreeUtils.buildMenuTree(menus);
+        if (CollectionUtils.isEmpty(menus)) {
+            return new ArrayList<>();
+        }
+
+        List<SysMenuDTO> returnList = new ArrayList<>();
+        List<Long> tempList = menus.stream().map(SysMenuDTO::getId).collect(Collectors.toList());
+        for (SysMenuDTO menu : menus) {
+            // 如果是顶级节点,遍历该父节点的所有子节点
+            if (!tempList.contains(menu.getParentId())) {
+                recursionFn(menus, menu);
+                returnList.add(menu);
+            }
+        }
+        if (returnList.isEmpty()) {
+            returnList = menus;
+        }
+        return returnList;
+    }
+
+    private void recursionFn(List<SysMenuDTO> list, SysMenuDTO t) {
+        // 得到子节点列表
+        List<SysMenuDTO> childList = getChildList(list, t);
+        t.setChildren(childList);
+        for (SysMenuDTO tChild : childList) {
+            if (hasChild(list, tChild)) {
+                recursionFn(list, tChild);
+            }
+        }
+    }
+
+    private List<SysMenuDTO> getChildList(List<SysMenuDTO> list, SysMenuDTO t) {
+        return list.stream()
+                .filter(n -> n.getParentId().equals(t.getId()))
+                .collect(Collectors.toList());
+    }
+
+    private boolean hasChild(List<SysMenuDTO> list, SysMenuDTO t) {
+        return getChildList(list, t).size() > 0;
     }
 
     @Override
-    public List<RouterVo> buildRouters(List<SysMenuDTO> menuDTOs) {
+    public List<RouterVo> buildRouters(List<SysMenuDTO> menus) {
         List<RouterVo> routers = new ArrayList<>();
-        for (SysMenuDTO menu : menuDTOs) {
+        for (SysMenuDTO menu : menus) {
             RouterVo router = new RouterVo();
             router.setName(menu.getMenuName());
             router.setPath(menu.getPath());
             router.setComponent(menu.getComponent());
-            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), menu.getIsCache() == 1));
+            router.setQuery(menu.getQuery());
+            router.setHidden(Integer.valueOf(1).equals(menu.getVisible()));
+            router.setAlwaysShow(true);
             
-            List<SysMenuDTO> children = listChildren(menu.getId());
-            if (!children.isEmpty()) {
+            MetaVo meta = new MetaVo();
+            meta.setTitle(menu.getMenuName());
+            meta.setIcon(menu.getIcon());
+            meta.setNoCache(Integer.valueOf(1).equals(menu.getIsCache()));
+            router.setMeta(meta);
+            
+            List<SysMenuDTO> children = menu.getChildren();
+            if (!CollectionUtils.isEmpty(children)) {
                 router.setChildren(buildRouters(children));
             }
             
@@ -170,7 +213,73 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuMapper, SysMenu, 
         return routers;
     }
 
-    private boolean hasChildren(Long menuId) {
-        return lambdaQuery().eq(SysMenu::getParentId, menuId).exists();
+    @Override
+    public List<RouterVo> buildMenus(List<SysMenuDTO> menus) {
+        return buildRouters(menus);
+    }
+
+    @Override
+    public PageResult<SysMenuVO> pageVO(Page<SysMenu> page, QueryWrapper<SysMenu> wrapper) {
+        Page<SysMenu> pageResult = baseMapper.selectPage(page, wrapper);
+        List<SysMenuVO> records = pageResult.getRecords().stream()
+                .map(this::entityToVO)
+                .collect(Collectors.toList());
+        return new PageResult<>(records, pageResult.getTotal());
+    }
+
+    @Override
+    public List<SysMenuVO> listVO(QueryWrapper<SysMenu> wrapper) {
+        List<SysMenu> list = baseMapper.selectList(wrapper);
+        return list.stream()
+                .map(this::entityToVO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SysMenuVO> listVO() {
+        return listVO(new QueryWrapper<>());
+    }
+
+    @Override
+    public SysMenuVO create(SysMenuVO vo) {
+        SysMenu entity = voToEntity(vo);
+        baseMapper.insert(entity);
+        return entityToVO(entity);
+    }
+
+    @Override
+    public SysMenuVO update(SysMenuVO vo) {
+        SysMenu entity = voToEntity(vo);
+        baseMapper.updateById(entity);
+        return entityToVO(entity);
+    }
+
+    @Override
+    public void delete(Long id) {
+        baseMapper.deleteById(id);
+    }
+
+    @Override
+    public void deleteBatch(List<Long> ids) {
+        baseMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public SysMenuVO findById(Long id) {
+        SysMenu entity = baseMapper.selectById(id);
+        if (entity == null) {
+            return null;
+        }
+        return entityToVO(entity);
+    }
+
+    @Override
+    public SysMenuVO getVOById(Long id) {
+        return findById(id);
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return baseMapper.selectById(id) != null;
     }
 } 

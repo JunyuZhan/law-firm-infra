@@ -1,5 +1,8 @@
 package com.lawfirm.common.web.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.web.request.PageRequest;
 import com.lawfirm.common.web.response.PageResponse;
 import com.lawfirm.common.web.response.R;
@@ -104,6 +107,37 @@ public abstract class BaseController {
     }
 
     /**
+     * 构建分页对象
+     */
+    protected <T> Page<T> buildPage() {
+        return new Page<>(getPageNum(), getPageSize());
+    }
+
+    /**
+     * 构建查询条件
+     */
+    protected <T> QueryWrapper<T> buildQueryWrapper() {
+        QueryWrapper<T> wrapper = new QueryWrapper<>();
+        String orderBy = getOrderBy();
+        Boolean isAsc = getIsAsc();
+        if (orderBy != null && !orderBy.isEmpty()) {
+            if (isAsc) {
+                wrapper.orderByAsc(orderBy);
+            } else {
+                wrapper.orderByDesc(orderBy);
+            }
+        }
+        return wrapper;
+    }
+
+    /**
+     * 构建更新条件
+     */
+    protected <T> UpdateWrapper<T> buildUpdateWrapper() {
+        return new UpdateWrapper<>();
+    }
+
+    /**
      * 响应返回结果
      */
     protected <T> R<T> toResponse(T data) {
@@ -115,5 +149,12 @@ public abstract class BaseController {
      */
     protected <T> R<PageResponse<T>> toResponse(PageResponse<T> page) {
         return R.ok(page);
+    }
+
+    /**
+     * 响应返回空结果
+     */
+    protected R<Void> toVoidResponse() {
+        return R.ok();
     }
 } 

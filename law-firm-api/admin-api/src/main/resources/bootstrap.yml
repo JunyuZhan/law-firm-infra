@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: admin-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    nacos:
+      server-addr: ${NACOS_HOST:localhost}:${NACOS_PORT:8848}
+      config:
+        file-extension: yml
+        shared-configs:
+          - data-id: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+          - data-id: application-common.${spring.cloud.nacos.config.file-extension}
+        extension-configs:
+          - data-id: admin-api-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+            refresh: true 

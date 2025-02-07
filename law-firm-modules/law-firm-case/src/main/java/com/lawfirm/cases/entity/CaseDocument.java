@@ -90,5 +90,5 @@ public class CaseDocument extends BaseEntity {
      * 是否删除
      */
     @TableLogic
-    private Boolean deleted;
+    private Integer deleted;
 } 

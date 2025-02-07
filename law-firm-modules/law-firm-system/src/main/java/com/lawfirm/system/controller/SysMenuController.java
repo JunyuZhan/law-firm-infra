@@ -2,25 +2,26 @@ package com.lawfirm.system.controller;
 
 import com.lawfirm.common.core.domain.R;
 import com.lawfirm.model.system.entity.SysMenu;
-import com.lawfirm.system.model.dto.SysMenuDTO;
-import com.lawfirm.system.model.vo.RouterVo;
+import com.lawfirm.model.system.dto.SysMenuDTO;
+import com.lawfirm.model.system.vo.RouterVo;
 import com.lawfirm.system.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.common.web.controller.BaseController;
 
 import java.util.List;
 
 /**
  * 系统菜单控制器
  */
-@Tag(name = "菜单管理")
+@Tag(name = "系统菜单管理")
 @RestController
 @RequestMapping("/system/menu")
 @RequiredArgsConstructor
-public class SysMenuController {
+public class SysMenuController extends BaseController {
 
     private final SysMenuService menuService;
 

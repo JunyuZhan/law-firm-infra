@@ -74,8 +74,8 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#createDTO()" tabindex="0">createDTO()</a></li>
 <li><a href="#createEntity()" tabindex="0">createEntity()</a></li>
-<li><a href="#createConfig(com.lawfirm.system.model.dto.SysConfigDTO)" tabindex="0">createConfig(SysConfigDTO)</a></li>
-<li><a href="#updateConfig(com.lawfirm.system.model.dto.SysConfigDTO)" tabindex="0">updateConfig(SysConfigDTO)</a></li>
+<li><a href="#createConfig(com.lawfirm.model.system.dto.SysConfigDTO)" tabindex="0">createConfig(SysConfigDTO)</a></li>
+<li><a href="#updateConfig(com.lawfirm.model.system.dto.SysConfigDTO)" tabindex="0">updateConfig(SysConfigDTO)</a></li>
 <li><a href="#deleteConfig(java.lang.Long)" tabindex="0">deleteConfig(Long)</a></li>
 <li><a href="#getByKey(java.lang.String)" tabindex="0">getByKey(String)</a></li>
 <li><a href="#listByGroup(java.lang.String)" tabindex="0">listByGroup(String)</a></li>
@@ -92,7 +92,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="inheritance" title="继承树"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="java.lang中的类或接口" class="external-link">java.lang.Object</a>
 <div class="inheritance">com.baomidou.mybatisplus.extension.service.impl.ServiceImpl&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>&gt;
-<div class="inheritance"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">com.lawfirm.common.data.service.impl.BaseServiceImpl</a>&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&gt;
+<div class="inheritance"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">com.lawfirm.common.data.service.impl.BaseServiceImpl</a>&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&gt;
 <div class="inheritance">com.lawfirm.system.service.impl.SysConfigServiceImpl</div>
 </div>
 </div>
@@ -101,12 +101,12 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <dl class="notes">
 <dt>所有已实现的接口:</dt>
-<dd><code>com.baomidou.mybatisplus.extension.service.IService&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>&gt;</code>, <code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/BaseService.html" title="com.lawfirm.common.data.service中的类或接口" class="external-link">BaseService</a>&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&gt;</code>, <code><a href="../SysConfigService.html" title="com.lawfirm.system.service中的接口">SysConfigService</a></code></dd>
+<dd><code>com.baomidou.mybatisplus.extension.service.IService&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>&gt;</code>, <code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/BaseService.html" title="com.lawfirm.common.data.service中的类或接口" class="external-link">BaseService</a>&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&gt;</code>, <code><a href="../SysConfigService.html" title="com.lawfirm.system.service中的接口">SysConfigService</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="annotations">@Service
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">SysConfigServiceImpl</span>
-<span class="extends-implements">extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&gt;
+<span class="extends-implements">extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&gt;
 implements <a href="../SysConfigService.html" title="com.lawfirm.system.service中的接口">SysConfigService</a></span></div>
 <div class="block">系统配置服务实现类</div>
 </div>
@@ -153,11 +153,11 @@ implements <a href="../SysConfigService.html" title="com.lawfirm.system.service�
 <div class="table-header col-second">方法</div>
 <div class="table-header col-last">说明</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createConfig(com.lawfirm.system.model.dto.SysConfigDTO)" class="member-name-link">createConfig</a><wbr>(<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&nbsp;configDTO)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createConfig(com.lawfirm.model.system.dto.SysConfigDTO)" class="member-name-link">createConfig</a><wbr>(<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&nbsp;configDTO)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">创建配置</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDTO()" class="member-name-link">createDTO</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a></code></div>
@@ -168,7 +168,7 @@ implements <a href="../SysConfigService.html" title="com.lawfirm.system.service�
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">删除配置</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getByKey(java.lang.String)" class="member-name-link">getByKey</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;key)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">根据键名查询配置</div>
@@ -178,7 +178,7 @@ implements <a href="../SysConfigService.html" title="com.lawfirm.system.service�
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">查询所有参数分组</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listByGroup(java.lang.String)" class="member-name-link">listByGroup</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;group)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">根据分组查询配置列表</div>
@@ -189,7 +189,7 @@ implements <a href="../SysConfigService.html" title="com.lawfirm.system.service�
 <div class="block">刷新缓存</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateConfig(com.lawfirm.system.model.dto.SysConfigDTO)" class="member-name-link">updateConfig</a><wbr>(<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&nbsp;configDTO)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateConfig(com.lawfirm.model.system.dto.SysConfigDTO)" class="member-name-link">updateConfig</a><wbr>(<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&nbsp;configDTO)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">更新配置</div>
 </div>
@@ -242,10 +242,10 @@ implements <a href="../SysConfigService.html" title="com.lawfirm.system.service�
 <section class="detail" id="createDTO()">
 <h3>createDTO</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a></span>&nbsp;<span class="element-name">createDTO</span>()</div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a></span>&nbsp;<span class="element-name">createDTO</span>()</div>
 <dl class="notes">
 <dt>指定者:</dt>
-<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html#createDTO()" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">createDTO</a></code>&nbsp;在类中&nbsp;<code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&gt;</code></dd>
+<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html#createDTO()" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">createDTO</a></code>&nbsp;在类中&nbsp;<code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&gt;</code></dd>
 </dl>
 </div>
 </section>
@@ -257,37 +257,37 @@ implements <a href="../SysConfigService.html" title="com.lawfirm.system.service�
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a></span>&nbsp;<span class="element-name">createEntity</span>()</div>
 <dl class="notes">
 <dt>指定者:</dt>
-<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html#createEntity()" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">createEntity</a></code>&nbsp;在类中&nbsp;<code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&gt;</code></dd>
+<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html#createEntity()" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">createEntity</a></code>&nbsp;在类中&nbsp;<code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysConfigMapper.html" title="com.lawfirm.system.mapper中的接口">SysConfigMapper</a>,<wbr><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysConfig.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysConfig</a>,<wbr><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&gt;</code></dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="createConfig(com.lawfirm.system.model.dto.SysConfigDTO)">
+<section class="detail" id="createConfig(com.lawfirm.model.system.dto.SysConfigDTO)">
 <h3>createConfig</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Transactional(rollbackFor=<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Exception.html" title="java.lang中的类或接口" class="external-link">Exception</a>.class)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createConfig</span><wbr><span class="parameters">(<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&nbsp;configDTO)</span></div>
-<div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysConfigService.html#createConfig(com.lawfirm.system.model.dto.SysConfigDTO)">SysConfigService</a></code></span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createConfig</span><wbr><span class="parameters">(<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&nbsp;configDTO)</span></div>
+<div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysConfigService.html#createConfig(com.lawfirm.model.system.dto.SysConfigDTO)">SysConfigService</a></code></span></div>
 <div class="block">创建配置</div>
 <dl class="notes">
 <dt>指定者:</dt>
-<dd><code><a href="../SysConfigService.html#createConfig(com.lawfirm.system.model.dto.SysConfigDTO)">createConfig</a></code>&nbsp;在接口中&nbsp;<code><a href="../SysConfigService.html" title="com.lawfirm.system.service中的接口">SysConfigService</a></code></dd>
+<dd><code><a href="../SysConfigService.html#createConfig(com.lawfirm.model.system.dto.SysConfigDTO)">createConfig</a></code>&nbsp;在接口中&nbsp;<code><a href="../SysConfigService.html" title="com.lawfirm.system.service中的接口">SysConfigService</a></code></dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="updateConfig(com.lawfirm.system.model.dto.SysConfigDTO)">
+<section class="detail" id="updateConfig(com.lawfirm.model.system.dto.SysConfigDTO)">
 <h3>updateConfig</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Transactional(rollbackFor=<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Exception.html" title="java.lang中的类或接口" class="external-link">Exception</a>.class)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateConfig</span><wbr><span class="parameters">(<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&nbsp;configDTO)</span></div>
-<div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysConfigService.html#updateConfig(com.lawfirm.system.model.dto.SysConfigDTO)">SysConfigService</a></code></span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateConfig</span><wbr><span class="parameters">(<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&nbsp;configDTO)</span></div>
+<div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysConfigService.html#updateConfig(com.lawfirm.model.system.dto.SysConfigDTO)">SysConfigService</a></code></span></div>
 <div class="block">更新配置</div>
 <dl class="notes">
 <dt>指定者:</dt>
-<dd><code><a href="../SysConfigService.html#updateConfig(com.lawfirm.system.model.dto.SysConfigDTO)">updateConfig</a></code>&nbsp;在接口中&nbsp;<code><a href="../SysConfigService.html" title="com.lawfirm.system.service中的接口">SysConfigService</a></code></dd>
+<dd><code><a href="../SysConfigService.html#updateConfig(com.lawfirm.model.system.dto.SysConfigDTO)">updateConfig</a></code>&nbsp;在接口中&nbsp;<code><a href="../SysConfigService.html" title="com.lawfirm.system.service中的接口">SysConfigService</a></code></dd>
 </dl>
 </div>
 </section>
@@ -311,7 +311,7 @@ implements <a href="../SysConfigService.html" title="com.lawfirm.system.service�
 <section class="detail" id="getByKey(java.lang.String)">
 <h3>getByKey</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a></span>&nbsp;<span class="element-name">getByKey</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;key)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a></span>&nbsp;<span class="element-name">getByKey</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;key)</span></div>
 <div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysConfigService.html#getByKey(java.lang.String)">SysConfigService</a></code></span></div>
 <div class="block">根据键名查询配置</div>
 <dl class="notes">
@@ -325,7 +325,7 @@ implements <a href="../SysConfigService.html" title="com.lawfirm.system.service�
 <section class="detail" id="listByGroup(java.lang.String)">
 <h3>listByGroup</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.system.model.dto中的类">SysConfigDTO</a>&gt;</span>&nbsp;<span class="element-name">listByGroup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;group)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../../model/dto/SysConfigDTO.html" title="com.lawfirm.model.system.dto中的类">SysConfigDTO</a>&gt;</span>&nbsp;<span class="element-name">listByGroup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;group)</span></div>
 <div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysConfigService.html#listByGroup(java.lang.String)">SysConfigService</a></code></span></div>
 <div class="block">根据分组查询配置列表</div>
 <dl class="notes">

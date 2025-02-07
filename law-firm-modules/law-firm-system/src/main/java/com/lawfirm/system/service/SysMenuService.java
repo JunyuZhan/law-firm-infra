@@ -2,15 +2,16 @@ package com.lawfirm.system.service;
 
 import com.lawfirm.common.data.service.BaseService;
 import com.lawfirm.model.system.entity.SysMenu;
-import com.lawfirm.system.model.dto.SysMenuDTO;
-import com.lawfirm.system.model.vo.RouterVo;
+import com.lawfirm.model.system.dto.SysMenuDTO;
+import com.lawfirm.model.system.vo.RouterVo;
+import com.lawfirm.model.system.vo.SysMenuVO;
 
 import java.util.List;
 
 /**
  * 菜单服务接口
  */
-public interface SysMenuService extends BaseService<SysMenu, SysMenuDTO> {
+public interface SysMenuService extends BaseService<SysMenu, SysMenuVO> {
 
     /**
      * 创建菜单
@@ -56,4 +57,9 @@ public interface SysMenuService extends BaseService<SysMenu, SysMenuDTO> {
      * 构建前端路由
      */
     List<RouterVo> buildRouters(List<SysMenuDTO> menus);
-} 
+
+    /**
+     * 构建前端路由所需要的菜单
+     */
+    List<RouterVo> buildMenus(List<SysMenuDTO> menus);
+}

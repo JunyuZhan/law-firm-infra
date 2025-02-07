@@ -35,6 +35,16 @@
         <module>law-firm-document</module>
         <module>law-firm-personnel</module>
         <module>law-firm-archive</module>
+        <module>law-firm-workflow</module>
+        <module>law-firm-task</module>
+        <module>law-firm-supplies</module>
+        <module>law-firm-schedule</module>
+        <module>law-firm-seal</module>
+        <module>law-firm-meeting</module>
+        <module>law-firm-message</module>
+        <module>law-firm-conflict</module>
+        <module>law-firm-asset</module>
+        <module>law-firm-analysis</module>
     </modules>
 
     <dependencyManagement>
@@ -103,12 +113,37 @@
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
-                <artifactId>client-model</artifactId>
+                <artifactId>case-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>contract-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>document-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>finance-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>workflow-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>schedule-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>archive-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

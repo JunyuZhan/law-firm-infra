@@ -1,7 +1,7 @@
 package com.lawfirm.system.util;
 
 import com.lawfirm.model.system.entity.SysMenu;
-import com.lawfirm.system.model.dto.SysMenuDTO;
+import com.lawfirm.model.system.dto.SysMenuDTO;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;

@@ -74,8 +74,8 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#createEntity()" tabindex="0">createEntity()</a></li>
 <li><a href="#createDTO()" tabindex="0">createDTO()</a></li>
-<li><a href="#createRole(com.lawfirm.system.model.dto.SysRoleDTO)" tabindex="0">createRole(SysRoleDTO)</a></li>
-<li><a href="#updateRole(com.lawfirm.system.model.dto.SysRoleDTO)" tabindex="0">updateRole(SysRoleDTO)</a></li>
+<li><a href="#createRole(com.lawfirm.model.system.dto.SysRoleDTO)" tabindex="0">createRole(SysRoleDTO)</a></li>
+<li><a href="#updateRole(com.lawfirm.model.system.dto.SysRoleDTO)" tabindex="0">updateRole(SysRoleDTO)</a></li>
 <li><a href="#deleteRole(java.lang.Long)" tabindex="0">deleteRole(Long)</a></li>
 <li><a href="#listByUserId(java.lang.Long)" tabindex="0">listByUserId(Long)</a></li>
 <li><a href="#listDefaultRoles()" tabindex="0">listDefaultRoles()</a></li>
@@ -92,8 +92,8 @@ loadScripts(document, 'script');</script>
 <h1 title="类 SysRoleServiceImpl" class="title">类 SysRoleServiceImpl</h1>
 </div>
 <div class="inheritance" title="继承树"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="java.lang中的类或接口" class="external-link">java.lang.Object</a>
-<div class="inheritance">com.baomidou.mybatisplus.extension.service.impl.ServiceImpl&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a>&gt;
-<div class="inheritance"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">com.lawfirm.common.data.service.impl.BaseServiceImpl</a>&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;
+<div class="inheritance">com.baomidou.mybatisplus.extension.service.impl.ServiceImpl&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a>&gt;
+<div class="inheritance"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">com.lawfirm.common.data.service.impl.BaseServiceImpl</a>&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;
 <div class="inheritance">com.lawfirm.system.service.impl.SysRoleServiceImpl</div>
 </div>
 </div>
@@ -102,12 +102,12 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <dl class="notes">
 <dt>所有已实现的接口:</dt>
-<dd><code>com.baomidou.mybatisplus.extension.service.IService&lt;<a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a>&gt;</code>, <code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/BaseService.html" title="com.lawfirm.common.data.service中的类或接口" class="external-link">BaseService</a>&lt;<a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;</code>, <code><a href="../SysRoleService.html" title="com.lawfirm.system.service中的接口">SysRoleService</a></code></dd>
+<dd><code>com.baomidou.mybatisplus.extension.service.IService&lt;<a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a>&gt;</code>, <code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/BaseService.html" title="com.lawfirm.common.data.service中的类或接口" class="external-link">BaseService</a>&lt;<a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;</code>, <code><a href="../SysRoleService.html" title="com.lawfirm.system.service中的接口">SysRoleService</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="annotations">@Service
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">SysRoleServiceImpl</span>
-<span class="extends-implements">extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;
+<span class="extends-implements">extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;
 implements <a href="../SysRoleService.html" title="com.lawfirm.system.service中的接口">SysRoleService</a></span></div>
 <div class="block">角色服务实现类</div>
 </div>
@@ -165,14 +165,14 @@ implements <a href="../SysRoleService.html" title="com.lawfirm.system.service中
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">分配角色菜单</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDTO()" class="member-name-link">createDTO</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createEntity()" class="member-name-link">createEntity</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createRole(com.lawfirm.system.model.dto.SysRoleDTO)" class="member-name-link">createRole</a><wbr>(<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&nbsp;roleDTO)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createRole(com.lawfirm.model.system.dto.SysRoleDTO)" class="member-name-link">createRole</a><wbr>(<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&nbsp;roleDTO)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">创建角色</div>
 </div>
@@ -181,23 +181,23 @@ implements <a href="../SysRoleService.html" title="com.lawfirm.system.service中
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">删除角色</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getByCode(java.lang.String)" class="member-name-link">getByCode</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;code)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">根据角色编码查询角色</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listByUserId(java.lang.Long)" class="member-name-link">listByUserId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;userId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">根据用户ID查询角色列表</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listDefaultRoles()" class="member-name-link">listDefaultRoles</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">查询默认角色列表</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateRole(com.lawfirm.system.model.dto.SysRoleDTO)" class="member-name-link">updateRole</a><wbr>(<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&nbsp;roleDTO)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateRole(com.lawfirm.model.system.dto.SysRoleDTO)" class="member-name-link">updateRole</a><wbr>(<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&nbsp;roleDTO)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">更新角色</div>
 </div>
@@ -250,10 +250,10 @@ implements <a href="../SysRoleService.html" title="com.lawfirm.system.service中
 <section class="detail" id="createEntity()">
 <h3>createEntity</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a></span>&nbsp;<span class="element-name">createEntity</span>()</div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a></span>&nbsp;<span class="element-name">createEntity</span>()</div>
 <dl class="notes">
 <dt>指定者:</dt>
-<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html#createEntity()" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">createEntity</a></code>&nbsp;在类中&nbsp;<code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;</code></dd>
+<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html#createEntity()" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">createEntity</a></code>&nbsp;在类中&nbsp;<code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;</code></dd>
 </dl>
 </div>
 </section>
@@ -262,38 +262,38 @@ implements <a href="../SysRoleService.html" title="com.lawfirm.system.service中
 <section class="detail" id="createDTO()">
 <h3>createDTO</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a></span>&nbsp;<span class="element-name">createDTO</span>()</div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a></span>&nbsp;<span class="element-name">createDTO</span>()</div>
 <dl class="notes">
 <dt>指定者:</dt>
-<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html#createDTO()" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">createDTO</a></code>&nbsp;在类中&nbsp;<code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.system.model.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;</code></dd>
+<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html#createDTO()" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">createDTO</a></code>&nbsp;在类中&nbsp;<code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/impl/BaseServiceImpl.html" title="com.lawfirm.common.data.service.impl中的类或接口" class="external-link">BaseServiceImpl</a>&lt;<a href="../../mapper/SysRoleMapper.html" title="com.lawfirm.system.mapper中的接口">SysRoleMapper</a>,<wbr><a href="../../model/entity/SysRole.html" title="com.lawfirm.model.system.entity中的类">SysRole</a>,<wbr><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;</code></dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="createRole(com.lawfirm.system.model.dto.SysRoleDTO)">
+<section class="detail" id="createRole(com.lawfirm.model.system.dto.SysRoleDTO)">
 <h3>createRole</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a></span>&nbsp;<span class="element-name">createRole</span><wbr><span class="parameters">(<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&nbsp;roleDTO)</span></div>
-<div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysRoleService.html#createRole(com.lawfirm.system.model.dto.SysRoleDTO)">SysRoleService</a></code></span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a></span>&nbsp;<span class="element-name">createRole</span><wbr><span class="parameters">(<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&nbsp;roleDTO)</span></div>
+<div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysRoleService.html#createRole(com.lawfirm.model.system.dto.SysRoleDTO)">SysRoleService</a></code></span></div>
 <div class="block">创建角色</div>
 <dl class="notes">
 <dt>指定者:</dt>
-<dd><code><a href="../SysRoleService.html#createRole(com.lawfirm.system.model.dto.SysRoleDTO)">createRole</a></code>&nbsp;在接口中&nbsp;<code><a href="../SysRoleService.html" title="com.lawfirm.system.service中的接口">SysRoleService</a></code></dd>
+<dd><code><a href="../SysRoleService.html#createRole(com.lawfirm.model.system.dto.SysRoleDTO)">createRole</a></code>&nbsp;在接口中&nbsp;<code><a href="../SysRoleService.html" title="com.lawfirm.system.service中的接口">SysRoleService</a></code></dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="updateRole(com.lawfirm.system.model.dto.SysRoleDTO)">
+<section class="detail" id="updateRole(com.lawfirm.model.system.dto.SysRoleDTO)">
 <h3>updateRole</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a></span>&nbsp;<span class="element-name">updateRole</span><wbr><span class="parameters">(<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&nbsp;roleDTO)</span></div>
-<div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysRoleService.html#updateRole(com.lawfirm.system.model.dto.SysRoleDTO)">SysRoleService</a></code></span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a></span>&nbsp;<span class="element-name">updateRole</span><wbr><span class="parameters">(<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&nbsp;roleDTO)</span></div>
+<div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysRoleService.html#updateRole(com.lawfirm.model.system.dto.SysRoleDTO)">SysRoleService</a></code></span></div>
 <div class="block">更新角色</div>
 <dl class="notes">
 <dt>指定者:</dt>
-<dd><code><a href="../SysRoleService.html#updateRole(com.lawfirm.system.model.dto.SysRoleDTO)">updateRole</a></code>&nbsp;在接口中&nbsp;<code><a href="../SysRoleService.html" title="com.lawfirm.system.service中的接口">SysRoleService</a></code></dd>
+<dd><code><a href="../SysRoleService.html#updateRole(com.lawfirm.model.system.dto.SysRoleDTO)">updateRole</a></code>&nbsp;在接口中&nbsp;<code><a href="../SysRoleService.html" title="com.lawfirm.system.service中的接口">SysRoleService</a></code></dd>
 </dl>
 </div>
 </section>
@@ -316,7 +316,7 @@ implements <a href="../SysRoleService.html" title="com.lawfirm.system.service中
 <section class="detail" id="listByUserId(java.lang.Long)">
 <h3>listByUserId</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;</span>&nbsp;<span class="element-name">listByUserId</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;userId)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;</span>&nbsp;<span class="element-name">listByUserId</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;userId)</span></div>
 <div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysRoleService.html#listByUserId(java.lang.Long)">SysRoleService</a></code></span></div>
 <div class="block">根据用户ID查询角色列表</div>
 <dl class="notes">
@@ -330,7 +330,7 @@ implements <a href="../SysRoleService.html" title="com.lawfirm.system.service中
 <section class="detail" id="listDefaultRoles()">
 <h3>listDefaultRoles</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a>&gt;</span>&nbsp;<span class="element-name">listDefaultRoles</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a>&gt;</span>&nbsp;<span class="element-name">listDefaultRoles</span>()</div>
 <div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysRoleService.html#listDefaultRoles()">SysRoleService</a></code></span></div>
 <div class="block">查询默认角色列表</div>
 <dl class="notes">
@@ -344,7 +344,7 @@ implements <a href="../SysRoleService.html" title="com.lawfirm.system.service中
 <section class="detail" id="getByCode(java.lang.String)">
 <h3>getByCode</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.system.model.dto中的类">SysRoleDTO</a></span>&nbsp;<span class="element-name">getByCode</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;code)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../model/dto/SysRoleDTO.html" title="com.lawfirm.model.system.dto中的类">SysRoleDTO</a></span>&nbsp;<span class="element-name">getByCode</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;code)</span></div>
 <div class="block"><span class="description-from-type-label">从接口复制的说明:&nbsp;<code><a href="../SysRoleService.html#getByCode(java.lang.String)">SysRoleService</a></code></span></div>
 <div class="block">根据角色编码查询角色</div>
 <dl class="notes">

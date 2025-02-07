@@ -1,64 +1,84 @@
 package com.lawfirm.system.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.core.model.ApiResult;
-import com.lawfirm.system.model.dto.UpgradePackageDTO;
-import com.lawfirm.system.model.vo.UpgradeLogVO;
-import com.lawfirm.system.model.vo.UpgradePackageVO;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.lawfirm.common.core.model.page.PageResult;
+import com.lawfirm.common.web.controller.BaseController;
+import com.lawfirm.common.web.response.R;
+import com.lawfirm.model.system.dto.SysUpgradeDTO;
+import com.lawfirm.model.system.dto.UpgradePackageDTO;
+import com.lawfirm.model.system.entity.SysUpgrade;
+import com.lawfirm.model.system.vo.SysUpgradeVO;
 import com.lawfirm.system.service.SysUpgradeService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.List;
 
-/**
- * 系统升级Controller
- */
-@Api(tags = "系统升级管理")
+@Tag(name = "系统升级管理")
 @RestController
-@RequestMapping("/api/system/upgrade")
+@RequestMapping("/system/upgrade")
 @RequiredArgsConstructor
-public class SysUpgradeController {
-    
+public class SysUpgradeController extends BaseController {
+
     private final SysUpgradeService upgradeService;
-    
+
     @PostMapping("/upload")
-    @ApiOperation("上传升级包")
-    public ApiResult<UpgradePackageVO> uploadPackage(
-        @RequestParam("file") MultipartFile file,
-        @Valid @RequestPart("dto") UpgradePackageDTO dto) {
-        return ApiResult.success(upgradeService.uploadPackage(file, dto));
+    @Operation(summary = "上传升级包")
+    public R<SysUpgradeVO> upload(@RequestBody UpgradePackageDTO packageDTO) {
+        return R.ok(upgradeService.upload(packageDTO));
     }
-    
-    @GetMapping("/packages")
-    @ApiOperation("获取升级包列表")
-    public ApiResult<Page<UpgradePackageVO>> getPackages(
-        @RequestParam(defaultValue = "1") long current,
-        @RequestParam(defaultValue = "10") long size) {
-        return ApiResult.success(upgradeService.getPackages(new Page<>(current, size)));
+
+    @Operation(summary = "分页查询升级记录")
+    @GetMapping("/page")
+    public R<PageResult<SysUpgradeVO>> page(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            SysUpgradeDTO query) {
+        QueryWrapper<SysUpgrade> wrapper = new QueryWrapper<>();
+        // 构建查询条件
+        if (StringUtils.hasText(query.getVersion())) {
+            wrapper.like("version", query.getVersion());
+        }
+        if (query.getStatus() != null) {
+            wrapper.eq("status", query.getStatus());
+        }
+        return R.ok(upgradeService.pageVO(buildPage(), wrapper));
     }
-    
-    @PostMapping("/execute/{packageId}")
-    @ApiOperation("执行升级")
-    public ApiResult<Void> executeUpgrade(@PathVariable Long packageId) {
-        upgradeService.executeUpgrade(packageId);
-        return ApiResult.success();
+
+    @GetMapping("/{id}")
+    @Operation(summary = "获取升级详情")
+    public R<SysUpgradeVO> getById(@PathVariable Long id) {
+        return R.ok(upgradeService.findById(id));
     }
-    
-    @PostMapping("/rollback/{packageId}")
-    @ApiOperation("回滚升级")
-    public ApiResult<Void> rollbackUpgrade(@PathVariable Long packageId) {
-        upgradeService.rollbackUpgrade(packageId);
-        return ApiResult.success();
+
+    @PostMapping("/{id}/execute")
+    @Operation(summary = "执行升级")
+    public R<Void> execute(@PathVariable Long id) {
+        upgradeService.execute(id);
+        return R.ok();
     }
-    
-    @GetMapping("/logs/{packageId}")
-    @ApiOperation("获取升级日志")
-    public ApiResult<List<UpgradeLogVO>> getLogs(@PathVariable Long packageId) {
-        return ApiResult.success(upgradeService.getLogs(packageId));
+
+    @GetMapping("/log")
+    @Operation(summary = "分页查询升级日志")
+    public R<PageResult<SysUpgradeVO>> log() {
+        QueryWrapper<SysUpgrade> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("upgrade_time");
+        return R.ok(upgradeService.pageVO(buildPage(), wrapper));
+    }
+
+    @Operation(summary = "查询升级记录列表")
+    @GetMapping("/list")
+    public R<List<SysUpgradeVO>> list(SysUpgradeDTO query) {
+        QueryWrapper<SysUpgrade> wrapper = new QueryWrapper<>();
+        if (StringUtils.hasText(query.getVersion())) {
+            wrapper.like("version", query.getVersion());
+        }
+        if (query.getStatus() != null) {
+            wrapper.eq("status", query.getStatus());
+        }
+        return R.ok(upgradeService.listVO(wrapper));
     }
 } 

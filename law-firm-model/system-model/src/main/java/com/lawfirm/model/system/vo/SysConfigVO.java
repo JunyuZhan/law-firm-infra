@@ -1,36 +1,44 @@
 package com.lawfirm.model.system.vo;
 
-import com.lawfirm.model.system.enums.ConfigStatusEnum;
-import com.lawfirm.model.system.enums.ConfigTypeEnum;
+import com.lawfirm.common.data.vo.BaseVO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-
+/**
+ * 系统配置VO
+ */
 @Data
-public class SysConfigVO {
+@EqualsAndHashCode(callSuper = true)
+public class SysConfigVO extends BaseVO {
+    private static final long serialVersionUID = 1L;
 
-    private Long id;  // 配置ID
+    /**
+     * 配置名称
+     */
+    private String configName;
 
-    private Long lawFirmId;  // 所属律所ID
-    private String lawFirmName;  // 所属律所名称
+    /**
+     * 配置键
+     */
+    private String configKey;
 
-    private String name;  // 配置名称
-    private String configKey;  // 配置键
-    private String configValue;  // 配置值
-    private ConfigTypeEnum configType;  // 配置类型
-    private ConfigStatusEnum status;  // 配置状态
+    /**
+     * 配置值
+     */
+    private String configValue;
 
-    private String validationRule;  // 验证规则
-    private String description;  // 描述
+    /**
+     * 配置分组
+     */
+    private String configGroup;
 
-    private Boolean isSystem;  // 是否系统内置
-    private Boolean isEncrypted;  // 是否加密存储
-    private Integer sortOrder;  // 排序号
+    /**
+     * 是否系统内置
+     */
+    private Boolean isSystem;
 
-    private String remark;  // 备注
-
-    private LocalDateTime createTime;  // 创建时间
-    private String createBy;  // 创建人
-    private LocalDateTime updateTime;  // 更新时间
-    private String updateBy;  // 更新人
+    /**
+     * 备注
+     */
+    private String remark;
 } 

@@ -2,9 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
-    <!-- ... existing code ... -->
-    
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.lawfirm</groupId>
+        <artifactId>law-firm-modules</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>law-firm-asset</artifactId>
+    <packaging>jar</packaging>
+    <description>资产管理模块</description>
+
     <dependencies>
         <!-- ... existing dependencies ... -->
         
@@ -17,6 +27,4 @@
         
         <!-- ... existing dependencies ... -->
     </dependencies>
-    
-    <!-- ... existing code ... -->
 </project>

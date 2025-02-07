@@ -66,8 +66,8 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">方法概要</a></li>
 <li><a href="#method-detail" tabindex="0">方法详细资料</a>
 <ol class="toc-list">
-<li><a href="#createUser(com.lawfirm.system.model.dto.SysUserDTO)" tabindex="0">createUser(SysUserDTO)</a></li>
-<li><a href="#updateUser(com.lawfirm.system.model.dto.SysUserDTO)" tabindex="0">updateUser(SysUserDTO)</a></li>
+<li><a href="#createUser(com.lawfirm.model.system.dto.SysUserDTO)" tabindex="0">createUser(SysUserDTO)</a></li>
+<li><a href="#updateUser(com.lawfirm.model.system.dto.SysUserDTO)" tabindex="0">updateUser(SysUserDTO)</a></li>
 <li><a href="#deleteUser(java.lang.Long)" tabindex="0">deleteUser(Long)</a></li>
 <li><a href="#resetPassword(java.lang.Long,java.lang.String)" tabindex="0">resetPassword(Long, String)</a></li>
 <li><a href="#changePassword(java.lang.Long,java.lang.String,java.lang.String)" tabindex="0">changePassword(Long, String, String)</a></li>
@@ -75,7 +75,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#listByDeptId(java.lang.Long)" tabindex="0">listByDeptId(Long)</a></li>
 <li><a href="#listByRoleId(java.lang.Long)" tabindex="0">listByRoleId(Long)</a></li>
 <li><a href="#assignRoles(java.lang.Long,java.util.List)" tabindex="0">assignRoles(Long, List)</a></li>
-<li><a href="#updateProfile(com.lawfirm.system.model.dto.SysUserDTO)" tabindex="0">updateProfile(SysUserDTO)</a></li>
+<li><a href="#updateProfile(com.lawfirm.model.system.dto.SysUserDTO)" tabindex="0">updateProfile(SysUserDTO)</a></li>
 <li><a href="#updateAvatar(java.lang.Long,java.lang.String)" tabindex="0">updateAvatar(Long, String)</a></li>
 <li><a href="#updateUserRoles(java.lang.Long,java.util.List)" tabindex="0">updateUserRoles(Long, List)</a></li>
 </ol>
@@ -91,7 +91,7 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <dl class="notes">
 <dt>所有超级接口:</dt>
-<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/BaseService.html" title="com.lawfirm.common.data.service中的类或接口" class="external-link">BaseService</a>&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysUser.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysUser</a>,<wbr><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&gt;</code>, <code>com.baomidou.mybatisplus.extension.service.IService&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysUser.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysUser</a>&gt;</code></dd>
+<dd><code><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/BaseService.html" title="com.lawfirm.common.data.service中的类或接口" class="external-link">BaseService</a>&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysUser.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysUser</a>,<wbr><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&gt;</code>, <code>com.baomidou.mybatisplus.extension.service.IService&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysUser.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysUser</a>&gt;</code></dd>
 </dl>
 <dl class="notes">
 <dt>所有已知实现类:</dt>
@@ -99,7 +99,7 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">SysUserService</span><span class="extends-implements">
-extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/BaseService.html" title="com.lawfirm.common.data.service中的类或接口" class="external-link">BaseService</a>&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysUser.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysUser</a>,<wbr><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&gt;</span></div>
+extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-data/javadoc/com/lawfirm/common/data/service/BaseService.html" title="com.lawfirm.common.data.service中的类或接口" class="external-link">BaseService</a>&lt;<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-model/system-model/javadoc/com/lawfirm/model/system/entity/SysUser.html" title="com.lawfirm.model.system.entity中的类或接口" class="external-link">SysUser</a>,<wbr><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&gt;</span></div>
 <div class="block">用户服务接口</div>
 </div>
 </section>
@@ -138,8 +138,8 @@ extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/la
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">修改密码</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#createUser(com.lawfirm.system.model.dto.SysUserDTO)" class="member-name-link">createUser</a><wbr>(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&nbsp;user)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#createUser(com.lawfirm.model.system.dto.SysUserDTO)" class="member-name-link">createUser</a><wbr>(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&nbsp;user)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">创建用户</div>
 </div>
@@ -148,17 +148,17 @@ extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/la
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">删除用户</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getByUsername(java.lang.String)" class="member-name-link">getByUsername</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;username)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">根据用户名获取用户</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#listByDeptId(java.lang.Long)" class="member-name-link">listByDeptId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;deptId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">根据部门ID查询用户列表</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a><wbr>&lt;<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#listByRoleId(java.lang.Long)" class="member-name-link">listByRoleId</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;roleId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">根据角色ID查询用户列表</div>
@@ -175,13 +175,13 @@ extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/la
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">修改头像</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#updateProfile(com.lawfirm.system.model.dto.SysUserDTO)" class="member-name-link">updateProfile</a><wbr>(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&nbsp;user)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#updateProfile(com.lawfirm.model.system.dto.SysUserDTO)" class="member-name-link">updateProfile</a><wbr>(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&nbsp;user)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">修改个人信息</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#updateUser(com.lawfirm.system.model.dto.SysUserDTO)" class="member-name-link">updateUser</a><wbr>(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&nbsp;user)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#updateUser(com.lawfirm.model.system.dto.SysUserDTO)" class="member-name-link">updateUser</a><wbr>(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&nbsp;user)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">更新用户</div>
 </div>
@@ -212,23 +212,23 @@ extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/la
 <h2>方法详细资料</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="createUser(com.lawfirm.system.model.dto.SysUserDTO)">
+<section class="detail" id="createUser(com.lawfirm.model.system.dto.SysUserDTO)">
 <h3>createUser</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">@OperationLog</a>(<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#description()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">description</a>="\u521b\u5efa\u7528\u6237",
               <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#operationType()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">operationType</a>="INSERT")
-</span><span class="return-type"><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a></span>&nbsp;<span class="element-name">createUser</span><wbr><span class="parameters">(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&nbsp;user)</span></div>
+</span><span class="return-type"><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a></span>&nbsp;<span class="element-name">createUser</span><wbr><span class="parameters">(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&nbsp;user)</span></div>
 <div class="block">创建用户</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="updateUser(com.lawfirm.system.model.dto.SysUserDTO)">
+<section class="detail" id="updateUser(com.lawfirm.model.system.dto.SysUserDTO)">
 <h3>updateUser</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">@OperationLog</a>(<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#description()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">description</a>="\u66f4\u65b0\u7528\u6237",
               <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#operationType()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">operationType</a>="UPDATE")
-</span><span class="return-type"><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a></span>&nbsp;<span class="element-name">updateUser</span><wbr><span class="parameters">(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&nbsp;user)</span></div>
+</span><span class="return-type"><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a></span>&nbsp;<span class="element-name">updateUser</span><wbr><span class="parameters">(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&nbsp;user)</span></div>
 <div class="block">更新用户</div>
 </div>
 </section>
@@ -275,7 +275,7 @@ extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/la
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">@OperationLog</a>(<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#description()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">description</a>="\u6839\u636e\u7528\u6237\u540d\u67e5\u8be2\u7528\u6237",
               <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#operationType()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">operationType</a>="SELECT")
-</span><span class="return-type"><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a></span>&nbsp;<span class="element-name">getByUsername</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;username)</span></div>
+</span><span class="return-type"><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a></span>&nbsp;<span class="element-name">getByUsername</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="java.lang中的类或接口" class="external-link">String</a>&nbsp;username)</span></div>
 <div class="block">根据用户名获取用户</div>
 </div>
 </section>
@@ -286,7 +286,7 @@ extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/la
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">@OperationLog</a>(<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#description()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">description</a>="\u6839\u636e\u90e8\u95e8ID\u67e5\u8be2\u7528\u6237\u5217\u8868",
               <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#operationType()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">operationType</a>="SELECT")
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&gt;</span>&nbsp;<span class="element-name">listByDeptId</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;deptId)</span></div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&gt;</span>&nbsp;<span class="element-name">listByDeptId</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;deptId)</span></div>
 <div class="block">根据部门ID查询用户列表</div>
 </div>
 </section>
@@ -297,7 +297,7 @@ extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/la
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">@OperationLog</a>(<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#description()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">description</a>="\u6839\u636e\u89d2\u8272ID\u67e5\u8be2\u7528\u6237\u5217\u8868",
               <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#operationType()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">operationType</a>="SELECT")
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&gt;</span>&nbsp;<span class="element-name">listByRoleId</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;roleId)</span></div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="java.util中的类或接口" class="external-link">List</a>&lt;<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&gt;</span>&nbsp;<span class="element-name">listByRoleId</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Long.html" title="java.lang中的类或接口" class="external-link">Long</a>&nbsp;roleId)</span></div>
 <div class="block">根据角色ID查询用户列表</div>
 </div>
 </section>
@@ -315,12 +315,12 @@ extends <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/la
 </section>
 </li>
 <li>
-<section class="detail" id="updateProfile(com.lawfirm.system.model.dto.SysUserDTO)">
+<section class="detail" id="updateProfile(com.lawfirm.model.system.dto.SysUserDTO)">
 <h3>updateProfile</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations"><a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">@OperationLog</a>(<a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#description()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">description</a>="\u4fee\u6539\u4e2a\u4eba\u4fe1\u606f",
               <a href="https://spring.io/projects/spring-boot/law-firm-dependencies/law-firm/law-firm-common/common-log/javadoc/com/lawfirm/common/log/annotation/OperationLog.html#operationType()" title="com.lawfirm.common.log.annotation中的类或接口" class="external-link">operationType</a>="UPDATE")
-</span><span class="return-type"><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a></span>&nbsp;<span class="element-name">updateProfile</span><wbr><span class="parameters">(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.system.model.dto中的类">SysUserDTO</a>&nbsp;user)</span></div>
+</span><span class="return-type"><a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a></span>&nbsp;<span class="element-name">updateProfile</span><wbr><span class="parameters">(<a href="../model/dto/SysUserDTO.html" title="com.lawfirm.model.system.dto中的类">SysUserDTO</a>&nbsp;user)</span></div>
 <div class="block">修改个人信息</div>
 </div>
 </section>

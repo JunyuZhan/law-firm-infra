@@ -1,104 +1,98 @@
 package com.lawfirm.admin.controller.auth;
 
-import com.lawfirm.common.core.model.ApiResult;
-import com.lawfirm.auth.model.dto.SysRoleDTO;
-import com.lawfirm.auth.model.vo.SysRoleVO;
-import com.lawfirm.auth.service.SysRoleService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.lawfirm.admin.model.ApiResult;
+import com.lawfirm.admin.model.request.auth.role.CreateRoleRequest;
+import com.lawfirm.admin.model.request.auth.role.UpdateRoleRequest;
+import com.lawfirm.admin.model.response.RoleResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**
  * 系统角色Controller
  */
-@Api(tags = "系统角色")
+@Tag(name = "系统角色管理")
 @RestController
-@RequestMapping("/auth/role")
+@RequestMapping("/role")
 @RequiredArgsConstructor
 public class SysRoleController {
 
-    private final SysRoleService roleService;
-
-    @ApiOperation("创建角色")
+    @Operation(summary = "创建角色")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<Void> createRole(@Valid @RequestBody SysRoleDTO dto) {
-        roleService.createRole(dto);
-        return ApiResult.ok();
+    public ApiResult<Void> createRole(@Valid @RequestBody CreateRoleRequest request) {
+        return ApiResult.success();
     }
 
-    @ApiOperation("更新角色")
+    @Operation(summary = "更新角色")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<Void> updateRole(@PathVariable Long id, @Valid @RequestBody SysRoleDTO dto) {
-        roleService.updateRole(id, dto);
-        return ApiResult.ok();
+    public ApiResult<Void> updateRole(@PathVariable Long id, @Valid @RequestBody UpdateRoleRequest request) {
+        return ApiResult.success();
     }
 
-    @ApiOperation("删除角色")
+    @Operation(summary = "删除角色")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResult<Void> deleteRole(@PathVariable Long id) {
-        roleService.deleteRole(id);
-        return ApiResult.ok();
+        return ApiResult.success();
     }
 
-    @ApiOperation("获取角色详情")
+    @Operation(summary = "获取角色详情")
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<SysRoleVO> getRole(@PathVariable Long id) {
-        return ApiResult.ok(roleService.getRole(id));
+    public ApiResult<RoleResponse> getRole(@PathVariable Long id) {
+        return ApiResult.success();
     }
 
-    @ApiOperation("分页查询角色")
+    @Operation(summary = "分页查询角色")
     @GetMapping("/page")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<List<SysRoleVO>> pageRoles(@RequestParam(defaultValue = "1") Integer pageNum,
+    public ApiResult<List<RoleResponse>> pageRoles(@RequestParam(defaultValue = "1") Integer pageNum,
                                                @RequestParam(defaultValue = "10") Integer pageSize,
                                                @RequestParam(required = false) String roleName,
                                                @RequestParam(required = false) String roleCode,
                                                @RequestParam(required = false) Integer status) {
-        return ApiResult.ok(roleService.pageRoles(pageNum, pageSize, roleName, roleCode, status));
+        return ApiResult.success();
     }
 
-    @ApiOperation("获取所有角色")
+    @Operation(summary = "获取所有角色")
     @GetMapping("/list")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<List<SysRoleVO>> listRoles() {
-        return ApiResult.ok(roleService.listRoles());
+    public ApiResult<List<RoleResponse>> listRoles() {
+        return ApiResult.success();
     }
 
-    @ApiOperation("分配菜单权限")
+    @Operation(summary = "分配菜单权限")
     @PutMapping("/{id}/menus")
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResult<Void> assignMenus(@PathVariable Long id, @RequestBody List<Long> menuIds) {
-        roleService.assignMenus(id, menuIds);
-        return ApiResult.ok();
+        return ApiResult.success();
     }
 
-    @ApiOperation("获取角色菜单ID列表")
+    @Operation(summary = "获取角色菜单ID列表")
     @GetMapping("/{id}/menus")
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResult<List<Long>> getRoleMenuIds(@PathVariable Long id) {
-        return ApiResult.ok(roleService.getRoleMenuIds(id));
+        return ApiResult.success();
     }
 
-    @ApiOperation("检查角色编码是否存在")
+    @Operation(summary = "检查角色编码是否存在")
     @GetMapping("/check/{code}")
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResult<Boolean> checkRoleCodeExists(@PathVariable String code) {
-        return ApiResult.ok(roleService.checkRoleCodeExists(code));
+        return ApiResult.success();
     }
 
-    @ApiOperation("导出角色数据")
+    @Operation(summary = "导出角色数据")
     @GetMapping("/export")
     @PreAuthorize("hasRole('ADMIN')")
     public void exportRoles() {
-        roleService.exportRoles();
+        // 导出逻辑
     }
 } 

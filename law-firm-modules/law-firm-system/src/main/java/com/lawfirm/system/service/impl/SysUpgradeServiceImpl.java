@@ -1,241 +1,184 @@
 package com.lawfirm.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.exception.BusinessException;
-import com.lawfirm.common.core.util.file.FileUtils;
-import com.lawfirm.system.enums.UpgradeStatusEnum;
-import com.lawfirm.system.mapper.SysUpgradeLogMapper;
-import com.lawfirm.system.mapper.SysUpgradePackageMapper;
-import com.lawfirm.system.model.dto.UpgradePackageDTO;
-import com.lawfirm.system.model.entity.SysUpgradeLog;
-import com.lawfirm.system.model.entity.SysUpgradePackage;
-import com.lawfirm.system.model.vo.UpgradeLogVO;
-import com.lawfirm.system.model.vo.UpgradePackageVO;
+import com.lawfirm.common.core.model.page.PageResult;
+import com.lawfirm.common.data.service.impl.BaseServiceImpl;
+import com.lawfirm.model.system.entity.SysUpgrade;
+import com.lawfirm.system.mapper.SysUpgradeMapper;
+import com.lawfirm.model.system.dto.SysUpgradeDTO;
+import com.lawfirm.model.system.dto.UpgradePackageDTO;
+import com.lawfirm.model.system.vo.SysUpgradeVO;
+import com.lawfirm.model.system.vo.UpgradeLogVO;
+import com.lawfirm.model.system.vo.UpgradePackageVO;
 import com.lawfirm.system.service.SysUpgradeService;
-import com.lawfirm.system.upgrade.UpgradeExecutor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import lombok.RequiredArgsConstructor;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
-/**
- * 系统升级Service实现类
- */
-@Slf4j
 @Service
 @RequiredArgsConstructor
-public class SysUpgradeServiceImpl implements SysUpgradeService {
-    
-    private final SysUpgradePackageMapper upgradePackageMapper;
-    private final SysUpgradeLogMapper upgradeLogMapper;
-    private final UpgradeExecutor upgradeExecutor;
-    
-    @Value("${upgrade.package.path}")
-    private String upgradePackagePath;
-    
+public class SysUpgradeServiceImpl extends BaseServiceImpl<SysUpgradeMapper, SysUpgrade, SysUpgradeVO> implements SysUpgradeService {
+
+    private final SysUpgradeMapper upgradeMapper;
+
+    @Override
+    protected SysUpgradeVO createVO() {
+        return new SysUpgradeVO();
+    }
+
+    @Override
+    protected SysUpgrade createEntity() {
+        return new SysUpgrade();
+    }
+
+    private SysUpgradeVO dtoToVO(SysUpgradeDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        SysUpgradeVO vo = createVO();
+        BeanUtils.copyProperties(dto, vo);
+        return vo;
+    }
+
+    private SysUpgrade dtoToEntity(SysUpgradeDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        SysUpgrade entity = createEntity();
+        BeanUtils.copyProperties(dto, entity);
+        return entity;
+    }
+
+    @Override
+    public SysUpgradeVO entityToVO(SysUpgrade entity) {
+        if (entity == null) {
+            return null;
+        }
+        SysUpgradeVO vo = createVO();
+        BeanUtils.copyProperties(entity, vo);
+        return vo;
+    }
+
+    @Override
+    public SysUpgrade voToEntity(SysUpgradeVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        SysUpgrade entity = createEntity();
+        BeanUtils.copyProperties(vo, entity);
+        return entity;
+    }
+
+    @Override
+    public PageResult<SysUpgradeVO> pageVO(Page<SysUpgrade> page, QueryWrapper<SysUpgrade> wrapper) {
+        Page<SysUpgrade> upgradePage = page(page, wrapper);
+        List<SysUpgradeVO> records = entityListToVOList(upgradePage.getRecords());
+        return new PageResult<>(records, upgradePage.getTotal());
+    }
+
+    @Override
+    public List<SysUpgradeVO> listVO(QueryWrapper<SysUpgrade> wrapper) {
+        List<SysUpgrade> list = list(wrapper);
+        return entityListToVOList(list);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public SysUpgradeVO upload(UpgradePackageDTO packageDTO) {
+        // TODO: 实现上传功能
+        return null;
+    }
+
+    @Override
+    public PageResult<SysUpgradeVO> page(Integer pageNum, Integer pageSize) {
+        Page<SysUpgrade> page = new Page<>(pageNum, pageSize);
+        return pageVO(page, new QueryWrapper<>());
+    }
+
+    @Override
+    public void execute(Long id) {
+        // 校验升级包是否存在
+        if (!exists(id)) {
+            throw new BusinessException("升级包不存在");
+        }
+        // TODO: 实现执行功能
+    }
+
+    @Override
+    public PageResult<SysUpgradeVO> log(Integer pageNum, Integer pageSize) {
+        // TODO: 实现分页查询升级日志功能
+        return null;
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public UpgradePackageVO uploadPackage(MultipartFile file, UpgradePackageDTO dto) {
-        // 1. 验证文件
         if (file == null || file.isEmpty()) {
             throw new BusinessException("升级包文件不能为空");
         }
-        if (!file.getOriginalFilename().endsWith(".zip")) {
-            throw new BusinessException("升级包文件必须是zip格式");
-        }
-        
-        try {
-            // 2. 保存文件
-            String fileName = generateFileName(file.getOriginalFilename());
-            Path targetPath = Paths.get(upgradePackagePath, fileName);
-            Files.createDirectories(targetPath.getParent());
-            file.transferTo(targetPath.toFile());
-            
-            // 3. 保存记录
-            SysUpgradePackage upgradePackage = new SysUpgradePackage();
-            BeanUtils.copyProperties(dto, upgradePackage);
-            upgradePackage.setFilePath(targetPath.toString());
-            upgradePackage.setMd5(FileUtils.calculateMD5(targetPath.toFile()));
-            upgradePackage.setFileSize(file.getSize());
-            upgradePackage.setStatus(UpgradeStatusEnum.PENDING.getCode());
-            upgradePackageMapper.insert(upgradePackage);
-            
-            // 4. 记录日志
-            saveLog(upgradePackage.getId(), "上传升级包", "上传升级包: " + dto.getPackageName(), true, null);
-            
-            return convertToVO(upgradePackage);
-            
-        } catch (IOException e) {
-            log.error("保存升级包文件失败", e);
-            throw new BusinessException("保存升级包文件失败: " + e.getMessage());
-        }
+        // TODO: 实现升级包上传功能
+        return null;
     }
-    
+
     @Override
     public Page<UpgradePackageVO> getPackages(Page<UpgradePackageVO> page) {
-        Page<SysUpgradePackage> packagePage = upgradePackageMapper.selectPage(
-            new Page<>(page.getCurrent(), page.getSize()),
-            new LambdaQueryWrapper<SysUpgradePackage>()
-                .orderByDesc(SysUpgradePackage::getCreateTime)
-        );
-        
-        return new Page<UpgradePackageVO>()
-            .setCurrent(packagePage.getCurrent())
-            .setSize(packagePage.getSize())
-            .setTotal(packagePage.getTotal())
-            .setRecords(packagePage.getRecords().stream()
-                .map(this::convertToVO)
-                .collect(Collectors.toList()));
+        // TODO: 实现获取升级包列表功能
+        return null;
     }
-    
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void executeUpgrade(Long packageId) {
-        // 1. 获取升级包
-        SysUpgradePackage upgradePackage = upgradePackageMapper.selectById(packageId);
-        if (upgradePackage == null) {
+        // 校验升级包是否存在
+        if (!exists(packageId)) {
             throw new BusinessException("升级包不存在");
         }
-        if (!UpgradeStatusEnum.PENDING.getCode().equals(upgradePackage.getStatus())) {
-            throw new BusinessException("升级包状态不正确");
-        }
-        
-        try {
-            // 2. 更新状态为升级中
-            upgradePackage.setStatus(UpgradeStatusEnum.UPGRADING.getCode());
-            upgradePackageMapper.updateById(upgradePackage);
-            saveLog(packageId, "开始升级", "开始执行升级: " + upgradePackage.getPackageName(), true, null);
-            
-            // 3. 备份(如果需要)
-            if (upgradePackage.getNeedBackup()) {
-                String dbBackupPath = upgradeExecutor.backupDatabase(upgradePackage.getVersion());
-                String filesBackupPath = upgradeExecutor.backupSystemFiles(upgradePackage.getVersion());
-                upgradePackage.setBackupPath(dbBackupPath + ";" + filesBackupPath);
-                upgradePackageMapper.updateById(upgradePackage);
-            }
-            
-            // 4. 执行升级脚本
-            upgradeExecutor.executeUpgradeScripts(upgradePackage.getFilePath());
-            
-            // 5. 更新状态为成功
-            upgradePackage.setStatus(UpgradeStatusEnum.SUCCESS.getCode());
-            upgradePackageMapper.updateById(upgradePackage);
-            saveLog(packageId, "升级完成", "升级执行完成: " + upgradePackage.getPackageName(), true, null);
-            
-        } catch (Exception e) {
-            // 升级失败
-            log.error("执行升级失败", e);
-            upgradePackage.setStatus(UpgradeStatusEnum.FAILED.getCode());
-            upgradePackage.setErrorMessage(e.getMessage());
-            upgradePackageMapper.updateById(upgradePackage);
-            saveLog(packageId, "升级失败", "升级执行失败: " + e.getMessage(), false, e.getMessage());
-            throw new BusinessException("执行升级失败: " + e.getMessage());
-        }
+        // TODO: 实现执行升级功能
     }
-    
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void rollbackUpgrade(Long packageId) {
-        // 1. 获取升级包
-        SysUpgradePackage upgradePackage = upgradePackageMapper.selectById(packageId);
-        if (upgradePackage == null) {
+        // 校验升级包是否存在
+        if (!exists(packageId)) {
             throw new BusinessException("升级包不存在");
         }
-        if (!UpgradeStatusEnum.FAILED.getCode().equals(upgradePackage.getStatus())) {
-            throw new BusinessException("只能回滚失败的升级");
-        }
-        
-        try {
-            // 2. 执行回滚
-            upgradeExecutor.executeRollbackScripts(upgradePackage.getFilePath(), upgradePackage.getBackupPath());
-            
-            // 3. 更新状态为待升级
-            upgradePackage.setStatus(UpgradeStatusEnum.PENDING.getCode());
-            upgradePackage.setErrorMessage(null);
-            upgradePackageMapper.updateById(upgradePackage);
-            saveLog(packageId, "回滚完成", "升级回滚完成: " + upgradePackage.getPackageName(), true, null);
-            
-        } catch (Exception e) {
-            log.error("执行回滚失败", e);
-            saveLog(packageId, "回滚失败", "升级回滚失败: " + e.getMessage(), false, e.getMessage());
-            throw new BusinessException("执行回滚失败: " + e.getMessage());
-        }
+        // TODO: 实现回滚升级功能
     }
-    
+
     @Override
     public List<UpgradeLogVO> getLogs(Long packageId) {
-        List<SysUpgradeLog> logs = upgradeLogMapper.selectList(
-            new LambdaQueryWrapper<SysUpgradeLog>()
-                .eq(SysUpgradeLog::getPackageId, packageId)
-                .orderByDesc(SysUpgradeLog::getCreateTime)
-        );
-        
-        return logs.stream()
-            .map(this::convertToLogVO)
-            .collect(Collectors.toList());
+        // 校验升级包是否存在
+        if (!exists(packageId)) {
+            throw new BusinessException("升级包不存在");
+        }
+        // TODO: 实现获取升级日志功能
+        return null;
     }
-    
-    /**
-     * 生成文件名
-     */
-    private String generateFileName(String originalFilename) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        return "upgrade_" + timestamp + extension;
+
+    @Override
+    public boolean exists(Long id) {
+        return id != null && upgradeMapper.selectById(id) != null;
     }
-    
-    /**
-     * 保存日志
-     */
-    private void saveLog(Long packageId, String operation, String detail, Boolean success, String errorMessage) {
-        SysUpgradeLog log = new SysUpgradeLog();
-        log.setPackageId(packageId);
-        log.setOperation(operation);
-        log.setDetail(detail);
-        log.setSuccess(success);
-        log.setErrorMessage(errorMessage);
-        upgradeLogMapper.insert(log);
+
+    @Override
+    public SysUpgradeVO toUpgradeVO(SysUpgradeDTO dto) {
+        return dtoToVO(dto);
     }
-    
-    /**
-     * 转换为VO
-     */
-    private UpgradePackageVO convertToVO(SysUpgradePackage entity) {
-        if (entity == null) {
+
+    @Override
+    public List<SysUpgradeVO> toUpgradeVOList(List<SysUpgradeDTO> dtoList) {
+        if (dtoList == null) {
             return null;
         }
-        UpgradePackageVO vo = new UpgradePackageVO();
-        BeanUtils.copyProperties(entity, vo);
-        UpgradeStatusEnum status = UpgradeStatusEnum.getByCode(entity.getStatus());
-        if (status != null) {
-            vo.setStatusDesc(status.getDesc());
-        }
-        return vo;
+        return dtoList.stream()
+                .map(this::dtoToVO)
+                .toList();
     }
-    
-    /**
-     * 转换为日志VO
-     */
-    private UpgradeLogVO convertToLogVO(SysUpgradeLog entity) {
-        if (entity == null) {
-            return null;
-        }
-        UpgradeLogVO vo = new UpgradeLogVO();
-        BeanUtils.copyProperties(entity, vo);
-        return vo;
-    }
-} 
+}

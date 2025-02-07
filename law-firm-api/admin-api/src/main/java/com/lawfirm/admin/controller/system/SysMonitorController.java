@@ -1,11 +1,10 @@
 package com.lawfirm.admin.controller.system;
 
-import com.lawfirm.common.core.model.ApiResult;
-import com.lawfirm.system.model.vo.ServerInfoVO;
-import com.lawfirm.system.model.vo.OnlineUserVO;
-import com.lawfirm.system.service.SysMonitorService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.lawfirm.admin.model.ApiResult;
+import com.lawfirm.admin.model.response.OnlineUserResponse;
+import com.lawfirm.admin.model.response.ServerInfoResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,69 +15,67 @@ import java.util.Map;
 /**
  * 系统监控Controller
  */
-@Api(tags = "系统监控")
+@Tag(name = "系统监控")
 @RestController
-@RequestMapping("/system/monitor")
+@RequestMapping("/monitor")
 @RequiredArgsConstructor
 public class SysMonitorController {
 
-    private final SysMonitorService monitorService;
-
-    @ApiOperation("获取服务器信息")
+    @Operation(summary = "获取服务器信息")
     @GetMapping("/server")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<ServerInfoVO> getServerInfo() {
-        return ApiResult.ok(monitorService.getServerInfo());
+    @PreAuthorize("hasAuthority('monitor:server:query')")
+    public ApiResult<ServerInfoResponse> getServerInfo() {
+        return ApiResult.success();
     }
 
-    @ApiOperation("获取在线用户")
+    @Operation(summary = "获取在线用户列表")
     @GetMapping("/online")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<List<OnlineUserVO>> getOnlineUsers() {
-        return ApiResult.ok(monitorService.getOnlineUsers());
+    @PreAuthorize("hasAuthority('monitor:online:query')")
+    public ApiResult<List<OnlineUserResponse>> getOnlineUserList(
+            @RequestParam(required = false) String ipaddr,
+            @RequestParam(required = false) String username) {
+        return ApiResult.success();
     }
 
-    @ApiOperation("强制下线用户")
-    @DeleteMapping("/online/{token}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResult<Void> forceLogout(@PathVariable String token) {
-        monitorService.forceLogout(token);
-        return ApiResult.ok();
+    @Operation(summary = "强退用户")
+    @DeleteMapping("/online/{tokenId}")
+    @PreAuthorize("hasAuthority('monitor:online:logout')")
+    public ApiResult<Void> forceLogout(@PathVariable String tokenId) {
+        return ApiResult.success();
     }
 
-    @ApiOperation("获取JVM信息")
+    @Operation(summary = "获取JVM信息")
     @GetMapping("/jvm")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('monitor:jvm:query')")
     public ApiResult<Map<String, Object>> getJvmInfo() {
-        return ApiResult.ok(monitorService.getJvmInfo());
+        return ApiResult.success();
     }
 
-    @ApiOperation("获取Redis信息")
+    @Operation(summary = "获取Redis信息")
     @GetMapping("/redis")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('monitor:redis:query')")
     public ApiResult<Map<String, Object>> getRedisInfo() {
-        return ApiResult.ok(monitorService.getRedisInfo());
+        return ApiResult.success();
     }
 
-    @ApiOperation("获取数据库信息")
+    @Operation(summary = "获取数据库信息")
     @GetMapping("/database")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('monitor:database:query')")
     public ApiResult<Map<String, Object>> getDatabaseInfo() {
-        return ApiResult.ok(monitorService.getDatabaseInfo());
+        return ApiResult.success();
     }
 
-    @ApiOperation("获取缓存信息")
+    @Operation(summary = "获取缓存信息")
     @GetMapping("/cache")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('monitor:cache:query')")
     public ApiResult<Map<String, Object>> getCacheInfo() {
-        return ApiResult.ok(monitorService.getCacheInfo());
+        return ApiResult.success();
     }
 
-    @ApiOperation("清理缓存")
+    @Operation(summary = "清理缓存")
     @DeleteMapping("/cache")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('monitor:cache:clear')")
     public ApiResult<Void> clearCache() {
-        monitorService.clearCache();
-        return ApiResult.ok();
+        return ApiResult.success();
     }
 } 

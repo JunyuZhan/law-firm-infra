@@ -7,10 +7,10 @@ import lombok.Getter;
 public enum ClientSourceEnum implements BaseEnum<String> {
     
     REFERRAL("REFERRAL", "转介绍"),
-    ONLINE("ONLINE", "线上获取"),
-    MARKETING("MARKETING", "市场营销"),
-    EXISTING("EXISTING", "老客户"),
+    ONLINE("ONLINE", "线上获客"),
+    OFFLINE("OFFLINE", "线下获客"),
     PARTNER("PARTNER", "合作伙伴"),
+    MARKETING("MARKETING", "市场营销"),
     OTHER("OTHER", "其他");
 
     private final String value;
@@ -19,5 +19,15 @@ public enum ClientSourceEnum implements BaseEnum<String> {
     ClientSourceEnum(String value, String description) {
         this.value = value;
         this.description = description;
+    }
+
+    @Override
+    public String getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
     }
 } 

@@ -16,21 +16,21 @@
 
     <modules>
         <module>base-model</module>
-        <module>case-model</module>
-        <module>system-model</module>
         <module>auth-model</module>
+        <module>system-model</module>
+        <module>organization-model</module>
+        <module>personnel-model</module>
+        <module>client-model</module>
+        <module>case-model</module>
         <module>document-model</module>
         <module>finance-model</module>
-        <module>organization-model</module>
-        <module>client-model</module>
-        <module>personnel-model</module>
+        <module>contract-model</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -2,21 +2,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
-    <!-- ... existing code ... -->
-    
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.lawfirm</groupId>
+        <artifactId>law-firm-modules</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>law-firm-workflow</artifactId>
+    <packaging>jar</packaging>
+    <description>工作流模块</description>
+
     <dependencies>
-        <!-- ... existing dependencies ... -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-workflow</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         
-        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        
-        <!-- ... existing dependencies ... -->
     </dependencies>
-    
-    <!-- ... existing code ... -->
 </project>

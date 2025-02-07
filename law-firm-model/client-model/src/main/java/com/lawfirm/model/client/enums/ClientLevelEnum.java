@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public enum ClientLevelEnum implements BaseEnum<String> {
     
+    NORMAL("NORMAL", "普通客户"),
     VIP("VIP", "VIP客户"),
-    PREMIUM("PREMIUM", "高级客户"),
-    REGULAR("REGULAR", "普通客户"),
-    BASIC("BASIC", "基础客户");
+    SVIP("SVIP", "SVIP客户"),
+    STRATEGIC("STRATEGIC", "战略客户");
 
     private final String value;
     private final String description;
@@ -17,5 +17,15 @@ public enum ClientLevelEnum implements BaseEnum<String> {
     ClientLevelEnum(String value, String description) {
         this.value = value;
         this.description = description;
+    }
+
+    @Override
+    public String getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
     }
 } 

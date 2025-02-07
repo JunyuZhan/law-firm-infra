@@ -1,7 +1,8 @@
 package com.lawfirm.system.controller;
 
 import com.lawfirm.common.core.domain.R;
-import com.lawfirm.system.model.dto.SysUserDTO;
+import com.lawfirm.model.system.dto.SysUserDTO;
+import com.lawfirm.model.system.vo.SysUserVO;
 import com.lawfirm.system.service.SysUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,11 +39,15 @@ class SysUserControllerTest {
 
     @Test
     void createUser() throws Exception {
-        SysUserDTO user = new SysUserDTO();
-        user.setUsername("test");
-        user.setPassword("123456");
+        SysUserDTO userDTO = new SysUserDTO();
+        userDTO.setUsername("test");
+        userDTO.setPassword("123456");
         
-        when(userService.createUser(any(SysUserDTO.class))).thenReturn(user);
+        SysUserVO userVO = new SysUserVO();
+        userVO.setId(1L);
+        userVO.setUsername("test");
+        
+        when(userService.create(any(SysUserDTO.class))).thenReturn(userVO);
 
         mockMvc.perform(post("/system/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,16 +56,20 @@ class SysUserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
 
-        verify(userService).createUser(any(SysUserDTO.class));
+        verify(userService).create(any(SysUserDTO.class));
     }
 
     @Test
     void updateUser() throws Exception {
-        SysUserDTO user = new SysUserDTO();
-        user.setId(1L);
-        user.setUsername("test");
+        SysUserDTO userDTO = new SysUserDTO();
+        userDTO.setId(1L);
+        userDTO.setUsername("test");
         
-        when(userService.updateUser(any(SysUserDTO.class))).thenReturn(user);
+        SysUserVO userVO = new SysUserVO();
+        userVO.setId(1L);
+        userVO.setUsername("test");
+        
+        when(userService.update(any(SysUserDTO.class))).thenReturn(userVO);
 
         mockMvc.perform(put("/system/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -69,19 +78,19 @@ class SysUserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
 
-        verify(userService).updateUser(any(SysUserDTO.class));
+        verify(userService).update(any(SysUserDTO.class));
     }
 
     @Test
     void deleteUser() throws Exception {
-        doNothing().when(userService).deleteUser(anyLong());
+        doNothing().when(userService).delete(anyLong());
 
         mockMvc.perform(delete("/system/user/1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
 
-        verify(userService).deleteUser(1L);
+        verify(userService).delete(1L);
     }
 
     @Test
@@ -99,26 +108,25 @@ class SysUserControllerTest {
 
     @Test
     void changePassword() throws Exception {
-        doNothing().when(userService).changePassword(anyLong(), anyString(), anyString());
+        doNothing().when(userService).changePassword(anyString(), anyString());
 
         mockMvc.perform(put("/system/user/password")
-                .param("id", "1")
                 .param("oldPassword", "123456")
                 .param("newPassword", "654321")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
 
-        verify(userService).changePassword(1L, "123456", "654321");
+        verify(userService).changePassword("123456", "654321");
     }
 
     @Test
     void getByUsername() throws Exception {
-        SysUserDTO user = new SysUserDTO();
-        user.setId(1L);
-        user.setUsername("test");
+        SysUserVO userVO = new SysUserVO();
+        userVO.setId(1L);
+        userVO.setUsername("test");
         
-        when(userService.getByUsername(anyString())).thenReturn(user);
+        when(userService.getByUsername(anyString())).thenReturn(userVO);
 
         mockMvc.perform(get("/system/user/username/test")
                 .accept(MediaType.APPLICATION_JSON))
@@ -132,9 +140,9 @@ class SysUserControllerTest {
 
     @Test
     void listByDeptId() throws Exception {
-        List<SysUserDTO> users = Arrays.asList(
-            createUserDTO(1L, "test1"),
-            createUserDTO(2L, "test2")
+        List<SysUserVO> users = Arrays.asList(
+            createUserVO(1L, "test1"),
+            createUserVO(2L, "test2")
         );
         
         when(userService.listByDeptId(anyLong())).thenReturn(users);
@@ -153,9 +161,9 @@ class SysUserControllerTest {
 
     @Test
     void listByRoleId() throws Exception {
-        List<SysUserDTO> users = Arrays.asList(
-            createUserDTO(1L, "test1"),
-            createUserDTO(2L, "test2")
+        List<SysUserVO> users = Arrays.asList(
+            createUserVO(1L, "test1"),
+            createUserVO(2L, "test2")
         );
         
         when(userService.listByRoleId(anyLong())).thenReturn(users);
@@ -188,8 +196,8 @@ class SysUserControllerTest {
         verify(userService).assignRoles(1L, roleIds);
     }
 
-    private SysUserDTO createUserDTO(Long id, String username) {
-        SysUserDTO user = new SysUserDTO();
+    private SysUserVO createUserVO(Long id, String username) {
+        SysUserVO user = new SysUserVO();
         user.setId(id);
         user.setUsername(username);
         return user;
