@@ -83,7 +83,11 @@ public class ArchiveServiceImpl extends ServiceImpl<ArchiveMapper, Archive> impl
 
     @Override
     public Archive getArchiveById(Long id) {
-        return archiveMapper.selectById(id);
+        Archive archive = getById(id);
+        if (archive == null) {
+            throw new BusinessException("档案不存在");
+        }
+        return archive;
     }
 
     @Override

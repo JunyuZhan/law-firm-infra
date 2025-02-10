@@ -1,14 +1,23 @@
 package com.lawfirm.model.system.dto;
 
 import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.common.core.enums.StatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.experimental.Accessors;
 
 /**
- * 岗位DTO
+ * 系统岗位DTO
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
+@Builder
 public class SysPostDTO extends BaseDTO {
 
     /**
@@ -22,17 +31,36 @@ public class SysPostDTO extends BaseDTO {
     private String name;
 
     /**
-     * 状态（0正常 1停用）
-     */
-    private Integer status;
-
-    /**
-     * 排序
+     * 显示顺序
      */
     private Integer sort;
 
-    /**
-     * 备注
-     */
-    private String remark;
+    @Override
+    public StatusEnum getStatus() {
+        return super.getStatus();
+    }
+
+    @Override
+    public SysPostDTO setStatus(StatusEnum status) {
+        super.setStatus(status);
+        return this;
+    }
+
+    @Override
+    public SysPostDTO setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public SysPostDTO setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public SysPostDTO setSort(Integer sort) {
+        super.setSort(sort);
+        return this;
+    }
 } 

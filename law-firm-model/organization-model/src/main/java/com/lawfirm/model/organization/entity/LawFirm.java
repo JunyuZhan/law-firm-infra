@@ -5,14 +5,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Data
 @Entity
 @Table(name = "law_firm")
 @EqualsAndHashCode(callSuper = true)
-public class LawFirm extends ModelBaseEntity {
+public class LawFirm extends ModelBaseEntity<LawFirm> {
 
     @NotBlank(message = "律所名称不能为空")
     @Size(max = 100, message = "律所名称长度不能超过100个字符")

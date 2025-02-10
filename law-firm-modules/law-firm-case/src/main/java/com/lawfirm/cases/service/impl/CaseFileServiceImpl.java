@@ -14,8 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.FilenameUtils;
+import com.lawfirm.model.base.storage.model.FileMetadata;
+import com.lawfirm.model.base.storage.service.StorageService;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +26,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * 案件文件服务实现
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,6 +36,10 @@ public class CaseFileServiceImpl extends ServiceImpl<CaseFileMapper, CaseFile> i
 
     @Value("${app.file-storage.base-path}")
     private String baseStoragePath;
+
+    private final StorageService storageService;
+    
+    private static final String BUSINESS_TYPE = "case";
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -125,5 +135,27 @@ public class CaseFileServiceImpl extends ServiceImpl<CaseFileMapper, CaseFile> i
         String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String fileName = String.format("%d_%s.%s", caseId, System.currentTimeMillis(), fileExtension);
         return Paths.get(datePath, fileName).toString();
+    }
+
+    @Override
+    public FileMetadata uploadCaseFile(MultipartFile file, String caseId, String fileType) {
+        String businessKey = String.format("%s/%s", caseId, fileType);
+        return storageService.upload(file, BUSINESS_TYPE, businessKey);
+    }
+
+    @Override
+    public InputStream downloadCaseFile(String fileId) {
+        return storageService.download(fileId);
+    }
+
+    @Override
+    public void deleteCaseFile(String fileId) {
+        storageService.delete(fileId);
+    }
+
+    @Override
+    public List<FileMetadata> listCaseFiles(String caseId, String fileType) {
+        String businessKey = String.format("%s/%s", caseId, fileType);
+        return storageService.listByBusiness(BUSINESS_TYPE, businessKey);
     }
 } 

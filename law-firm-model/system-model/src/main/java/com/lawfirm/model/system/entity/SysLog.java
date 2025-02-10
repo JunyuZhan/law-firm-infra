@@ -1,7 +1,7 @@
 package com.lawfirm.model.system.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,9 +9,10 @@ import lombok.EqualsAndHashCode;
  * 系统日志实体类
  */
 @Data
+@Entity
+@Table(name = "sys_log")
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_log")
-public class SysLog extends ModelBaseEntity {
+public class SysLog extends ModelBaseEntity<SysLog> {
     
     /**
      * 操作模块

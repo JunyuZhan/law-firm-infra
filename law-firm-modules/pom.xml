@@ -40,7 +40,6 @@
         <module>law-firm-supplies</module>
         <module>law-firm-schedule</module>
         <module>law-firm-seal</module>
-        <module>law-firm-meeting</module>
         <module>law-firm-message</module>
         <module>law-firm-conflict</module>
         <module>law-firm-asset</module>

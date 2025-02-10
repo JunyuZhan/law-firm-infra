@@ -1,25 +1,41 @@
 package com.lawfirm.common.log.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
+/**
+ * 操作类型枚举
+ */
 public enum OperationType {
+    /**
+     * 查询
+     */
+    QUERY,
     
-    QUERY("查询"),
-    CREATE("创建"),
-    UPDATE("更新"),
-    DELETE("删除"),
-    EXPORT("导出"),
-    IMPORT("导入"),
-    UPLOAD("上传"),
-    DOWNLOAD("下载"),
-    APPROVE("审批"),
-    REJECT("驳回"),
-    SUBMIT("提交"),
-    CANCEL("取消"),
-    COMPLETE("完成");
+    /**
+     * 创建
+     */
+    CREATE,
     
-    private final String description;
+    /**
+     * 更新
+     */
+    UPDATE,
+    
+    /**
+     * 删除
+     */
+    DELETE,
+    
+    /**
+     * 导出
+     */
+    EXPORT,
+    
+    /**
+     * 导入
+     */
+    IMPORT,
+    
+    /**
+     * 其他
+     */
+    OTHER
 } 

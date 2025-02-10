@@ -9,7 +9,7 @@ import com.lawfirm.common.core.exception.ResourceNotFoundException;
 import com.lawfirm.model.cases.dto.CaseCreateDTO;
 import com.lawfirm.model.cases.dto.CaseQueryDTO;
 import com.lawfirm.model.cases.dto.CaseUpdateDTO;
-import com.lawfirm.model.base.enums.StatusEnum;
+import com.lawfirm.common.core.enums.StatusEnum;
 import com.lawfirm.model.cases.entity.Case;
 import com.lawfirm.model.cases.enums.*;
 import com.lawfirm.model.cases.vo.CaseDetailVO;

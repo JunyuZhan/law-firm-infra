@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.common.data.entity.BaseEntity;
-import com.lawfirm.common.data.enums.StatusEnum;
+import com.lawfirm.common.core.enums.StatusEnum;
 import com.lawfirm.common.data.status.StatusAware;
 
 import lombok.Data;

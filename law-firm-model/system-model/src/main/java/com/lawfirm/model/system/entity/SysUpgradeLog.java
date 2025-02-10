@@ -1,45 +1,61 @@
 package com.lawfirm.model.system.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.data.entity.BaseEntity;
-import lombok.Data;
+import com.lawfirm.common.core.enums.StatusEnum;
+import com.lawfirm.common.core.status.StatusAware;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.EqualsAndHashCode;
 
 /**
  * 系统升级日志实体类
  */
-@Data
+@Getter
+@Setter
+@Accessors(chain = true)
+@Entity
+@Table(name = "sys_upgrade_log")
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_upgrade_log")
-public class SysUpgradeLog extends BaseEntity {
-    
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class SysUpgradeLog extends ModelBaseEntity<SysUpgradeLog> {
     
     /**
      * 升级包ID
      */
+    @Column(name = "package_id")
     private Long packageId;
     
     /**
-     * 操作类型
+     * 升级状态
      */
-    private String operation;
+    @Column(name = "status")
+    private Integer status;
     
     /**
-     * 操作详情
+     * 升级时间
      */
-    private String detail;
+    @Column(name = "upgrade_time")
+    private Long upgradeTime;
     
     /**
-     * 是否成功
+     * 升级日志
      */
-    private Boolean success;
+    @Column(name = "log")
+    private String log;
     
     /**
      * 错误信息
      */
+    @Column(name = "error_message")
     private String errorMessage;
+
+    @Override
+    public StatusEnum getStatus() {
+        return super.getStatus();
+    }
+
+    public Integer getStatusValue() {
+        return status;
+    }
 } 

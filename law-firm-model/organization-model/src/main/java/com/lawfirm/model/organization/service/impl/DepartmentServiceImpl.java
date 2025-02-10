@@ -5,6 +5,7 @@ import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.common.data.service.impl.BaseServiceImpl;
 import com.lawfirm.model.organization.entity.Department;
 import com.lawfirm.model.organization.vo.DepartmentVO;
+import com.lawfirm.model.organization.dto.DepartmentDTO;
 import com.lawfirm.model.organization.mapper.DepartmentMapper;
 import com.lawfirm.model.organization.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
@@ -47,13 +48,23 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     }
 
     @Override
-    public Department voToEntity(DepartmentVO vo) {
+    public Department toEntity(DepartmentVO vo) {
         if (vo == null) {
             return null;
         }
-        Department entity = createEntity();
+        Department entity = new Department();
         BeanUtils.copyProperties(vo, entity);
         return entity;
+    }
+
+    @Override
+    public DepartmentVO toDTO(Department entity) {
+        if (entity == null) {
+            return null;
+        }
+        DepartmentVO vo = createVO();
+        BeanUtils.copyProperties(entity, vo);
+        return vo;
     }
 
     @Override
@@ -72,7 +83,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             return new ArrayList<>();
         }
         return voList.stream()
-                .map(this::voToEntity)
+                .map(this::toEntity)
                 .collect(Collectors.toList());
     }
 
@@ -160,7 +171,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             throw new BusinessException("部门名称已存在");
         }
         
-        Department department = voToEntity(vo);
+        Department department = toEntity(vo);
         save(department);
         return entityToVO(department);
     }
@@ -179,7 +190,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             throw new BusinessException("部门名称已存在");
         }
 
-        Department department = voToEntity(vo);
+        Department department = toEntity(vo);
         updateById(department);
         return entityToVO(department);
     }

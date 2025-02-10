@@ -2,23 +2,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.lawfirm</groupId>
         <artifactId>law-firm-model</artifactId>
+        <groupId>com.lawfirm</groupId>
         <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>system-model</artifactId>
+    <version>1.0.0</version>
     <name>${project.artifactId}</name>
     <description>系统管理核心模块</description>
 
     <dependencies>
-        <!-- 基础模型依赖 -->
+        <!-- Common Data -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
+            <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Base Model -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
@@ -27,8 +38,8 @@
 
         <!-- Spring Data JPA -->
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
         <!-- JPA API -->
@@ -47,6 +58,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Apache Commons -->

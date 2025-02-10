@@ -1,14 +1,23 @@
 package com.lawfirm.model.system.dto;
 
 import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.common.core.enums.StatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.experimental.Accessors;
 
 /**
  * 律师事务所DTO
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
+@Builder
 public class SysLawFirmDTO extends BaseDTO {
 
     /**
@@ -41,13 +50,32 @@ public class SysLawFirmDTO extends BaseDTO {
      */
     private String address;
 
-    /**
-     * 状态（0-待审核 1-正常 2-禁用）
-     */
-    private Integer status;
+    @Override
+    public StatusEnum getStatus() {
+        return super.getStatus();
+    }
 
-    /**
-     * 备注
-     */
-    private String remark;
+    @Override
+    public SysLawFirmDTO setStatus(StatusEnum status) {
+        super.setStatus(status);
+        return this;
+    }
+
+    @Override
+    public SysLawFirmDTO setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public SysLawFirmDTO setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public SysLawFirmDTO setSort(Integer sort) {
+        super.setSort(sort);
+        return this;
+    }
 } 

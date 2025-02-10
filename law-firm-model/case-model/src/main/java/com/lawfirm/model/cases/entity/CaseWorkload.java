@@ -2,18 +2,21 @@ package com.lawfirm.model.cases.entity;
 
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = "case_workload")
-@EqualsAndHashCode(callSuper = true)
-public class CaseWorkload extends ModelBaseEntity {
+public class CaseWorkload extends ModelBaseEntity<CaseWorkload> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

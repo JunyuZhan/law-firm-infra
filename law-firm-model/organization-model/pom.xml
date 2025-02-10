@@ -17,6 +17,11 @@
         <!-- 内部依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
+            <artifactId>base-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
         </dependency>
         <dependency>
@@ -26,10 +31,6 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-log</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>base-model</artifactId>
         </dependency>
 
         <!-- Spring Web -->
@@ -68,6 +69,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Jakarta Validation -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,20 +1,24 @@
 package com.lawfirm.model.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.model.base.enums.StatusEnum;
+import com.lawfirm.common.core.enums.StatusEnum;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
 /**
  * 系统用户实体类
  */
-@Data
+@Getter
+@Setter
 @TableName("sys_user")
 @EqualsAndHashCode(callSuper = true)
-public class SysUser extends ModelBaseEntity {
+@Accessors(chain = true)
+public class SysUser extends ModelBaseEntity<SysUser> {
     
     /**
      * 用户名
@@ -70,14 +74,4 @@ public class SysUser extends ModelBaseEntity {
      * 最后登录时间
      */
     private LocalDateTime loginTime;
-    
-    /**
-     * 状态（0:禁用 1:正常）
-     */
-    private StatusEnum status;
-    
-    /**
-     * 备注
-     */
-    private String remark;
 } 

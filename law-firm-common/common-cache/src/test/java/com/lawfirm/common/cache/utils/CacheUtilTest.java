@@ -1,13 +1,11 @@
 package com.lawfirm.common.cache.utils;
 
 import com.lawfirm.common.cache.config.TestConfig;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -21,18 +19,10 @@ import static org.mockito.Mockito.when;
 class CacheUtilTest {
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-
-    @Autowired
     private CacheUtil cacheUtil;
 
-    private ValueOperations<String, Object> valueOperations;
-
-    @BeforeEach
-    void setUp() {
-        valueOperations = Mockito.mock(ValueOperations.class);
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-    }
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Test
     void testString() {
@@ -40,20 +30,20 @@ class CacheUtilTest {
         String value = "hello";
         
         // 模拟设置和获取
-        when(valueOperations.get(anyString())).thenReturn(value);
+        when(redisTemplate.opsForValue().get(anyString())).thenReturn(value);
         when(redisTemplate.hasKey(anyString())).thenReturn(true);
         
         // 测试设置和获取
         cacheUtil.set(key, value, 60, TimeUnit.SECONDS);
         String result = (String) cacheUtil.get(key);
-        assert value.equals(result);
+        assertEquals(value, result);
         
         // 测试删除
         when(redisTemplate.delete(anyString())).thenReturn(true);
         cacheUtil.delete(key);
         
         // 验证方法调用
-        Mockito.verify(valueOperations).set(key, value, 60, TimeUnit.SECONDS);
+        Mockito.verify(redisTemplate.opsForValue()).set(key, value, 60, TimeUnit.SECONDS);
         Mockito.verify(redisTemplate).delete(key);
     }
 
@@ -62,6 +52,10 @@ class CacheUtilTest {
         String key = "test:hash";
         String field = "name";
         String value = "test";
+        
+        // 模拟设置和获取
+        when(redisTemplate.opsForHash().get(key, field)).thenReturn(value);
+        when(redisTemplate.opsForHash().hasKey(key, field)).thenReturn(true, false);
         
         // 测试设置和获取
         cacheUtil.hSet(key, field, value);
@@ -77,6 +71,10 @@ class CacheUtilTest {
     void testList() {
         String key = "test:list";
         String value = "item";
+        
+        // 模拟列表操作
+        when(redisTemplate.opsForList().range(key, 0, -1)).thenReturn(Arrays.asList(value));
+        when(redisTemplate.opsForList().size(key)).thenReturn(3L, 2L);
         
         // 测试添加和获取
         cacheUtil.lPush(key, value);
@@ -95,6 +93,10 @@ class CacheUtilTest {
     void testSet() {
         String key = "test:set";
         String value = "member";
+        
+        // 模拟集合操作
+        when(redisTemplate.opsForSet().isMember(key, value)).thenReturn(true, false);
+        when(redisTemplate.opsForSet().members(key)).thenReturn(java.util.Collections.singleton(value));
         
         // 测试添加和判断
         cacheUtil.sAdd(key, value);

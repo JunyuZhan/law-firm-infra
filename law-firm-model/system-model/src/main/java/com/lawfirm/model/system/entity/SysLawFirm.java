@@ -1,17 +1,21 @@
 package com.lawfirm.model.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.data.entity.BaseEntity;
-import lombok.Data;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
- * 律师事务所实体
+ * 律师事务所实体类
  */
-@Data
+@Getter
+@Setter
 @TableName("sys_law_firm")
 @EqualsAndHashCode(callSuper = true)
-public class SysLawFirm extends BaseEntity {
+@Accessors(chain = true)
+public class SysLawFirm extends ModelBaseEntity<SysLawFirm> {
 
     /**
      * 事务所名称
@@ -42,11 +46,6 @@ public class SysLawFirm extends BaseEntity {
      * 地址
      */
     private String address;
-
-    /**
-     * 状态（0-待审核 1-正常 2-禁用）
-     */
-    private Integer status;
 
     /**
      * 备注

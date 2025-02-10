@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "auth_user_role")
 @EqualsAndHashCode(callSuper = true)
-public class UserRole extends ModelBaseEntity {
+public class UserRole extends ModelBaseEntity<UserRole> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

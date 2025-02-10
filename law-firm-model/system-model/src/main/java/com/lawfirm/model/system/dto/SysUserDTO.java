@@ -2,8 +2,15 @@ package com.lawfirm.model.system.dto;
 
 import com.lawfirm.common.data.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
+import com.lawfirm.common.core.enums.StatusEnum;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -11,7 +18,11 @@ import java.util.List;
  * 用户DTO
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
+@Builder
 @Schema(description = "用户DTO")
 public class SysUserDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
@@ -105,4 +116,33 @@ public class SysUserDTO extends BaseDTO {
      */
     @Schema(description = "备注")
     private String remark;
+
+    @Override
+    public StatusEnum getStatus() {
+        return super.getStatus();
+    }
+
+    @Override
+    public SysUserDTO setStatus(StatusEnum status) {
+        super.setStatus(status);
+        return this;
+    }
+
+    @Override
+    public SysUserDTO setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public SysUserDTO setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public SysUserDTO setSort(Integer sort) {
+        super.setSort(sort);
+        return this;
+    }
 } 

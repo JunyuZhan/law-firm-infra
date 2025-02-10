@@ -2,17 +2,7 @@ package com.lawfirm.model.cases.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import com.lawfirm.model.base.enums.StatusEnum;
-import com.lawfirm.model.base.status.StatusAware;
-import com.lawfirm.model.cases.enums.CaseStatusEnum;
-import com.lawfirm.model.cases.enums.CaseTypeEnum;
-import com.lawfirm.model.cases.enums.CaseProgressEnum;
-import com.lawfirm.model.cases.enums.CaseHandleTypeEnum;
-import com.lawfirm.model.cases.enums.CaseDifficultyEnum;
-import com.lawfirm.model.cases.enums.CaseImportanceEnum;
-import com.lawfirm.model.cases.enums.CasePriorityEnum;
-import com.lawfirm.model.cases.enums.CaseFeeTypeEnum;
-import com.lawfirm.model.cases.enums.CaseSourceEnum;
+import com.lawfirm.model.cases.enums.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,11 +14,14 @@ import org.hibernate.annotations.Comment;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * 案件实体
+ */
 @Data
 @Entity
 @Table(name = "case_info")
 @EqualsAndHashCode(callSuper = true)
-public class Case extends ModelBaseEntity implements StatusAware {
+public class Case extends ModelBaseEntity<Case> {
 
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -153,17 +146,15 @@ public class Case extends ModelBaseEntity implements StatusAware {
     @Comment("备注")
     private String remark;
 
-    @NotNull(message = "系统状态不能为空")
-    @TableField("status")
-    private StatusEnum status;
-
     @Override
-    public StatusEnum getStatus() {
-        return status;
+    public Case setId(Long id) {
+        super.setId(id);
+        return this;
     }
 
     @Override
-    public void setStatus(StatusEnum status) {
-        this.status = status;
+    public Case setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
     }
 } 

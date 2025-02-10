@@ -1,6 +1,7 @@
 package com.lawfirm.model.auth.entity;
 
 import com.lawfirm.model.base.entity.ModelBaseEntity;
+import com.lawfirm.common.core.enums.StatusEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "auth_menu")
 @EqualsAndHashCode(callSuper = true)
-public class Menu extends ModelBaseEntity {
+public class Menu extends ModelBaseEntity<Menu> {
 
     @NotBlank(message = "菜单名称不能为空")
     @Size(max = 50, message = "菜单名称长度不能超过50个字符")
@@ -43,6 +44,29 @@ public class Menu extends ModelBaseEntity {
 
     @Column(length = 200)
     private String permission;
+
+    @Override
+    public Menu setSort(Integer sort) {
+        super.setSort(sort);
+        return this;
+    }
+
+    @Override
+    public Menu setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public Menu setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public void setStatus(StatusEnum status) {
+        super.setStatus(status);
+    }
 
     public enum MenuType {
         DIRECTORY,  // 目录

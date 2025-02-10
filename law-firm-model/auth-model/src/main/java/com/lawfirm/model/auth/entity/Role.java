@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "auth_role")
 @EqualsAndHashCode(callSuper = true)
-public class Role extends ModelBaseEntity {
+public class Role extends ModelBaseEntity<Role> {
 
     @NotBlank(message = "角色名称不能为空")
     @Size(max = 50, message = "角色名称长度不能超过50个字符")

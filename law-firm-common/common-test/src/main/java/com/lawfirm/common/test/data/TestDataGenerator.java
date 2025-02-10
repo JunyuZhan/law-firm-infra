@@ -71,6 +71,7 @@ public class TestDataGenerator {
     /**
      * 从列表中随机选择一个元素
      */
+    @SuppressWarnings("unchecked")
     public static <T> T randomElement(List<T> list) {
         if (list == null || list.isEmpty()) {
             return null;
@@ -81,10 +82,14 @@ public class TestDataGenerator {
     /**
      * 生成随机列表
      */
+    @SuppressWarnings("unchecked")
     public static <T> List<T> randomList(int size, T... elements) {
         List<T> result = new ArrayList<>();
+        if (elements == null || elements.length == 0) {
+            return result;
+        }
         for (int i = 0; i < size; i++) {
-            result.add(randomElement(List.of(elements)));
+            result.add(elements[random.nextInt(elements.length)]);
         }
         return result;
     }

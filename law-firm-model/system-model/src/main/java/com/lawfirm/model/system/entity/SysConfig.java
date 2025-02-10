@@ -2,26 +2,28 @@ package com.lawfirm.model.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import com.lawfirm.model.base.enums.StatusEnum;
-import com.lawfirm.model.base.status.StatusAware;
+import com.lawfirm.common.core.enums.StatusEnum;
+import com.lawfirm.common.core.status.StatusAware;
 import com.lawfirm.model.system.enums.ConfigStatusEnum;
 import com.lawfirm.model.system.enums.ConfigTypeEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
 /**
  * 系统配置实体类
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "sys_config")
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_config")
-public class SysConfig extends ModelBaseEntity implements StatusAware {
+public class SysConfig extends ModelBaseEntity<SysConfig> implements StatusAware {
 
     private Long lawFirmId;  // 所属律所ID，为空表示全局配置
 
@@ -75,10 +77,17 @@ public class SysConfig extends ModelBaseEntity implements StatusAware {
     @Override
     public void setStatus(StatusEnum status) {
         this.status = status;
-        if (status == StatusEnum.ENABLED) {
-            this.configStatus = ConfigStatusEnum.ENABLED;
-        } else if (status == StatusEnum.DISABLED) {
-            this.configStatus = ConfigStatusEnum.DISABLED;
-        }
+    }
+
+    @Override
+    public SysConfig setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public SysConfig setId(Long id) {
+        super.setId(id);
+        return this;
     }
 } 

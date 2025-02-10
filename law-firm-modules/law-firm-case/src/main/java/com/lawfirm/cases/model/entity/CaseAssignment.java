@@ -1,7 +1,7 @@
 package com.lawfirm.cases.model.entity;
 
-import com.lawfirm.common.data.entity.BaseEntity;
-import com.lawfirm.model.cases.entity.Case;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,11 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "case_assignment")
 @EqualsAndHashCode(callSuper = true)
-public class CaseAssignment extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@TableName("case_assignment")
+public class CaseAssignment extends ModelBaseEntity<CaseAssignment> {
 
     @Comment("案件ID")
     @Column(nullable = false)
@@ -58,8 +55,4 @@ public class CaseAssignment extends BaseEntity {
     @Comment("备注")
     @Column(length = 512)
     private String remarks;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "case_id", insertable = false, updatable = false)
-    private Case lawCase;
 } 

@@ -4,14 +4,12 @@ import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Data
 @Entity
 @Table(name = "per_contact")
 @EqualsAndHashCode(callSuper = true)
-public class Contact extends ModelBaseEntity {
+public class Contact extends ModelBaseEntity<Contact> {
 
     @NotNull(message = "关联ID不能为空")
     @Column(nullable = false)

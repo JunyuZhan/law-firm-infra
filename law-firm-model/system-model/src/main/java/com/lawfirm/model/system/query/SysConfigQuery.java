@@ -1,6 +1,6 @@
 package com.lawfirm.model.system.query;
 
-import com.lawfirm.model.base.query.PageQuery;
+import com.lawfirm.common.data.query.PageQuery;
 import com.lawfirm.model.system.enums.ConfigStatusEnum;
 import com.lawfirm.model.system.enums.ConfigTypeEnum;
 import lombok.Data;

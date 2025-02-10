@@ -1,9 +1,9 @@
 package com.lawfirm.common.log.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.common.core.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import com.lawfirm.common.core.model.BaseEntity;
 
 import java.time.LocalDateTime;
 

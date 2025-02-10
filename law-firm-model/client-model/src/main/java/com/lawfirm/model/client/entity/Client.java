@@ -1,19 +1,26 @@
 package com.lawfirm.model.client.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.client.enums.ClientStatusEnum;
 import com.lawfirm.model.client.enums.ClientTypeEnum;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.EqualsAndHashCode;
 
 /**
  * 客户实体类
+ *
+ * @author auto
+ * @since 1.0.0
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 @TableName("t_client")
-public class Client extends BaseEntity {
+public class Client extends ModelBaseEntity<Client> {
 
     /**
      * 客户编号
@@ -59,4 +66,28 @@ public class Client extends BaseEntity {
      * 更新人
      */
     private String updateBy;
+
+    /**
+     * 设置备注信息
+     *
+     * @param remark 备注信息
+     * @return 当前对象
+     */
+    @Override
+    public Client setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    /**
+     * 设置更新人
+     *
+     * @param updateBy 更新人
+     * @return 当前对象
+     */
+    @Override
+    public Client setUpdateBy(String updateBy) {
+        super.setUpdateBy(updateBy);
+        return this;
+    }
 } 

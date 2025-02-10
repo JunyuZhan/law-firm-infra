@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.data.service.impl.BaseServiceImpl;
 import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.common.core.model.page.PageResult;
-import com.lawfirm.common.data.enums.StatusEnum;
+import com.lawfirm.common.core.enums.StatusEnum;
 import com.lawfirm.model.system.entity.SysUser;
 import com.lawfirm.model.system.entity.SysUserRole;
 import com.lawfirm.model.system.dto.SysUserDTO;

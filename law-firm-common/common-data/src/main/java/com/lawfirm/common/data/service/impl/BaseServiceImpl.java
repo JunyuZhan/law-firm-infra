@@ -6,11 +6,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lawfirm.common.core.entity.BaseEntity;
 import com.lawfirm.common.core.model.page.PageResult;
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.common.data.service.BaseService;
 import com.lawfirm.common.data.vo.BaseVO;
 import com.lawfirm.common.data.processor.EntityProcessor;
-import com.lawfirm.common.data.service.BaseService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @param <T> 实体类型
  * @param <V> VO类型
  */
-public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity, V extends BaseVO> 
+public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity<T>, V extends BaseVO> 
     extends ServiceImpl<M, T> implements BaseService<T, V> {
 
     protected EntityProcessor<T> entityProcessor;

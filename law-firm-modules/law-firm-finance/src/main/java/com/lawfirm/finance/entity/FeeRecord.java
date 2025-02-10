@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.common.core.base.BaseEntity;
 import com.lawfirm.common.data.enums.StatusEnum;
 import com.lawfirm.common.data.status.StatusAware;
 
@@ -26,27 +26,60 @@ public class FeeRecord extends BaseEntity implements StatusAware {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    private BigDecimal amount;  // 收费金额
+    /**
+     * 收费金额
+     */
+    private BigDecimal amount;
 
-    private BigDecimal paidAmount;  // 已支付金额
+    /**
+     * 已支付金额
+     */
+    private BigDecimal paidAmount;
 
-    private String feeStatus;  // 收费状态：UNPAID/PAID/PARTIAL/REFUNDED
+    /**
+     * 收费状态
+     */
+    private String feeStatus;
 
-    private String feeType;    // 收费类型：案件收费/咨询收费/其他收费
+    /**
+     * 收费类型
+     */
+    private String feeType;
 
-    private Long caseId;       // 关联案件ID
+    /**
+     * 关联案件ID
+     */
+    private Long caseId;
 
-    private Long clientId;     // 关联客户ID
+    /**
+     * 关联客户ID
+     */
+    private Long clientId;
 
-    private Long lawFirmId;    // 关联律所ID
+    /**
+     * 关联律所ID
+     */
+    private Long lawFirmId;
 
-    private LocalDateTime paymentTime;  // 支付时间
+    /**
+     * 支付时间
+     */
+    private LocalDateTime paymentTime;
 
-    private String paymentMethod;       // 支付方式
+    /**
+     * 支付方式
+     */
+    private String paymentMethod;
 
-    private String description;  // 收费说明
+    /**
+     * 收费说明
+     */
+    private String description;
 
-    private String remark;      // 备注
+    /**
+     * 备注
+     */
+    private String remark;
 
     @Override
     public StatusEnum getStatus() {

@@ -1,38 +1,42 @@
 package com.lawfirm.common.data.convert;
 
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.common.core.entity.BaseEntity;
 import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.common.data.vo.BaseVO;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
 /**
- * 基础对象转换器
+ * 基础转换器接口
+ *
+ * @param <T> 实体类型
+ * @param <V> VO类型
  */
-public interface BaseConverter<E extends BaseEntity, D extends BaseDTO> {
+public interface BaseConverter<T extends BaseEntity<T>, V extends BaseVO> {
 
     /**
-     * 实体转DTO
+     * 实体转VO
      */
-    D toDTO(E entity);
+    V toVO(T entity);
 
     /**
-     * DTO转实体
+     * VO转实体
      */
-    E toEntity(D dto);
+    T toEntity(V vo);
 
     /**
      * 更新实体
      */
-    void updateEntity(D dto, @MappingTarget E entity);
+    void updateEntity(V vo, @MappingTarget T entity);
 
     /**
-     * 实体列表转DTO列表
+     * 实体列表转VO列表
      */
-    List<D> toDTOList(List<E> entityList);
+    List<V> toVOList(List<T> entityList);
 
     /**
-     * DTO列表转实体列表
+     * VO列表转实体列表
      */
-    List<E> toEntityList(List<D> dtoList);
+    List<T> toEntityList(List<V> voList);
 } 

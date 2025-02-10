@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.lawfirm.common.data.serializer.SensitiveSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -64,7 +65,11 @@ public class JacksonConfig {
             new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
 
         objectMapper.registerModule(javaTimeModule);
-        objectMapper.registerModule(new SimpleModule());
+        
+        // 注册脱敏模块
+        SimpleModule sensitiveModule = new SimpleModule();
+        sensitiveModule.addSerializer(String.class, new SensitiveSerializer());
+        objectMapper.registerModule(sensitiveModule);
 
         return objectMapper;
     }

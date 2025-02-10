@@ -1,13 +1,17 @@
 package com.lawfirm.personnel.dto;
 
+import com.lawfirm.common.core.dto.PageDTO;
+import com.lawfirm.model.personnel.enums.EmployeeTypeEnum;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 
 /**
  * 员工查询条件
  */
 @Data
-public class EmployeeQueryDTO {
+@EqualsAndHashCode(callSuper = true)
+public class EmployeeQueryDTO extends PageDTO {
     
     /**
      * 员工编号
@@ -63,4 +67,20 @@ public class EmployeeQueryDTO {
      * 每页记录数
      */
     private Integer pageSize = 10;
+
+    private Long lawFirmId;
+    
+    private String employeeCode;
+    
+    private EmployeeTypeEnum employeeType;
+    
+    private String email;
+    
+    private String employmentStatus;
+    
+    private Boolean enabled;
+    
+    private LocalDateTime startTime;
+    
+    private LocalDateTime endTime;
 } 

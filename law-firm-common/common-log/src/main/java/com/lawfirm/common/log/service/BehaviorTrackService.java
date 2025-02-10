@@ -1,6 +1,9 @@
 package com.lawfirm.common.log.service;
 
+import com.lawfirm.common.log.domain.BehaviorTrack;
 import com.lawfirm.common.log.domain.TrackData;
+
+import java.util.List;
 
 /**
  * 行为跟踪服务接口
@@ -33,4 +36,9 @@ public interface BehaviorTrackService {
      * 清理过期数据
      */
     void cleanExpiredData();
+
+    /**
+     * 获取所有行为记录
+     */
+    List<BehaviorTrack> list();
 } 

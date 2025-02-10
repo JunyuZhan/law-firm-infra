@@ -84,6 +84,16 @@ public class Task {
     private LocalDateTime claimTime;
     
     /**
+     * 开始时间
+     */
+    private LocalDateTime startTime;
+    
+    /**
+     * 结束时间
+     */
+    private LocalDateTime endTime;
+    
+    /**
      * 任务本地变量
      */
     private Map<String, Object> taskLocalVariables;
@@ -97,4 +107,9 @@ public class Task {
      * 租户ID
      */
     private String tenantId;
+
+    /**
+     * 任务分类
+     */
+    private String category;
 } 

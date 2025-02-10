@@ -1,5 +1,6 @@
 package com.lawfirm.common.cache.config;
 
+import com.lawfirm.common.cache.utils.CacheUtil;
 import org.mockito.Mockito;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.SpringBootConfiguration;
@@ -8,15 +9,14 @@ import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoCo
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.SetOperations;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration(exclude = {
@@ -24,38 +24,33 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
     DataSourceTransactionManagerAutoConfiguration.class,
     RedisRepositoriesAutoConfiguration.class
 })
-@ComponentScan("com.lawfirm.common.cache")
+@Import({CacheUtil.class})
 public class TestConfig {
     
     @Bean
     @Primary
-    public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-        config.setHostName("localhost");
-        config.setPort(6379);
-        return new LettuceConnectionFactory(config);
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> mockTemplate = Mockito.mock(RedisTemplate.class);
+        
+        // Mock operations
+        ValueOperations<String, Object> valueOps = Mockito.mock(ValueOperations.class);
+        HashOperations<String, Object, Object> hashOps = Mockito.mock(HashOperations.class);
+        ListOperations<String, Object> listOps = Mockito.mock(ListOperations.class);
+        SetOperations<String, Object> setOps = Mockito.mock(SetOperations.class);
+        
+        // Setup template operations
+        Mockito.when(mockTemplate.opsForValue()).thenReturn(valueOps);
+        Mockito.when(mockTemplate.opsForHash()).thenReturn(hashOps);
+        Mockito.when(mockTemplate.opsForList()).thenReturn(listOps);
+        Mockito.when(mockTemplate.opsForSet()).thenReturn(setOps);
+        
+        return mockTemplate;
     }
     
     @Bean
     @Primary
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.afterPropertiesSet();
-        return template;
-    }
-    
-    @Bean
-    @Primary
-    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
-        StringRedisTemplate template = new StringRedisTemplate();
-        template.setConnectionFactory(connectionFactory);
-        template.afterPropertiesSet();
-        return template;
+    public StringRedisTemplate stringRedisTemplate() {
+        return Mockito.mock(StringRedisTemplate.class);
     }
 
     @Bean

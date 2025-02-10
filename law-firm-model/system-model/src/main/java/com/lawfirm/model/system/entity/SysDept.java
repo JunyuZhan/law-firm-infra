@@ -2,18 +2,22 @@ package com.lawfirm.model.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.lawfirm.common.data.entity.BaseEntity;
-import lombok.Data;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
 import java.util.List;
+import lombok.experimental.Accessors;
 
 /**
  * 部门实体类
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_dept")
-public class SysDept extends BaseEntity {
+@Accessors(chain = true)
+public class SysDept extends ModelBaseEntity<SysDept> {
     
     /**
      * 部门名称
@@ -50,12 +54,6 @@ public class SysDept extends BaseEntity {
      */
     @TableField("email")
     private String email;
-    
-    /**
-     * 状态（0正常 1停用）
-     */
-    @TableField("status")
-    private Integer status;
     
     /**
      * 备注

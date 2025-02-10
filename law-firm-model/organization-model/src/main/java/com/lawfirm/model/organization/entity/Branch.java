@@ -6,14 +6,21 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.EqualsAndHashCode;
 
-@Data
+/**
+ * 分支机构实体类
+ */
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
-@Table(name = "org_branch")
+@Table(name = "branch")
 @EqualsAndHashCode(callSuper = true)
-public class Branch extends ModelBaseEntity {
+public class Branch extends ModelBaseEntity<Branch> {
 
     @NotNull(message = "律所ID不能为空")
     @Column(nullable = false)

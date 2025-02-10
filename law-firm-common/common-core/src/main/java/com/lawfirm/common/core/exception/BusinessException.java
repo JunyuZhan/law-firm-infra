@@ -1,33 +1,27 @@
 package com.lawfirm.common.core.exception;
 
+import com.lawfirm.common.core.constant.ResultCode;
+import lombok.Getter;
+
 /**
  * 业务异常
  */
-public class BusinessException extends RuntimeException {
-    
-    private static final long serialVersionUID = 1L;
-    
-    private int code;
-    private String message;
+@Getter
+public class BusinessException extends BaseException {
     
     public BusinessException(String message) {
         super(message);
-        this.message = message;
-        this.code = 500;
     }
     
-    public BusinessException(String message, int code) {
-        super(message);
-        this.message = message;
-        this.code = code;
+    public BusinessException(int code, String message) {
+        super(code, message);
     }
     
-    public int getCode() {
-        return code;
+    public BusinessException(ResultCode resultCode) {
+        super(resultCode);
     }
     
-    @Override
-    public String getMessage() {
-        return message;
+    public BusinessException(ResultCode resultCode, String message) {
+        super(resultCode.getCode(), message);
     }
 } 

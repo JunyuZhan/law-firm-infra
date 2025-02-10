@@ -1,70 +1,61 @@
 package com.lawfirm.model.system.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.core.model.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * 系统升级包
- */
 @Data
+@Entity
+@Table(name = "sys_upgrade_package")
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_upgrade_package")
-public class SysUpgradePackage extends BaseEntity {
-    
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class SysUpgradePackage extends ModelBaseEntity<SysUpgradePackage> {
     
     /**
      * 升级包名称
      */
-    private String packageName;
-    
-    /**
-     * 目标版本号
-     */
-    private String version;
+    @Column(name = "name")
+    private String name;
     
     /**
      * 升级说明
      */
+    @Column(name = "description")
     private String description;
     
     /**
      * 升级包路径
      */
-    private String filePath;
+    @Column(name = "path")
+    private String path;
     
     /**
      * 文件MD5
      */
+    @Column(name = "md5")
     private String md5;
     
     /**
      * 文件大小(字节)
      */
-    private Long fileSize;
-    
-    /**
-     * 状态(0:待升级 1:升级中 2:升级成功 3:升级失败)
-     */
-    private Integer status;
+    @Column(name = "size")
+    private Long size;
     
     /**
      * 错误信息
      */
+    @Column(name = "error_message")
     private String errorMessage;
 
     /**
      * 是否需要备份
      */
+    @Column(name = "need_backup")
     private Boolean needBackup;
 
     /**
      * 备份路径
      */
+    @Column(name = "backup_path")
     private String backupPath;
 } 

@@ -1,55 +1,78 @@
 package com.lawfirm.model.base.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import com.lawfirm.common.data.entity.BaseEntity;
-import com.lawfirm.model.base.enums.StatusEnum;
-import com.lawfirm.model.base.status.StatusAware;
-import com.lawfirm.model.base.tenant.TenantAware;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.Version;
+import com.lawfirm.common.core.enums.StatusEnum;
+import com.lawfirm.common.core.status.StatusAware;
+import com.lawfirm.common.core.tenant.TenantAware;
+import com.lawfirm.common.data.entity.DataBaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
- * 模型基础实体类
+ * 业务模型基础实体类，扩展数据库实体，添加业务字段
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public abstract class ModelBaseEntity extends BaseEntity implements Serializable, TenantAware, StatusAware {
+@Getter
+@Setter
+@Accessors(chain = true)
+public abstract class ModelBaseEntity<T extends ModelBaseEntity<T>> extends DataBaseEntity<T> implements TenantAware, StatusAware {
 
-    private static final long serialVersionUID = 1L;
-
-    @TableId(type = IdType.AUTO)
-    private Long id;
-
+    /**
+     * 版本号
+     */
     @Version
+    @TableField("version")
     private Integer version;
 
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    /**
+     * 租户ID
+     */
+    @TableField("tenant_id")
+    private Long tenantId;
 
-    @TableField(fill = FieldFill.INSERT)
-    private String createBy;
+    /**
+     * 状态
+     */
+    @TableField("status")
+    private Integer status;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    /**
+     * 排序号
+     */
+    @TableField("sort")
+    private Integer sort = 0;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String updateBy;
+    @Override
+    public StatusEnum getStatus() {
+        if (status == null) {
+            return StatusEnum.ENABLED;
+        }
+        return status == 0 ? StatusEnum.ENABLED : StatusEnum.DISABLED;
+    }
 
-    @TableLogic
-    private Integer delFlag;
+    @Override
+    public void setStatus(StatusEnum statusEnum) {
+        if (statusEnum == null) {
+            this.status = 0;
+            return;
+        }
+        this.status = statusEnum == StatusEnum.ENABLED ? 0 : 1;
+    }
 
-    @TableField
-    private Long tenantId;  // 租户ID
+    @Override
+    public Long getTenantId() {
+        return tenantId;
+    }
 
-    @TableField
-    private StatusEnum status = StatusEnum.ENABLED;  // 状态
+    @Override
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
+    }
 
-    @TableField
-    private Integer sort = 0;  // 排序号
-
-    @TableField
-    private String remark;  // 备注
+    @SuppressWarnings("unchecked")
+    public T setSort(Integer sort) {
+        this.sort = sort;
+        return (T) this;
+    }
 } 

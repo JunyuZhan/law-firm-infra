@@ -1,7 +1,7 @@
 package com.lawfirm.model.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_role_menu")
-public class SysRoleMenu extends BaseEntity {
+public class SysRoleMenu extends ModelBaseEntity<SysRoleMenu> {
 
     /**
      * 角色ID

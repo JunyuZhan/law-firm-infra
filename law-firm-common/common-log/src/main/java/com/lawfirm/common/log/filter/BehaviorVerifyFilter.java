@@ -1,7 +1,7 @@
 package com.lawfirm.common.log.filter;
 
-import com.lawfirm.common.core.utils.IpUtils;
-import com.lawfirm.common.core.utils.ServletUtils;
+import com.lawfirm.common.web.utils.IpUtils;
+import com.lawfirm.common.util.ServletUtils;
 import com.lawfirm.common.log.domain.TrackData;
 import com.lawfirm.common.log.service.BehaviorTrackService;
 import lombok.RequiredArgsConstructor;
@@ -54,10 +54,10 @@ public class BehaviorVerifyFilter extends OncePerRequestFilter {
             // 设置请求信息
             String ip = IpUtils.getIpAddr(request);
             trackData.setIp(ip);
-            trackData.setLocation(IpUtils.getRealAddressByIP(ip));
+            trackData.setLocation(ip); // 暂时使用 IP 作为位置
             trackData.setRequestUrl(request.getRequestURI());
             trackData.setRequestMethod(request.getMethod());
-            trackData.setRequestParams(ServletUtils.getRequestParams(request));
+            trackData.setRequestParams("{}"); // 暂时使用空 JSON 对象
             trackData.setResponseStatus(response.getStatus());
             trackData.setResponseTime(responseTime);
             trackData.setOperationTime(LocalDateTime.now());

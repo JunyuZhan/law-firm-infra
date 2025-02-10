@@ -1,7 +1,7 @@
 package com.lawfirm.model.system.vo;
 
 import com.lawfirm.common.data.vo.BaseVO;
-import com.lawfirm.model.base.enums.StatusEnum;
+import com.lawfirm.common.core.enums.StatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;

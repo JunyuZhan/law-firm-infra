@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lawfirm.document.mapper.DocumentVersionMapper">
+    
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lawfirm.document.entity.DocumentVersion">
+        <id column="id" property="id"/>
+        <result column="doc_id" property="docId"/>
+        <result column="version_no" property="versionNo"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="storage_path" property="storagePath"/>
+        <result column="change_desc" property="changeDesc"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="deleted" property="deleted"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+    
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, doc_id, version_no, file_size, storage_path, change_desc, create_time,
+        create_by, deleted, remark
+    </sql>
+    
+</mapper> 

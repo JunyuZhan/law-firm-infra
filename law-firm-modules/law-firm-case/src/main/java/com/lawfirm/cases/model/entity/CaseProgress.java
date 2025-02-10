@@ -1,7 +1,7 @@
 package com.lawfirm.cases.model.entity;
 
-import com.lawfirm.common.data.entity.BaseEntity;
-import com.lawfirm.model.cases.entity.Case;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,15 +9,15 @@ import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 
+/**
+ * 案件进度实体类
+ */
 @Data
 @Entity
 @Table(name = "case_progress")
 @EqualsAndHashCode(callSuper = true)
-public class CaseProgress extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@TableName("case_progress")
+public class CaseProgress extends ModelBaseEntity<CaseProgress> {
 
     @Comment("案件ID")
     @Column(nullable = false)
@@ -76,8 +76,4 @@ public class CaseProgress extends BaseEntity {
     @Comment("备注")
     @Column(length = 512)
     private String remarks;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "case_id", insertable = false, updatable = false)
-    private Case lawCase;
 } 

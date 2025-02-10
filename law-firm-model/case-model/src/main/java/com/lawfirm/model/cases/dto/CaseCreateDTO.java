@@ -2,8 +2,9 @@ package com.lawfirm.model.cases.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
-import com.lawfirm.model.base.dto.BaseDTO;
+import com.lawfirm.common.data.dto.BaseDTO;
 import com.lawfirm.model.cases.enums.CaseDifficultyEnum;
 import com.lawfirm.model.cases.enums.CaseFeeTypeEnum;
 import com.lawfirm.model.cases.enums.CaseHandleTypeEnum;
@@ -19,7 +20,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CaseCreateDTO extends BaseDTO {
@@ -89,5 +98,54 @@ public class CaseCreateDTO extends BaseDTO {
     
     private String conflictReason;
     
+    @Size(max = 500, message = "立案申请书长度不能超过500个字符")
+    private String filingApplication;
+
+    @Valid
+    private List<CaseParticipantDTO> participants;
+
+    @Valid
+    private List<CaseDocumentDTO> documents;
+
+    @NotEmpty(message = "至少需要一个案件团队成员")
+    @Valid
+    private List<CaseTeamDTO> teamMembers;
+
+    private List<CaseReminderDTO> reminders;
+
+    @Size(max = 500, message = "特殊要求长度不能超过500个字符")
+    private String specialRequirements;
+
+    private Boolean needConflictCheck = true;
+
+    private Boolean needApproval = false;
+
+    private String approvalFlow;
+
+    @Size(max = 500, message = "备注长度不能超过500个字符")
     private String remark;
+
+    @Override
+    public CaseCreateDTO setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+    
+    @Override
+    public CaseCreateDTO setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+    
+    @Override
+    public CaseCreateDTO setCreateBy(String createBy) {
+        super.setCreateBy(createBy);
+        return this;
+    }
+    
+    @Override
+    public CaseCreateDTO setUpdateBy(String updateBy) {
+        super.setUpdateBy(updateBy);
+        return this;
+    }
 } 

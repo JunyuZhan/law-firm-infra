@@ -1,6 +1,6 @@
 package com.lawfirm.schedule.model.query;
 
-import com.lawfirm.model.base.query.PageQuery;
+import com.lawfirm.common.data.query.PageQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

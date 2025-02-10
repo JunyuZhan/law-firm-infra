@@ -1,6 +1,6 @@
 package com.lawfirm.cases.model.entity;
 
-import com.lawfirm.model.base.entity.ModelBaseEntity;
+import com.lawfirm.common.data.entity.BaseEntity;
 import com.lawfirm.model.cases.enums.CaseStatusEnum;
 import com.lawfirm.model.cases.entity.Case;
 import jakarta.persistence.*;

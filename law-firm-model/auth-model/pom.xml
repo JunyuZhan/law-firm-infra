@@ -17,17 +17,22 @@
         <!-- 基础模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>common-data</artifactId>
+            <artifactId>base-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
+        
+        <!-- Common Data -->
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>base-model</artifactId>
+            <artifactId>common-data</artifactId>
+            <version>${project.version}</version>
         </dependency>
         
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Validation -->

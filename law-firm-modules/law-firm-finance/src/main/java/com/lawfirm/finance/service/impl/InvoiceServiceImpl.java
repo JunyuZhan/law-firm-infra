@@ -1,138 +1,165 @@
 package com.lawfirm.finance.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.finance.entity.Invoice;
 import com.lawfirm.finance.mapper.InvoiceMapper;
-import com.lawfirm.finance.service.InvoiceService;
+import com.lawfirm.finance.service.IInvoiceService;
+import com.lawfirm.finance.dto.request.InvoiceAddRequest;
+import com.lawfirm.finance.dto.request.InvoiceUpdateRequest;
+import com.lawfirm.finance.dto.request.InvoiceQueryRequest;
+import com.lawfirm.finance.dto.response.InvoiceResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * 发票Service实现类
+ */
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class InvoiceServiceImpl extends ServiceImpl<InvoiceMapper, Invoice> implements InvoiceService {
-
-    @Override
-    public IPage<Invoice> pageInvoices(Integer pageNum, Integer pageSize, String title, Integer type,
-            String invoiceNo, Long matterId, String startDate, String endDate) {
-        Page<Invoice> page = new Page<>(pageNum, pageSize);
-        return lambdaQuery()
-            .like(title != null, Invoice::getTitle, title)
-            .eq(type != null, Invoice::getType, type)
-            .eq(invoiceNo != null, Invoice::getInvoiceNo, invoiceNo)
-            .eq(matterId != null, Invoice::getMatterId, matterId)
-            .ge(startDate != null, Invoice::getCreateTime, startDate)
-            .le(endDate != null, Invoice::getCreateTime, endDate)
-            .orderByDesc(Invoice::getCreateTime)
-            .page(page);
-    }
+public class InvoiceServiceImpl extends ServiceImpl<InvoiceMapper, Invoice> implements IInvoiceService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createInvoice(Invoice invoice) {
-        // 设置初始状态
-        invoice.setStatus(0); // 待开具
+    public Long addInvoice(InvoiceAddRequest request) {
+        // 参数校验
+        checkAddRequest(request);
+        
+        // 检查发票号是否重复
+        checkInvoiceNoExists(request.getInvoiceNo());
+        
+        // 构建实体
+        Invoice invoice = new Invoice();
+        BeanUtils.copyProperties(request, invoice);
+        invoice.setStatus(1);
+        
+        // 保存记录
         save(invoice);
+        return invoice.getId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateInvoice(Invoice invoice) {
+    public void updateInvoice(InvoiceUpdateRequest request) {
+        // 参数校验
+        checkUpdateRequest(request);
+        
+        // 获取原记录
+        Invoice invoice = getById(request.getId());
+        if (invoice == null) {
+            throw new BusinessException("发票不存在");
+        }
+        
+        // 检查状态
+        if (invoice.getStatus() == 2) {
+            throw new BusinessException("已作废的发票不能修改");
+        }
+        
+        // 更新记录
+        BeanUtils.copyProperties(request, invoice);
         updateById(invoice);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteInvoice(Long id) {
-        // 检查发票状态
+        // 检查记录是否存在
         Invoice invoice = getById(id);
-        if (invoice != null && invoice.getStatus() != 0) {
-            throw new RuntimeException("只能删除待开具状态的发票");
+        if (invoice == null) {
+            throw new BusinessException("发票不存在");
         }
+        
+        // 检查是否可以删除
+        if (invoice.getStatus() == 1) {
+            throw new BusinessException("正常状态的发票不能删除");
+        }
+        
+        // 删除记录
         removeById(id);
     }
 
     @Override
-    public Invoice getInvoiceDetail(Long id) {
-        return getById(id);
+    public IPage<InvoiceResponse> pageInvoices(InvoiceQueryRequest request) {
+        // 构建查询条件
+        LambdaQueryWrapper<Invoice> wrapper = new LambdaQueryWrapper<>();
+        // TODO: 添加查询条件
+        
+        // 执行分页查询
+        Page<Invoice> page = new Page<>(request.getPageNum(), request.getPageSize());
+        page = page(page, wrapper);
+        
+        // 转换结果
+        return page.convert(this::convertToResponse);
+    }
+
+    @Override
+    public InvoiceResponse getInvoiceById(Long id) {
+        Invoice invoice = getById(id);
+        if (invoice == null) {
+            throw new BusinessException("发票不存在");
+        }
+        return convertToResponse(invoice);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void issueInvoice(Long id) {
-        // 检查发票状态
+    public void invalidateInvoice(Long id, String reason) {
+        // 获取记录
         Invoice invoice = getById(id);
         if (invoice == null) {
-            throw new RuntimeException("发票不存在");
+            throw new BusinessException("发票不存在");
         }
-        if (invoice.getStatus() != 0) {
-            throw new RuntimeException("只能开具待开具状态的发票");
+        
+        // 检查状态
+        if (invoice.getStatus() == 2) {
+            throw new BusinessException("发票已作废");
         }
         
         // 更新状态
-        invoice.setStatus(1); // 已开具
-        updateById(invoice);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void voidInvoice(Long id, String reason) {
-        // 检查发票状态
-        Invoice invoice = getById(id);
-        if (invoice == null) {
-            throw new RuntimeException("发票不存在");
-        }
-        if (invoice.getStatus() != 1) {
-            throw new RuntimeException("只能作废已开具状态的发票");
-        }
-        
-        // 更新状态
-        invoice.setStatus(2); // 已作废
+        invoice.setStatus(2);
         invoice.setRemark(reason);
         updateById(invoice);
     }
 
     @Override
-    public void exportInvoices(String title, Integer type, String invoiceNo, Long matterId,
-            String startDate, String endDate) {
-        // TODO: 实现导出逻辑
+    public List<InvoiceResponse> getInvoiceStatistics(String startTime, String endTime) {
+        // TODO: 实现发票统计逻辑
+        return null;
     }
 
-    @Override
-    public Map<String, Object> getInvoiceStats(String title, Integer type, String invoiceNo, Long matterId,
-            String startDate, String endDate) {
-        Map<String, Object> stats = new HashMap<>();
-        
-        // 查询符合条件的发票
-        stats.put("totalCount", lambdaQuery()
-            .like(title != null, Invoice::getTitle, title)
-            .eq(type != null, Invoice::getType, type)
-            .eq(invoiceNo != null, Invoice::getInvoiceNo, invoiceNo)
-            .eq(matterId != null, Invoice::getMatterId, matterId)
-            .ge(startDate != null, Invoice::getCreateTime, startDate)
-            .le(endDate != null, Invoice::getCreateTime, endDate)
-            .count());
-            
-        // 计算总金额
-        stats.put("totalAmount", lambdaQuery()
-            .like(title != null, Invoice::getTitle, title)
-            .eq(type != null, Invoice::getType, type)
-            .eq(invoiceNo != null, Invoice::getInvoiceNo, invoiceNo)
-            .eq(matterId != null, Invoice::getMatterId, matterId)
-            .ge(startDate != null, Invoice::getCreateTime, startDate)
-            .le(endDate != null, Invoice::getCreateTime, endDate)
-            .select(Invoice::getAmount)
-            .list()
-            .stream()
-            .map(Invoice::getAmount)
-            .reduce((a, b) -> a.add(b))
-            .orElse(null));
-            
-        return stats;
+    private void checkAddRequest(InvoiceAddRequest request) {
+        // TODO: 添加请求参数校验逻辑
+    }
+
+    private void checkUpdateRequest(InvoiceUpdateRequest request) {
+        // TODO: 更新请求参数校验逻辑
+    }
+
+    private void checkInvoiceNoExists(String invoiceNo) {
+        LambdaQueryWrapper<Invoice> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Invoice::getInvoiceNo, invoiceNo);
+        if (count(wrapper) > 0) {
+            throw new BusinessException("发票号已存在");
+        }
+    }
+
+    private InvoiceResponse convertToResponse(Invoice entity) {
+        if (entity == null) {
+            return null;
+        }
+        InvoiceResponse response = new InvoiceResponse();
+        BeanUtils.copyProperties(entity, response);
+        return response;
     }
 } 

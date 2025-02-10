@@ -180,51 +180,95 @@ DELETE /api/workflow/process-instances/{processInstanceId}
 
 ## 任务管理API
 
-### 查询任务列表
+### 获取任务
 ```http
-GET /api/workflow/tasks
+GET /api/workflow/tasks/{taskId}
 
 请求参数:
-- processInstanceId: 流程实例ID(查询参数,可选)
-- taskDefinitionKey: 任务定义key(查询参数,可选)
-- assignee: 办理人(查询参数,可选)
-- owner: 所有者(查询参数,可选)
-- tenantId: 租户ID(查询参数,可选)
-- pageNum: 页码(查询参数,可选,默认1)
-- pageSize: 每页大小(查询参数,可选,默认10)
+- taskId: 任务ID(路径参数,必填)
 
 响应结果:
 {
     "code": 200,
     "message": "success",
     "data": {
-        "total": 100,
-        "list": [
-            {
-                "id": "4001",                // 任务ID
-                "name": "部门经理审批",      // 任务名称
-                "processInstanceId": "3001", // 流程实例ID
-                "taskDefinitionKey": "approve", // 任务定义key
-                "assignee": "zhangsan",     // 办理人
-                "owner": null,              // 所有者
-                "createTime": "2024-01-20 10:00:00", // 创建时间
-                "dueDate": "2024-01-23 10:00:00",   // 到期时间
-                "priority": 50,             // 优先级
-                "suspended": false,         // 是否挂起
-                "tenantId": "default"      // 租户ID
-            }
-        ]
+        "id": "3001",                    // 任务ID
+        "name": "经理审批",              // 任务名称
+        "description": "请审批请假申请", // 任务描述
+        "processInstanceId": "4001",     // 流程实例ID
+        "processDefinitionId": "1001",   // 流程定义ID
+        "taskDefinitionKey": "approve",  // 任务定义键
+        "assignee": "manager1",          // 办理人
+        "owner": "admin",                // 所有者
+        "delegationState": "PENDING",    // 委托状态
+        "dueDate": "2024-02-20T10:00:00", // 到期时间
+        "createTime": "2024-02-19T10:00:00", // 创建时间
+        "tenantId": "default",           // 租户ID
+        "formKey": "leave-approve-form", // 表单标识
+        "priority": 50,                  // 优先级
+        "category": "approval"           // 分类
     }
 }
 ```
 
-### 签收任务
+### 查询任务列表
 ```http
-PUT /api/workflow/tasks/{taskId}/claim
+GET /api/workflow/tasks
+
+请求参数:
+- processInstanceId: 流程实例ID(查询参数,可选)
+- taskDefinitionKey: 任务定义键(查询参数,可选)
+- assignee: 办理人(查询参数,可选)
+- owner: 所有者(查询参数,可选)
+- tenantId: 租户ID(查询参数,可选)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success",
+    "data": [
+        {
+            "id": "3001",
+            "name": "经理审批",
+            "description": "请审批请假申请",
+            "processInstanceId": "4001",
+            "processDefinitionId": "1001",
+            "taskDefinitionKey": "approve",
+            "assignee": "manager1",
+            "owner": "admin",
+            "delegationState": "PENDING",
+            "dueDate": "2024-02-20T10:00:00",
+            "createTime": "2024-02-19T10:00:00",
+            "tenantId": "default",
+            "formKey": "leave-approve-form",
+            "priority": 50,
+            "category": "approval"
+        }
+    ]
+}
+```
+
+### 认领任务
+```http
+POST /api/workflow/tasks/{taskId}/claim
 
 请求参数:
 - taskId: 任务ID(路径参数,必填)
 - userId: 用户ID(查询参数,必填)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success"
+}
+```
+
+### 取消认领任务
+```http
+POST /api/workflow/tasks/{taskId}/unclaim
+
+请求参数:
+- taskId: 任务ID(路径参数,必填)
 
 响应结果:
 {
@@ -239,13 +283,12 @@ POST /api/workflow/tasks/{taskId}/complete
 
 请求参数:
 - taskId: 任务ID(路径参数,必填)
+- variables: 流程变量(请求体,可选)
 
-请求体:
+请求体示例:
 {
-    "variables": {                 // 任务变量(可选)
-        "approved": true,
-        "comment": "同意"
-    }
+    "approved": true,
+    "comment": "同意请假申请"
 }
 
 响应结果:
@@ -257,7 +300,7 @@ POST /api/workflow/tasks/{taskId}/complete
 
 ### 委托任务
 ```http
-PUT /api/workflow/tasks/{taskId}/delegate
+POST /api/workflow/tasks/{taskId}/delegate
 
 请求参数:
 - taskId: 任务ID(路径参数,必填)
@@ -272,7 +315,7 @@ PUT /api/workflow/tasks/{taskId}/delegate
 
 ### 转办任务
 ```http
-PUT /api/workflow/tasks/{taskId}/transfer
+POST /api/workflow/tasks/{taskId}/transfer
 
 请求参数:
 - taskId: 任务ID(路径参数,必填)
@@ -282,6 +325,146 @@ PUT /api/workflow/tasks/{taskId}/transfer
 {
     "code": 200,
     "message": "success"
+}
+```
+
+### 设置任务处理人
+```http
+POST /api/workflow/tasks/{taskId}/assignee
+
+请求参数:
+- taskId: 任务ID(路径参数,必填)
+- userId: 用户ID(查询参数,必填)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success"
+}
+```
+
+### 添加任务候选人
+```http
+POST /api/workflow/tasks/{taskId}/candidate-users
+
+请求参数:
+- taskId: 任务ID(路径参数,必填)
+- userId: 用户ID(查询参数,必填)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success"
+}
+```
+
+### 删除任务候选人
+```http
+DELETE /api/workflow/tasks/{taskId}/candidate-users/{userId}
+
+请求参数:
+- taskId: 任务ID(路径参数,必填)
+- userId: 用户ID(路径参数,必填)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success"
+}
+```
+
+### 添加任务候选组
+```http
+POST /api/workflow/tasks/{taskId}/candidate-groups
+
+请求参数:
+- taskId: 任务ID(路径参数,必填)
+- groupId: 组ID(查询参数,必填)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success"
+}
+```
+
+### 删除任务候选组
+```http
+DELETE /api/workflow/tasks/{taskId}/candidate-groups/{groupId}
+
+请求参数:
+- taskId: 任务ID(路径参数,必填)
+- groupId: 组ID(路径参数,必填)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success"
+}
+```
+
+### 获取历史任务
+```http
+GET /api/workflow/tasks/history/{taskId}
+
+请求参数:
+- taskId: 任务ID(路径参数,必填)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success",
+    "data": {
+        "id": "3001",                    // 任务ID
+        "name": "经理审批",              // 任务名称
+        "description": "请审批请假申请", // 任务描述
+        "processInstanceId": "4001",     // 流程实例ID
+        "processDefinitionId": "1001",   // 流程定义ID
+        "taskDefinitionKey": "approve",  // 任务定义键
+        "assignee": "manager1",          // 办理人
+        "owner": "admin",                // 所有者
+        "startTime": "2024-02-19T10:00:00", // 开始时间
+        "endTime": "2024-02-19T11:00:00",   // 结束时间
+        "durationInMillis": 3600000,     // 持续时间(毫秒)
+        "deleteReason": "completed",     // 删除原因
+        "tenantId": "default"           // 租户ID
+    }
+}
+```
+
+### 查询历史任务列表
+```http
+GET /api/workflow/tasks/history
+
+请求参数:
+- processInstanceId: 流程实例ID(查询参数,可选)
+- taskDefinitionKey: 任务定义键(查询参数,可选)
+- assignee: 办理人(查询参数,可选)
+- owner: 所有者(查询参数,可选)
+- tenantId: 租户ID(查询参数,可选)
+- finished: 是否已完成(查询参数,可选,默认false)
+
+响应结果:
+{
+    "code": 200,
+    "message": "success",
+    "data": [
+        {
+            "id": "3001",
+            "name": "经理审批",
+            "description": "请审批请假申请",
+            "processInstanceId": "4001",
+            "processDefinitionId": "1001",
+            "taskDefinitionKey": "approve",
+            "assignee": "manager1",
+            "owner": "admin",
+            "startTime": "2024-02-19T10:00:00",
+            "endTime": "2024-02-19T11:00:00",
+            "durationInMillis": 3600000,
+            "deleteReason": "completed",
+            "tenantId": "default"
+        }
+    ]
 }
 ```
 

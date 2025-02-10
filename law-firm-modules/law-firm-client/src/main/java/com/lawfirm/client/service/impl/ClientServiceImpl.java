@@ -11,7 +11,7 @@ import com.lawfirm.client.service.ClientService;
 import com.lawfirm.common.core.constant.ResultCode;
 import com.lawfirm.common.data.service.impl.BaseServiceImpl;
 import com.lawfirm.common.log.annotation.OperationLog;
-import com.lawfirm.model.base.enums.StatusEnum;
+import com.lawfirm.common.core.enums.StatusEnum;
 import com.lawfirm.model.client.entity.Client;
 import com.lawfirm.model.client.enums.ClientStatusEnum;
 import com.lawfirm.model.client.enums.ClientTypeEnum;

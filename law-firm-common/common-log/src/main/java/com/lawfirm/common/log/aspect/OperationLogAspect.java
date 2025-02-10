@@ -1,8 +1,8 @@
 package com.lawfirm.common.log.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lawfirm.common.core.utils.IpUtils;
-import com.lawfirm.common.core.utils.ServletUtils;
+import com.lawfirm.common.web.utils.IpUtils;
+import com.lawfirm.common.util.ServletUtils;
 import com.lawfirm.common.log.annotation.OperationLog;
 import com.lawfirm.common.log.domain.OperationLogDO;
 import com.lawfirm.common.log.service.OperationLogService;
@@ -82,7 +82,7 @@ public class OperationLogAspect {
             HttpServletRequest request = ServletUtils.getRequest();
             String ip = IpUtils.getIpAddr(request);
             operLog.setOperatorIp(ip);
-            operLog.setOperationLocation(IpUtils.getRealAddressByIP(ip));
+            operLog.setOperationLocation(ip); // 暂时使用 IP 作为位置
             operLog.setRequestUrl(request.getRequestURI());
             operLog.setRequestMethod(request.getMethod());
             

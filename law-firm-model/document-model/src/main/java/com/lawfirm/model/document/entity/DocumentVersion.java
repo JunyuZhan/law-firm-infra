@@ -4,16 +4,18 @@ import com.lawfirm.model.base.entity.ModelBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = "doc_document_version")
-@EqualsAndHashCode(callSuper = true)
-public class DocumentVersion extends ModelBaseEntity {
+public class DocumentVersion extends ModelBaseEntity<DocumentVersion> {
 
     @NotNull(message = "文档ID不能为空")
     @Column(nullable = false)

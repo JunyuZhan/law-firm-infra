@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "auth_user")
 @EqualsAndHashCode(callSuper = true)
-public class User extends ModelBaseEntity {
+public class User extends ModelBaseEntity<User> {
 
     @NotBlank(message = "用户名不能为空")
     @Size(min = 4, max = 30, message = "用户名长度必须在4-30个字符之间")

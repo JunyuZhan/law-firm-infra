@@ -2,11 +2,12 @@ package com.lawfirm.model.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.lawfirm.common.data.entity.BaseEntity;
-import com.lawfirm.model.base.enums.StatusEnum;
+import com.lawfirm.common.core.enums.StatusEnum;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
@@ -14,15 +15,16 @@ import java.util.List;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 @TableName("sys_menu")
-public class SysMenu extends BaseEntity {
+@EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
+public class SysMenu extends ModelBaseEntity<SysMenu> {
 
     /**
      * 菜单名称
      */
     @TableField("menu_name")
-    private String menuName;
+    private String name;
 
     /**
      * 父菜单ID
@@ -58,7 +60,7 @@ public class SysMenu extends BaseEntity {
      * 是否为外链（0是 1否）
      */
     @TableField("is_frame")
-    private Boolean isFrame;
+    private Integer isFrame;
 
     /**
      * 是否缓存（0缓存 1不缓存）
@@ -76,13 +78,13 @@ public class SysMenu extends BaseEntity {
      * 菜单状态（0显示 1隐藏）
      */
     @TableField("visible")
-    private Boolean visible;
+    private String visible;
 
     /**
      * 菜单状态（0正常 1停用）
      */
     @TableField("status")
-    private Integer status;
+    private StatusEnum status;
 
     /**
      * 权限标识
@@ -99,8 +101,26 @@ public class SysMenu extends BaseEntity {
     @TableField(exist = false)
     private List<SysMenu> children;
 
+    /**
+     * 备注
+     */
+    @TableField("remark")
+    private String remark;
+
     @Override
-    public void setRemark(String remark) {
+    public SysMenu setRemark(String remark) {
         super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public SysMenu setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public void setStatus(StatusEnum status) {
+        super.setStatus(status);
     }
 }

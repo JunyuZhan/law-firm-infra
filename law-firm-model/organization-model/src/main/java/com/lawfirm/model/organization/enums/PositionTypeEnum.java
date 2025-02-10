@@ -1,35 +1,26 @@
 package com.lawfirm.model.organization.enums;
 
-import com.lawfirm.model.base.enums.BaseEnum;
-import lombok.Getter;
-
 /**
  * 职位类型枚举
  */
-@Getter
-public enum PositionTypeEnum implements BaseEnum<String> {
-    
-    MANAGEMENT("MANAGEMENT", "管理岗"),
-    PROFESSIONAL("PROFESSIONAL", "专业岗"),
-    TECHNICAL("TECHNICAL", "技术岗"),
-    SUPPORT("SUPPORT", "支持岗"),
-    OTHER("OTHER", "其他");
+public enum PositionTypeEnum {
+    /**
+     * 律师
+     */
+    LAWYER,
 
-    private final String value;
-    private final String description;
+    /**
+     * 律师助理
+     */
+    ASSISTANT,
 
-    PositionTypeEnum(String value, String description) {
-        this.value = value;
-        this.description = description;
-    }
+    /**
+     * 行政人员
+     */
+    ADMIN,
 
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
+    /**
+     * 其他
+     */
+    OTHER
 } 

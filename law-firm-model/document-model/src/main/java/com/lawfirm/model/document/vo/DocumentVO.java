@@ -1,13 +1,16 @@
 package com.lawfirm.model.document.vo;
 
+import com.lawfirm.common.core.enums.StatusEnum;
 import com.lawfirm.common.data.dto.BaseDTO;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@Accessors(chain = true)
 public class DocumentVO extends BaseDTO {
     
     private String documentNumber;
@@ -16,7 +19,7 @@ public class DocumentVO extends BaseDTO {
     private Long fileSize;
     private String fileType;
     private String version;
-    private Integer status;
+    private StatusEnum status;
     private String statusName;
     private LocalDateTime uploadTime;
     private String uploadBy;
@@ -32,4 +35,34 @@ public class DocumentVO extends BaseDTO {
     // 扩展字段
     private String uploadByName;
     private String auditByName;
+
+    @Override
+    public DocumentVO setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public DocumentVO setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public DocumentVO setCreateBy(String createBy) {
+        super.setCreateBy(createBy);
+        return this;
+    }
+
+    @Override
+    public DocumentVO setUpdateBy(String updateBy) {
+        super.setUpdateBy(updateBy);
+        return this;
+    }
+
+    @Override
+    public DocumentVO setStatus(StatusEnum status) {
+        super.setStatus(status);
+        return this;
+    }
 } 

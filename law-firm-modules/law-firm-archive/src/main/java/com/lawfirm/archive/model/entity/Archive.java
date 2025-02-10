@@ -1,7 +1,9 @@
 package com.lawfirm.archive.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.lawfirm.common.core.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,6 +16,12 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @TableName("archive")
 public class Archive extends BaseEntity {
+    
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
     
     /**
      * 档案编号

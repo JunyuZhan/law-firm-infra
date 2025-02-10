@@ -1,7 +1,131 @@
-# 律所管理系统
+# 律师事务所管理系统
 
 ## 项目介绍
-律所管理系统是一个专门为律师事务所开发的综合管理平台，提供案件管理、客户管理、文档管理、财务管理等功能。
+本项目是一个现代化的律师事务所管理系统，采用微服务架构设计，提供全方位的律所业务管理功能。
+
+## 技术栈
+- Spring Boot
+- Spring Cloud
+- Spring Cloud Alibaba
+- Maven
+
+## 项目结构
+```
+law-firm-infra
+├── law-firm-api             # API服务层
+│   ├── api-admin           # 管理端API服务
+│   ├── api-client          # Feign客户端
+│   ├── api-common          # API公共模块
+│   ├── api-model           # API数据模型
+│   ├── api-lawyer          # 律师端API服务
+│   ├── api-clerk           # 文员端API服务
+│   ├── api-finance         # 财务端API服务
+│   └── api-mini           # 客户端API服务
+├── law-firm-common         # 公共组件层
+│   ├── common-core         # 核心组件
+│   ├── common-web          # Web组件
+│   ├── common-log          # 日志组件
+│   └── common-security     # 安全组件
+└── law-firm-modules        # 业务模块层
+    ├── law-firm-auth       # 认证授权
+    ├── law-firm-system     # 系统管理
+    ├── law-firm-case       # 案件管理
+    ├── law-firm-client     # 客户管理
+    ├── law-firm-document   # 文档管理
+    ├── law-firm-archive    # 档案管理
+    ├── law-firm-finance    # 财务管理
+    ├── law-firm-analysis   # 数据分析
+    ├── law-firm-asset      # 资产管理
+    ├── law-firm-conflict   # 利益冲突
+    ├── law-firm-message    # 消息通知
+    ├── law-firm-meeting    # 会议管理
+    ├── law-firm-seal       # 印章管理
+    ├── law-firm-schedule   # 日程管理
+    ├── law-firm-supplies   # 办公用品
+    ├── law-firm-task       # 任务管理
+    ├── law-firm-workflow   # 工作流程
+    ├── law-firm-personnel  # 人事管理
+    ├── law-firm-contract   # 合同管理
+    └── law-firm-knowledge  # 知识库
+```
+
+## 模块说明
+
+### API服务层 (law-firm-api)
+- api-admin：管理端API服务，提供后台管理功能
+- api-client：Feign客户端，处理服务间调用
+- api-common：API公共模块，包含公共配置和工具
+- api-model：API数据模型，定义数据传输对象
+- api-lawyer：律师端API服务，提供律师业务功能
+- api-clerk：文员端API服务，提供文员业务功能
+- api-finance：财务端API服务，提供财务业务功能
+- api-mini：客户端API服务，提供客户端功能
+
+### 公共组件层 (law-firm-common)
+- common-core：核心组件，包含基础工具类和通用功能
+- common-web：Web组件，提供Web相关功能
+- common-log：日志组件，统一日志处理
+- common-security：安全组件，处理认证授权
+
+### 业务模块层 (law-firm-modules)
+- law-firm-auth：认证授权模块，处理用户认证和权限管理
+- law-firm-system：系统管理模块，处理系统基础配置
+- law-firm-case：案件管理模块，处理案件相关业务
+- law-firm-client：客户管理模块，处理客户信息管理
+- law-firm-document：文档管理模块，处理文档存储和管理
+- law-firm-archive：档案管理模块，处理档案归档和管理
+- law-firm-finance：财务管理模块，处理财务相关业务
+- law-firm-analysis：数据分析模块，提供数据统计和分析
+- law-firm-asset：资产管理模块，处理律所资产管理
+- law-firm-conflict：利益冲突模块，处理利益冲突检查
+- law-firm-message：消息通知模块，处理系统消息和通知
+- law-firm-meeting：会议管理模块，处理会议室预订和管理
+- law-firm-seal：印章管理模块，处理印章使用和管理
+- law-firm-schedule：日程管理模块，处理日程安排
+- law-firm-supplies：办公用品模块，处理办公用品管理
+- law-firm-task：任务管理模块，处理任务分配和跟踪
+- law-firm-workflow：工作流程模块，处理业务流程管理
+- law-firm-personnel：人事管理模块，处理人员信息管理
+- law-firm-contract：合同管理模块，处理合同文件管理
+- law-firm-knowledge：知识库模块，处理法律知识管理
+
+## 构建说明
+
+### 环境要求
+- JDK 17+
+- Maven 3.8+
+- MySQL 8.0+
+- Redis 6.0+
+- Nacos 2.2+
+
+### 构建步骤
+1. 克隆项目
+```bash
+git clone https://github.com/your-username/law-firm-infra.git
+```
+
+2. 进入项目目录
+```bash
+cd law-firm-infra
+```
+
+3. 编译项目
+```bash
+mvn clean install -DskipTests
+```
+
+4. 启动服务
+- 启动Nacos服务
+- 启动Redis服务
+- 启动MySQL服务
+- 依次启动各个微服务模块
+
+## 开发规范
+1. 代码规范遵循阿里巴巴Java开发规范
+2. 接口遵循RESTful设计规范
+3. 提交代码前需要进行代码格式化
+4. 新功能需要编写单元测试
+5. 遵循统一的版本管理规范
 
 ## 系统架构
 - 基于Spring Cloud微服务架构
@@ -10,20 +134,6 @@
 - 使用MyBatis-Plus作为ORM框架
 - Redis用于缓存和会话管理
 - OpenAPI 3.0规范的API文档
-
-## 模块说明
-- law-firm-api：API服务模块
-  - staff-api：员工端API服务
-  - admin-api：管理端API服务
-  - mobile-api：移动端API服务
-  - mini-api：小程序API服务
-
-## 开发环境
-- JDK 17
-- Maven 3.8+
-- MySQL 8.0
-- Redis 6.0
-- Nacos 2.2.0
 
 ## 快速开始
 

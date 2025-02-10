@@ -4,7 +4,7 @@ import com.lawfirm.common.cache.annotation.RepeatSubmit;
 import com.lawfirm.common.cache.constant.CacheConstants;
 import com.lawfirm.common.cache.utils.CacheUtil;
 import com.lawfirm.common.core.exception.BusinessException;
-import com.lawfirm.common.core.utils.ServletUtils;
+import com.lawfirm.common.util.ServletUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

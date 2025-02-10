@@ -1,20 +1,26 @@
 package com.lawfirm.model.system.dto;
 
-import com.lawfirm.model.base.vo.BaseVO;
-import com.lawfirm.model.base.enums.StatusEnum;
-import lombok.Getter;
-import lombok.Setter;
+import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.common.core.enums.StatusEnum;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
 /**
  * 系统菜单DTO
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class SysMenuDTO extends BaseVO {
+@Accessors(chain = true)
+@Builder
+public class SysMenuDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -25,7 +31,7 @@ public class SysMenuDTO extends BaseVO {
     /**
      * 菜单名称
      */
-    private String menuName;
+    private String name;
 
     /**
      * 父菜单ID
@@ -35,12 +41,12 @@ public class SysMenuDTO extends BaseVO {
     /**
      * 显示顺序
      */
-    private Integer orderNum;
+    private Integer sort;
 
     /**
      * 路由地址
      */
-    private String path;
+    private String url;
 
     /**
      * 组件路径
@@ -65,7 +71,7 @@ public class SysMenuDTO extends BaseVO {
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
-    private String menuType;
+    private Integer type;
 
     /**
      * 菜单状态（0显示 1隐藏）
@@ -96,4 +102,33 @@ public class SysMenuDTO extends BaseVO {
      * 子菜单
      */
     private List<SysMenuDTO> children;
+
+    @Override
+    public StatusEnum getStatus() {
+        return super.getStatus();
+    }
+
+    @Override
+    public SysMenuDTO setStatus(StatusEnum status) {
+        super.setStatus(status);
+        return this;
+    }
+
+    @Override
+    public SysMenuDTO setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public SysMenuDTO setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public SysMenuDTO setSort(Integer sort) {
+        super.setSort(sort);
+        return this;
+    }
 } 

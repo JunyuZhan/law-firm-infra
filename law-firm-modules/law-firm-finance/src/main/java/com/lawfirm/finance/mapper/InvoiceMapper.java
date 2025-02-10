@@ -5,7 +5,7 @@ import com.lawfirm.finance.entity.Invoice;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 发票数据访问层
+ * 发票Mapper接口
  */
 @Mapper
 public interface InvoiceMapper extends BaseMapper<Invoice> {

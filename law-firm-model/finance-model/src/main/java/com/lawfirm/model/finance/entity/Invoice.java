@@ -1,25 +1,29 @@
 package com.lawfirm.model.finance.entity;
 
+import com.lawfirm.common.core.enums.StatusEnum;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import com.lawfirm.model.base.enums.StatusEnum;
-import com.lawfirm.model.base.status.StatusAware;
 import com.lawfirm.model.finance.enums.InvoiceStatusEnum;
 import com.lawfirm.model.finance.enums.InvoiceTypeEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+/**
+ * 发票实体
+ */
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
 @Table(name = "fin_invoice")
-@EqualsAndHashCode(callSuper = true)
-public class Invoice extends ModelBaseEntity implements StatusAware {
+public class Invoice extends ModelBaseEntity<Invoice> {
 
     @NotBlank(message = "发票编号不能为空")
     @Size(max = 50, message = "发票编号长度不能超过50个字符")
@@ -89,46 +93,26 @@ public class Invoice extends ModelBaseEntity implements StatusAware {
 
     @Override
     public StatusEnum getStatus() {
-        if (invoiceStatus == null) {
-            return StatusEnum.DISABLED;
-        }
-        switch (invoiceStatus) {
-            case DRAFT:
-            case PENDING:
-                return StatusEnum.ENABLED;
-            case ISSUED:
-                return StatusEnum.ENABLED;
-            case CANCELLED:
-                return StatusEnum.DISABLED;
-            case INVALID:
-                return StatusEnum.DELETED;
-            default:
-                return StatusEnum.DISABLED;
-        }
+        return super.getStatus();
     }
 
     @Override
     public void setStatus(StatusEnum status) {
-        if (status == null) {
-            this.invoiceStatus = InvoiceStatusEnum.DRAFT;
-            return;
-        }
-        switch (status) {
-            case ENABLED:
-                if (this.invoiceStatus == null || this.invoiceStatus == InvoiceStatusEnum.CANCELLED) {
-                    this.invoiceStatus = InvoiceStatusEnum.DRAFT;
-                }
-                break;
-            case DISABLED:
-                this.invoiceStatus = InvoiceStatusEnum.CANCELLED;
-                break;
-            case DELETED:
-                this.invoiceStatus = InvoiceStatusEnum.INVALID;
-                break;
-            case LOCKED:
-            case EXPIRED:
-                this.invoiceStatus = InvoiceStatusEnum.CANCELLED;
-                break;
-        }
+        super.setStatus(status);
     }
-} 
+
+    @Override
+    public Long getTenantId() {
+        return super.getTenantId();
+    }
+
+    @Override
+    public void setTenantId(Long tenantId) {
+        super.setTenantId(tenantId);
+    }
+
+    @Override
+    public Invoice setSort(Integer sort) {
+        return super.setSort(sort);
+    }
+}

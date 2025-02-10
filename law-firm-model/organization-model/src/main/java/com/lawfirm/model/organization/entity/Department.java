@@ -1,7 +1,7 @@
 package com.lawfirm.model.organization.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("org_department")
-public class Department extends BaseEntity {
+public class Department extends ModelBaseEntity<Department> {
     
     /**
      * 部门名称

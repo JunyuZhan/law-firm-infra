@@ -6,14 +6,21 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.EqualsAndHashCode;
 
-@Data
+/**
+ * 职位实体类
+ */
+@Getter
+@Setter
+@Accessors(chain = true)
 @Entity
-@Table(name = "org_position")
+@Table(name = "position")
 @EqualsAndHashCode(callSuper = true)
-public class Position extends ModelBaseEntity {
+public class Position extends ModelBaseEntity<Position> {
 
     @NotNull(message = "律所ID不能为空")
     @Column(nullable = false)

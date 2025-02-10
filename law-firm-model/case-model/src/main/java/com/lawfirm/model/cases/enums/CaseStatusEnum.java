@@ -1,6 +1,6 @@
 package com.lawfirm.model.cases.enums;
 
-import com.lawfirm.model.base.enums.StatusEnum;
+import com.lawfirm.common.core.enums.StatusEnum;
 import lombok.Getter;
 
 @Getter

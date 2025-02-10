@@ -7,16 +7,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 
-@Data
 @Entity
 @Table(name = "per_client")
 @EqualsAndHashCode(callSuper = true)
-public class Client extends ModelBaseEntity {
+public class Client extends ModelBaseEntity<Client> {
 
     @NotNull(message = "律所ID不能为空")
     @Column(nullable = false)

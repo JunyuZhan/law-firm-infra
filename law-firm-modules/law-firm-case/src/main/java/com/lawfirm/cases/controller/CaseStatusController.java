@@ -1,7 +1,7 @@
 package com.lawfirm.cases.controller;
 
 import com.lawfirm.cases.service.CaseService;
-import com.lawfirm.model.base.result.Result;
+import com.lawfirm.common.core.result.Result;
 import com.lawfirm.model.cases.vo.CaseStatusVO;
 import com.lawfirm.model.cases.enums.CaseStatusEnum;
 import io.swagger.v3.oas.annotations.Operation;

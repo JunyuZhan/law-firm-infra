@@ -24,7 +24,7 @@ public interface TaskService {
      *
      * @param processInstanceId 流程实例ID
      * @param taskDefinitionKey 任务定义键
-     * @param assignee 处理人
+     * @param assignee 办理人
      * @param owner 所有者
      * @param tenantId 租户ID
      * @return 任务列表

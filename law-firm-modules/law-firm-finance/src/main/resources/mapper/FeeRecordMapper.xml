@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lawfirm.finance.mapper.FeeRecordMapper">
+    
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lawfirm.finance.entity.FeeRecord">
+        <id column="id" property="id"/>
+        <result column="amount" property="amount"/>
+        <result column="paid_amount" property="paidAmount"/>
+        <result column="fee_status" property="feeStatus"/>
+        <result column="fee_type" property="feeType"/>
+        <result column="case_id" property="caseId"/>
+        <result column="client_id" property="clientId"/>
+        <result column="law_firm_id" property="lawFirmId"/>
+        <result column="payment_time" property="paymentTime"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="description" property="description"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+    
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, amount, paid_amount, fee_status, fee_type, case_id, client_id, law_firm_id,
+        payment_time, payment_method, description, remark, create_time, update_time,
+        create_by, update_by, deleted
+    </sql>
+    
+</mapper> 

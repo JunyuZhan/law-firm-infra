@@ -1,13 +1,11 @@
 package com.lawfirm.model.organization.dto;
 
-import com.lawfirm.model.base.dto.BaseDTO;
+import com.lawfirm.common.data.dto.BaseDTO;
 import com.lawfirm.model.organization.enums.DepartmentTypeEnum;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
-@Data
 @EqualsAndHashCode(callSuper = true)
 public class DepartmentDTO extends BaseDTO {
 

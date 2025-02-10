@@ -1,19 +1,29 @@
 package com.lawfirm.model.system.dto;
 
 import com.lawfirm.common.data.dto.BaseDTO;
-import lombok.Data;
+import com.lawfirm.common.core.enums.StatusEnum;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * 系统升级DTO
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 public class SysUpgradeDTO extends BaseDTO {
+
+    /**
+     * 升级包ID
+     */
+    private Long packageId;
 
     /**
      * 升级包名称
@@ -65,8 +75,37 @@ public class SysUpgradeDTO extends BaseDTO {
      */
     private String remark;
 
-    public static SysUpgradeDTO.Builder builder() {
-        return new SysUpgradeDTO.Builder();
+    @Override
+    public StatusEnum getStatus() {
+        return super.getStatus();
+    }
+
+    @Override
+    public SysUpgradeDTO setStatus(StatusEnum status) {
+        super.setStatus(status);
+        return this;
+    }
+
+    @Override
+    public SysUpgradeDTO setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+
+    @Override
+    public SysUpgradeDTO setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public SysUpgradeDTO setSort(Integer sort) {
+        super.setSort(sort);
+        return this;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {
@@ -76,53 +115,53 @@ public class SysUpgradeDTO extends BaseDTO {
             dto = new SysUpgradeDTO();
         }
 
-        public Builder id(Long id) {
-            dto.setId(id);
+        public Builder packageId(Long packageId) {
+            dto.packageId = packageId;
             return this;
         }
 
         public Builder name(String name) {
-            dto.setName(name);
+            dto.name = name;
             return this;
         }
 
         public Builder version(String version) {
-            dto.setVersion(version);
+            dto.version = version;
             return this;
         }
 
         public Builder path(String path) {
-            dto.setPath(path);
+            dto.path = path;
             return this;
         }
 
         public Builder size(Long size) {
-            dto.setSize(size);
+            dto.size = size;
             return this;
         }
 
         public Builder md5(String md5) {
-            dto.setMd5(md5);
+            dto.md5 = md5;
             return this;
         }
 
         public Builder description(String description) {
-            dto.setDescription(description);
+            dto.description = description;
             return this;
         }
 
-        public Builder status(Integer status) {
+        public Builder status(StatusEnum status) {
             dto.setStatus(status);
             return this;
         }
 
         public Builder log(String log) {
-            dto.setLog(log);
+            dto.log = log;
             return this;
         }
 
         public Builder upgradeTime(Long upgradeTime) {
-            dto.setUpgradeTime(upgradeTime);
+            dto.upgradeTime = upgradeTime;
             return this;
         }
 

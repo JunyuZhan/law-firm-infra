@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.lawfirm.model.base.vo.BaseVO;
+import com.lawfirm.common.data.dto.BaseDTO;
 import com.lawfirm.model.cases.entity.CaseDocument;
 import com.lawfirm.model.cases.entity.CaseFile;
 import com.lawfirm.model.cases.entity.CaseTeam;
@@ -20,10 +20,14 @@ import com.lawfirm.model.cases.enums.CaseTypeEnum;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class CaseDetailVO extends BaseVO {
+@Getter
+@Setter
+@Accessors(chain = true)
+public class CaseDetailVO extends BaseDTO {
 
     private Long id;
     private String caseNumber;
@@ -72,6 +76,30 @@ public class CaseDetailVO extends BaseVO {
 
     // 法院信息
     private String remark;  // 备注信息
+
+    @Override
+    public CaseDetailVO setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+    
+    @Override
+    public CaseDetailVO setRemark(String remark) {
+        super.setRemark(remark);
+        return this;
+    }
+    
+    @Override
+    public CaseDetailVO setCreateBy(String createBy) {
+        super.setCreateBy(createBy);
+        return this;
+    }
+    
+    @Override
+    public CaseDetailVO setUpdateBy(String updateBy) {
+        super.setUpdateBy(updateBy);
+        return this;
+    }
 
     @Data
     public static class ClientInfo {

@@ -1,6 +1,6 @@
 package com.lawfirm.model.finance.query;
 
-import com.lawfirm.model.base.query.PageQuery;
+import com.lawfirm.common.data.query.PageQuery;
 import com.lawfirm.model.finance.enums.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

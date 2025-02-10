@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "auth_permission")
 @EqualsAndHashCode(callSuper = true)
-public class Permission extends ModelBaseEntity {
+public class Permission extends ModelBaseEntity<Permission> {
 
     @NotBlank(message = "权限名称不能为空")
     @Size(max = 50, message = "权限名称长度不能超过50个字符")

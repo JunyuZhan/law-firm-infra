@@ -100,9 +100,7 @@ public class TaskServiceImpl implements TaskService {
                 .taskId(taskId)
                 .singleResult();
         if (task != null) {
-            String originalAssignee = task.getAssignee();
             flowableTaskService.setAssignee(taskId, userId);
-            log.info("Task transferred: taskId={}, from={}, to={}", taskId, originalAssignee, userId);
         }
     }
     
@@ -185,32 +183,32 @@ public class TaskServiceImpl implements TaskService {
     /**
      * 转换为任务模型
      */
-    private Task convertToTask(org.flowable.task.api.Task task) {
-        if (task == null) {
+    private Task convertToTask(org.flowable.task.api.Task flowableTask) {
+        if (flowableTask == null) {
             return null;
         }
         
-        return new Task()
-                .setId(task.getId())
-                .setName(task.getName())
-                .setDescription(task.getDescription())
-                .setProcessInstanceId(task.getProcessInstanceId())
-                .setProcessDefinitionId(task.getProcessDefinitionId())
-                .setTaskDefinitionKey(task.getTaskDefinitionKey())
-                .setFormKey(task.getFormKey())
-                .setPriority(task.getPriority())
-                .setOwner(task.getOwner())
-                .setAssignee(task.getAssignee())
-                .setDelegationState(task.getDelegationState() != null ? task.getDelegationState().toString() : null)
-                .setDueDate(task.getDueDate() != null ? 
-                        LocalDateTime.ofInstant(task.getDueDate().toInstant(), ZoneId.systemDefault()) : null)
-                .setCreateTime(task.getCreateTime() != null ?
-                        LocalDateTime.ofInstant(task.getCreateTime().toInstant(), ZoneId.systemDefault()) : null)
-                .setClaimTime(task.getClaimTime() != null ?
-                        LocalDateTime.ofInstant(task.getClaimTime().toInstant(), ZoneId.systemDefault()) : null)
-                .setTaskLocalVariables(task.getTaskLocalVariables())
-                .setProcessVariables(task.getProcessVariables())
-                .setTenantId(task.getTenantId());
+        Task task = new Task();
+        task.setId(flowableTask.getId());
+        task.setName(flowableTask.getName());
+        task.setDescription(flowableTask.getDescription());
+        task.setProcessInstanceId(flowableTask.getProcessInstanceId());
+        task.setProcessDefinitionId(flowableTask.getProcessDefinitionId());
+        task.setTaskDefinitionKey(flowableTask.getTaskDefinitionKey());
+        task.setAssignee(flowableTask.getAssignee());
+        task.setOwner(flowableTask.getOwner());
+        task.setDelegationState(flowableTask.getDelegationState() != null ? 
+            flowableTask.getDelegationState().toString() : null);
+        task.setDueDate(flowableTask.getDueDate() != null ? 
+            flowableTask.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime() : null);
+        task.setCreateTime(flowableTask.getCreateTime() != null ? 
+            flowableTask.getCreateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime() : null);
+        task.setTenantId(flowableTask.getTenantId());
+        task.setFormKey(flowableTask.getFormKey());
+        task.setPriority(flowableTask.getPriority());
+        task.setCategory(flowableTask.getCategory());
+        
+        return task;
     }
     
     /**
@@ -221,27 +219,30 @@ public class TaskServiceImpl implements TaskService {
             return null;
         }
         
-        return new HistoricTask()
-                .setId(historicTask.getId())
-                .setName(historicTask.getName())
-                .setDescription(historicTask.getDescription())
-                .setProcessInstanceId(historicTask.getProcessInstanceId())
-                .setProcessDefinitionId(historicTask.getProcessDefinitionId())
-                .setTaskDefinitionKey(historicTask.getTaskDefinitionKey())
-                .setFormKey(historicTask.getFormKey())
-                .setPriority(historicTask.getPriority())
-                .setOwner(historicTask.getOwner())
-                .setAssignee(historicTask.getAssignee())
-                .setStartTime(historicTask.getStartTime() != null ?
-                        LocalDateTime.ofInstant(historicTask.getStartTime().toInstant(), ZoneId.systemDefault()) : null)
-                .setClaimTime(historicTask.getClaimTime() != null ?
-                        LocalDateTime.ofInstant(historicTask.getClaimTime().toInstant(), ZoneId.systemDefault()) : null)
-                .setEndTime(historicTask.getEndTime() != null ?
-                        LocalDateTime.ofInstant(historicTask.getEndTime().toInstant(), ZoneId.systemDefault()) : null)
-                .setDurationInMillis(historicTask.getDurationInMillis())
-                .setDeleteReason(historicTask.getDeleteReason())
-                .setTaskLocalVariables(historicTask.getTaskLocalVariables())
-                .setProcessVariables(historicTask.getProcessVariables())
-                .setTenantId(historicTask.getTenantId());
+        HistoricTask task = new HistoricTask();
+        task.setId(historicTask.getId());
+        task.setName(historicTask.getName());
+        task.setDescription(historicTask.getDescription());
+        task.setProcessInstanceId(historicTask.getProcessInstanceId());
+        task.setProcessDefinitionId(historicTask.getProcessDefinitionId());
+        task.setTaskDefinitionKey(historicTask.getTaskDefinitionKey());
+        task.setFormKey(historicTask.getFormKey());
+        task.setPriority(historicTask.getPriority());
+        task.setOwner(historicTask.getOwner());
+        task.setAssignee(historicTask.getAssignee());
+        task.setCreateTime(historicTask.getStartTime() != null ?
+                LocalDateTime.ofInstant(historicTask.getStartTime().toInstant(), ZoneId.systemDefault()) : null);
+        task.setClaimTime(historicTask.getClaimTime() != null ?
+                LocalDateTime.ofInstant(historicTask.getClaimTime().toInstant(), ZoneId.systemDefault()) : null);
+        task.setDueDate(historicTask.getDueDate() != null ?
+                LocalDateTime.ofInstant(historicTask.getDueDate().toInstant(), ZoneId.systemDefault()) : null);
+        task.setDurationInMillis(historicTask.getDurationInMillis());
+        task.setDeleteReason(historicTask.getDeleteReason());
+        task.setTaskLocalVariables(historicTask.getTaskLocalVariables());
+        task.setProcessVariables(historicTask.getProcessVariables());
+        task.setTenantId(historicTask.getTenantId());
+        task.setCategory(historicTask.getCategory());
+        
+        return task;
     }
 } 

@@ -1,5 +1,7 @@
 package com.lawfirm.model.base.enums;
 
+import com.lawfirm.common.core.enums.BaseEnum;
+
 /**
  * 业务状态枚举接口
  */

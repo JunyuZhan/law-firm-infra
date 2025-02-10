@@ -1,7 +1,7 @@
 package com.lawfirm.model.system.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.common.data.entity.BaseEntity;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,42 +9,38 @@ import lombok.EqualsAndHashCode;
  * 系统模板实体类
  */
 @Data
+@Entity
+@Table(name = "sys_template")
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_template")
-public class SysTemplate extends BaseEntity {
+public class SysTemplate extends ModelBaseEntity<SysTemplate> {
 
     /**
      * 模板名称
      */
+    @Column(name = "name")
     private String name;
 
     /**
      * 模板编码
      */
+    @Column(name = "code")
     private String code;
-
-    /**
-     * 模板类型
-     */
-    private String type;
 
     /**
      * 模板内容
      */
+    @Column(name = "content")
     private String content;
 
     /**
-     * 模板参数
+     * 模板类型
      */
-    private String params;
+    @Column(name = "type")
+    private String type;
 
     /**
-     * 状态（0-禁用，1-启用）
+     * 是否启用
      */
-    private Integer status;
-
-    /**
-     * 备注
-     */
-    private String remark;
+    @Column(name = "enabled")
+    private Boolean enabled;
 } 
