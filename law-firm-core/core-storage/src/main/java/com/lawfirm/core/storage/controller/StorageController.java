@@ -1,8 +1,12 @@
 package com.lawfirm.core.storage.controller;
 
-import com.lawfirm.core.storage.model.FileMetadata;
-import com.lawfirm.core.storage.service.StorageService;
-import lombok.RequiredArgsConstructor;
+import com.lawfirm.model.base.storage.model.FileMetadata;
+import com.lawfirm.model.base.storage.service.StorageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,95 +17,68 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
- * 存储控制器
+ * 文件存储控制器
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/storage")
-@RequiredArgsConstructor
+@Tag(name = "文件存储", description = "文件存储相关接口")
 public class StorageController {
-    
-    private final StorageService storageService;
-    
+
+    @Autowired
+    private StorageService storageService;
+
     /**
      * 上传文件
      */
     @PostMapping("/upload")
-    public FileMetadata upload(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("businessType") String businessType,
-            @RequestParam("businessId") String businessId) {
-        return storageService.upload(file, businessType, businessId);
+    @Operation(summary = "上传文件")
+    public FileMetadata upload(@RequestParam("file") MultipartFile file) {
+        return storageService.uploadFile(file);
     }
-    
-    /**
-     * 删除文件
-     */
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
-        storageService.delete(id);
-    }
-    
-    /**
-     * 批量删除文件
-     */
-    @DeleteMapping("/batch")
-    public void deleteBatch(@RequestBody List<String> ids) {
-        storageService.deleteBatch(ids);
-    }
-    
-    /**
-     * 获取文件元数据
-     */
-    @GetMapping("/{id}/metadata")
-    public FileMetadata getMetadata(@PathVariable String id) {
-        return storageService.getMetadata(id);
-    }
-    
-    /**
-     * 获取文件访问URL
-     */
-    @GetMapping("/{id}/url")
-    public String getUrl(
-            @PathVariable String id,
-            @RequestParam(required = false) Long expireSeconds) {
-        return expireSeconds != null ? 
-                storageService.getUrl(id, expireSeconds) : 
-                storageService.getUrl(id);
-    }
-    
+
     /**
      * 下载文件
      */
-    @GetMapping("/{id}/download")
-    public ResponseEntity<InputStreamResource> download(@PathVariable String id) {
-        FileMetadata metadata = storageService.getMetadata(id);
-        if (metadata == null) {
-            return ResponseEntity.notFound().build();
-        }
-        
-        InputStream inputStream = storageService.download(id);
-        if (inputStream == null) {
-            return ResponseEntity.notFound().build();
-        }
-        
-        String encodedFilename = URLEncoder.encode(metadata.getFilename(), StandardCharsets.UTF_8);
+    @GetMapping("/download/{path}")
+    @Operation(summary = "下载文件")
+    public ResponseEntity<InputStreamResource> download(@PathVariable String path) {
+        InputStream inputStream = storageService.downloadFile(path);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", path);
         
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(metadata.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"")
+                .headers(headers)
                 .body(new InputStreamResource(inputStream));
     }
-    
+
     /**
-     * 根据业务类型和业务ID获取文件列表
+     * 删除文件
      */
-    @GetMapping("/list")
-    public List<FileMetadata> listByBusiness(
-            @RequestParam String businessType,
-            @RequestParam String businessId) {
-        return storageService.listByBusiness(businessType, businessId);
+    @DeleteMapping("/{path}")
+    @Operation(summary = "删除文件")
+    public void delete(@PathVariable String path) {
+        storageService.deleteFile(path);
+    }
+
+    /**
+     * 获取文件访问URL
+     */
+    @GetMapping("/url/{path}")
+    @Operation(summary = "获取文件URL")
+    public String getUrl(@PathVariable String path) {
+        return storageService.getFileUrl(path);
+    }
+
+    /**
+     * 检查文件是否存在
+     */
+    @GetMapping("/exist/{path}")
+    @Operation(summary = "检查文件是否存在")
+    public boolean exists(@PathVariable String path) {
+        return storageService.isFileExist(path);
     }
 } 

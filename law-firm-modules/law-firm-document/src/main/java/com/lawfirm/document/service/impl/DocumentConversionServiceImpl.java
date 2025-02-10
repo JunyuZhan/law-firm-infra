@@ -2,6 +2,10 @@ package com.lawfirm.document.service.impl;
 
 import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.document.service.IDocumentConversionService;
+import com.lawfirm.model.document.enums.ConversionTaskStatus;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
@@ -9,26 +13,134 @@ import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 文档格式转换服务实现类
+ * 文档转换服务实现类
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DocumentConversionServiceImpl implements IDocumentConversionService {
-
-    private static final Set<String> SUPPORTED_FORMATS = new HashSet<>(Arrays.asList(
-        "doc", "docx", "pdf", "txt", "html"
-    ));
+    
+    private final Map<String, ConversionTask> taskMap = new ConcurrentHashMap<>();
+    private final Set<String> supportedSourceFormats = new HashSet<>(Arrays.asList(
+            "DOC", "DOCX", "XLS", "XLSX", "PPT", "PPTX", "PDF", "TXT", "RTF"));
+    private final Set<String> supportedTargetFormats = new HashSet<>(Arrays.asList(
+            "PDF", "HTML", "TXT", "PNG", "JPG"));
+    
+    @Override
+    @Async("conversionTaskExecutor")
+    public CompletableFuture<String> convertAsync(Long documentId, String sourceFormat, 
+            String targetFormat) {
+        if (!isConversionSupported(sourceFormat, targetFormat)) {
+            throw new IllegalArgumentException("不支持的转换格式");
+        }
+        
+        String taskId = UUID.randomUUID().toString();
+        ConversionTask task = new ConversionTask(documentId, sourceFormat, targetFormat);
+        taskMap.put(taskId, task);
+        
+        try {
+            // TODO: 调用具体的转换实现
+            task.setStatus(ConversionTaskStatus.CONVERTING);
+            Thread.sleep(1000); // 模拟转换过程
+            task.setProgress(100);
+            task.setStatus(ConversionTaskStatus.COMPLETED);
+            
+            return CompletableFuture.completedFuture(taskId);
+        } catch (Exception e) {
+            task.setStatus(ConversionTaskStatus.FAILED);
+            task.setErrorMessage(e.getMessage());
+            log.error("文档转换失败: documentId={}, sourceFormat={}, targetFormat={}", 
+                    documentId, sourceFormat, targetFormat, e);
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+    
+    @Override
+    public double getConversionProgress(String taskId) {
+        ConversionTask task = taskMap.get(taskId);
+        return task != null ? task.getProgress() : 0;
+    }
+    
+    @Override
+    public void cancelConversion(String taskId) {
+        ConversionTask task = taskMap.get(taskId);
+        if (task != null && task.getStatus() == ConversionTaskStatus.CONVERTING) {
+            task.setStatus(ConversionTaskStatus.CANCELLED);
+            // TODO: 实现具体的取消逻辑
+        }
+    }
+    
+    @Override
+    public List<String> getSupportedSourceFormats() {
+        return new ArrayList<>(supportedSourceFormats);
+    }
+    
+    @Override
+    public List<String> getSupportedTargetFormats() {
+        return new ArrayList<>(supportedTargetFormats);
+    }
+    
+    @Override
+    public boolean isConversionSupported(String sourceFormat, String targetFormat) {
+        return supportedSourceFormats.contains(sourceFormat.toUpperCase()) &&
+                supportedTargetFormats.contains(targetFormat.toUpperCase());
+    }
+    
+    @Override
+    public ConversionTaskStatus getTaskStatus(String taskId) {
+        ConversionTask task = taskMap.get(taskId);
+        return task != null ? task.getStatus() : null;
+    }
+    
+    @Override
+    public void cleanExpiredTasks(int days) {
+        LocalDateTime cutoffTime = LocalDateTime.now().minusDays(days);
+        taskMap.entrySet().removeIf(entry -> {
+            ConversionTask task = entry.getValue();
+            return task.getCreateTime().isBefore(cutoffTime) &&
+                    task.getStatus() != ConversionTaskStatus.CONVERTING;
+        });
+    }
+    
+    @Data
+    @Accessors(chain = true)
+    private static class ConversionTask {
+        private final Long documentId;
+        private final String sourceFormat;
+        private final String targetFormat;
+        private final LocalDateTime createTime;
+        private ConversionTaskStatus status;
+        private double progress;
+        private String errorMessage;
+        
+        public ConversionTask(Long documentId, String sourceFormat, String targetFormat) {
+            this.documentId = documentId;
+            this.sourceFormat = sourceFormat;
+            this.targetFormat = targetFormat;
+            this.createTime = LocalDateTime.now();
+            this.status = ConversionTaskStatus.PENDING;
+            this.progress = 0;
+        }
+    }
 
     @Override
     public InputStream convert(InputStream source, String sourceFormat, String targetFormat) {
@@ -84,13 +196,6 @@ public class DocumentConversionServiceImpl implements IDocumentConversionService
             default:
                 throw new BusinessException("不支持的文件格式: " + sourceFormat);
         }
-    }
-
-    @Override
-    public boolean isConversionSupported(String sourceFormat, String targetFormat) {
-        return SUPPORTED_FORMATS.contains(sourceFormat.toLowerCase()) &&
-               SUPPORTED_FORMATS.contains(targetFormat.toLowerCase()) &&
-               !sourceFormat.equalsIgnoreCase(targetFormat);
     }
 
     private String extractPdfText(InputStream source) throws IOException {

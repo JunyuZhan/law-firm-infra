@@ -1,30 +1,30 @@
 package com.lawfirm.model.document.enums;
 
-import com.lawfirm.common.core.enums.BaseEnum;
-
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
+/**
+ * 文档状态枚举
+ */
 @Getter
-public enum DocumentStatusEnum implements BaseEnum<String> {
+public enum DocumentStatusEnum {
     
     DRAFT("DRAFT", "草稿"),
     REVIEWING("REVIEWING", "审核中"),
-    APPROVED("APPROVED", "已批准"),
+    APPROVED("APPROVED", "已审核"),
     REJECTED("REJECTED", "已驳回"),
-    PUBLISHED("PUBLISHED", "已发布"),
     ARCHIVED("ARCHIVED", "已归档"),
-    DELETED("DELETED", "已删除");
+    TEMPLATE("TEMPLATE", "模板"),
+    DEPRECATED("DEPRECATED", "已废弃");
 
-    private final String value;
+    @EnumValue
+    @JsonValue
+    private final String code;
     private final String description;
 
-    DocumentStatusEnum(String value, String description) {
-        this.value = value;
+    DocumentStatusEnum(String code, String description) {
+        this.code = code;
         this.description = description;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
     }
 } 

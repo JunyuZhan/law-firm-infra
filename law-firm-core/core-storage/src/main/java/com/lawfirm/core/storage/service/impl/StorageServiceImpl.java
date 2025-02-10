@@ -1,107 +1,104 @@
 package com.lawfirm.core.storage.service.impl;
 
-import com.lawfirm.core.storage.config.StorageProperties;
-import com.lawfirm.core.storage.model.FileMetadata;
-import com.lawfirm.core.storage.service.StorageService;
-import com.lawfirm.core.storage.strategy.AbstractStorageStrategy;
-import com.lawfirm.core.storage.strategy.MinioStorageStrategy;
+import com.lawfirm.model.base.storage.model.FileMetadata;
+import com.lawfirm.model.base.storage.service.StorageService;
+import com.lawfirm.core.storage.strategy.StorageStrategy;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 存储服务实现类
- */
 @Slf4j
 @Service
 public class StorageServiceImpl implements StorageService {
-    
-    private final StorageProperties storageProperties;
-    private final MongoTemplate mongoTemplate;
-    private final AbstractStorageStrategy storageStrategy;
-    
-    public StorageServiceImpl(StorageProperties storageProperties, MongoTemplate mongoTemplate) {
-        this.storageProperties = storageProperties;
-        this.mongoTemplate = mongoTemplate;
-        
-        // 根据配置创建存储策略
-        this.storageStrategy = switch (storageProperties.getType().toLowerCase()) {
-            case "minio" -> new MinioStorageStrategy(storageProperties);
-            // TODO: 实现其他存储策略
-            default -> throw new IllegalArgumentException("Unsupported storage type: " + storageProperties.getType());
-        };
-        
-        log.info("Using storage strategy: {}", storageProperties.getType());
-    }
-    
+
+    @Autowired
+    private StorageStrategy storageStrategy;
+
     @Override
-    public FileMetadata upload(MultipartFile file, String businessType, String businessId) {
-        FileMetadata metadata = storageStrategy.upload(file, businessType, businessId);
-        return saveMetadata(metadata);
-    }
-    
-    @Override
-    public FileMetadata upload(InputStream inputStream, String filename, String contentType, String businessType, String businessId) {
-        FileMetadata metadata = storageStrategy.upload(inputStream, filename, contentType, businessType, businessId);
-        return saveMetadata(metadata);
-    }
-    
-    @Override
-    public void delete(String id) {
-        FileMetadata metadata = getMetadata(id);
-        if (metadata != null) {
-            storageStrategy.doDelete(metadata.getPath());
-            mongoTemplate.remove(Query.query(Criteria.where("id").is(id)), FileMetadata.class);
+    public FileMetadata uploadFile(MultipartFile file) {
+        try {
+            return storageStrategy.uploadFile(file);
+        } catch (Exception e) {
+            log.error("上传文件失败", e);
+            throw new RuntimeException("上传文件失败", e);
         }
     }
-    
+
     @Override
-    public void deleteBatch(List<String> ids) {
-        for (String id : ids) {
-            delete(id);
+    public FileMetadata uploadFile(String filename, InputStream inputStream, long size, String contentType) {
+        try {
+            return storageStrategy.uploadFile(filename, inputStream, size, contentType);
+        } catch (Exception e) {
+            log.error("上传文件失败", e);
+            throw new RuntimeException("上传文件失败", e);
         }
     }
-    
+
     @Override
-    public FileMetadata getMetadata(String id) {
-        return mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), FileMetadata.class);
+    public void deleteFile(String path) {
+        try {
+            storageStrategy.deleteFile(path);
+        } catch (Exception e) {
+            log.error("删除文件失败", e);
+            throw new RuntimeException("删除文件失败", e);
+        }
     }
-    
+
     @Override
-    public String getUrl(String id) {
-        FileMetadata metadata = getMetadata(id);
-        return metadata != null ? storageStrategy.doGetUrl(metadata.getPath()) : null;
+    public void deleteBatch(List<String> paths) {
+        for (String path : paths) {
+            deleteFile(path);
+        }
     }
-    
+
     @Override
-    public String getUrl(String id, long expireSeconds) {
-        FileMetadata metadata = getMetadata(id);
-        return metadata != null ? storageStrategy.doGetUrl(metadata.getPath(), expireSeconds) : null;
+    public String getFileUrl(String path) {
+        try {
+            return storageStrategy.getFileUrl(path);
+        } catch (Exception e) {
+            log.error("获取文件URL失败", e);
+            throw new RuntimeException("获取文件URL失败", e);
+        }
     }
-    
+
     @Override
-    public InputStream download(String id) {
-        FileMetadata metadata = getMetadata(id);
-        return metadata != null ? storageStrategy.doDownload(metadata.getPath()) : null;
+    public String getFileUrl(String path, long expireSeconds) {
+        try {
+            return storageStrategy.getFileUrl(path, expireSeconds);
+        } catch (Exception e) {
+            log.error("获取文件URL失败", e);
+            throw new RuntimeException("获取文件URL失败", e);
+        }
     }
-    
+
+    @Override
+    public InputStream downloadFile(String path) {
+        try {
+            return storageStrategy.downloadFile(path);
+        } catch (Exception e) {
+            log.error("下载文件失败", e);
+            throw new RuntimeException("下载文件失败", e);
+        }
+    }
+
+    @Override
+    public boolean isFileExist(String path) {
+        try {
+            return storageStrategy.isFileExist(path);
+        } catch (Exception e) {
+            log.error("检查文件是否存在失败", e);
+            throw new RuntimeException("检查文件是否存在失败", e);
+        }
+    }
+
     @Override
     public List<FileMetadata> listByBusiness(String businessType, String businessId) {
-        Query query = Query.query(Criteria.where("businessType").is(businessType)
-                .and("businessId").is(businessId));
-        return mongoTemplate.find(query, FileMetadata.class);
-    }
-    
-    /**
-     * 保存文件元数据
-     */
-    private FileMetadata saveMetadata(FileMetadata metadata) {
-        return mongoTemplate.save(metadata, storageProperties.getMongo().getCollection());
+        // TODO: 实现按业务类型和业务ID查询文件列表
+        return new ArrayList<>();
     }
 } 

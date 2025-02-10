@@ -1,7 +1,7 @@
 package com.lawfirm.model.document.vo;
 
 import com.lawfirm.common.core.enums.StatusEnum;
-import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.common.data.vo.BaseVO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DocumentVO extends BaseDTO {
+public class DocumentVO extends BaseVO {
     
     private String documentNumber;
     private String documentName;
@@ -35,34 +35,4 @@ public class DocumentVO extends BaseDTO {
     // 扩展字段
     private String uploadByName;
     private String auditByName;
-
-    @Override
-    public DocumentVO setRemark(String remark) {
-        super.setRemark(remark);
-        return this;
-    }
-
-    @Override
-    public DocumentVO setId(Long id) {
-        super.setId(id);
-        return this;
-    }
-
-    @Override
-    public DocumentVO setCreateBy(String createBy) {
-        super.setCreateBy(createBy);
-        return this;
-    }
-
-    @Override
-    public DocumentVO setUpdateBy(String updateBy) {
-        super.setUpdateBy(updateBy);
-        return this;
-    }
-
-    @Override
-    public DocumentVO setStatus(StatusEnum status) {
-        super.setStatus(status);
-        return this;
-    }
 } 

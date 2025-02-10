@@ -6,13 +6,15 @@
 
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>common</artifactId>
+        <artifactId>law-firm-common</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>common-web</artifactId>
+    <name>${project.artifactId}</name>
     <packaging>jar</packaging>
+    <description>Web通用模块</description>
 
     <dependencies>
         <dependency>

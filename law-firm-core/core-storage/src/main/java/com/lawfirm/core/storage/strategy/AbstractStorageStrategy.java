@@ -1,6 +1,8 @@
 package com.lawfirm.core.storage.strategy;
 
-import com.lawfirm.core.storage.model.FileMetadata;
+import com.lawfirm.model.base.storage.model.FileMetadata;
+import com.lawfirm.core.storage.config.StorageProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -11,7 +13,10 @@ import java.util.UUID;
 /**
  * 存储策略抽象类
  */
-public abstract class AbstractStorageStrategy {
+public abstract class AbstractStorageStrategy implements StorageStrategy {
+    
+    @Autowired
+    protected StorageProperties storageProperties;
     
     /**
      * 上传文件
@@ -129,4 +134,111 @@ public abstract class AbstractStorageStrategy {
      * @return 文件流
      */
     public abstract InputStream doDownload(String path);
+
+    @Override
+    public FileMetadata uploadFile(MultipartFile file) {
+        try {
+            String objectName = generateObjectName(file.getOriginalFilename());
+            doUpload(file.getInputStream(), objectName);
+            
+            FileMetadata metadata = new FileMetadata();
+            metadata.setFilename(objectName);
+            metadata.setOriginalFilename(file.getOriginalFilename());
+            metadata.setSize(file.getSize());
+            metadata.setContentType(file.getContentType());
+            metadata.setStorageType(getStorageType());
+            metadata.setPath(objectName);
+            metadata.setCreateTime(LocalDateTime.now());
+            metadata.setUpdateTime(LocalDateTime.now());
+            
+            return metadata;
+        } catch (IOException e) {
+            throw new RuntimeException("上传文件失败", e);
+        }
+    }
+
+    @Override
+    public FileMetadata uploadFile(String filename, InputStream inputStream, long size, String contentType) {
+        String objectName = generateObjectName(filename);
+        doUpload(inputStream, objectName);
+        
+        FileMetadata metadata = new FileMetadata();
+        metadata.setFilename(objectName);
+        metadata.setOriginalFilename(filename);
+        metadata.setSize(size);
+        metadata.setContentType(contentType);
+        metadata.setStorageType(getStorageType());
+        metadata.setPath(objectName);
+        metadata.setCreateTime(LocalDateTime.now());
+        metadata.setUpdateTime(LocalDateTime.now());
+        
+        return metadata;
+    }
+
+    @Override
+    public void deleteFile(String path) {
+        doDelete(path);
+    }
+
+    @Override
+    public String getFileUrl(String path) {
+        return doGetUrl(path);
+    }
+
+    @Override
+    public String getFileUrl(String path, long expireSeconds) {
+        return doGetUrl(path, expireSeconds);
+    }
+
+    @Override
+    public InputStream downloadFile(String path) {
+        return doDownload(path);
+    }
+
+    /**
+     * 生成对象名称
+     */
+    protected String generateObjectName(String filename) {
+        return UUID.randomUUID().toString().replace("-", "") + getFileExtension(filename);
+    }
+
+    /**
+     * 获取文件扩展名
+     */
+    protected String getFileExtension(String filename) {
+        if (filename == null || filename.lastIndexOf(".") == -1) {
+            return "";
+        }
+        return filename.substring(filename.lastIndexOf("."));
+    }
+
+    /**
+     * 获取存储类型
+     */
+    protected abstract String getStorageType();
+
+    /**
+     * 执行上传
+     */
+    protected abstract void doUpload(InputStream inputStream, String path);
+
+    /**
+     * 执行删除
+     */
+    protected abstract void doDelete(String path);
+
+    /**
+     * 获取文件访问URL
+     */
+    protected abstract String doGetUrl(String path);
+
+    /**
+     * 获取文件访问URL（带过期时间）
+     */
+    protected abstract String doGetUrl(String path, long expireSeconds);
+
+    /**
+     * 下载文件
+     */
+    protected abstract InputStream doDownload(String path);
 } 

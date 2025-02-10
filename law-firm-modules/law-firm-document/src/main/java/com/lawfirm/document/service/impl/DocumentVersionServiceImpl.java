@@ -1,133 +1,202 @@
-package com.lawfirm.document.service.impl;
+package com.lawfirm.modules.document.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.document.dto.request.DocumentVersionAddRequest;
-import com.lawfirm.document.dto.response.DocumentVersionResponse;
-import com.lawfirm.document.entity.Document;
-import com.lawfirm.document.entity.DocumentVersion;
-import com.lawfirm.document.mapper.DocumentVersionMapper;
-import com.lawfirm.document.service.IDocumentService;
-import com.lawfirm.document.service.IDocumentVersionService;
-import com.lawfirm.common.core.exception.BusinessException;
+import com.lawfirm.model.document.dto.response.DocumentVersionResponse;
+import com.lawfirm.model.document.entity.DocumentStorage;
+import com.lawfirm.model.document.entity.DocumentVersion;
+import com.lawfirm.model.document.repository.DocumentStorageRepository;
+import com.lawfirm.model.document.repository.DocumentVersionRepository;
+import com.lawfirm.model.document.service.DocumentVersionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 文档版本服务实现类
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class DocumentVersionServiceImpl extends ServiceImpl<DocumentVersionMapper, DocumentVersion> implements IDocumentVersionService {
+public class DocumentVersionServiceImpl implements DocumentVersionService {
 
-    private final IDocumentService documentService;
+    private final DocumentVersionRepository documentVersionRepository;
+    private final DocumentStorageRepository documentStorageRepository;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long addVersion(DocumentVersionAddRequest request) {
-        // 检查文档是否存在
-        Document document = documentService.getById(request.getDocId());
-        if (document == null) {
-            throw new BusinessException("文档不存在");
+    @Transactional
+    public DocumentVersion createVersion(Long documentId, MultipartFile file, String changeLog) {
+        try {
+            // 获取当前最新版本号
+            DocumentVersion latestVersion = getLatestVersion(documentId);
+            int newVersion = latestVersion != null ? latestVersion.getVersion() + 1 : 1;
+
+            // 创建存储记录
+            DocumentStorage storage = new DocumentStorage()
+                    .setDocumentId(documentId)
+                    .setFileSize(file.getSize())
+                    .setFileType(file.getContentType())
+                    .setFileName(file.getOriginalFilename())
+                    .setCreateTime(LocalDateTime.now())
+                    .setUpdateTime(LocalDateTime.now())
+                    .setIsDeleted(false);
+            
+            // TODO: 调用存储服务保存文件
+            storage = documentStorageRepository.save(storage);
+
+            // 创建版本记录
+            DocumentVersion version = new DocumentVersion()
+                    .setDocumentId(documentId)
+                    .setVersion(newVersion)
+                    .setStorageId(storage.getId())
+                    .setFileSize(file.getSize())
+                    .setFileName(file.getOriginalFilename())
+                    .setChangeLog(changeLog)
+                    .setCreateTime(LocalDateTime.now())
+                    .setUpdateTime(LocalDateTime.now())
+                    .setIsDeleted(false);
+
+            return documentVersionRepository.save(version);
+        } catch (Exception e) {
+            throw new RuntimeException("创建版本失败", e);
         }
-        
-        // 获取最新版本号
-        Integer latestVersionNo = getLatestVersionNo(request.getDocId());
-        
-        // 创建新版本
-        DocumentVersion version = new DocumentVersion();
-        BeanUtils.copyProperties(request, version);
-        version.setVersionNo(latestVersionNo + 1);
-        save(version);
-        
-        // 更新文档当前版本号
-        document.setVersion(version.getVersionNo());
-        documentService.updateById(document);
-        
-        return version.getId();
     }
 
     @Override
-    public List<DocumentVersionResponse> getVersionsByDocId(Long docId) {
-        // 检查文档是否存在
-        if (!documentService.getById(docId)) {
-            throw new BusinessException("文档不存在");
-        }
-        
-        // 查询所有版本
-        LambdaQueryWrapper<DocumentVersion> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DocumentVersion::getDocId, docId)
-                .orderByDesc(DocumentVersion::getVersionNo);
-        
-        return list(wrapper).stream()
-                .map(this::convertToResponse)
-                .collect(Collectors.toList());
+    public DocumentVersion getVersion(Long versionId) {
+        return documentVersionRepository.findById(versionId)
+                .filter(v -> !Boolean.TRUE.equals(v.getIsDeleted()))
+                .orElse(null);
     }
 
     @Override
-    public DocumentVersionResponse getVersion(Long docId, Integer versionNo) {
-        // 查询指定版本
-        LambdaQueryWrapper<DocumentVersion> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DocumentVersion::getDocId, docId)
-                .eq(DocumentVersion::getVersionNo, versionNo);
+    public List<DocumentVersion> getDocumentVersions(Long documentId) {
+        return documentVersionRepository.findByDocumentIdOrderByVersionDesc(documentId);
+    }
+
+    @Override
+    public DocumentVersion getLatestVersion(Long documentId) {
+        return documentVersionRepository.findFirstByDocumentIdOrderByVersionDesc(documentId);
+    }
+
+    @Override
+    @Transactional
+    public DocumentVersion rollbackVersion(Long documentId, Integer version) {
+        // 获取目标版本
+        DocumentVersion targetVersion = documentVersionRepository.findByDocumentIdAndVersion(documentId, version);
+        if (targetVersion == null) {
+            throw new IllegalArgumentException("目标版本不存在");
+        }
+
+        // 获取存储记录
+        DocumentStorage storage = documentStorageRepository.findById(targetVersion.getStorageId())
+                .orElseThrow(() -> new IllegalStateException("版本存储记录不存在"));
+
+        // 创建新的存储记录
+        DocumentStorage newStorage = new DocumentStorage()
+                .setDocumentId(documentId)
+                .setFileSize(storage.getFileSize())
+                .setFileType(storage.getFileType())
+                .setFileName(storage.getFileName())
+                .setCreateTime(LocalDateTime.now())
+                .setUpdateTime(LocalDateTime.now())
+                .setIsDeleted(false);
         
-        DocumentVersion version = getOne(wrapper);
+        // TODO: 调用存储服务复制文件
+        newStorage = documentStorageRepository.save(newStorage);
+
+        // 创建新版本记录
+        return createVersion(documentId, null, "回滚到版本 " + version);
+    }
+
+    @Override
+    @Transactional
+    public void deleteVersion(Long versionId) {
+        DocumentVersion version = getVersion(versionId);
         if (version == null) {
-            throw new BusinessException("指定版本不存在");
+            return;
         }
-        
-        return convertToResponse(version);
+
+        // 检查是否是最新版本
+        DocumentVersion latestVersion = getLatestVersion(version.getDocumentId());
+        if (latestVersion != null && latestVersion.getId().equals(versionId)) {
+            throw new IllegalStateException("不能删除最新版本");
+        }
+
+        // 逻辑删除版本记录
+        version.setIsDeleted(true)
+                .setDeleteTime(LocalDateTime.now())
+                .setUpdateTime(LocalDateTime.now());
+        documentVersionRepository.save(version);
+
+        // 删除存储记录
+        DocumentStorage storage = documentStorageRepository.findById(version.getStorageId()).orElse(null);
+        if (storage != null) {
+            storage.setIsDeleted(true)
+                    .setDeleteTime(LocalDateTime.now())
+                    .setUpdateTime(LocalDateTime.now());
+            documentStorageRepository.save(storage);
+            // TODO: 调用存储服务删除文件
+        }
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void rollbackToVersion(Long docId, Integer versionNo) {
-        // 检查文档是否存在
-        Document document = documentService.getById(docId);
-        if (document == null) {
-            throw new BusinessException("文档不存在");
-        }
-        
-        // 检查版本是否存在
-        DocumentVersion version = getVersion(docId, versionNo);
-        if (version == null) {
-            throw new BusinessException("指定版本不存在");
-        }
-        
-        // 更新文档信息
-        document.setVersion(versionNo);
-        document.setFileSize(version.getFileSize());
-        document.setStoragePath(version.getStoragePath());
-        documentService.updateById(document);
+    public Page<DocumentVersion> listVersions(Long documentId, Pageable pageable) {
+        return documentVersionRepository.findByDocumentIdOrderByVersionDesc(documentId, pageable);
     }
 
-    /**
-     * 获取最新版本号
-     */
-    private Integer getLatestVersionNo(Long docId) {
-        LambdaQueryWrapper<DocumentVersion> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DocumentVersion::getDocId, docId)
-                .orderByDesc(DocumentVersion::getVersionNo)
-                .last("LIMIT 1");
-        
-        DocumentVersion latestVersion = getOne(wrapper);
-        return latestVersion != null ? latestVersion.getVersionNo() : 0;
+    @Override
+    public String compareVersions(Long documentId, Integer version1, Integer version2) {
+        DocumentVersion v1 = documentVersionRepository.findByDocumentIdAndVersion(documentId, version1);
+        DocumentVersion v2 = documentVersionRepository.findByDocumentIdAndVersion(documentId, version2);
+        if (v1 == null || v2 == null) {
+            throw new IllegalArgumentException("版本不存在");
+        }
+
+        // TODO: 实现文件比较功能
+        return "版本比较功能待实现";
     }
 
-    /**
-     * 转换为响应对象
-     */
-    private DocumentVersionResponse convertToResponse(DocumentVersion version) {
+    @Override
+    public byte[] getVersionFile(Long versionId) {
+        DocumentVersion version = getVersion(versionId);
         if (version == null) {
-            return null;
+            throw new IllegalArgumentException("版本不存在");
         }
-        DocumentVersionResponse response = new DocumentVersionResponse();
-        BeanUtils.copyProperties(version, response);
-        return response;
+
+        DocumentStorage storage = documentStorageRepository.findById(version.getStorageId())
+                .orElseThrow(() -> new IllegalStateException("版本存储记录不存在"));
+
+        // TODO: 调用存储服务获取文件内容
+        return new byte[0];
+    }
+
+    @Override
+    public String getVersionFileUrl(Long versionId) {
+        DocumentVersion version = getVersion(versionId);
+        if (version == null) {
+            throw new IllegalArgumentException("版本不存在");
+        }
+
+        DocumentStorage storage = documentStorageRepository.findById(version.getStorageId())
+                .orElseThrow(() -> new IllegalStateException("版本存储记录不存在"));
+
+        // TODO: 调用存储服务获取文件URL
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public void cleanHistoryVersions(Long documentId, Integer keepVersions) {
+        List<DocumentVersion> versionsToClean = documentVersionRepository.findVersionsToClean(documentId, keepVersions);
+        for (DocumentVersion version : versionsToClean) {
+            deleteVersion(version.getId());
+        }
     }
 } 

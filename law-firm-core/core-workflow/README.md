@@ -1,230 +1,128 @@
-# 工作流模块(core-workflow)
+# 工作流核心模块 (core-workflow)
 
-## 简介
-工作流模块基于Flowable实现,提供了统一的工作流管理功能,包括流程定义管理、流程实例管理、任务管理、表单管理等功能。
+## 模块简介
+core-workflow 是律所管理系统的工作流核心模块，基于 Flowable 工作流引擎实现，提供了完整的工作流管理功能。该模块主要用于处理律所内部的各类业务流程，如案件流转、文档审批等。
 
 ## 主要功能
 
-### 1. 流程定义管理
-- 部署流程定义
-- 删除流程定义
-- 查询流程定义
-- 获取流程图
-- 获取流程XML
+### 1. 流程模板管理
+- 流程模板的部署与更新
+- 流程模板的版本控制
+- 流程模板的查询与预览
+- 支持BPMN2.0标准的流程定义
 
-### 2. 流程实例管理
-- 启动流程实例
-- 挂起/激活流程实例
-- 终止流程实例
-- 查询流程实例
-- 获取流程变量
+### 2. 任务管理
+- 任务的创建与分配
+- 任务状态的跟踪与更新
+- 任务委派与转办
+- 任务候选人/组管理
+- 历史任务查询
 
-### 3. 任务管理
-- 查询任务
-- 签收任务
-- 完成任务
-- 委托任务
-- 转办任务
-- 设置任务变量
-- 获取任务表单
+### 3. 业务流程管理
+- 业务流程的创建与启动
+- 流程实例的状态管理
+- 流程变量的存储与获取
+- 流程与业务数据的关联
 
-### 4. 表单管理
-- 创建表单
-- 更新表单
-- 删除表单
-- 查询表单
-- 提交表单
+### 4. 权限控制
+- 流程节点权限管理
+- 任务访问权限控制
+- 多租户支持
 
-### 5. 流程监控
-- 流程变量监听
-- 流程活动监听
-- 流程完成监听
-- 任务超时监听
-- 任务分配监听
+## 技术栈
+- Spring Boot
+- Flowable
+- Spring Data JPA
+- MySQL
+- MongoDB (用于存储流程相关文档)
+- Caffeine (本地缓存)
 
-### 6. 异常处理
-- 全局异常处理
-- 自定义业务异常
-- 异常信息存储
-- 重试机制
+## 核心类说明
 
-### 7. 告警通知
-- 邮件通知
-- 系统告警
-- 业务告警
+### 模型类
+- `Task`: 任务基础模型
+- `HistoricTask`: 历史任务模型
+- `BusinessProcess`: 业务流程模型
+- `TaskNodePermission`: 任务节点权限模型
 
-## 配置说明
-
-### 1. Maven依赖
-```xml
-<dependency>
-    <groupId>com.lawfirm.core</groupId>
-    <artifactId>core-workflow</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-
-### 2. 配置文件(application.yml)
-```yaml
-workflow:
-  process:
-    definition-location: processes/  # 流程定义文件位置
-    auto-deployment: true           # 是否自动部署
-    check-version: true            # 是否检查版本
-    history-retention-days: 0      # 历史数据保留天数(0表示永久保留)
-  
-  task:
-    timeout: 72                    # 任务超时时间(小时)
-    reminder: 24                   # 任务提醒时间(小时)
-    auto-complete: false          # 是否自动完成
-    auto-claim: false             # 是否自动签收
-    lock-time: 10                 # 任务锁定时间(分钟)
-
-spring:
-  cache:
-    type: caffeine
-    caffeine:
-      spec: maximumSize=1000,expireAfterWrite=3600s
-```
+### 服务接口
+- `TaskService`: 任务相关操作
+- `BusinessProcessService`: 业务流程管理
+- `ProcessTemplateService`: 流程模板管理
+- `ProcessPermissionService`: 流程权限管理
 
 ## 使用示例
 
-### 1. 启动流程
+### 1. 部署流程模板
 ```java
 @Autowired
-private WorkflowService workflowService;
+private ProcessTemplateService processTemplateService;
 
-// 启动流程
-String processInstanceId = workflowService.startProcess(
-    "leave-process",           // 流程定义key
-    "LEAVE-2024-001",         // 业务key
-    variables,                 // 流程变量
-    "zhangsan"                // 启动用户
+// 部署流程模板
+String deploymentId = processTemplateService.deployTemplate(
+    ProcessTemplateEnum.CASE_CREATE, 
+    processFile
 );
 ```
 
-### 2. 查询任务
+### 2. 启动业务流程
+```java
+@Autowired
+private BusinessProcessService businessProcessService;
+
+// 创建业务流程
+BusinessProcess process = new BusinessProcess()
+    .setBusinessType("case")
+    .setBusinessId("CASE-2024-001")
+    .setBusinessTitle("测试案件")
+    .setStartUserId("user1");
+    
+businessProcessService.createBusinessProcess(process);
+```
+
+### 3. 任务处理
 ```java
 @Autowired
 private TaskService taskService;
 
-// 查询待办任务
-List<Task> tasks = taskService.listTasks(
-    null,                     // 流程实例ID
-    "approve",                // 任务定义key
-    "zhangsan",              // 办理人
-    null,                     // 所有者
-    "default"                 // 租户ID
-);
-```
-
-### 3. 完成任务
-```java
-@Autowired
-private TaskService taskService;
+// 查询任务
+Task task = taskService.getTask(taskId);
 
 // 完成任务
-taskService.completeTask(
-    "1001",                   // 任务ID
-    variables,                // 任务变量
-    "同意"                    // 审批意见
-);
+Map<String, Object> variables = new HashMap<>();
+variables.put("approved", true);
+taskService.completeTask(taskId, variables);
 ```
 
-### 4. 获取流程图
-```java
-@Autowired
-private DiagramService diagramService;
+## 配置说明
 
-// 获取流程实例图(带高亮)
-InputStream diagram = diagramService.getProcessInstanceDiagram("1001");
+### 数据库配置
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/law_firm_workflow
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
 ```
 
-## 异常处理
-模块提供了统一的异常处理机制:
-
-```java
-try {
-    workflowService.startProcess(...);
-} catch (WorkflowException e) {
-    // 处理业务异常
-    log.error("业务异常: {}", e.getMessage());
-} catch (Exception e) {
-    // 处理其他异常
-    log.error("系统异常", e);
-}
-```
-
-## 监听器使用
-可以通过继承基类或实现接口来自定义监听器:
-
-```java
-@Component
-public class CustomTaskListener extends BaseTaskListener {
-    
-    @Override
-    protected void onCreate(DelegateTask delegateTask) {
-        // 实现任务创建时的逻辑
-    }
-}
-```
-
-## 缓存配置
-模块使用Caffeine实现缓存:
-
-```java
-@Cacheable(value = "processDefinitions", key = "#processDefinitionId")
-public ProcessDefinition getProcessDefinition(String processDefinitionId) {
-    // 实现获取流程定义的逻辑
-}
-```
-
-## 告警使用
-模块提供了多种告警方式:
-
-```java
-@Autowired
-private AlertUtil alertUtil;
-
-// 发送邮件告警
-alertUtil.sendAlertEmail(
-    "任务超时提醒",
-    "您有一个任务已超时,请尽快处理",
-    "zhangsan@company.com"
-);
-
-// 发送系统告警
-alertUtil.sendSystemAlert(
-    "流程异常",
-    "流程实例[1001]执行失败",
-    "ERROR"
-);
+### Flowable配置
+```yaml
+flowable:
+  database-schema-update: true
+  async-executor-activate: true
+  process:
+    definition-cache-limit: 1
 ```
 
 ## 注意事项
-1. 确保MongoDB和Redis服务可用
-2. 配置邮件服务器信息
-3. 合理配置缓存参数
-4. 定期清理历史数据
-5. 正确处理事务
+1. 确保数据库中已创建相应的工作流表
+2. 流程模板需符合BPMN2.0规范
+3. 建议在生产环境中配置适当的缓存策略
+4. 注意处理并发任务时的锁定机制
 
-## 常见问题
-1. Q: 如何自定义流程图样式?
-   A: 可以通过修改processes目录下的bpmn文件来自定义样式
-
-2. Q: 如何处理并发签收问题?
-   A: 使用乐观锁或任务锁定机制
-
-3. Q: 如何实现自定义表单?
-   A: 可以继承Form类并实现自定义字段
-
-4. Q: 如何优化查询性能?
-   A: 合理使用缓存,创建必要的索引
-
-## 更新日志
-### v1.0.0 (2024-01-20)
-- 初始版本发布
-- 实现基本的工作流功能
-- 添加异常处理机制
-- 添加缓存支持
-- 添加告警通知 
+## 开发计划
+- [ ] 添加流程监控功能
+- [ ] 优化任务分配算法
+- [ ] 增加流程统计分析
+- [ ] 支持动态表单配置 

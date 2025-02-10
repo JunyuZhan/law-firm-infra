@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -43,7 +44,7 @@ class ProcessTemplateServiceTest {
     @Mock
     private RepositoryService repositoryService;
 
-    @Mock
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Mock

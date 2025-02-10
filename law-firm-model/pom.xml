@@ -27,6 +27,26 @@
         <module>contract-model</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>common-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>common-util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>common-message</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.lawfirm</groupId>

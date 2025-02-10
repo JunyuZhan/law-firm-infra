@@ -1,27 +1,27 @@
 package com.lawfirm.model.document.enums;
 
-import com.lawfirm.common.core.enums.BaseEnum;
-
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
+/**
+ * 文档安全级别枚举
+ */
 @Getter
-public enum DocumentSecurityLevelEnum implements BaseEnum<String> {
+public enum DocumentSecurityLevelEnum {
     
     PUBLIC("PUBLIC", "公开"),
     INTERNAL("INTERNAL", "内部"),
     CONFIDENTIAL("CONFIDENTIAL", "保密"),
     STRICTLY_CONFIDENTIAL("STRICTLY_CONFIDENTIAL", "绝密");
 
-    private final String value;
+    @EnumValue
+    @JsonValue
+    private final String code;
     private final String description;
 
-    DocumentSecurityLevelEnum(String value, String description) {
-        this.value = value;
+    DocumentSecurityLevelEnum(String code, String description) {
+        this.code = code;
         this.description = description;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
     }
 } 

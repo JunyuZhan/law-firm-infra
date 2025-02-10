@@ -2,11 +2,13 @@ package com.lawfirm.core.storage.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
- * 存储配置属性
+ * 存储配置
  */
 @Data
+@Component
 @ConfigurationProperties(prefix = "storage")
 public class StorageProperties {
     
@@ -14,6 +16,16 @@ public class StorageProperties {
      * 存储类型（minio/oss/mongodb）
      */
     private String type = "minio";
+    
+    /**
+     * 存储桶名称
+     */
+    private String bucketName = "lawfirm";
+    
+    /**
+     * 默认URL过期时间（秒）
+     */
+    private Integer defaultUrlExpiry = 3600;
     
     /**
      * MinIO 配置
@@ -30,22 +42,46 @@ public class StorageProperties {
      */
     private MongoConfig mongo = new MongoConfig();
     
+    /**
+     * 默认存储桶
+     */
+    private String defaultBucket = "lawfirm";
+    
+    /**
+     * 分片存储配置
+     */
+    private ChunkConfig chunk = new ChunkConfig();
+    
+    private String endpoint;
+    private String accessKey;
+    private String secretKey;
+    private String region;
+    private boolean secure = true;
+    private int maxFileSize = 100 * 1024 * 1024; // 默认100MB
+    private int chunkSize = 5 * 1024 * 1024; // 默认5MB
+    private String tempDir = System.getProperty("java.io.tmpdir");
+    
     @Data
     public static class MinioConfig {
         /**
-         * 服务端点
+         * 是否启用MinIO
          */
-        private String endpoint = "http://localhost:9000";
+        private boolean enabled = false;
         
         /**
-         * Access Key
+         * 服务地址
          */
-        private String accessKey = "minioadmin";
+        private String endpoint;
         
         /**
-         * Secret Key
+         * 访问密钥
          */
-        private String secretKey = "minioadmin";
+        private String accessKey;
+        
+        /**
+         * 密钥
+         */
+        private String secretKey;
         
         /**
          * 存储桶名称
@@ -102,5 +138,23 @@ public class StorageProperties {
          * 块大小（字节）
          */
         private int chunkSize = 358400;
+    }
+    
+    @Data
+    public static class ChunkConfig {
+        /**
+         * 分片存储目录
+         */
+        private String directory = "chunks";
+        
+        /**
+         * 分片大小（字节）
+         */
+        private Long size = 5 * 1024 * 1024L;
+        
+        /**
+         * 并发上传数
+         */
+        private Integer concurrent = 3;
     }
 } 

@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    com.lawfirm.document: info
+    root: warn
+
+document:
+  storage:
+    base-path: /data/documents
+    temp-path: /data/documents/temp
+
+# 生产环境特定配置
+security:
+  file:
+    encryption:
+      enabled: true
+      algorithm: AES
+      key-size: 256
+
+monitoring:
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true 

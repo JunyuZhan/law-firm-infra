@@ -2,19 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>common</artifactId>
+        <artifactId>law-firm-common</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>common-security</artifactId>
-    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <description>安全通用模块</description>
 
     <dependencies>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
@@ -26,72 +31,43 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-jose</artifactId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-resource-server</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>3.5.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-            <version>3.5.2</version>
-        </dependency>
+        
+        <!-- Sa-Token 权限认证 -->
         <dependency>
             <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot3-starter</artifactId>
-            <version>1.37.0</version>
+            <artifactId>sa-token-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-jwt</artifactId>
-            <version>1.37.0</version>
+        </dependency>
+        
+        <!-- Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        
+        <!-- ZXing 二维码 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-core</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project> 

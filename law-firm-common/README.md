@@ -3,15 +3,62 @@
 ## 模块说明
 公共模块是律师事务所管理系统的基础支撑模块，提供了各个业务模块共用的工具类、通用功能和基础设施代码。该模块被所有其他模块依赖，是整个系统的基石。
 
+## 项目结构
+```
+law-firm-common
+├── common-core                # 核心功能模块
+│   ├── src/main/java
+│   │   ├── api              # 通用API接口
+│   │   ├── base            # 基础类
+│   │   ├── config          # 配置类
+│   │   ├── constant        # 常量定义
+│   │   ├── context         # 上下文
+│   │   ├── domain          # 领域模型
+│   │   ├── entity          # 实体类
+│   │   ├── enums           # 枚举类
+│   │   ├── exception       # 异常类
+│   │   ├── model           # 数据模型
+│   │   ├── result          # 响应结果
+│   │   ├── status          # 状态定义
+│   │   ├── tenant          # 多租户
+│   │   └── utils           # 工具类
+├── common-message           # 消息服务模块
+├── common-util             # 通用工具模块
+├── common-data             # 数据访问模块
+├── common-cache            # 缓存处理模块
+├── common-log              # 日志处理模块
+├── common-security         # 安全框架模块
+├── common-web              # Web功能模块
+└── common-test             # 测试支持模块
+```
+
 ## 子模块说明
 
 ### common-core
 核心功能模块，提供最基础的工具和通用功能：
-- 基础实体类
-- 通用枚举
-- 异常处理
+- 基础实体与领域模型
+- 通用枚举和常量
+- 异常处理机制
+- 多租户支持
+- 统一响应结果
 - 工具类库
-- 常量定义
+
+### common-message
+消息服务模块，提供统一的消息处理能力：
+- 短信服务
+- 邮件服务
+- 微信消息
+- WebSocket 支持
+- 消息模板管理
+- 消息发送监控
+
+### common-util
+通用工具模块，提供独立的工具类支持：
+- 字符串处理
+- 日期时间
+- 加密解密
+- 文件操作
+- 验证工具
 
 ### common-data
 数据访问模块，提供统一的数据访问支持：
@@ -21,7 +68,7 @@
 - 数据审计
 - 多租户支持
 
-### common-redis
+### common-cache
 缓存处理模块，提供统一的缓存操作接口：
 - Redis配置
 - 缓存操作封装
@@ -45,14 +92,6 @@
 - 安全过滤
 - 防护配置
 
-### common-swagger
-API文档模块，提供统一的接口文档管理：
-- Swagger配置
-- 接口文档
-- 在线调试
-- 文档导出
-- 版本管理
-
 ### common-web
 Web功能模块，提供统一的Web层支持：
 - 统一响应
@@ -61,15 +100,25 @@ Web功能模块，提供统一的Web层支持：
 - 跨域配置
 - 文件处理
 
+### common-test
+测试支持模块，提供测试相关的通用功能：
+- 测试基类
+- 测试工具
+- Mock支持
+- 测试数据构建
+- 断言增强
+
 ## 技术架构
 
 ### 核心依赖
-- Spring Boot
-- Spring Cloud
-- MyBatis Plus
-- Redis
-- Spring Security
-- Swagger
+- Spring Boot 2.7.x
+- Spring Cloud 2021.0.x
+- MyBatis Plus 3.5.x
+- Redis 6.x
+- Spring Security 5.7.x
+- Swagger 3.0.0
+- Hutool 5.8.x
+- Lombok 1.18.x
 
 ### 设计理念
 1. 高内聚，低耦合
@@ -122,6 +171,56 @@ lawfirm:
       ignore-urls:
         - /api/auth/**
         - /api/public/**
+```
+
+### 使用示例
+
+#### 1. 统一响应处理
+```java
+@RestController
+@RequestMapping("/api/demo")
+public class DemoController {
+    
+    @GetMapping("/test")
+    public R<String> test() {
+        return R.ok("测试成功");
+    }
+    
+    @PostMapping("/create")
+    public R<Void> create(@Valid @RequestBody DemoDTO dto) {
+        // 业务处理
+        return R.ok();
+    }
+}
+```
+
+#### 2. Redis缓存使用
+```java
+@Service
+public class UserService {
+    
+    @Autowired
+    private RedisHelper redisHelper;
+    
+    @CacheAble(key = "user:#{#id}")
+    public UserVO getUser(Long id) {
+        // 业务处理
+        return userVO;
+    }
+}
+```
+
+#### 3. 分页查询
+```java
+@Service
+public class DocumentService {
+    
+    public IPage<DocumentVO> page(DocumentQuery query) {
+        return baseMapper.selectPage(new Page<>(query.getPage(), query.getSize()),
+            new LambdaQueryWrapper<Document>()
+                .eq(Document::getStatus, CommonStatus.VALID));
+    }
+}
 ```
 
 ## 开发规范
@@ -190,4 +289,28 @@ lawfirm:
 2. 避免重复造轮子
 3. 关注性能影响
 4. 注意代码质量
-5. 及时更新文档 
+5. 及时更新文档
+
+## 贡献指南
+
+### 开发流程
+1. Fork 项目
+2. 创建特性分支 (`git checkout -b feature/xxx`)
+3. 提交代码 (`git commit -am 'Add some feature'`)
+4. 推送到分支 (`git push origin feature/xxx`)
+5. 创建 Pull Request
+
+### 提交规范
+- feat: 新功能
+- fix: 修复问题
+- docs: 文档修改
+- style: 代码格式修改
+- refactor: 代码重构
+- test: 测试用例修改
+- chore: 其他修改
+
+### 代码审查
+1. 代码风格符合项目规范
+2. 必须包含单元测试
+3. 所有测试用例必须通过
+4. 文档及时更新 

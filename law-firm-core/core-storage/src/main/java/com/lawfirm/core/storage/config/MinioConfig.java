@@ -1,7 +1,8 @@
 package com.lawfirm.core.storage.config;
 
 import io.minio.MinioClient;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,22 +10,20 @@ import org.springframework.context.annotation.Configuration;
  * MinIO配置
  */
 @Configuration
+@RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "storage.minio", name = "enabled", havingValue = "true")
 public class MinioConfig {
 
-    @Value("${minio.endpoint}")
-    private String endpoint;
-
-    @Value("${minio.accessKey}")
-    private String accessKey;
-
-    @Value("${minio.secretKey}")
-    private String secretKey;
+    private final StorageProperties storageProperties;
 
     @Bean
     public MinioClient minioClient() {
         return MinioClient.builder()
-                .endpoint(endpoint)
-                .credentials(accessKey, secretKey)
+                .endpoint(storageProperties.getMinio().getEndpoint())
+                .credentials(
+                        storageProperties.getMinio().getAccessKey(),
+                        storageProperties.getMinio().getSecretKey()
+                )
                 .build();
     }
 } 

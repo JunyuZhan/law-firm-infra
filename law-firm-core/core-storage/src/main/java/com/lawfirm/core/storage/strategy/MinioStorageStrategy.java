@@ -1,104 +1,213 @@
 package com.lawfirm.core.storage.strategy;
 
+import com.lawfirm.model.base.storage.model.FileMetadata;
 import com.lawfirm.core.storage.config.StorageProperties;
 import io.minio.*;
 import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * MinIO 存储策略实现
+ * MinIO存储策略实现
  */
 @Slf4j
+@Component
 public class MinioStorageStrategy extends AbstractStorageStrategy {
     
-    private final MinioClient minioClient;
-    private final StorageProperties.MinioConfig config;
+    @Autowired
+    private MinioClient minioClient;
     
-    public MinioStorageStrategy(StorageProperties storageProperties) {
-        this.config = storageProperties.getMinio();
-        this.minioClient = MinioClient.builder()
-                .endpoint(config.getEndpoint())
-                .credentials(config.getAccessKey(), config.getSecretKey())
-                .build();
-        
-        try {
-            // 确保 bucket 存在
-            boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder()
-                    .bucket(config.getBucketName())
-                    .build());
-            if (!bucketExists) {
-                minioClient.makeBucket(MakeBucketArgs.builder()
-                        .bucket(config.getBucketName())
-                        .build());
-                log.info("Created MinIO bucket: {}", config.getBucketName());
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize MinIO client", e);
-        }
-    }
-    
+    @Autowired
+    private StorageProperties storageProperties;
+
     @Override
     protected String getStorageType() {
         return "minio";
     }
-    
+
     @Override
     protected void doUpload(InputStream inputStream, String path) {
         try {
-            minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(config.getBucketName())
+            PutObjectArgs args = PutObjectArgs.builder()
+                    .bucket(storageProperties.getBucketName())
                     .object(path)
                     .stream(inputStream, -1, 10485760)
-                    .build());
+                    .build();
+            minioClient.putObject(args);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to upload file to MinIO", e);
+            log.error("上传文件到MinIO失败", e);
+            throw new RuntimeException("上传文件失败", e);
+        }
+    }
+
+    @Override
+    protected void doDelete(String path) {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(storageProperties.getBucketName())
+                            .object(path)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("从MinIO删除文件失败", e);
+            throw new RuntimeException("删除文件失败", e);
+        }
+    }
+
+    @Override
+    protected String doGetUrl(String path) {
+        return doGetUrl(path, storageProperties.getDefaultUrlExpiry());
+    }
+
+    @Override
+    protected String doGetUrl(String path, long expireSeconds) {
+        try {
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .bucket(storageProperties.getBucketName())
+                            .object(path)
+                            .expiry((int) expireSeconds, TimeUnit.SECONDS)
+                            .method(Method.GET)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("获取MinIO文件URL失败", e);
+            throw new RuntimeException("获取文件URL失败", e);
+        }
+    }
+
+    @Override
+    protected InputStream doDownload(String path) {
+        try {
+            GetObjectResponse response = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(storageProperties.getBucketName())
+                            .object(path)
+                            .build()
+            );
+            
+            // 将响应流转换为字节数组，以便多次读取
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = response.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        } catch (Exception e) {
+            log.error("从MinIO下载文件失败", e);
+            throw new RuntimeException("下载文件失败", e);
+        }
+    }
+
+    @Override
+    protected String uploadFile(String objectName, InputStream inputStream, long size, String contentType) {
+        try {
+            PutObjectArgs args = PutObjectArgs.builder()
+                    .bucket(storageProperties.getBucketName())
+                    .object(objectName)
+                    .stream(inputStream, size, 10485760)
+                    .contentType(contentType)
+                    .build();
+            minioClient.putObject(args);
+            return objectName;
+        } catch (Exception e) {
+            log.error("上传文件到MinIO失败", e);
+            throw new RuntimeException("上传文件失败", e);
+        }
+    }
+
+    @Override
+    public boolean isFileExist(String objectName) {
+        try {
+            minioClient.statObject(
+                    StatObjectArgs.builder()
+                            .bucket(storageProperties.getBucketName())
+                            .object(objectName)
+                            .build()
+            );
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public String initMultipartUpload(String objectName) {
+        try {
+            CreateMultipartUploadResponse response = minioClient.createMultipartUpload(
+                    CreateMultipartUploadArgs.builder()
+                            .bucket(storageProperties.getBucketName())
+                            .object(objectName)
+                            .build()
+            );
+            return response.result().uploadId();
+        } catch (Exception e) {
+            log.error("初始化分片上传失败", e);
+            throw new RuntimeException("初始化分片上传失败", e);
         }
     }
     
     @Override
-    public void doDelete(String path) {
+    public String uploadPart(String uploadId, int partNumber, MultipartFile part) {
         try {
-            minioClient.removeObject(RemoveObjectArgs.builder()
-                    .bucket(config.getBucketName())
-                    .object(path)
-                    .build());
+            UploadPartResponse response = minioClient.uploadPart(
+                    UploadPartArgs.builder()
+                            .bucket(storageProperties.getBucketName())
+                            .object(part.getOriginalFilename())
+                            .uploadId(uploadId)
+                            .partNumber(partNumber)
+                            .stream(part.getInputStream(), part.getSize(), -1)
+                            .build()
+            );
+            return response.etag();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to delete file from MinIO", e);
+            log.error("上传分片失败", e);
+            throw new RuntimeException("上传分片失败", e);
         }
     }
     
     @Override
-    public String doGetUrl(String path) {
-        return doGetUrl(path, config.getDefaultUrlExpiry());
-    }
-    
-    @Override
-    public String doGetUrl(String path, long expireSeconds) {
+    public String completeMultipartUpload(String uploadId, String objectName) {
         try {
-            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                    .method(Method.GET)
-                    .bucket(config.getBucketName())
-                    .object(path)
-                    .expiry((int) expireSeconds, TimeUnit.SECONDS)
-                    .build());
+            minioClient.completeMultipartUpload(
+                    CompleteMultipartUploadArgs.builder()
+                            .bucket(storageProperties.getBucketName())
+                            .object(objectName)
+                            .uploadId(uploadId)
+                            .build()
+            );
+            return objectName;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to get MinIO file URL", e);
+            log.error("完成分片上传失败", e);
+            throw new RuntimeException("完成分片上传失败", e);
         }
     }
     
     @Override
-    public InputStream doDownload(String path) {
+    public void abortMultipartUpload(String uploadId) {
         try {
-            return minioClient.getObject(GetObjectArgs.builder()
-                    .bucket(config.getBucketName())
-                    .object(path)
-                    .build());
+            minioClient.abortMultipartUpload(
+                    AbortMultipartUploadArgs.builder()
+                            .bucket(storageProperties.getBucketName())
+                            .object(uploadId)
+                            .uploadId(uploadId)
+                            .build()
+            );
         } catch (Exception e) {
-            throw new RuntimeException("Failed to download file from MinIO", e);
+            log.error("终止分片上传失败", e);
+            throw new RuntimeException("终止分片上传失败", e);
         }
     }
 } 

@@ -1,0 +1,22 @@
+package com.lawfirm.model.base.message.repository;
+
+import com.lawfirm.model.base.message.entity.MessageTemplateEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+/**
+ * 消息模板仓库接口
+ */
+@Repository
+public interface MessageTemplateRepository extends JpaRepository<MessageTemplateEntity, String> {
+    
+    /**
+     * 根据模板编码查询
+     */
+    MessageTemplateEntity findByCode(String code);
+    
+    /**
+     * 根据模板编码和启用状态查询
+     */
+    MessageTemplateEntity findByCodeAndEnabledTrue(String code);
+} 

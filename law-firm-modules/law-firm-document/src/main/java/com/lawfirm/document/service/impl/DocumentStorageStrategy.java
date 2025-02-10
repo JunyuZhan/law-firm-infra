@@ -1,6 +1,6 @@
 package com.lawfirm.document.service.impl;
 
-import com.lawfirm.document.constant.DocumentConstant;
+import com.lawfirm.document.constant.DocumentModuleConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -60,7 +60,7 @@ public class DocumentStorageStrategy {
      */
     public Path generateThumbnailPath(Path originalPath) {
         String fileName = originalPath.getFileName().toString();
-        String thumbnailName = addSuffix(fileName, DocumentConstant.Storage.THUMBNAIL_SUFFIX);
+        String thumbnailName = addSuffix(fileName, DocumentModuleConstant.Storage.THUMBNAIL_SUFFIX);
         return originalPath.resolveSibling(thumbnailName);
     }
 

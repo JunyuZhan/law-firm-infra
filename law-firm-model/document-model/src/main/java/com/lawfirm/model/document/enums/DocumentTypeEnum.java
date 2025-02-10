@@ -1,32 +1,29 @@
 package com.lawfirm.model.document.enums;
 
-import com.lawfirm.common.core.enums.BaseEnum;
-
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
+/**
+ * 文档类型枚举
+ */
 @Getter
-public enum DocumentTypeEnum implements BaseEnum<String> {
+public enum DocumentTypeEnum {
     
-    CONTRACT("CONTRACT", "合同文件"),
+    CONTRACT("CONTRACT", "合同文档"),
     LEGAL_OPINION("LEGAL_OPINION", "法律意见书"),
-    COURT_DOC("COURT_DOC", "法院文书"),
-    EVIDENCE("EVIDENCE", "证据材料"),
-    MEETING_RECORD("MEETING_RECORD", "会议记录"),
-    CORRESPONDENCE("CORRESPONDENCE", "往来函件"),
-    INTERNAL_DOC("INTERNAL_DOC", "内部文件"),
-    TEMPLATE("TEMPLATE", "文档模板"),
-    OTHER("OTHER", "其他文件");
+    CASE_DOCUMENT("CASE_DOCUMENT", "案件文书"),
+    MEETING_MINUTES("MEETING_MINUTES", "会议纪要"),
+    RESEARCH_REPORT("RESEARCH_REPORT", "研究报告"),
+    INTERNAL_DOCUMENT("INTERNAL_DOCUMENT", "内部文档");
 
-    private final String value;
+    @EnumValue
+    @JsonValue
+    private final String code;
     private final String description;
 
-    DocumentTypeEnum(String value, String description) {
-        this.value = value;
+    DocumentTypeEnum(String code, String description) {
+        this.code = code;
         this.description = description;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
     }
 } 

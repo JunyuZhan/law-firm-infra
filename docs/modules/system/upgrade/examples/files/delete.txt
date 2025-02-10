@@ -1,4 +1,0 @@
-/WEB-INF/classes/com/lawfirm/cases/service/impl/CaseFileServiceImpl.class
-/WEB-INF/classes/com/lawfirm/cases/model/entity/CaseFile.class
-/static/js/case/file-upload.js
-/templates/case/file/upload.html 
