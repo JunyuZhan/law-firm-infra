@@ -85,3 +85,4 @@ public class SysUserController {
         return sysUserClient.updateStatus(request);
     }
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

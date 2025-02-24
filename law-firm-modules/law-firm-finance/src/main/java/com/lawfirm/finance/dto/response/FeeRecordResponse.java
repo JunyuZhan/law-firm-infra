@@ -3,7 +3,7 @@ package com.lawfirm.finance.dto.response;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.model.base.dto.BaseDTO;
 
 @Data
 public class FeeRecordResponse extends BaseDTO {

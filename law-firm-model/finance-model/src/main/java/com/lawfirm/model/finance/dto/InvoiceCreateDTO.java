@@ -1,6 +1,6 @@
 package com.lawfirm.model.finance.dto;
 
-import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.model.base.dto.BaseDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

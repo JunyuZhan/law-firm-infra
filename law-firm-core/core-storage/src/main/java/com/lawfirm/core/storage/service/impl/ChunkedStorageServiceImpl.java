@@ -1,9 +1,11 @@
 package com.lawfirm.core.storage.service.impl;
 
 import com.lawfirm.model.base.storage.entity.ChunkMetadataEntity;
+import com.lawfirm.model.base.storage.entity.FileMetadataEntity;
 import com.lawfirm.model.base.storage.repository.ChunkMetadataRepository;
 import com.lawfirm.model.base.storage.service.BusinessChunkedStorageService;
 import com.lawfirm.core.storage.strategy.StorageStrategy;
+import com.lawfirm.model.base.storage.model.FileMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,44 +35,43 @@ public class ChunkedStorageServiceImpl implements BusinessChunkedStorageService 
 
     @Override
     @Transactional
-    public void uploadChunk(MultipartFile chunk, String identifier, int chunkNumber, int totalChunks) {
+    public boolean uploadChunk(ChunkMetadataEntity metadata, byte[] chunkData) {
         try {
-            // 保存分片元数据
-            ChunkMetadataEntity metadata = new ChunkMetadataEntity();
-            metadata.setIdentifier(identifier);
-            metadata.setChunkNumber(chunkNumber);
-            metadata.setTotalChunks(totalChunks);
-            metadata.setSize(chunk.getSize());
-            metadata.setFilename(chunk.getOriginalFilename());
-            metadata.setContentType(chunk.getContentType());
+            // 上传分片
+            String chunkPath = String.format("chunks/%s/%d", metadata.getIdentifier(), metadata.getChunkNumber());
+            try (InputStream inputStream = new ByteArrayInputStream(chunkData)) {
+                FileMetadata fileMetadata = storageStrategy.uploadFile(
+                    metadata.getFilename(),
+                    inputStream,
+                    chunkData.length,
+                    metadata.getContentType()
+                );
+                metadata.setPath(fileMetadata.getPath());
+            }
+            
             metadata.setCreateTime(LocalDateTime.now());
             metadata.setUpdateTime(LocalDateTime.now());
-
-            // 上传分片
-            String chunkPath = String.format("chunks/%s/%d", identifier, chunkNumber);
-            metadata.setPath(storageStrategy.uploadFile(chunk).getFilePath());
-
             chunkMetadataRepository.save(metadata);
 
             // 检查是否所有分片都已上传
-            if (isUploadComplete(identifier, totalChunks)) {
-                mergeChunks(identifier, totalChunks);
+            if (isUploadComplete(metadata.getIdentifier(), metadata.getTotalChunks())) {
+                mergeChunks(metadata.getIdentifier(), metadata.getFilename(), metadata.getContentType());
             }
+            return true;
         } catch (Exception e) {
             log.error("上传分片失败", e);
-            throw new RuntimeException("上传分片失败", e);
+            return false;
         }
     }
 
     @Override
-    public boolean isUploadComplete(String identifier, int totalChunks) {
-        long count = chunkMetadataRepository.countByIdentifier(identifier);
-        return count == totalChunks;
+    public boolean checkChunk(String identifier, Integer chunkNumber) {
+        return chunkMetadataRepository.findByIdentifierAndChunkNumber(identifier, chunkNumber) != null;
     }
 
     @Override
     @Transactional
-    public void mergeChunks(String identifier, int totalChunks) {
+    public FileMetadataEntity mergeChunks(String identifier, String fileName, String contentType) {
         try {
             List<ChunkMetadataEntity> chunks = chunkMetadataRepository.findByIdentifierOrderByChunkNumber(identifier);
             if (chunks.isEmpty()) {
@@ -85,21 +86,48 @@ public class ChunkedStorageServiceImpl implements BusinessChunkedStorageService 
             }
 
             // 上传合并后的文件
-            String filename = chunks.get(0).getFilename();
-            String contentType = chunks.get(0).getContentType();
             byte[] mergedData = outputStream.toByteArray();
+            FileMetadata fileMetadata;
             try (InputStream inputStream = new ByteArrayInputStream(mergedData)) {
-                storageStrategy.uploadFile(filename, inputStream, mergedData.length, contentType);
+                fileMetadata = storageStrategy.uploadFile(fileName, inputStream, mergedData.length, contentType);
             }
 
             // 删除分片
-            for (ChunkMetadataEntity chunk : chunks) {
-                storageStrategy.deleteFile(chunk.getPath());
-                chunkMetadataRepository.delete(chunk);
-            }
+            cleanChunks(identifier);
+
+            // 创建文件元数据实体
+            FileMetadataEntity entity = new FileMetadataEntity();
+            entity.setFilename(fileMetadata.getFilename());
+            entity.setOriginalFilename(fileMetadata.getOriginalFilename());
+            entity.setSize(fileMetadata.getSize());
+            entity.setContentType(fileMetadata.getContentType());
+            entity.setPath(fileMetadata.getPath());
+            entity.setCreateTime(LocalDateTime.now());
+            entity.setUpdateTime(LocalDateTime.now());
+            return entity;
         } catch (IOException e) {
             log.error("合并分片失败", e);
             throw new RuntimeException("合并分片失败", e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void cleanChunks(String identifier) {
+        try {
+            List<ChunkMetadataEntity> chunks = chunkMetadataRepository.findByIdentifierOrderByChunkNumber(identifier);
+            for (ChunkMetadataEntity chunk : chunks) {
+                storageStrategy.deleteFile(chunk.getPath());
+                chunkMetadataRepository.delete(chunk);
+            }
+        } catch (Exception e) {
+            log.error("清理分片失败", e);
+            throw new RuntimeException("清理分片失败", e);
+        }
+    }
+
+    private boolean isUploadComplete(String identifier, int totalChunks) {
+        long count = chunkMetadataRepository.countByIdentifier(identifier);
+        return count == totalChunks;
     }
 } 

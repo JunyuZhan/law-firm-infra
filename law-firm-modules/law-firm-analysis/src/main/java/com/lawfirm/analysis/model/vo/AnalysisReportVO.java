@@ -1,7 +1,7 @@
 package com.lawfirm.analysis.model.vo;
 
 import com.lawfirm.analysis.constant.AnalysisTypeEnum;
-import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.model.base.dto.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

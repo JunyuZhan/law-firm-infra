@@ -8,17 +8,18 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 最基础的实体类，包含基本字段，不依赖数据库
+ * 基础实体类
+ * 提供最基本的实体属性，不包含任何特定技术实现
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-public abstract class BaseEntity<T extends BaseEntity<T>> implements Serializable {
+public abstract class BaseEntity implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
+     * 主键ID
      */
     private Long id;
 
@@ -47,15 +48,22 @@ public abstract class BaseEntity<T extends BaseEntity<T>> implements Serializabl
      */
     private String remark;
 
-    @SuppressWarnings("unchecked")
-    public T setRemark(String remark) {
-        this.remark = remark;
-        return (T) this;
+    /**
+     * 插入前处理
+     */
+    public void preInsert() {
+        if (this.createTime == null) {
+            this.createTime = LocalDateTime.now();
+        }
+        if (this.updateTime == null) {
+            this.updateTime = this.createTime;
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    public T setId(Long id) {
-        this.id = id;
-        return (T) this;
+    /**
+     * 更新前处理
+     */
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
     }
 } 

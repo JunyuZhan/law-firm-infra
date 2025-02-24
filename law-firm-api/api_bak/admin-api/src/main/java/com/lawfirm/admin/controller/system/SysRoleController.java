@@ -87,3 +87,4 @@ public class SysRoleController {
         return sysRoleClient.assignMenu(request);
     }
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

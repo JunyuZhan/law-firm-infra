@@ -74,3 +74,4 @@ public class SwaggerConfig {
                 .build();
     }
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

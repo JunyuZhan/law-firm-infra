@@ -1,94 +1,137 @@
 package com.lawfirm.model.document.service;
 
-import com.lawfirm.model.document.entity.Document;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.model.base.service.BaseService;
+import com.lawfirm.model.document.dto.document.DocumentCreateDTO;
+import com.lawfirm.model.document.dto.document.DocumentQueryDTO;
+import com.lawfirm.model.document.dto.document.DocumentUpdateDTO;
+import com.lawfirm.model.document.entity.base.BaseDocument;
 import com.lawfirm.model.document.vo.DocumentVO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
  * 文档服务接口
  */
-public interface DocumentService {
-    
+public interface DocumentService extends BaseService<BaseDocument> {
+
     /**
      * 创建文档
+     *
+     * @param createDTO 创建参数
+     * @param inputStream 文件输入流
+     * @return 文档ID
      */
-    Document createDocument(Document document);
-    
+    Long createDocument(DocumentCreateDTO createDTO, InputStream inputStream);
+
     /**
      * 更新文档
+     *
+     * @param id 文档ID
+     * @param updateDTO 更新参数
      */
-    Document updateDocument(Document document);
-    
+    void updateDocument(Long id, DocumentUpdateDTO updateDTO);
+
+    /**
+     * 更新文档内容
+     *
+     * @param id 文档ID
+     * @param inputStream 文件输入流
+     */
+    void updateDocumentContent(Long id, InputStream inputStream);
+
     /**
      * 删除文档
+     *
+     * @param id 文档ID
      */
     void deleteDocument(Long id);
-    
+
+    /**
+     * 批量删除文档
+     *
+     * @param ids 文档ID列表
+     */
+    void deleteDocuments(List<Long> ids);
+
     /**
      * 获取文档详情
+     *
+     * @param id 文档ID
+     * @return 文档详情
      */
-    Document getDocument(Long id);
-    
+    DocumentVO getDocumentById(Long id);
+
     /**
      * 分页查询文档
+     *
+     * @param page 分页参数
+     * @param queryDTO 查询条件
+     * @return 文档列表
      */
-    Page<Document> listDocuments(Pageable pageable);
-    
+    Page<DocumentVO> pageDocuments(Page<BaseDocument> page, DocumentQueryDTO queryDTO);
+
     /**
-     * 根据分类ID查询文档
+     * 下载文档
+     *
+     * @param id 文档ID
+     * @return 文件输入流
      */
-    List<Document> listByCategory(Long categoryId);
-    
+    InputStream downloadDocument(Long id);
+
     /**
-     * 根据案件ID查询文档
+     * 预览文档
+     *
+     * @param id 文档ID
+     * @return 预览URL
      */
-    List<Document> listByCase(Long caseId);
-    
+    String previewDocument(Long id);
+
     /**
-     * 根据合同ID查询文档
+     * 获取文档访问URL
+     *
+     * @param id 文档ID
+     * @return 访问URL
      */
-    List<Document> listByContract(Long contractId);
-    
+    String getDocumentUrl(Long id);
+
     /**
-     * 根据客户ID查询文档
+     * 获取文档访问URL（带有效期）
+     *
+     * @param id 文档ID
+     * @param expireTime 有效期（秒）
+     * @return 访问URL
      */
-    List<Document> listByClient(Long clientId);
-    
+    String getDocumentUrl(Long id, Long expireTime);
+
     /**
-     * 移动文档到指定分类
+     * 更新文档状态
+     *
+     * @param id 文档ID
+     * @param status 状态
      */
-    void moveToCategory(Long documentId, Long categoryId);
-    
+    void updateStatus(Long id, String status);
+
     /**
-     * 复制文档
+     * 根据业务ID和类型获取文档列表
+     *
+     * @param businessId 业务ID
+     * @param businessType 业务类型
+     * @return 文档列表
      */
-    Document copyDocument(Long sourceId, String newName);
-    
+    List<DocumentVO> listDocumentsByBusiness(Long businessId, String businessType);
+
     /**
-     * 归档文档
+     * 根据文档类型获取文档列表
+     *
+     * @param docType 文档类型
+     * @return 文档列表
      */
-    void archiveDocument(Long id);
-    
+    List<DocumentVO> listDocumentsByType(String docType);
+
     /**
-     * 取消归档
+     * 刷新文档缓存
      */
-    void unarchiveDocument(Long id);
-    
-    /**
-     * 检查文档权限
-     */
-    boolean hasPermission(Long documentId, Long userId, String permission);
-    
-    /**
-     * 获取文档视图对象
-     */
-    DocumentVO getDocumentVO(Long id);
-    
-    /**
-     * 分页查询文档视图对象
-     */
-    Page<DocumentVO> listDocumentVOs(Pageable pageable);
+    void refreshCache();
 } 

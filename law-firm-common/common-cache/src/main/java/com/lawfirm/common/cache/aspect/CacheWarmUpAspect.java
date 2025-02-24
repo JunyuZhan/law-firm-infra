@@ -1,7 +1,6 @@
 package com.lawfirm.common.cache.aspect;
 
 import com.lawfirm.common.cache.annotation.CacheWarmUp;
-import com.lawfirm.common.cache.utils.CacheGuardUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,13 +8,16 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 缓存预热切面
+ * 基础设施实现，不包含业务逻辑
  */
 @Slf4j
 @Aspect
@@ -23,7 +25,9 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class CacheWarmUpAspect {
 
-    private final CacheGuardUtil cacheGuardUtil;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private static final long DEFAULT_CACHE_TIME = 24;
+    private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.HOURS;
 
     @Pointcut("@annotation(com.lawfirm.common.cache.annotation.CacheWarmUp)")
     public void warmUpPointcut() {
@@ -31,7 +35,6 @@ public class CacheWarmUpAspect {
 
     @Around("warmUpPointcut()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        // 获取方法签名
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         CacheWarmUp warmUp = method.getAnnotation(CacheWarmUp.class);
@@ -44,7 +47,7 @@ public class CacheWarmUpAspect {
 
         // 预热缓存
         if (result != null) {
-            cacheGuardUtil.warmUp(key, () -> result);
+            redisTemplate.opsForValue().set(key, result, DEFAULT_CACHE_TIME, DEFAULT_TIME_UNIT);
         }
 
         return result;

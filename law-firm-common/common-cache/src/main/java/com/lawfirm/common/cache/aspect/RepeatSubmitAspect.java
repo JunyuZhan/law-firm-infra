@@ -2,9 +2,6 @@ package com.lawfirm.common.cache.aspect;
 
 import com.lawfirm.common.cache.annotation.RepeatSubmit;
 import com.lawfirm.common.cache.constant.CacheConstants;
-import com.lawfirm.common.cache.utils.CacheUtil;
-import com.lawfirm.common.core.exception.BusinessException;
-import com.lawfirm.common.util.ServletUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -12,13 +9,16 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
-import com.lawfirm.common.cache.utils.RedisLockUtil;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 /**
  * 防重提交切面
+ * 基础设施实现，不包含业务逻辑
  */
 @Slf4j
 @Aspect
@@ -26,8 +26,16 @@ import java.lang.reflect.Method;
 @RequiredArgsConstructor
 public class RepeatSubmitAspect {
 
-    private final CacheUtil cacheUtil;
-    private final RedisLockUtil redisLockUtil;
+    private final RedisTemplate<String, Object> redisTemplate;
+    
+    // Lua脚本：如果key不存在则设置并返回1，否则返回0
+    private static final String LOCK_SCRIPT = 
+        "if redis.call('exists', KEYS[1]) == 0 then " +
+        "   redis.call('setex', KEYS[1], ARGV[1], ARGV[2]) " +
+        "   return 1 " +
+        "else " +
+        "   return 0 " +
+        "end";
 
     @Pointcut("@annotation(com.lawfirm.common.cache.annotation.RepeatSubmit)")
     public void repeatSubmitPointCut() {
@@ -38,13 +46,22 @@ public class RepeatSubmitAspect {
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         RepeatSubmit repeatSubmit = method.getAnnotation(RepeatSubmit.class);
+        
         if (repeatSubmit != null) {
             String key = buildKey(method);
-            if (cacheUtil.hasKey(key)) {
-                log.warn("重复提交，key: {}", key);
-                throw new BusinessException(repeatSubmit.message());
+            long timeout = repeatSubmit.timeUnit().toSeconds(repeatSubmit.interval());
+            
+            // 使用Lua脚本保证原子性
+            Long result = redisTemplate.execute(
+                RedisScript.of(LOCK_SCRIPT, Long.class),
+                Collections.singletonList(key),
+                timeout,
+                "1"
+            );
+            
+            if (result == null || result == 0) {
+                throw new IllegalStateException("请勿重复提交");
             }
-            cacheUtil.set(key, "", repeatSubmit.interval(), repeatSubmit.timeUnit());
         }
     }
 
@@ -52,11 +69,9 @@ public class RepeatSubmitAspect {
      * 构建缓存键
      */
     private String buildKey(Method method) {
-        StringBuilder key = new StringBuilder(CacheConstants.REPEAT_SUBMIT_KEY);
-        key.append(ServletUtils.getRequest().getRequestURI()).append(":");
-        key.append(ServletUtils.getLoginUserId()).append(":");
-        key.append(method.getDeclaringClass().getName()).append(".");
-        key.append(method.getName());
-        return key.toString();
+        return CacheConstants.REPEAT_SUBMIT_KEY +
+               method.getDeclaringClass().getName() +
+               "." +
+               method.getName();
     }
 } 

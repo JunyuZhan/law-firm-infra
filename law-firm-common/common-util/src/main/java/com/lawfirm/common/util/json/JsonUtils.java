@@ -5,33 +5,67 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.lawfirm.common.util.BaseUtils;
+
+import java.util.List;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * JSON工具类
+ */
 @Slf4j
-public class JsonUtils {
+public class JsonUtils extends BaseUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
-    public static String toJsonString(Object obj) {
-        if (obj == null) {
+    /**
+     * 对象转JSON字符串
+     */
+    public static String toJsonString(Object object) {
+        if (object == null) {
             return null;
         }
         try {
-            return objectMapper.writeValueAsString(obj);
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            log.error("Convert object to JSON string failed", e);
+            log.error("对象转JSON失败: {}", object, e);
             return null;
         }
     }
     
+    /**
+     * JSON字符串转对象
+     */
     public static <T> T parseObject(String json, Class<T> clazz) {
-        if (json == null || json.isEmpty()) {
-            return null;
-        }
         try {
             return objectMapper.readValue(json, clazz);
         } catch (JsonProcessingException e) {
-            log.error("Parse JSON string to object failed", e);
+            log.error("JSON转对象失败: {}", json, e);
+            return null;
+        }
+    }
+    
+    /**
+     * JSON字符串转List
+     */
+    public static <T> List<T> parseArray(String json, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (JsonProcessingException e) {
+            log.error("JSON转List失败: {}", json, e);
+            return null;
+        }
+    }
+    
+    /**
+     * JSON字符串转Map
+     */
+    public static Map<String, Object> parseMap(String json) {
+        try {
+            return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {});
+        } catch (JsonProcessingException e) {
+            log.error("JSON转Map失败: {}", json, e);
             return null;
         }
     }

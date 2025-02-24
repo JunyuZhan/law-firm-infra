@@ -51,3 +51,4 @@ public class UpdateUserRequest {
     @Schema(description = "备注")
     private String remark;
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

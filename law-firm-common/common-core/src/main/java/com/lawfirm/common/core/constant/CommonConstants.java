@@ -1,32 +1,57 @@
 package com.lawfirm.common.core.constant;
 
+/**
+ * 通用常量
+ * 只定义框架级的通用常量，业务相关的常量应该由具体的业务模块自行定义
+ */
 public interface CommonConstants {
-    // 系统状态
-    Integer STATUS_NORMAL = 0;    // 正常
-    Integer STATUS_DISABLE = 1;   // 禁用
-    Integer STATUS_DELETE = 2;    // 删除
+    /**
+     * 通用状态
+     */
+    int STATUS_NORMAL = 0;    // 正常
+    int STATUS_DISABLE = 1;   // 禁用
+    int STATUS_DELETE = 2;    // 删除
 
-    // 用户类型
-    Integer USER_TYPE_ADMIN = 0;     // 管理员
-    Integer USER_TYPE_LAWYER = 1;    // 律师
-    Integer USER_TYPE_CLERK = 2;     // 职员
-    Integer USER_TYPE_CLIENT = 3;    // 客户
+    /**
+     * 布尔值
+     */
+    int TRUE = 1;
+    int FALSE = 0;
 
-    // 案件状态
-    Integer CASE_STATUS_DRAFT = 0;      // 草稿
-    Integer CASE_STATUS_ACTIVE = 1;     // 进行中
-    Integer CASE_STATUS_SUSPEND = 2;    // 暂停
-    Integer CASE_STATUS_CLOSED = 3;     // 结案
+    /**
+     * 分页默认值
+     */
+    int DEFAULT_PAGE_SIZE = 10;       // 默认每页记录数
+    int DEFAULT_PAGE_NUMBER = 1;      // 默认当前页码
+    int MAX_PAGE_SIZE = 100;         // 最大每页记录数
     
-    // 文档状态
-    Integer DOC_STATUS_DRAFT = 0;       // 草稿
-    Integer DOC_STATUS_REVIEW = 1;      // 审核中
-    Integer DOC_STATUS_APPROVED = 2;    // 已批准
-    Integer DOC_STATUS_REJECTED = 3;    // 已拒绝
-
-    // 分页默认值
-    Long DEFAULT_CURRENT = 1L;    // 默认当前页
-    Long DEFAULT_SIZE = 10L;      // 默认每页大小
-    String ASC = "asc";          // 升序
-    String DESC = "desc";        // 降序
+    /**
+     * 排序方向
+     */
+    String SORT_ASC = "asc";         // 升序
+    String SORT_DESC = "desc";       // 降序
+    
+    /**
+     * 时间格式
+     */
+    String DATE_FORMAT = "yyyy-MM-dd";
+    String TIME_FORMAT = "HH:mm:ss";
+    String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    
+    /**
+     * 字符集
+     */
+    String UTF8 = "UTF-8";
+    String GBK = "GBK";
+    
+    /**
+     * 符号
+     */
+    String COMMA = ",";
+    String DOT = ".";
+    String COLON = ":";
+    String SEMICOLON = ";";
+    String UNDERSCORE = "_";
+    String SLASH = "/";
+    String BACKSLASH = "\\";
 } 

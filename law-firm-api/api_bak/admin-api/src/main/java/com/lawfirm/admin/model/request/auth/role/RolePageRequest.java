@@ -25,4 +25,4 @@ public class RolePageRequest extends BasePageRequest {
 
     @Schema(description = "创建时间结束")
     private String createTimeEnd;
-}
+import com.lawfirm.model.base.enums.BaseEnum  

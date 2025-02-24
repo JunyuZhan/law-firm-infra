@@ -134,11 +134,6 @@
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
-                <artifactId>law-firm-message</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lawfirm</groupId>
                 <artifactId>law-firm-meeting</artifactId>
                 <version>${project.version}</version>
             </dependency>

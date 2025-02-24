@@ -1,6 +1,6 @@
 package com.lawfirm.model.organization.dto;
 
-import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.model.base.dto.BaseDTO;
 import com.lawfirm.model.organization.enums.DepartmentTypeEnum;
 import lombok.EqualsAndHashCode;
 

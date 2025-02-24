@@ -1,8 +1,9 @@
 package com.lawfirm.common.util;
 
-import com.lawfirm.common.test.config.BaseTestConfig;
 import com.lawfirm.common.util.config.TestConfig;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -11,56 +12,97 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = TestConfig.class)
-class SpringUtilsTest extends BaseTestConfig {
+class SpringUtilsTest extends BaseUtilTest {
 
     @Autowired
     private SpringUtils springUtils;
-
-    @Test
-    void testGetBean() {
-        // 准备测试数据
-        String beanName = "testBean";
-        TestBean testBean = new TestBean();
-        ApplicationContext mockContext = mock(ApplicationContext.class);
-        when(mockContext.getBean(beanName)).thenReturn(testBean);
-        when(mockContext.getBean(TestBean.class)).thenReturn(testBean);
-        when(mockContext.getBean(beanName, TestBean.class)).thenReturn(testBean);
-        
-        // 设置ApplicationContext
+    
+    private ApplicationContext mockContext;
+    private TestBean testBean;
+    
+    @BeforeEach
+    void setUp() {
+        mockContext = mock(ApplicationContext.class);
+        testBean = new TestBean();
         springUtils.setApplicationContext(mockContext);
-        
-        // 测试getBean(String name)
-        Object result1 = SpringUtils.getBean(beanName);
-        assertNotNull(result1);
-        assertEquals(testBean, result1);
-        
-        // 测试getBean(Class<T> clazz)
-        TestBean result2 = SpringUtils.getBean(TestBean.class);
-        assertNotNull(result2);
-        assertEquals(testBean, result2);
-        
-        // 测试getBean(String name, Class<T> clazz)
-        TestBean result3 = SpringUtils.getBean(beanName, TestBean.class);
-        assertNotNull(result3);
-        assertEquals(testBean, result3);
-        
-        // 验证方法调用
-        verify(mockContext).getBean(beanName);
-        verify(mockContext).getBean(TestBean.class);
-        verify(mockContext).getBean(beanName, TestBean.class);
     }
 
     @Test
-    void testGetApplicationContext() {
-        ApplicationContext mockContext = mock(ApplicationContext.class);
-        springUtils.setApplicationContext(mockContext);
+    void getBean_ShouldReturnBean_WhenUsingName() {
+        // 准备测试数据
+        String beanName = "testBean";
+        when(mockContext.getBean(beanName)).thenReturn(testBean);
         
+        // 执行测试
+        Object result = SpringUtils.getBean(beanName);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(testBean, result);
+        verify(mockContext).getBean(beanName);
+    }
+    
+    @Test
+    void getBean_ShouldReturnBean_WhenUsingClass() {
+        // 准备测试数据
+        when(mockContext.getBean(TestBean.class)).thenReturn(testBean);
+        
+        // 执行测试
+        TestBean result = SpringUtils.getBean(TestBean.class);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(testBean, result);
+        verify(mockContext).getBean(TestBean.class);
+    }
+    
+    @Test
+    void getBean_ShouldReturnBean_WhenUsingNameAndClass() {
+        // 准备测试数据
+        String beanName = "testBean";
+        when(mockContext.getBean(beanName, TestBean.class)).thenReturn(testBean);
+        
+        // 执行测试
+        TestBean result = SpringUtils.getBean(beanName, TestBean.class);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(testBean, result);
+        verify(mockContext).getBean(beanName, TestBean.class);
+    }
+    
+    @Test
+    void getBean_ShouldThrowException_WhenBeanNotFound() {
+        // 准备测试数据
+        String beanName = "nonExistentBean";
+        when(mockContext.getBean(beanName))
+            .thenThrow(new NoSuchBeanDefinitionException(beanName));
+        
+        // 验证异常
+        assertThrows(NoSuchBeanDefinitionException.class, () -> 
+            SpringUtils.getBean(beanName));
+    }
+
+    @Test
+    void getApplicationContext_ShouldReturnContext() {
+        // 执行测试
         ApplicationContext result = SpringUtils.getApplicationContext();
+        
+        // 验证结果
         assertNotNull(result);
         assertEquals(mockContext, result);
     }
     
     // 测试用的Bean类
     static class TestBean {
+        private String name;
+        
+        public String getName() {
+            return name;
+        }
+        
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 } 

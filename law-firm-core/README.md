@@ -1,219 +1,196 @@
-# Law Firm Core 核心层
+# 核心功能层 (Core Layer)
 
-## 1. 模块说明
+## 模块说明
+核心功能层是律师事务所管理系统的核心业务功能实现层，提供了消息处理、存储管理、工作流引擎和搜索引擎等基础功能支持。该层为上层应用提供了统一的功能接口和服务支持。
 
-Law Firm Core 是律所管理系统的核心层，提供了系统的核心功能实现。该层主要包含以下模块：
-
-### 1.1 core-storage 存储模块
-文件存储核心实现，提供统一的文件存储服务。
-
-#### 主要功能：
-- 文件上传下载
-- 分片上传
-- 文件预览
-- 异步处理
-- 存储策略（当前支持MinIO）
-
-#### 关键特性：
-- 支持大文件分片上传
-- 支持文件预览（PDF、Office、图片等）
-- 支持异步处理和任务管理
-- 支持存储策略的灵活扩展
-- 完整的数据库表结构设计
-
-### 1.2 core-search 搜索模块
-统一的搜索服务实现，基于Elasticsearch。
-
-#### 主要功能：
-- 统一搜索接口
-- 高亮显示
-- 分词搜索
-- 搜索历史记录
-- 热搜统计
-
-#### 关键特性：
-- 支持多字段搜索
-- 支持权重配置
-- 支持结果高亮
-- 支持搜索历史记录
-- 支持热搜词统计
-- 支持索引管理
-
-### 1.3 core-message 消息模块
-统一的消息处理服务。
-
-#### 主要功能：
-- 消息发送
-- 消息接收
-- 消息模板
-- 消息历史
-
-#### 关键特性：
-- 支持多种消息类型
-- 支持消息模板
-- 支持消息状态追踪
-- 支持消息历史查询
-
-### 1.4 core-workflow 工作流模块
-工作流引擎核心实现。
-
-#### 主要功能：
-- 工作流定义
-- 流程执行
-- 任务管理
-- 流程监控
-
-#### 关键特性：
-- 支持自定义工作流
-- 支持流程变量
-- 支持任务分配
-- 支持流程监控
-- 支持流程历史
-
-## 2. 技术栈
-
-- Spring Boot 2.7.x
-- Spring Data JPA
-- MySQL 8.0
-- Elasticsearch 8.x
-- MinIO
-- RabbitMQ
-- Redis
-- Flyway
-
-## 3. 项目结构
-
+## 模块结构
 ```
 law-firm-core/
-├── core-storage/            # 存储模块
-│   ├── src/main/java/      # 源代码
-│   ├── src/main/resources/ # 配置文件
-│   └── src/test/           # 测试代码
-├── core-search/            # 搜索模块
-│   ├── src/main/java/      # 源代码
-│   ├── src/main/resources/ # 配置文件
-│   └── src/test/           # 测试代码
-├── core-message/           # 消息模块
-│   ├── src/main/java/      # 源代码
-│   ├── src/main/resources/ # 配置文件
-│   └── src/test/           # 测试代码
-└── core-workflow/          # 工作流模块
-    ├── src/main/java/      # 源代码
-    ├── src/main/resources/ # 配置文件
-    └── src/test/           # 测试代码
+├── core-message/      # 消息处理模块
+├── core-storage/      # 存储模块
+├── core-workflow/     # 工作流模块
+├── core-search/       # 搜索模块
+└── pom.xml           # 父模块POM
 ```
 
-## 4. 开发指南
+## 子模块说明
 
-### 4.1 环境要求
-- JDK 21
-- Maven 3.8+
-- Docker (用于集成测试)
-- IDE推荐：IntelliJ IDEA
+### core-message
+消息处理模块，提供统一的消息处理机制：
+- 消息发送（同步/异步/延时/批量）
+- 消息接收（监听/过滤/路由）
+- 消息处理（解析/验证/转换）
+- 消息管理（存储/查询/监控）
 
-### 4.2 本地开发
-1. 克隆项目
+### core-storage
+存储模块，提供统一的文件存储服务：
+- 文件上传（单文件/批量/分片）
+- 文件下载（单文件/批量/断点续传）
+- 文件管理（元数据/目录/权限）
+- 存储策略（多存储源/容量管理）
+
+### core-workflow
+工作流模块，基于 Flowable 的工作流引擎：
+- 流程定义（模型/变量/表单/规则）
+- 流程执行（实例/任务/变量）
+- 流程管理（部署/监控/历史）
+- 流程集成（业务/消息/权限）
+
+### core-search
+搜索模块，基于 Elasticsearch 的搜索引擎：
+- 索引管理（创建/映射/别名）
+- 数据管理（索引/更新/同步）
+- 搜索功能（全文/精确/聚合）
+- 高级特性（分词/同义词/高亮）
+
+## 技术架构
+
+### 核心依赖
+- Spring Boot：应用基础框架
+- Spring Cloud：微服务支持
+- Flowable：工作流引擎
+- Elasticsearch：搜索引擎
+- Redis：缓存支持
+- RocketMQ：消息队列
+- MyBatis Plus：数据访问
+
+### 设计规范
+
+#### 1. 接口设计
+- 遵循 RESTful 规范
+- 统一的接口格式
+- 完整的接口文档
+- 版本控制支持
+- 错误码规范
+
+#### 2. 服务设计
+- 单一职责原则
+- 高内聚低耦合
+- 接口幂等性
+- 服务可测试性
+- 性能可伸缩
+
+#### 3. 安全规范
+- 访问权限控制
+- 数据加密传输
+- 敏感信息脱敏
+- 操作日志记录
+- 安全审计支持
+
+## 开发指南
+
+### 1. 环境准备
 ```bash
-git clone [repository-url]
-cd law-firm-core
+# 安装必要的中间件
+docker-compose up -d elasticsearch redis rocketmq
 ```
 
-2. 安装依赖
-```bash
-mvn clean install
+### 2. 添加依赖
+```xml
+<!-- 核心模块依赖 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-message</artifactId>
+    <version>${project.version}</version>
+</dependency>
+
+<!-- 按需引入其他核心模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-storage</artifactId>
+    <version>${project.version}</version>
+</dependency>
 ```
 
-3. 运行测试
-```bash
-mvn test
+### 3. 配置示例
+```yaml
+# 应用配置
+spring:
+  application:
+    name: law-firm-core
+  
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/law_firm
+    username: root
+    password: root
+    
+  # Redis配置
+  redis:
+    host: localhost
+    port: 6379
+    
+  # Elasticsearch配置
+  elasticsearch:
+    uris: http://localhost:9200
+    
+# RocketMQ配置
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: law-firm-producer
 ```
 
-### 4.3 配置说明
+## 版本说明
 
-各模块的配置文件位于 `src/main/resources/` 目录下：
-- `application.yml`: 基础配置
-- `application-*.yml`: 环境特定配置
-- `db/migration/`: 数据库迁移脚本
+### 当前版本
+- 版本号：1.0.0
+- 发布日期：2024-02-09
+- 主要特性：
+  - 完整的核心功能支持
+  - 统一的接口规范
+  - 完善的文档说明
 
-### 4.4 测试说明
+## 注意事项
+1. 遵循接口设计规范
+2. 注意性能优化
+3. 做好容错处理
+4. 保证数据安全
+5. 完善监控告警
 
-- 单元测试：使用JUnit 5
-- 集成测试：使用TestContainers
-- 测试覆盖率要求：>80%
+## 模块依赖关系
 
-## 5. 部署指南
+### 基础依赖
+- common-core：核心工具支持
+- common-data：数据访问支持
+- common-redis：缓存支持
+- common-security：安全支持
 
-### 5.1 打包
-```bash
-mvn clean package
-```
+### 模块间依赖
+- core-message → common-message
+- core-storage → common-storage
+- core-workflow → core-message
+- core-search → common-data
 
-### 5.2 运行
-```bash
-java -jar [module-name]/target/[module-name]-[version].jar
-```
+## 开发流程
 
-### 5.3 Docker部署
-```bash
-docker build -t law-firm-[module-name] .
-docker run -d -p [port]:[port] law-firm-[module-name]
-```
+### 1. 功能开发
+1. 需求分析
+2. 接口设计
+3. 编码实现
+4. 单元测试
+5. 文档更新
 
-## 6. 注意事项
+### 2. 代码提交
+1. 代码审查
+2. 测试验证
+3. 文档完善
+4. 版本发布
 
-1. 代码规范
-   - 遵循阿里巴巴Java开发规范
-   - 使用统一的代码格式化配置
-   - 提交前进行代码审查
+## 测试规范
 
-2. 数据库
-   - 使用Flyway进行版本控制
-   - 遵循数据库命名规范
-   - 重要操作添加审计字段
+### 单元测试要求
+1. 接口测试
+   - 参数验证
+   - 业务逻辑
+   - 异常处理
+   
+2. 服务测试
+   - 功能测试
+   - 性能测试
+   - 并发测试
 
-3. 测试
-   - 新功能必须包含测试
-   - 修复bug必须包含测试用例
-   - 保持测试覆盖率
-
-4. 文档
-   - 及时更新API文档
-   - 保持注释的完整性
-   - 记录重要的设计决策
-
-## 7. 常见问题
-
-1. 如何添加新的存储策略？
-   - 实现 `StorageStrategy` 接口
-   - 在配置中注册新策略
-   - 添加相应的单元测试
-
-2. 如何扩展搜索功能？
-   - 在 `SearchRequest` 中添加新的参数
-   - 在 `ElasticsearchServiceImpl` 中实现新功能
-   - 更新测试用例
-
-3. 如何添加新的消息类型？
-   - 在消息模型中添加新类型
-   - 实现对应的处理器
-   - 添加消息模板
-
-## 8. 维护者
-
-- 开发团队：[team-name]
-- 技术支持：[support-email]
-
-## 9. 贡献指南
-
-1. Fork 项目
-2. 创建特性分支
-3. 提交变更
-4. 推送到分支
-5. 创建Pull Request
-
-## 10. 版本历史
-
-- v1.0.0 (2024-02-10)
-  - 初始版本
-  - 实现基础功能
-  - 完成核心模块开发 
+3. 集成测试
+   - 模块集成
+   - 系统集成
+   - 性能验证 

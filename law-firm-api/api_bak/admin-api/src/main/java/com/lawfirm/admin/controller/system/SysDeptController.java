@@ -70,3 +70,4 @@ public class SysDeptController {
         return sysDeptClient.updateStatus(request);
     }
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

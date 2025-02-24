@@ -71,19 +71,7 @@
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-conflict</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-message</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-meeting</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-seal</artifactId>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
@@ -99,10 +87,6 @@
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-workflow</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-personnel</artifactId>
         </dependency>
         <dependency>
@@ -112,6 +96,24 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-knowledge</artifactId>
+        </dependency>
+
+        <!-- Common -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>base-model</artifactId>
         </dependency>
     </dependencies>
 </project> 

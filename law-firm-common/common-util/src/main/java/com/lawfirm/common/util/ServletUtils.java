@@ -4,6 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import com.alibaba.fastjson2.JSON;
 import java.util.Map;
 import java.util.HashMap;
@@ -29,8 +32,11 @@ public class ServletUtils {
      * 获取当前登录用户ID
      */
     public static String getLoginUserId() {
-        // TODO: 从SecurityContext中获取当前登录用户ID
-        return "anonymous";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth instanceof AnonymousAuthenticationToken) {
+            return "anonymous";
+        }
+        return auth.getName();
     }
 
     /**

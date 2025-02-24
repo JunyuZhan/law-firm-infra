@@ -1,33 +1,39 @@
 package com.lawfirm.model.base.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * 树形实体基类
  */
-@Data
-@MappedSuperclass
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@Accessors(chain = true)
 public abstract class TreeEntity extends ModelBaseEntity {
 
-    @NotBlank(message = "名称不能为空")
-    @Size(max = 100, message = "名称长度不能超过100个字符")
-    @Column(nullable = false, length = 100)
-    private String name;
+    /**
+     * 父级ID
+     */
+    @TableField("parent_id")
+    private Long parentId;
 
-    @Column(length = 500)
-    private String ancestors;  // 祖先节点
+    /**
+     * 层级
+     */
+    @TableField("level")
+    private Integer level;
 
-    private Long parentId;     // 父节点ID
+    /**
+     * 路径
+     */
+    @TableField("path")
+    private String path;
 
-    @Column(nullable = false)
-    private Integer level = 1; // 层级
-
-    @Column(nullable = false)
-    private Boolean leaf = true; // 是否叶子节点
+    /**
+     * 是否叶子节点
+     */
+    @TableField("is_leaf")
+    private Boolean leaf;
 } 

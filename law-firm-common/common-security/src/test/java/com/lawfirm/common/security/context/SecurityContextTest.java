@@ -1,0 +1,85 @@
+package com.lawfirm.common.security.context;
+
+import com.lawfirm.common.security.authentication.Authentication;
+import com.lawfirm.common.security.authorization.Authorization;
+import com.lawfirm.common.security.test.MockSecurityObjects.MockAuthentication;
+import com.lawfirm.common.security.test.MockSecurityObjects.MockAuthorization;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * 安全上下文接口测试类
+ */
+public class SecurityContextTest {
+
+    /**
+     * 安全上下文Mock实现
+     */
+    private static class MockSecurityContext implements SecurityContext {
+        private final Authentication authentication;
+        private final Authorization authorization;
+
+        public MockSecurityContext(Authentication authentication, Authorization authorization) {
+            this.authentication = authentication;
+            this.authorization = authorization;
+        }
+
+        @Override
+        public Authentication getAuthentication() {
+            return authentication;
+        }
+
+        @Override
+        public Authorization getAuthorization() {
+            return authorization;
+        }
+    }
+
+    @Test
+    void testGetAuthenticationWithValidAuth() {
+        // 准备测试数据
+        Authentication auth = new MockAuthentication("testUser", "testPass", true);
+        SecurityContext context = new MockSecurityContext(auth, null);
+
+        // 验证结果
+        Authentication resultAuth = context.getAuthentication();
+        assertNotNull(resultAuth);
+        assertEquals("testUser", resultAuth.getPrincipal());
+        assertEquals("testPass", resultAuth.getCredentials());
+        assertTrue(resultAuth.isAuthenticated());
+    }
+
+    @Test
+    void testGetAuthenticationWithNoAuth() {
+        // 准备测试数据
+        SecurityContext context = new MockSecurityContext(null, null);
+
+        // 验证结果
+        assertNull(context.getAuthentication());
+    }
+
+    @Test
+    void testGetAuthorizationWithValidAuth() {
+        // 准备测试数据
+        Authorization authorization = new MockAuthorization(
+            new String[]{"user:read"}, 
+            new String[]{"user"}
+        );
+        SecurityContext context = new MockSecurityContext(null, authorization);
+
+        // 验证结果
+        Authorization resultAuth = context.getAuthorization();
+        assertNotNull(resultAuth);
+        assertTrue(resultAuth.hasPermission("user:read"));
+        assertTrue(resultAuth.hasRole("user"));
+    }
+
+    @Test
+    void testGetAuthorizationWithNoAuth() {
+        // 准备测试数据
+        SecurityContext context = new MockSecurityContext(null, null);
+
+        // 验证结果
+        assertNull(context.getAuthorization());
+    }
+} 

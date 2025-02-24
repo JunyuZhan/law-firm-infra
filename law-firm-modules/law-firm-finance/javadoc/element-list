@@ -1,9 +1,0 @@
-com.lawfirm.finance.config
-com.lawfirm.finance.constant
-com.lawfirm.finance.controller
-com.lawfirm.finance.entity
-com.lawfirm.finance.mapper
-com.lawfirm.finance.repository
-com.lawfirm.finance.service
-com.lawfirm.finance.service.impl
-com.lawfirm.finance.vo

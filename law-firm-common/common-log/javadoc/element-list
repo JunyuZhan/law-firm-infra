@@ -1,9 +1,0 @@
-com.lawfirm.common.log.annotation
-com.lawfirm.common.log.aspect
-com.lawfirm.common.log.controller
-com.lawfirm.common.log.domain
-com.lawfirm.common.log.enums
-com.lawfirm.common.log.filter
-com.lawfirm.common.log.mapper
-com.lawfirm.common.log.service
-com.lawfirm.common.log.service.impl

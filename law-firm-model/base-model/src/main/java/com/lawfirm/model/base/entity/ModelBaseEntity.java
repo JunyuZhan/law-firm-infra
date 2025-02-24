@@ -1,22 +1,21 @@
 package com.lawfirm.model.base.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.Version;
-import com.lawfirm.common.core.enums.StatusEnum;
-import com.lawfirm.common.core.status.StatusAware;
-import com.lawfirm.common.core.tenant.TenantAware;
-import com.lawfirm.common.data.entity.DataBaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.lawfirm.common.data.entity.DataEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import java.time.LocalDateTime;
 
 /**
- * 业务模型基础实体类，扩展数据库实体，添加业务字段
+ * 业务模型基础实体类
+ * 继承DataEntity，添加业务字段
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-public abstract class ModelBaseEntity<T extends ModelBaseEntity<T>> extends DataBaseEntity<T> implements TenantAware, StatusAware {
+public abstract class ModelBaseEntity extends DataEntity {
 
     /**
      * 版本号
@@ -26,13 +25,7 @@ public abstract class ModelBaseEntity<T extends ModelBaseEntity<T>> extends Data
     private Integer version;
 
     /**
-     * 租户ID
-     */
-    @TableField("tenant_id")
-    private Long tenantId;
-
-    /**
-     * 状态
+     * 状态（0-启用，1-禁用）
      */
     @TableField("status")
     private Integer status;
@@ -44,35 +37,26 @@ public abstract class ModelBaseEntity<T extends ModelBaseEntity<T>> extends Data
     private Integer sort = 0;
 
     @Override
-    public StatusEnum getStatus() {
-        if (status == null) {
-            return StatusEnum.ENABLED;
+    public void preInsert() {
+        LocalDateTime now = LocalDateTime.now();
+        this.setCreateTime(now);
+        this.setUpdateTime(now);
+    }
+
+    @Override
+    public void preUpdate() {
+        this.setUpdateTime(LocalDateTime.now());
+        if (this.version != null) {
+            this.version++;
         }
-        return status == 0 ? StatusEnum.ENABLED : StatusEnum.DISABLED;
     }
 
-    @Override
-    public void setStatus(StatusEnum statusEnum) {
-        if (statusEnum == null) {
-            this.status = 0;
-            return;
-        }
-        this.status = statusEnum == StatusEnum.ENABLED ? 0 : 1;
+    public Integer getVersion() {
+        return version;
     }
 
-    @Override
-    public Long getTenantId() {
-        return tenantId;
-    }
-
-    @Override
-    public void setTenantId(Long tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    @SuppressWarnings("unchecked")
-    public T setSort(Integer sort) {
-        this.sort = sort;
-        return (T) this;
+    public ModelBaseEntity setVersion(Integer version) {
+        this.version = version;
+        return this;
     }
 } 

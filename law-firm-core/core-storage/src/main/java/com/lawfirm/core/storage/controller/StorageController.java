@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -45,14 +46,15 @@ public class StorageController {
     @GetMapping("/download/{path}")
     @Operation(summary = "下载文件")
     public ResponseEntity<InputStreamResource> download(@PathVariable String path) {
-        InputStream inputStream = storageService.downloadFile(path);
+        byte[] fileData = storageService.downloadFile(path);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", path);
+        headers.setContentDispositionFormData("attachment", URLEncoder.encode(path, StandardCharsets.UTF_8));
+        headers.setContentLength(fileData.length);
         
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(new InputStreamResource(inputStream));
+                .body(new InputStreamResource(new ByteArrayInputStream(fileData)));
     }
 
     /**

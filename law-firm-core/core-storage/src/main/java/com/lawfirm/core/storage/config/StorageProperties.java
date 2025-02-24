@@ -61,6 +61,24 @@ public class StorageProperties {
     private int chunkSize = 5 * 1024 * 1024; // 默认5MB
     private String tempDir = System.getProperty("java.io.tmpdir");
     
+    /**
+     * 基础路径
+     */
+    private String basePath = "storage";
+    
+    /**
+     * 预览路径
+     */
+    private String previewPath = "preview";
+    
+    public String getBasePath() {
+        return basePath;
+    }
+    
+    public String getPreviewPath() {
+        return previewPath;
+    }
+    
     @Data
     public static class MinioConfig {
         /**
@@ -97,24 +115,29 @@ public class StorageProperties {
     @Data
     public static class OssConfig {
         /**
-         * 服务端点
+         * 是否启用OSS
+         */
+        private boolean enabled = false;
+        
+        /**
+         * 服务地址
          */
         private String endpoint;
         
         /**
-         * Access Key ID
+         * 访问密钥
          */
-        private String accessKeyId;
+        private String accessKey;
         
         /**
-         * Access Key Secret
+         * 密钥
          */
-        private String accessKeySecret;
+        private String secretKey;
         
         /**
          * 存储桶名称
          */
-        private String bucketName;
+        private String bucketName = "lawfirm";
         
         /**
          * 默认URL过期时间（秒）
@@ -125,6 +148,11 @@ public class StorageProperties {
     @Data
     public static class MongoConfig {
         /**
+         * 是否启用MongoDB存储
+         */
+        private boolean enabled = false;
+        
+        /**
          * 数据库名称
          */
         private String database = "lawfirm";
@@ -132,29 +160,29 @@ public class StorageProperties {
         /**
          * 集合名称
          */
-        private String collection = "files";
+        private String collection = "fs";
         
         /**
          * 块大小（字节）
          */
-        private int chunkSize = 358400;
+        private int chunkSize = 261120;
     }
     
     @Data
     public static class ChunkConfig {
         /**
-         * 分片存储目录
-         */
-        private String directory = "chunks";
-        
-        /**
          * 分片大小（字节）
          */
-        private Long size = 5 * 1024 * 1024L;
+        private int chunkSize = 5 * 1024 * 1024;
         
         /**
-         * 并发上传数
+         * 临时目录
          */
-        private Integer concurrent = 3;
+        private String tempDir = System.getProperty("java.io.tmpdir");
+        
+        /**
+         * 清理时间（小时）
+         */
+        private int cleanupHours = 24;
     }
 } 

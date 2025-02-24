@@ -72,3 +72,4 @@ public class AuthController {
         return R.ok();
     }
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

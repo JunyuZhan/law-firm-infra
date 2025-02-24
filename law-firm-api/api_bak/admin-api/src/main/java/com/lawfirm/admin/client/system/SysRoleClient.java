@@ -31,3 +31,4 @@ public interface SysRoleClient {
     @PutMapping("/{id}/menu")
     ApiResponse<?> assignMenu(@PathVariable("id") Long id, @RequestBody Object request);
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

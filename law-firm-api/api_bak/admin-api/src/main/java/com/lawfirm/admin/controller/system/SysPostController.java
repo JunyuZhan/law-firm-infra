@@ -62,3 +62,4 @@ public class SysPostController {
         return ApiResult.success();
     }
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

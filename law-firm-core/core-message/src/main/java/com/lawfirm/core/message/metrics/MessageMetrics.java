@@ -27,6 +27,9 @@ public class MessageMetrics {
     private final Timer systemNoticeSendLatency;
     private final Timer messageReadLatency;
     private final Timer messageQueryLatency;
+    private final Counter messageSentCounter;
+    private final Counter messageFailedCounter;
+    private final Timer messageSendTimer;
 
     public MessageMetrics(MeterRegistry registry) {
         // 消息发送计数器
@@ -80,6 +83,18 @@ public class MessageMetrics {
         this.messageQueryLatency = Timer.builder("message.query.latency")
                 .description("消息查询延迟")
                 .register(registry);
+
+        this.messageSentCounter = Counter.builder("message.sent.total")
+                .description("消息发送总数")
+                .register(registry);
+        
+        this.messageFailedCounter = Counter.builder("message.sent.failed")
+                .description("消息发送失败数")
+                .register(registry);
+        
+        this.messageSendTimer = Timer.builder("message.send.time")
+                .description("消息发送耗时")
+                .register(registry);
     }
 
     /**
@@ -128,5 +143,15 @@ public class MessageMetrics {
      */
     public void recordMessageQuery(long startTime) {
         messageQueryLatency.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
+    }
+
+    public void recordMessageSend(long startTime) {
+        messageSentCounter.increment();
+        messageSendTimer.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
+    }
+
+    public void recordMessageSendFailure(long startTime) {
+        messageFailedCounter.increment();
+        messageSendTimer.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
     }
 } 

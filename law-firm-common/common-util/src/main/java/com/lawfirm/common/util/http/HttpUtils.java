@@ -1,101 +1,75 @@
 package com.lawfirm.common.util.http;
 
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
-import com.lawfirm.common.util.json.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import com.lawfirm.common.util.BaseUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-@Slf4j
-public class HttpUtils {
-    
+/**
+ * HTTP工具类
+ */
+public class HttpUtils extends BaseUtils {
+
+    /**
+     * 发送GET请求
+     */
     public static String get(String url) {
-        try {
-            return HttpRequest.get(url).execute().body();
-        } catch (Exception e) {
-            log.error("HTTP GET request failed", e);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(url);
+            return client.execute(request, response -> 
+                new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            log.error("GET请求失败: {}", url, e);
             return null;
         }
     }
-    
-    public static <T> T get(String url, Class<T> responseType) {
-        try {
-            String response = HttpRequest.get(url).execute().body();
-            return JsonUtils.parseObject(response, responseType);
-        } catch (Exception e) {
-            log.error("HTTP GET request failed", e);
+
+    /**
+     * 发送带参数的GET请求
+     */
+    public static String get(String url, Map<String, String> params) {
+        StringBuilder sb = new StringBuilder(url);
+        if (params != null && !params.isEmpty()) {
+            sb.append('?');
+            params.forEach((key, value) -> 
+                sb.append(key).append('=').append(value).append('&'));
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        return get(sb.toString());
+    }
+
+    /**
+     * 发送POST请求
+     */
+    public static String post(String url, String body) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost request = new HttpPost(url);
+            request.setEntity(new StringEntity(body));
+            return client.execute(request, response -> 
+                new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            log.error("POST请求失败: {}", url, e);
             return null;
         }
     }
-    
-    public static String get(String url, Map<String, String> headers) {
-        try {
-            return HttpRequest.get(url)
-                    .addHeaders(headers)
-                    .execute()
-                    .body();
-        } catch (Exception e) {
-            log.error("HTTP GET request failed", e);
-            return null;
+
+    /**
+     * 发送带参数的POST请求
+     */
+    public static String post(String url, Map<String, String> params) {
+        StringBuilder body = new StringBuilder();
+        if (params != null && !params.isEmpty()) {
+            params.forEach((key, value) -> 
+                body.append(key).append('=').append(value).append('&'));
+            body.deleteCharAt(body.length() - 1);
         }
-    }
-    
-    public static String post(String url, Object body) {
-        try {
-            return HttpRequest.post(url)
-                    .body(JsonUtils.toJsonString(body))
-                    .execute()
-                    .body();
-        } catch (Exception e) {
-            log.error("HTTP POST request failed", e);
-            return null;
-        }
-    }
-    
-    public static <T> T post(String url, Object body, Class<T> responseType) {
-        try {
-            String response = HttpRequest.post(url)
-                    .body(JsonUtils.toJsonString(body))
-                    .execute()
-                    .body();
-            return JsonUtils.parseObject(response, responseType);
-        } catch (Exception e) {
-            log.error("HTTP POST request failed", e);
-            return null;
-        }
-    }
-    
-    public static String post(String url, Object body, Map<String, String> headers) {
-        try {
-            return HttpRequest.post(url)
-                    .addHeaders(headers)
-                    .body(JsonUtils.toJsonString(body))
-                    .execute()
-                    .body();
-        } catch (Exception e) {
-            log.error("HTTP POST request failed", e);
-            return null;
-        }
-    }
-    
-    public static String upload(String url, Map<String, Object> form) {
-        try {
-            return HttpRequest.post(url)
-                    .form(form)
-                    .execute()
-                    .body();
-        } catch (Exception e) {
-            log.error("HTTP upload failed", e);
-            return null;
-        }
-    }
-    
-    public static void download(String url, String destPath) {
-        HttpUtil.downloadFile(url, destPath);
+        return post(url, body.toString());
     }
 }
 

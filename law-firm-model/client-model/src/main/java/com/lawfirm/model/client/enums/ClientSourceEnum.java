@@ -1,33 +1,39 @@
 package com.lawfirm.model.client.enums;
 
-import com.lawfirm.common.core.enums.BaseEnum;
-import lombok.Getter;
-
-@Getter
-public enum ClientSourceEnum implements BaseEnum<String> {
+/**
+ * 客户来源枚举
+ */
+public enum ClientSourceEnum {
     
-    REFERRAL("REFERRAL", "转介绍"),
-    ONLINE("ONLINE", "线上获客"),
-    OFFLINE("OFFLINE", "线下获客"),
-    PARTNER("PARTNER", "合作伙伴"),
-    MARKETING("MARKETING", "市场营销"),
-    OTHER("OTHER", "其他");
+    DIRECT(1, "直接访问"),
+    RECOMMENDATION(2, "推荐"),
+    MARKETING(3, "市场营销"),
+    PARTNER(4, "合作伙伴"),
+    ONLINE(5, "线上获取"),
+    OTHER(99, "其他");
 
-    private final String value;
-    private final String description;
+    private final Integer value;
+    private final String desc;
 
-    ClientSourceEnum(String value, String description) {
+    ClientSourceEnum(Integer value, String desc) {
         this.value = value;
-        this.description = description;
+        this.desc = desc;
     }
 
-    @Override
-    public String getValue() {
-        return this.value;
+    public Integer getValue() {
+        return value;
     }
 
-    @Override
-    public String getDescription() {
-        return this.description;
+    public String getDesc() {
+        return desc;
+    }
+
+    public static ClientSourceEnum getByValue(Integer value) {
+        for (ClientSourceEnum source : values()) {
+            if (source.getValue().equals(value)) {
+                return source;
+            }
+        }
+        return null;
     }
 } 

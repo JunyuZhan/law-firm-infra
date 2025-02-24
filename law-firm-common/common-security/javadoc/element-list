@@ -1,9 +1,0 @@
-com.lawfirm.common.security.annotation
-com.lawfirm.common.security.aspect
-com.lawfirm.common.security.audit
-com.lawfirm.common.security.config
-com.lawfirm.common.security.context
-com.lawfirm.common.security.filter
-com.lawfirm.common.security.handler
-com.lawfirm.common.security.service
-com.lawfirm.common.security.utils

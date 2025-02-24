@@ -84,3 +84,4 @@ public interface SystemClient {
     @PostMapping("/template/{id}/generate")
     Result<String> generateDocument(@PathVariable("id") Long id, @RequestBody Object data);
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

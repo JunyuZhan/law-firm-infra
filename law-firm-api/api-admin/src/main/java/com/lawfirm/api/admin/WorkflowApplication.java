@@ -17,3 +17,4 @@ public class WorkflowApplication {
         SpringApplication.run(WorkflowApplication.class, args);
     }
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

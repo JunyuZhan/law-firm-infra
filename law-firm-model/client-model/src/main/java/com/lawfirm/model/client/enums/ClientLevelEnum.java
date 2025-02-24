@@ -1,31 +1,37 @@
 package com.lawfirm.model.client.enums;
 
-import com.lawfirm.common.core.enums.BaseEnum;
-import lombok.Getter;
-
-@Getter
-public enum ClientLevelEnum implements BaseEnum<String> {
+/**
+ * 客户等级枚举
+ */
+public enum ClientLevelEnum {
     
-    NORMAL("NORMAL", "普通客户"),
-    VIP("VIP", "VIP客户"),
-    SVIP("SVIP", "SVIP客户"),
-    STRATEGIC("STRATEGIC", "战略客户");
+    NORMAL(1, "普通客户"),
+    VIP(2, "VIP客户"),
+    PREMIUM(3, "高级VIP客户"),
+    STRATEGIC(4, "战略客户");
 
-    private final String value;
-    private final String description;
+    private final Integer value;
+    private final String desc;
 
-    ClientLevelEnum(String value, String description) {
+    ClientLevelEnum(Integer value, String desc) {
         this.value = value;
-        this.description = description;
+        this.desc = desc;
     }
 
-    @Override
-    public String getValue() {
-        return this.value;
+    public Integer getValue() {
+        return value;
     }
 
-    @Override
-    public String getDescription() {
-        return this.description;
+    public String getDesc() {
+        return desc;
+    }
+
+    public static ClientLevelEnum getByValue(Integer value) {
+        for (ClientLevelEnum level : values()) {
+            if (level.getValue().equals(value)) {
+                return level;
+            }
+        }
+        return null;
     }
 } 

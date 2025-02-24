@@ -47,4 +47,4 @@ public class ApiResult<T> {
         result.message = message;
         return result;
     }
-}
+import com.lawfirm.model.base.enums.BaseEnum  

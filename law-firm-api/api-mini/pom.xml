@@ -38,10 +38,6 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-contract</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-message</artifactId>
-        </dependency>
 
         <!-- Spring Boot -->
         <dependency>

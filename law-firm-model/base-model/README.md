@@ -1,111 +1,90 @@
 # 基础模型模块 (Base Model)
 
 ## 模块说明
-基础模型模块是律师事务所管理系统的基础数据模型层，为所有业务模型提供基础实体类、通用接口和基础功能支持。该模块是所有业务模型模块的基础，确保了整个系统数据模型的一致性和规范性。
+基础模型模块是一个纯定义模块，为整个系统提供最基础的模型定义，包括基础实体、DTO、查询对象、结果对象等。本模块作为其他模型模块的基础依赖，提供统一的模型定义规范。
 
-## 核心功能
+## 设计原则
 
-### 基础实体
-- ModelBaseEntity：模型基础实体，提供通用字段和功能
-- TreeEntity：树形结构实体，支持层级数据
-- BaseEntity：最基础实体类，提供ID等基本字段
+### 1. 纯定义原则
+- 只包含基础接口和抽象类定义
+- 不包含具体业务实现
+- 提供统一的模型规范
+- 允许包含基础定义的单元测试
 
-### 通用接口
-- StatusAware：状态感知接口
-- TenantAware：租户感知接口
-- TreeAware：树形结构接口
-- AuditAware：审计感知接口
-- VersionAware：版本感知接口
+### 2. 依赖原则
+- 最小化外部依赖
+- 不依赖具体实现模块
+- 作为其他模型模块的基础
+- 避免循环依赖
 
-### 基础功能
-- 实体继承体系
-- 通用字段定义
-- 数据校验规则
-- 序列化配置
-- 数据转换
+### 3. 扩展原则
+- 提供清晰的扩展点
+- 使用抽象类和接口
+- 支持灵活的扩展方式
+- 保持向后兼容
 
-### 数据结构
-- DTO基类
-- VO基类
-- Query基类
-- Result基类
-- Page封装
+## 核心定义
 
-## 技术架构
+### 1. 实体定义（entity）
+- ModelBaseEntity：模型基础实体，提供通用属性
+- TreeEntity：树形结构实体，用于层级数据
+- TenantEntity：租户实体，支持多租户
 
-### 核心依赖
-- common-core：核心功能支持
-- common-data：数据访问支持
-- MyBatis Plus：ORM支持
-- Jakarta Validation：数据校验
-- Jackson：JSON处理
-- Lombok：代码简化
+### 2. 数据传输对象（dto）
+- BaseDTO：基础传输对象
+- BaseExportDTO：导出基础对象
 
-### 模块结构
+### 3. 查询对象（query）
+- BaseQuery：基础查询对象，支持分页和排序
+
+### 4. 结果对象（result）
+- BaseResult：统一返回结果对象
+
+### 5. 视图对象（vo）
+- BaseVO：基础视图对象
+
+### 6. 支持功能（support）
+- 验证器（validator）：通用验证规则
+- 树形结构（tree）：树形数据处理
+
+### 7. 租户功能（tenant）
+- 租户配置
+- 租户元数据
+
+### 8. 地理位置（geo）
+- 地理位置相关定义
+
+## 目录结构
 ```
 base-model/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/lawfirm/model/base/
-│   │   │       ├── entity/     # 基础实体
-│   │   │       ├── dto/        # 基础DTO
-│   │   │       ├── vo/         # 基础VO
-│   │   │       ├── query/      # 查询对象
-│   │   │       ├── result/     # 结果封装
-│   │   │       ├── enums/      # 基础枚举
-│   │   │       ├── convert/    # 转换器
-│   │   │       └── constants/  # 常量定义
-│   │   └── resources/
-│   └── test/                   # 单元测试
-└── pom.xml
-```
-
-## 核心组件
-
-### ModelBaseEntity
-基础实体类，提供通用字段和功能：
-```java
-@Data
-@Accessors(chain = true)
-public abstract class ModelBaseEntity<T extends ModelBaseEntity<T>> 
-    extends DataBaseEntity<T> 
-    implements TenantAware, StatusAware {
-    
-    @Version
-    private Integer version;     // 版本号
-    private Long tenantId;       // 租户ID
-    private Integer status;      // 状态
-    private Integer sort;        // 排序号
-}
-```
-
-### BaseDTO
-基础传输对象：
-```java
-@Data
-public abstract class BaseDTO implements Serializable {
-    private Long id;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
-}
-```
-
-### BaseQuery
-基础查询对象：
-```java
-@Data
-public abstract class BaseQuery implements Serializable {
-    private Integer pageNum = 1;
-    private Integer pageSize = 10;
-    private String orderBy;
-    private Boolean asc = true;
-}
+├── entity/           # 实体定义
+│   ├── ModelBaseEntity.java  # 基础实体
+│   ├── TreeEntity.java      # 树形实体
+│   └── TenantEntity.java    # 租户实体
+├── dto/              # 传输对象
+│   ├── BaseDTO.java         # 基础DTO
+│   └── BaseExportDTO.java   # 导出DTO
+├── query/            # 查询对象
+│   └── BaseQuery.java       # 基础查询
+├── result/           # 结果对象
+│   └── BaseResult.java      # 基础结果
+├── vo/               # 视图对象
+│   └── BaseVO.java          # 基础视图
+├── support/          # 支持功能
+│   ├── validator/           # 验证器
+│   └── tree/               # 树形结构
+├── tenant/           # 租户定义
+│   ├── TenantConfig.java    # 租户配置
+│   └── TenantMetadata.java  # 租户元数据
+├── geo/              # 地理位置
+├── service/          # 服务接口
+├── constants/        # 常量定义
+└── enums/            # 枚举定义
 ```
 
 ## 使用说明
 
-### 引入依赖
+### 1. 依赖引入
 ```xml
 <dependency>
     <groupId>com.lawfirm</groupId>
@@ -114,105 +93,22 @@ public abstract class BaseQuery implements Serializable {
 </dependency>
 ```
 
-### 实体定义
-```java
-@Data
-@Entity
-@Table(name = "table_name")
-public class BusinessEntity extends ModelBaseEntity<BusinessEntity> {
-    // 业务字段
-}
-```
+### 2. 实体定义
+- 业务实体应继承ModelBaseEntity
+- 树形数据应继承TreeEntity
+- 多租户实体应继承TenantEntity
 
-### DTO定义
-```java
-@Data
-public class BusinessDTO extends BaseDTO {
-    // 业务字段
-}
-```
+### 3. 数据传输
+- 使用BaseDTO作为传输对象基类
+- 使用BaseExportDTO作为导出对象基类
+- 使用BaseQuery作为查询对象基类
 
-### 查询定义
-```java
-@Data
-public class BusinessQuery extends BaseQuery {
-    // 查询条件
-}
-```
+### 4. 结果处理
+- 使用BaseResult包装返回结果
+- 使用BaseVO构建视图对象
 
-## 开发规范
-
-### 实体规范
-1. 必须继承ModelBaseEntity
-2. 必须使用JPA注解
-3. 必须添加字段校验
-4. 必须添加完整注释
-5. 必须实现相关接口
-
-### 命名规范
-1. 实体类：Entity结尾
-2. DTO类：DTO结尾
-3. 查询类：Query结尾
-4. 枚举类：Enum结尾
-5. 常量类：Constants结尾
-
-### 注释规范
-1. 类注释完整
-2. 字段注释清晰
-3. 方法注释详细
-4. 枚举值注释
-5. 接口说明完整
-
-## 扩展开发
-
-### 新增基类
-1. 继承合适的父类
-2. 添加通用字段
-3. 实现必要接口
-4. 添加单元测试
-5. 更新文档说明
-
-### 新增接口
-1. 定义接口规范
-2. 添加默认实现
-3. 编写使用示例
-4. 补充单元测试
-5. 更新接口文档
-
-## 版本说明
-
-### 当前版本
-- 版本号：1.0.0
-- 发布日期：2024-02-09
-- 主要特性：
-  - 基础实体完善
-  - 通用接口定义
-  - 数据校验加强
-
-### 版本规划
-- 1.1.0：新增基础特性
-- 1.2.0：优化现有功能
-- 2.0.0：架构重构
-
-## 常见问题
-
-### 继承问题
-1. 继承层次过深
-2. 字段重复定义
-3. 接口冲突
-4. 注解继承
-5. 泛型使用
-
-### 解决方案
-1. 控制继承层次
-2. 使用组合模式
-3. 接口默认实现
-4. 注解继承配置
-5. 泛型边界限定
-
-## 注意事项
-1. 避免继承滥用
-2. 接口职责单一
-3. 保持向后兼容
-4. 注意性能影响
-5. 维护文档及时 
+### 5. 注意事项
+- 遵循统一的命名规范
+- 合理使用继承和组合
+- 保持接口的稳定性
+- 注意版本兼容性 

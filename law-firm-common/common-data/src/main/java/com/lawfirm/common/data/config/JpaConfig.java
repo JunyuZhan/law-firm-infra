@@ -16,8 +16,8 @@ import java.util.Optional;
  */
 @Configuration
 @EnableJpaAuditing
-@EntityScan("com.lawfirm.**.entity")
-@EnableJpaRepositories("com.lawfirm.**.repository")
+@EntityScan(basePackages = {"${jpa.entity.packages:com.lawfirm.common.data.entity}"})
+@EnableJpaRepositories(basePackages = {"${jpa.repository.packages:com.lawfirm.common.data.repository}"})
 public class JpaConfig {
 
     @Bean

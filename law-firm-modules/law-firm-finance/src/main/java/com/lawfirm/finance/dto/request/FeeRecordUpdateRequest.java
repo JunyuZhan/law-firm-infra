@@ -4,7 +4,7 @@ import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
-import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.model.base.dto.BaseDTO;
 
 /**
  * 收费记录更新请求

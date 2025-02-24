@@ -4,6 +4,7 @@ target/
 *.war
 *.ear
 *.class
+.flattened-pom.xml
 
 # IDE
 .idea/
@@ -15,6 +16,9 @@ target/
 # Logs
 logs/
 *.log
+
+# Javadoc
+**/javadoc/
 
 # OS
 .DS_Store

@@ -1,7 +1,0 @@
-com.lawfirm.model.cases.dto
-com.lawfirm.model.cases.entity
-com.lawfirm.model.cases.enums
-com.lawfirm.model.cases.query
-com.lawfirm.model.cases.utils
-com.lawfirm.model.cases.validator
-com.lawfirm.model.cases.vo

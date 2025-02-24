@@ -19,3 +19,4 @@ public interface SysMenuClient {
     @DeleteMapping("/{id}")
     ApiResponse<?> deleteMenu(@PathVariable("id") Long id);
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

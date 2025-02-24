@@ -1,16 +1,16 @@
 package com.lawfirm.common.security.annotation;
 
 /**
- * 权限验证模式
+ * 逻辑运算枚举
  */
 public enum Logical {
     /**
-     * 必须具有所有的权限
+     * 与运算
      */
     AND,
-
+    
     /**
-     * 只需具有其中一个权限
+     * 或运算
      */
     OR
 } 

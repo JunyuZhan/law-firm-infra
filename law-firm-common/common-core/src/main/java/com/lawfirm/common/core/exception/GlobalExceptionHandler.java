@@ -1,45 +1,67 @@
 package com.lawfirm.common.core.exception;
 
-import com.lawfirm.common.core.result.Result;
-import com.lawfirm.common.core.result.ResultCode;
+import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.common.core.constant.ResultCode;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * 全局异常处理器
+ * 只处理框架级的基础异常，业务异常应该由具体的业务模块自行处理
  */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
     
-    @ExceptionHandler(BusinessException.class)
-    public Result<Void> handleBusinessException(BusinessException e) {
-        log.warn("业务异常：{}", e.getMessage());
-        return Result.error(e.getCode(), e.getMessage());
+    /**
+     * 处理所有未捕获的异常
+     */
+    @ExceptionHandler(Throwable.class)
+    public CommonResult<Void> handleThrowable(Throwable e) {
+        log.error("未知异常", e);
+        return CommonResult.error(ResultCode.INTERNAL_ERROR);
     }
-    
-    @ExceptionHandler(SystemException.class)
-    public Result<Void> handleSystemException(SystemException e) {
-        log.error("系统异常：", e);
-        return Result.error(ResultCode.ERROR.getCode(), e.getMessage());
+
+    /**
+     * 处理参数验证异常
+     */
+    @ExceptionHandler({
+        MethodArgumentNotValidException.class,
+        BindException.class,
+        ValidationException.class,
+        MissingServletRequestParameterException.class,
+        MethodArgumentTypeMismatchException.class,
+        HttpMessageNotReadableException.class
+    })
+    public CommonResult<Void> handleValidationException(Exception e) {
+        log.warn("参数验证异常: {}", e.getMessage());
+        return CommonResult.error(ResultCode.VALIDATION_ERROR);
     }
-    
-    @ExceptionHandler(ValidationException.class)
-    public Result<Void> handleValidationException(ValidationException e) {
-        log.warn("参数校验异常：{}", e.getMessage());
-        return Result.error(ResultCode.PARAM_ERROR.getCode(), e.getMessage());
+
+    /**
+     * 处理请求方法不支持异常
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public CommonResult<Void> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        log.warn("请求方法不支持: {}", e.getMessage());
+        return CommonResult.error(ResultCode.METHOD_NOT_ALLOWED);
     }
-    
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public Result<Void> handleResourceNotFoundException(ResourceNotFoundException e) {
-        log.warn("资源不存在：{}", e.getMessage());
-        return Result.error(ResultCode.NOT_FOUND.getCode(), e.getMessage());
-    }
-    
-    @ExceptionHandler(Exception.class)
-    public Result<Void> handleException(Exception e) {
-        log.error("未知异常：", e);
-        return Result.error(ResultCode.ERROR);
+
+    /**
+     * 处理文件上传超出限制异常
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public CommonResult<Void> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        log.warn("上传文件大小超出限制: {}", e.getMessage());
+        return CommonResult.error(ResultCode.BAD_REQUEST.getCode(), "上传文件大小超出限制");
     }
 } 

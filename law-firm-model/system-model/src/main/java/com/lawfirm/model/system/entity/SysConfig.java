@@ -1,93 +1,48 @@
 package com.lawfirm.model.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import com.lawfirm.common.core.enums.StatusEnum;
-import com.lawfirm.common.core.status.StatusAware;
-import com.lawfirm.model.system.enums.ConfigStatusEnum;
-import com.lawfirm.model.system.enums.ConfigTypeEnum;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
- * 系统配置实体类
+ * 系统配置实体
  */
 @Getter
 @Setter
-@Entity
-@Table(name = "sys_config")
-@EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 @TableName("sys_config")
-public class SysConfig extends ModelBaseEntity<SysConfig> implements StatusAware {
+public class SysConfig extends ModelBaseEntity {
 
-    private Long lawFirmId;  // 所属律所ID，为空表示全局配置
+    /**
+     * 配置名称
+     */
+    @TableField("config_name")
+    private String configName;
 
-    @NotBlank(message = "配置名称不能为空")
-    @Size(max = 100, message = "配置名称长度不能超过100个字符")
-    @Column(nullable = false, length = 100)
-    private String name;  // 配置名称
-
-    @NotBlank
-    @Size(max = 100)
-    @Column(nullable = false, length = 100)
+    /**
+     * 配置键名
+     */
+    @TableField("config_key")
     private String configKey;
 
-    @NotBlank
-    @Size(max = 500)
-    @Column(nullable = false, length = 500)
+    /**
+     * 配置值
+     */
+    @TableField("config_value")
     private String configValue;
 
-    @Column(length = 50)
-    private ConfigTypeEnum configType;
+    /**
+     * 配置类型
+     */
+    @TableField("config_type")
+    private String configType;
 
-    @Column(length = 50)
-    private ConfigStatusEnum configStatus;
-
-    @Column(length = 50)
-    private StatusEnum status = StatusEnum.ENABLED;
-
-    @Size(max = 200, message = "验证规则长度不能超过200个字符")
-    @Column(length = 200)
-    private String validationRule;  // 验证规则
-
-    @Size(max = 500, message = "描述长度不能超过500个字符")
-    @Column(length = 500)
-    private String description;  // 描述
-
-    private Boolean isSystem = false;  // 是否系统内置
-
-    private Boolean isEncrypted = false;  // 是否加密存储
-
-    private Integer sortOrder = 0;  // 排序号
-
-    @Size(max = 500)
-    @Column(length = 500)
-    private String remark;
-
-    @Override
-    public StatusEnum getStatus() {
-        return status;
-    }
-
-    @Override
-    public void setStatus(StatusEnum status) {
-        this.status = status;
-    }
-
-    @Override
-    public SysConfig setRemark(String remark) {
-        super.setRemark(remark);
-        return this;
-    }
-
-    @Override
-    public SysConfig setId(Long id) {
-        super.setId(id);
-        return this;
-    }
+    /**
+     * 配置描述
+     */
+    @TableField("description")
+    private String description;
 } 

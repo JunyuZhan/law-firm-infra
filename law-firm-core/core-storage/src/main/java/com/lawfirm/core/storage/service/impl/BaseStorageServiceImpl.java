@@ -1,19 +1,16 @@
 package com.lawfirm.core.storage.service.impl;
 
+import com.lawfirm.model.base.storage.model.FileMetadata;
 import com.lawfirm.model.base.storage.service.StorageService;
 import com.lawfirm.core.storage.strategy.StorageStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
-/**
- * 基础存储服务实现类
- */
 @Slf4j
-@Service
+@Service("baseStorageService")
 public class BaseStorageServiceImpl implements StorageService {
 
     private final StorageStrategy storageStrategy;
@@ -23,36 +20,92 @@ public class BaseStorageServiceImpl implements StorageService {
     }
 
     @Override
-    public String uploadFile(MultipartFile file) {
-        String objectName = generateObjectName(file.getOriginalFilename());
-        return storageStrategy.uploadFile(objectName, file);
+    public FileMetadata uploadFile(MultipartFile file) {
+        try {
+            return storageStrategy.uploadFile(file);
+        } catch (Exception e) {
+            log.error("上传文件失败: {}", e.getMessage(), e);
+            throw new RuntimeException("上传文件失败", e);
+        }
+    }
+
+    @Override
+    public FileMetadata uploadFile(String fileName, InputStream inputStream, long size, String contentType) {
+        try {
+            return storageStrategy.uploadFile(fileName, inputStream, size, contentType);
+        } catch (Exception e) {
+            log.error("上传文件失败: {}", e.getMessage(), e);
+            throw new RuntimeException("上传文件失败", e);
+        }
     }
 
     @Override
     public byte[] downloadFile(String filePath) {
-        return storageStrategy.downloadFile(filePath);
+        try {
+            return storageStrategy.downloadFile(filePath);
+        } catch (Exception e) {
+            log.error("下载文件失败: {}", e.getMessage(), e);
+            throw new RuntimeException("下载文件失败", e);
+        }
+    }
+
+    @Override
+    public InputStream downloadFileAsStream(String filePath) {
+        try {
+            return storageStrategy.downloadFileAsStream(filePath);
+        } catch (Exception e) {
+            log.error("下载文件失败: {}", e.getMessage(), e);
+            throw new RuntimeException("下载文件失败", e);
+        }
     }
 
     @Override
     public void deleteFile(String filePath) {
-        storageStrategy.deleteFile(filePath);
+        try {
+            storageStrategy.deleteFile(filePath);
+        } catch (Exception e) {
+            log.error("删除文件失败: {}", e.getMessage(), e);
+            throw new RuntimeException("删除文件失败", e);
+        }
     }
 
     @Override
     public String getFileUrl(String filePath) {
-        return storageStrategy.getFileUrl(filePath);
+        try {
+            return storageStrategy.getFileUrl(filePath);
+        } catch (Exception e) {
+            log.error("获取文件URL失败: {}", e.getMessage(), e);
+            throw new RuntimeException("获取文件URL失败", e);
+        }
     }
 
-    /**
-     * 生成存储对象名称
-     * 格式：年/月/UUID_文件名
-     */
-    private String generateObjectName(String filename) {
-        LocalDateTime now = LocalDateTime.now();
-        return String.format("%d/%02d/%s_%s",
-                now.getYear(),
-                now.getMonthValue(),
-                UUID.randomUUID().toString().replace("-", ""),
-                filename);
+    @Override
+    public String getFileUrl(String filePath, long expireSeconds) {
+        try {
+            return storageStrategy.getFileUrl(filePath, expireSeconds);
+        } catch (Exception e) {
+            log.error("获取文件URL失败: {}", e.getMessage(), e);
+            throw new RuntimeException("获取文件URL失败", e);
+        }
     }
-} 
+
+    @Override
+    public List<FileMetadata> listByBusiness(String businessType, String businessId) {
+        try {
+            return storageStrategy.listByBusiness(businessType, businessId);
+        } catch (Exception e) {
+            log.error("获取业务相关文件列表失败: {}", e.getMessage(), e);
+            throw new RuntimeException("获取业务相关文件列表失败", e);
+        }
+    }
+
+    @Override
+    public boolean isFileExist(String filePath) {
+        try {
+            return storageStrategy.isFileExist(filePath);
+        } catch (Exception e) {
+            log.error("检查文件是否存在失败: {}", e.getMessage(), e);
+            throw new RuntimeException("检查文件是否存在失败", e);
+        }
+    }
+}

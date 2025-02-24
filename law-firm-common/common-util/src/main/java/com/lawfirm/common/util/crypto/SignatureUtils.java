@@ -1,15 +1,17 @@
 package com.lawfirm.common.util.crypto;
 
-import cn.hutool.core.codec.Base64;
+import com.lawfirm.common.util.BaseUtils;
+import java.security.*;
+import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
 
+/**
+ * 数字签名工具类
+ */
 @Slf4j
-public class SignatureUtils {
+public class SignatureUtils extends BaseUtils {
     
     private static final String SIGN_ALGORITHM = "SHA256withRSA";
     
@@ -40,7 +42,7 @@ public class SignatureUtils {
     public static String signHex(String content, PrivateKey privateKey) {
         try {
             byte[] signed = sign(content.getBytes(StandardCharsets.UTF_8), privateKey);
-            return Base64.encode(signed);
+            return Base64.getEncoder().encodeToString(signed);
         } catch (Exception e) {
             log.error("签名失败", e);
             return null;
@@ -49,7 +51,7 @@ public class SignatureUtils {
     
     public static boolean verifyHex(String content, String signature, PublicKey publicKey) {
         try {
-            byte[] signedBytes = Base64.decode(signature);
+            byte[] signedBytes = Base64.getDecoder().decode(signature);
             return verify(content.getBytes(StandardCharsets.UTF_8), signedBytes, publicKey);
         } catch (Exception e) {
             log.error("验签失败", e);

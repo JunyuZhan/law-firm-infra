@@ -1,9 +1,13 @@
 package com.lawfirm.common.util.crypto;
 
+import com.lawfirm.common.util.BaseUtils;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Base64;
 
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
@@ -12,24 +16,38 @@ import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.crypto.symmetric.DES;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 加密工具类
+ */
 @Slf4j
-public class CryptoUtils {
+public class CryptoUtils extends BaseUtils {
+    private static final String AES_ALGORITHM = "AES";
+    private static final String AES_TRANSFORMATION = "AES/ECB/PKCS5Padding";
     
-    // AES加密
-    public static String aesEncrypt(String content, String key) {
+    /**
+     * AES加密
+     */
+    public static String encryptAES(String content, String key) {
         try {
-            AES aes = SecureUtil.aes(key.getBytes(StandardCharsets.UTF_8));
-            return aes.encryptHex(content);
+            Cipher cipher = Cipher.getInstance(AES_TRANSFORMATION);
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), AES_ALGORITHM));
+            byte[] encrypted = cipher.doFinal(content.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(encrypted);
         } catch (Exception e) {
             log.error("AES加密失败", e);
             return null;
         }
     }
     
-    public static String aesDecrypt(String encrypted, String key) {
+    /**
+     * AES解密
+     */
+    public static String decryptAES(String encrypted, String key) {
         try {
-            AES aes = SecureUtil.aes(key.getBytes(StandardCharsets.UTF_8));
-            return aes.decryptStr(encrypted);
+            Cipher cipher = Cipher.getInstance(AES_TRANSFORMATION);
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), AES_ALGORITHM));
+            byte[] original = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+            return new String(original, StandardCharsets.UTF_8);
         } catch (Exception e) {
             log.error("AES解密失败", e);
             return null;

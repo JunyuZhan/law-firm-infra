@@ -4,303 +4,246 @@ import com.lawfirm.core.message.config.MessageProperties;
 import com.lawfirm.core.message.exception.MessageException;
 import com.lawfirm.core.message.model.Message;
 import com.lawfirm.core.message.model.MessageTemplate;
-import com.lawfirm.core.message.model.MessageType;
 import com.lawfirm.core.message.model.UserMessageSetting;
-import com.lawfirm.core.message.mq.MessageProducer;
 import com.lawfirm.core.message.service.MessageService;
+import com.lawfirm.model.base.message.service.BusinessMessageService;
+import com.lawfirm.model.base.message.service.MessageCacheService;
+import com.lawfirm.model.base.message.entity.MessageEntity;
+import com.lawfirm.model.base.message.entity.MessageTemplateEntity;
+import com.lawfirm.model.base.message.entity.UserMessageSettingEntity;
+import com.lawfirm.model.base.message.enums.MessageType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
  * 消息服务实现
+ * 负责消息模型转换和业务处理委托
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
     
-    private final MessageProperties messageProperties;
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final MessageProducer messageProducer;
-    
-    public MessageServiceImpl(MessageProperties messageProperties,
-                            RedisTemplate<String, Object> redisTemplate,
-                            MessageProducer messageProducer) {
-        this.messageProperties = messageProperties;
-        this.redisTemplate = redisTemplate;
-        this.messageProducer = messageProducer;
-    }
+    private final BusinessMessageService businessMessageService;
+    private final MessageCacheService messageCacheService;
     
     @Override
     @Retryable(value = {Exception.class}, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public String sendMessage(Message message) {
+    public String sendMessage(MessageEntity message) {
         try {
-            // 1. 设置消息ID和时间
-            message.setId(UUID.randomUUID().toString())
-                    .setType(MessageType.NORMAL)
-                    .setCreateTime(LocalDateTime.now())
-                    .setUpdateTime(LocalDateTime.now());
-            
-            // 2. 发送消息到 MQ
-            messageProducer.sendMessage(message);
-            
-            // 3. 保存到Redis
-            saveMessageToRedis(message);
-            
-            return message.getId();
+            validateMessage(message);
+            return businessMessageService.sendMessage(message);
         } catch (Exception e) {
             log.error("Failed to send message: {}", message, e);
-            throw new MessageException("消息发送失败", e);
-        }
-    }
-    
-    private void saveMessageToRedis(Message message) {
-        try {
-            String messageKey = messageProperties.getRedis().getMessageKeyPrefix() + message.getReceiverId();
-            redisTemplate.execute(new SessionCallback<Object>() {
-                @Override
-                public Object execute(RedisOperations operations) throws DataAccessException {
-                    operations.multi();
-                    operations.opsForZSet().add(messageKey, message,
-                            message.getCreateTime().toEpochSecond(java.time.ZoneOffset.UTC));
-                    operations.expire(messageKey, 7, TimeUnit.DAYS);
-                    return operations.exec();
-                }
-            });
-        } catch (Exception e) {
-            log.error("Failed to save message to Redis: {}", message.getId(), e);
-            // 这里不抛出异常，因为消息已经发送到MQ
+            throw new RuntimeException("消息发送失败", e);
         }
     }
     
     @Override
     public String sendTemplateMessage(String templateCode, Map<String, Object> params,
                                     Long receiverId, String businessType, String businessId) {
-        // 1. 获取消息模板
-        MessageTemplate template = getMessageTemplate(templateCode);
-        if (template == null || !template.getEnabled()) {
-            throw new MessageException("消息模板不存在或已禁用: " + templateCode);
-        }
-        
-        // 2. 替换模板参数
-        String title = replaceTemplateParams(template.getTitle(), params);
-        String content = replaceTemplateParams(template.getContent(), params);
-        
-        // 3. 创建消息
-        Message message = new Message()
-                .setType(MessageType.TEMPLATE)
-                .setTitle(title)
-                .setContent(content)
-                .setTemplateId(template.getId())
-                .setTemplateParams(params)
-                .setReceiverId(receiverId)
-                .setBusinessType(businessType)
-                .setBusinessId(businessId);
-        
-        return sendMessage(message);
-    }
-    
-    private MessageTemplate getMessageTemplate(String templateCode) {
-        try {
-            String templateKey = messageProperties.getRedis().getTemplateKeyPrefix() + templateCode;
-            return (MessageTemplate) redisTemplate.opsForValue().get(templateKey);
-        } catch (Exception e) {
-            log.error("Failed to get message template: {}", templateCode, e);
-            throw new MessageException("获取消息模板失败", e);
-        }
-    }
-    
-    private String replaceTemplateParams(String template, Map<String, Object> params) {
-        if (StringUtils.hasText(template) && params != null) {
-            for (Map.Entry<String, Object> entry : params.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue() != null ? String.valueOf(entry.getValue()) : "";
-                template = template.replace("${" + key + "}", value);
-            }
-        }
-        return template;
+        return businessMessageService.sendTemplateMessage(templateCode, params, receiverId, businessType, businessId);
     }
     
     @Override
     public List<String> sendSystemNotice(String title, String content, List<Long> receiverIds) {
-        if (receiverIds == null || receiverIds.isEmpty()) {
-            return Collections.emptyList();
-        }
-        
-        // 批量创建系统通知消息
-        List<Message> messages = receiverIds.stream()
-                .map(receiverId -> new Message()
-                        .setType(MessageType.SYSTEM)
-                        .setTitle(title)
-                        .setContent(content)
-                        .setReceiverId(receiverId)
-                        .setPriority(9))
-                .collect(Collectors.toList());
-        
-        // 批量发送
-        return messages.stream()
-                .map(this::sendMessage)
-                .collect(Collectors.toList());
+        return businessMessageService.sendSystemNotice(title, content, receiverIds);
     }
     
     @Override
     public void markAsRead(String messageId, Long userId) {
-        try {
-            String messageKey = messageProperties.getRedis().getMessageKeyPrefix() + userId;
-            redisTemplate.execute(new SessionCallback<Object>() {
-                @Override
-                public Object execute(RedisOperations operations) throws DataAccessException {
-                    operations.multi();
-                    Set<Object> messages = operations.opsForZSet().range(messageKey, 0, -1);
-                    if (messages != null) {
-                        for (Object obj : messages) {
-                            Message message = (Message) obj;
-                            if (messageId.equals(message.getId())) {
-                                message.setRead(true)
-                                        .setReadTime(LocalDateTime.now())
-                                        .setUpdateTime(LocalDateTime.now());
-                                operations.opsForZSet().add(messageKey, message,
-                                        message.getCreateTime().toEpochSecond(java.time.ZoneOffset.UTC));
-                                break;
-                            }
-                        }
-                    }
-                    return operations.exec();
-                }
-            });
-        } catch (Exception e) {
-            log.error("Failed to mark message as read: {}", messageId, e);
-            throw new MessageException("标记消息已读失败", e);
-        }
+        businessMessageService.markAsRead(messageId, userId);
     }
     
     @Override
     public void markAsRead(List<String> messageIds, Long userId) {
-        messageIds.forEach(messageId -> markAsRead(messageId, userId));
+        businessMessageService.markAsRead(messageIds, userId);
     }
     
     @Override
     public long getUnreadCount(Long userId) {
-        String messageKey = messageProperties.getRedis().getMessageKeyPrefix() + userId;
-        Set<Object> messages = redisTemplate.opsForZSet().range(messageKey, 0, -1);
-        if (messages == null) {
-            return 0;
-        }
-        return messages.stream()
-                .map(obj -> (Message) obj)
-                .filter(message -> !message.getRead())
-                .count();
+        return businessMessageService.getUnreadCount(userId);
     }
     
     @Override
-    public List<Message> listMessages(Long userId, int page, int size) {
-        String messageKey = messageProperties.getRedis().getMessageKeyPrefix() + userId;
-        Set<Object> messages = redisTemplate.opsForZSet().reverseRange(messageKey,
-                (page - 1) * size, page * size - 1);
-        if (messages == null) {
-            return Collections.emptyList();
-        }
-        return messages.stream()
-                .map(obj -> (Message) obj)
-                .collect(Collectors.toList());
+    public List<MessageEntity> listMessages(Long userId, int page, int size) {
+        return businessMessageService.listMessages(userId, page, size);
     }
     
     @Override
-    public String createTemplate(MessageTemplate template) {
-        template.setId(UUID.randomUUID().toString())
-                .setEnabled(true)
-                .setCreateTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now());
-        
-        String templateKey = messageProperties.getRedis().getTemplateKeyPrefix() + template.getCode();
-        redisTemplate.opsForValue().set(templateKey, template);
-        
-        return template.getId();
+    public String createTemplate(MessageTemplateEntity template) {
+        return businessMessageService.createTemplate(template);
     }
     
     @Override
-    public void updateTemplate(MessageTemplate template) {
-        template.setUpdateTime(LocalDateTime.now());
-        String templateKey = messageProperties.getRedis().getTemplateKeyPrefix() + template.getCode();
-        redisTemplate.opsForValue().set(templateKey, template);
+    public void updateTemplate(MessageTemplateEntity template) {
+        businessMessageService.updateTemplate(template);
     }
     
     @Override
     public void deleteTemplate(String templateId) {
-        String templatePattern = messageProperties.getRedis().getTemplateKeyPrefix() + "*";
-        Set<String> keys = redisTemplate.keys(templatePattern);
-        if (keys != null) {
-            for (String key : keys) {
-                MessageTemplate template = (MessageTemplate) redisTemplate.opsForValue().get(key);
-                if (template != null && templateId.equals(template.getId())) {
-                    redisTemplate.delete(key);
-                    break;
-                }
-            }
-        }
+        businessMessageService.deleteTemplate(templateId);
     }
     
     @Override
-    public MessageTemplate getTemplate(String templateId) {
-        String templatePattern = messageProperties.getRedis().getTemplateKeyPrefix() + "*";
-        Set<String> keys = redisTemplate.keys(templatePattern);
-        if (keys != null) {
-            for (String key : keys) {
-                MessageTemplate template = (MessageTemplate) redisTemplate.opsForValue().get(key);
-                if (template != null && templateId.equals(template.getId())) {
-                    return template;
-                }
-            }
-        }
-        return null;
+    public MessageTemplateEntity getTemplate(String templateId) {
+        return businessMessageService.getTemplate(templateId);
     }
     
     @Override
-    public UserMessageSetting getUserSetting(Long userId) {
-        String settingKey = messageProperties.getRedis().getSettingKeyPrefix() + userId;
-        UserMessageSetting setting = (UserMessageSetting) redisTemplate.opsForValue().get(settingKey);
-        if (setting == null) {
-            setting = new UserMessageSetting()
-                    .setUserId(userId)
-                    .setCreateTime(LocalDateTime.now())
-                    .setUpdateTime(LocalDateTime.now());
-            redisTemplate.opsForValue().set(settingKey, setting);
-        }
-        return setting;
+    public UserMessageSettingEntity getUserSetting(Long userId) {
+        return businessMessageService.getUserSetting(userId);
     }
     
     @Override
-    public void updateUserSetting(UserMessageSetting setting) {
-        setting.setUpdateTime(LocalDateTime.now());
-        String settingKey = messageProperties.getRedis().getSettingKeyPrefix() + setting.getUserId();
-        redisTemplate.opsForValue().set(settingKey, setting);
+    public void updateUserSetting(UserMessageSettingEntity setting) {
+        businessMessageService.updateUserSetting(setting);
     }
     
     @Override
     public void subscribe(Long userId, String clientId) {
-        String subscriptionKey = messageProperties.getRedis().getSubscriptionKeyPrefix() + userId;
-        redisTemplate.opsForSet().add(subscriptionKey, clientId);
-        
-        // 更新最后活跃时间
-        UserMessageSetting setting = getUserSetting(userId);
-        setting.setLastActiveTime(LocalDateTime.now());
-        updateUserSetting(setting);
+        businessMessageService.subscribe(userId, clientId);
     }
     
     @Override
     public void unsubscribe(Long userId, String clientId) {
-        String subscriptionKey = messageProperties.getRedis().getSubscriptionKeyPrefix() + userId;
-        redisTemplate.opsForSet().remove(subscriptionKey, clientId);
+        businessMessageService.unsubscribe(userId, clientId);
+    }
+    
+    private void validateMessage(MessageEntity message) {
+        if (message == null) {
+            throw new IllegalArgumentException("消息不能为空");
+        }
+        if (message.getReceiverId() == null) {
+            throw new IllegalArgumentException("接收者ID不能为空");
+        }
+        if (message.getType() == null) {
+            throw new IllegalArgumentException("消息类型不能为空");
+        }
+        if (!StringUtils.hasText(message.getContent()) && message.getTemplateId() == null) {
+            throw new IllegalArgumentException("消息内容和模板ID不能同时为空");
+        }
+    }
+    
+    // 类型转换方法
+    private MessageEntity convertToEntity(Message message) {
+        if (message == null) {
+            return null;
+        }
+        MessageEntity entity = new MessageEntity();
+        entity.setId(message.getId());
+        entity.setType(message.getType().name());
+        entity.setTitle(message.getTitle());
+        entity.setContent(message.getContent());
+        entity.setReceiverId(message.getReceiverId());
+        entity.setTemplateId(message.getTemplateId());
+        entity.setBusinessType(message.getBusinessType());
+        entity.setBusinessId(message.getBusinessId());
+        entity.setParams(message.getParams() != null ? message.getParams().toString() : null);
+        entity.setCreateTime(message.getCreateTime());
+        entity.setUpdateTime(message.getUpdateTime());
+        entity.setIsRead(message.isRead());
+        entity.setReadTime(message.getReadTime());
+        return entity;
+    }
+    
+    private Message convertToMessage(MessageEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return Message.builder()
+                .id(entity.getId())
+                .type(MessageType.valueOf(entity.getType()))
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .receiverId(entity.getReceiverId())
+                .templateId(entity.getTemplateId())
+                .businessType(entity.getBusinessType())
+                .businessId(entity.getBusinessId())
+                .params(entity.getParams() != null ? parseParams(entity.getParams()) : null)
+                .createTime(entity.getCreateTime())
+                .updateTime(entity.getUpdateTime())
+                .isRead(entity.getIsRead())
+                .readTime(entity.getReadTime())
+                .build();
+    }
+    
+    private Map<String, Object> parseParams(String params) {
+        try {
+            // 这里需要根据实际的参数格式实现解析逻辑
+            return new HashMap<>();
+        } catch (Exception e) {
+            log.error("Failed to parse message params: {}", params, e);
+            return new HashMap<>();
+        }
+    }
+    
+    private MessageTemplateEntity convertToTemplateEntity(MessageTemplate template) {
+        if (template == null) {
+            return null;
+        }
+        MessageTemplateEntity entity = new MessageTemplateEntity();
+        entity.setId(template.getId());
+        entity.setCode(template.getCode());
+        entity.setName(template.getName());
+        entity.setType(template.getType().name());
+        entity.setTitle(template.getTitle());
+        entity.setContent(template.getContent());
+        entity.setEnabled(template.isEnabled());
+        entity.setCreateTime(template.getCreateTime());
+        entity.setUpdateTime(template.getUpdateTime());
+        return entity;
+    }
+    
+    private MessageTemplate convertToTemplate(MessageTemplateEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return MessageTemplate.builder()
+                .id(entity.getId())
+                .code(entity.getCode())
+                .name(entity.getName())
+                .type(MessageType.valueOf(entity.getType()))
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .enabled(entity.getEnabled())
+                .createTime(entity.getCreateTime())
+                .updateTime(entity.getUpdateTime())
+                .build();
+    }
+    
+    private UserMessageSettingEntity convertToSettingEntity(UserMessageSetting setting) {
+        if (setting == null) {
+            return null;
+        }
+        UserMessageSettingEntity entity = new UserMessageSettingEntity();
+        entity.setId(setting.getId());
+        entity.setUserId(setting.getUserId());
+        entity.setType(setting.getType().name());
+        entity.setEnabled(setting.isEnabled());
+        entity.setCreateTime(setting.getCreateTime());
+        entity.setUpdateTime(setting.getUpdateTime());
+        return entity;
+    }
+    
+    private UserMessageSetting convertToSetting(UserMessageSettingEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return UserMessageSetting.builder()
+                .id(entity.getId())
+                .userId(entity.getUserId())
+                .type(MessageType.valueOf(entity.getType()))
+                .enabled(entity.getEnabled())
+                .createTime(entity.getCreateTime())
+                .updateTime(entity.getUpdateTime())
+                .build();
     }
 } 

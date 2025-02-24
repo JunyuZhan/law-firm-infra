@@ -98,3 +98,4 @@ public interface AuthClient {
     @GetMapping("/menu/user")
     Result<List<MenuResponse>> getUserMenus();
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

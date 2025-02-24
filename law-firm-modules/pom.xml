@@ -26,24 +26,22 @@
 
     <modules>
         <module>law-firm-auth</module>
-        <module>law-firm-case</module>
-        <module>law-firm-client</module>
         <module>law-firm-system</module>
-        <module>law-firm-knowledge</module>
+        <module>law-firm-client</module>
         <module>law-firm-contract</module>
-        <module>law-firm-finance</module>
-        <module>law-firm-document</module>
-        <module>law-firm-personnel</module>
-        <module>law-firm-archive</module>
-        <module>law-firm-workflow</module>
+        <module>law-firm-case</module>
         <module>law-firm-task</module>
-        <module>law-firm-supplies</module>
-        <module>law-firm-schedule</module>
-        <module>law-firm-seal</module>
-        <module>law-firm-message</module>
-        <module>law-firm-conflict</module>
+        <module>law-firm-document</module>
+        <module>law-firm-archive</module>
+        <module>law-firm-knowledge</module>
+        <module>law-firm-finance</module>
         <module>law-firm-asset</module>
+        <module>law-firm-personnel</module>
+        <module>law-firm-schedule</module>
+        <module>law-firm-supplies</module>
+        <module>law-firm-seal</module>
         <module>law-firm-analysis</module>
+        <module>law-firm-conflict</module>
     </modules>
 
     <dependencyManagement>

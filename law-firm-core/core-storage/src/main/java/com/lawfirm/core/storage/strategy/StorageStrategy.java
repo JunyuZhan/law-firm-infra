@@ -3,11 +3,21 @@ package com.lawfirm.core.storage.strategy;
 import com.lawfirm.model.base.storage.model.FileMetadata;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 存储策略接口
  */
 public interface StorageStrategy {
+    /**
+     * 获取业务相关的文件列表
+     *
+     * @param businessType 业务类型
+     * @param businessId 业务ID
+     * @return 文件元数据列表
+     */
+    List<FileMetadata> listByBusiness(String businessType, String businessId);
+
     /**
      * 上传文件
      *

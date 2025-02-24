@@ -1,131 +1,166 @@
 # Common Cache Module
 
-## 简介
-Common Cache 模块提供了统一的缓存解决方案，包括Redis缓存、分布式锁、限流等功能。
+## 模块说明
+`common-cache` 是法律事务管理系统的通用缓存模块，提供了基于 Redis 的缓存解决方案。该模块采用 AOP 方式实现，支持声明式缓存和分布式锁功能。
 
-## 主要功能
+## 功能特性
 
-### 1. Redis缓存
-- 提供了`CacheUtil`工具类，封装了Redis的常用操作
-- 支持String、Hash、List、Set等数据类型
-- 支持设置过期时间
-- 支持批量操作
+### 1. 简单缓存注解 @SimpleCache
+- 支持 SpEL 表达式动态生成缓存键
+- 可配置缓存过期时间
+- 支持方法名和参数自动作为缓存键
+- 异常情况自动跳过缓存
 
-### 2. 分布式锁
-- 提供了`RedisLockUtil`工具类，基于Redisson实现
-- 支持可重入锁
-- 支持等待时间和持有锁时间设置
-- 支持自动续期
+### 2. Redis配置
+- 支持单机模式
+- 支持连接池配置
+- 集成 Redisson 客户端
+- 支持多种数据序列化方式
 
-### 3. 限流功能
-- 提供了`@RateLimiter`注解，支持方法级别的限流
-- 支持设置限流速率和时间单位
-- 基于Redis实现，支持分布式环境
-- 提供了`RateLimiterUtil`工具类，支持编程式限流
+### 3. 测试支持
+- 提供测试专用的 Redis 配置
+- 基于 TestContainers 的 Redis 容器
+- 自动化测试支持
 
-### 4. 防重提交
-- 提供了`@RepeatSubmit`注解，防止表单重复提交
-- 支持设置间隔时间和提示消息
-- 基于Redis实现，支持分布式环境
+## 核心组件
 
-### 5. 缓存防护
-- 提供了`CacheGuardUtil`工具类，实现缓存防护功能
-- 使用布隆过滤器防止缓存穿透
-- 使用分布式锁防止缓存击穿
-- 使用随机过期时间防止缓存雪崩
-- 支持缓存降级，当Redis不可用时使用本地缓存
+### 1. SimpleCacheAspect
+- 核心缓存切面
+- 处理 @SimpleCache 注解
+- 支持缓存键生成策略
+- 异常处理机制
 
-### 6. 缓存同步
-- 提供了`CacheSyncUtil`工具类，实现多节点缓存同步
-- 使用分布式锁保证同步更新的原子性
-- 支持先更新数据库再删除缓存的更新模式
-- 支持同步删除缓存
+### 2. RedisConfig
+- Redis 连接配置
+- 连接池参数设置
+- 序列化器配置
+- Redisson 客户端配置
 
-### 7. 缓存预热
-- 提供了`@CacheWarmUp`注解，支持方法级别的缓存预热
-- 支持自定义缓存键生成策略
-- 支持使用方法名和参数作为缓存键
-- 自动将方法返回值预热到缓存中
+### 3. CacheConstants
+- 缓存相关常量定义
+- 缓存键前缀管理
+- 默认过期时间配置
 
 ## 配置说明
 
-### Redis配置
+### 1. Redis配置
 ```yaml
 spring:
-  redis:
-    host: localhost
-    port: 6379
-    password: 
-    database: 0
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      password: 
+      timeout: 10000
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1
+          max-idle: 8
+          min-idle: 0
 ```
 
-### 缓存配置
+### 2. Redisson配置
 ```yaml
-law-firm:
-  cache:
-    enabled: true
-    type: REDIS
-    expiration: 720
-    refresh-time: 120
+redisson:
+  single-server-config:
+    address: redis://localhost:6379
+    database: 0
+    password: 
+    timeout: 10000
 ```
 
-## 使用示例
+## 使用方法
 
-### 1. 使用缓存防护
-```java
-@Autowired
-private CacheGuardUtil cacheGuardUtil;
-
-// 防止缓存穿透
-Object value = cacheGuardUtil.getWithPenetrationGuard("key", () -> {
-    // 查询数据库
-    return dbService.getData();
-});
-
-// 防止缓存击穿
-Object value = cacheGuardUtil.getWithBreakdownGuard("key", () -> {
-    // 查询数据库
-    return dbService.getData();
-});
-
-// 使用缓存降级
-Object value = cacheGuardUtil.getWithFallback("key", () -> {
-    // 返回本地缓存数据
-    return localCache.getData();
-});
+### 1. 引入依赖
+```xml
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-cache</artifactId>
+    <version>${project.version}</version>
+</dependency>
 ```
 
-### 2. 使用缓存同步
+### 2. 使用缓存注解
 ```java
-@Autowired
-private CacheSyncUtil cacheSyncUtil;
+@Service
+public class UserService {
+    
+    @SimpleCache(
+        key = "user:detail:#userId", 
+        timeout = 30, 
+        timeUnit = TimeUnit.MINUTES
+    )
+    public UserDTO getUserDetail(Long userId) {
+        // 方法调用会自动缓存
+        return userRepository.findById(userId);
+    }
 
-// 同步更新缓存
-cacheSyncUtil.syncUpdate("key", newValue);
-
-// 同步删除缓存
-cacheSyncUtil.syncDelete("key");
-
-// 先更新数据库再删除缓存
-cacheSyncUtil.syncUpdateWithDb("key", () -> {
-    // 更新数据库
-    return dbService.updateData();
-});
+    @SimpleCache(
+        key = "user:list", 
+        useMethodName = true,  // 使用方法名作为键的一部分
+        useParams = true,      // 使用参数作为键的一部分
+        timeout = 10
+    )
+    public List<UserDTO> getUserList(String type) {
+        // 方法调用会自动缓存
+        return userRepository.findByType(type);
+    }
+}
 ```
 
-### 3. 使用缓存预热
+### 3. 测试用例编写
 ```java
-@CacheWarmUp(keyPrefix = "user", useMethodName = true, useParams = true)
-public User getUserById(Long id) {
-    return userService.getById(id);
+@SpringBootTest
+@Import(RedisTestConfig.class)
+public class CacheTest {
+    
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+    
+    @BeforeEach
+    void setUp() {
+        // 清除测试相关的缓存键
+        Set<String> keys = redisTemplate.keys("test:*");
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
+    }
+    
+    @Test
+    void testCache() {
+        // 编写测试用例
+    }
 }
 ```
 
 ## 注意事项
-1. 使用分布式锁时，必须在finally块中释放锁
-2. 限流注解的速率要根据实际业务需求合理设置
-3. 防重提交的间隔时间要考虑网络延迟
-4. 缓存的过期时间要根据数据的实时性要求来设置
-5. 使用布隆过滤器时要合理设置预期元素数量和误判率
-6. 缓存同步时要注意并发性能和数据一致性的平衡
-7. 缓存预热要在系统启动时或业务低峰期进行 
+
+1. 缓存键生成
+   - 建议使用统一的前缀
+   - 避免键名冲突
+   - 合理使用 SpEL 表达式
+
+2. 缓存过期时间
+   - 根据业务需求设置合理的过期时间
+   - 避免缓存穿透和雪崩
+
+3. 异常处理
+   - 缓存异常不会影响主业务流程
+   - 异常情况下自动降级到直接调用
+
+4. 测试注意事项
+   - 测试前清理相关缓存
+   - 使用专门的测试配置
+   - 注意测试隔离
+
+## 测试覆盖
+
+模块包含完整的单元测试，覆盖了以下场景：
+- 基本缓存功能
+- 缓存过期处理
+- 异常情况处理
+- 动态缓存键生成
+- 参数序列化
+- Redis 连接配置 

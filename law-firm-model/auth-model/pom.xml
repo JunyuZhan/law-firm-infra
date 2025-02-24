@@ -11,23 +11,33 @@
 
     <artifactId>auth-model</artifactId>
     <name>${project.artifactId}</name>
-    <description>认证授权核心模块</description>
+    <description>认证授权模型模块</description>
 
     <dependencies>
-        <!-- 基础模型依赖 -->
+        <!-- 基础模型层依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
-        
-        <!-- Common Data -->
+
+        <!-- 通用核心依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+
+        <!-- 通用数据依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${project.version}</version>
         </dependency>
-        
+
+        <!-- 通用工具依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-util</artifactId>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

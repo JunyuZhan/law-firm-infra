@@ -42,4 +42,4 @@ public class UpdateRoleRequest {
 
     @Schema(description = "备注")
     private String remark;
-}
+import com.lawfirm.model.base.enums.BaseEnum  

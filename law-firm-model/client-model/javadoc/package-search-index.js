@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"com.lawfirm.model.client.entity"},{"l":"com.lawfirm.model.client.enums"},{"l":"com.lawfirm.model.client.query"},{"l":"com.lawfirm.model.client.vo"},{"l":"所有程序包","u":"allpackages-index.html"}];updateSearchResults();

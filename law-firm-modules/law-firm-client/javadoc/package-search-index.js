@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"com.lawfirm.client.config"},{"l":"com.lawfirm.client.controller"},{"l":"com.lawfirm.client.exception"},{"l":"com.lawfirm.client.mapper"},{"l":"com.lawfirm.client.processor"},{"l":"com.lawfirm.client.service"},{"l":"com.lawfirm.client.service.impl"},{"l":"所有程序包","u":"allpackages-index.html"}];updateSearchResults();

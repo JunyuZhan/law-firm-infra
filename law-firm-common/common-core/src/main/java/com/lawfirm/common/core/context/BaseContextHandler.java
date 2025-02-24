@@ -1,57 +1,89 @@
 package com.lawfirm.common.core.context;
 
-import com.lawfirm.common.core.exception.BaseException;
+import com.lawfirm.common.core.exception.FrameworkException;
+import com.lawfirm.common.core.constant.ResultCode;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 基础上下文处理器
+ * 提供线程安全的上下文存储和访问机制
+ */
+@Slf4j
 public class BaseContextHandler {
-    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(HashMap::new);
 
+    /**
+     * 设置上下文属性
+     */
     public static void set(String key, Object value) {
-        Map<String, Object> map = getThreadLocalMap();
-        map.put(key, value);
-    }
-
-    public static Object get(String key) {
-        Map<String, Object> map = getThreadLocalMap();
-        return map.get(key);
-    }
-
-    public static String getUserId() {
-        return get("currentUserId") == null ? null : get("currentUserId").toString();
-    }
-
-    public static void setUserId(String userId) {
-        set("currentUserId", userId);
-    }
-
-    public static String getUserName() {
-        return get("currentUserName") == null ? null : get("currentUserName").toString();
-    }
-
-    public static void setUserName(String userName) {
-        set("currentUserName", userName);
-    }
-
-    public static Integer getUserType() {
-        return get("currentUserType") == null ? null : (Integer) get("currentUserType");
-    }
-
-    public static void setUserType(Integer userType) {
-        set("currentUserType", userType);
-    }
-
-    private static Map<String, Object> getThreadLocalMap() {
-        Map<String, Object> map = THREAD_LOCAL.get();
-        if (map == null) {
-            map = new HashMap<>(10);
-            THREAD_LOCAL.set(map);
+        if (key == null) {
+            throw new FrameworkException(ResultCode.BAD_REQUEST, "Context key cannot be null");
         }
-        return map;
+        getContextMap().put(key, value);
     }
 
-    public static void remove() {
+    /**
+     * 获取上下文属性
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(String key) {
+        if (key == null) {
+            throw new FrameworkException(ResultCode.BAD_REQUEST, "Context key cannot be null");
+        }
+        return (T) getContextMap().get(key);
+    }
+
+    /**
+     * 获取上下文属性，带默认值
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(String key, T defaultValue) {
+        T value = get(key);
+        return value != null ? value : defaultValue;
+    }
+
+    /**
+     * 移除上下文属性
+     */
+    public static void remove(String key) {
+        getContextMap().remove(key);
+    }
+
+    /**
+     * 清空上下文
+     */
+    public static void clear() {
         THREAD_LOCAL.remove();
     }
-} 
+
+    /**
+     * 获取上下文Map
+     */
+    private static Map<String, Object> getContextMap() {
+        return THREAD_LOCAL.get();
+    }
+
+    /**
+     * 获取所有上下文属性
+     */
+    public static Map<String, Object> getAll() {
+        return new HashMap<>(getContextMap());
+    }
+
+    /**
+     * 获取当前用户ID
+     */
+    public static Long getUserId() {
+        return get("userId");
+    }
+    
+    /**
+     * 设置当前用户ID
+     */
+    public static void setUserId(Long userId) {
+        set("userId", userId);
+    }
+}

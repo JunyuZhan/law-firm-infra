@@ -1,19 +1,13 @@
 package com.lawfirm.common.util.config;
 
-import com.lawfirm.common.util.SpringUtils;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
 
-@Configuration
-@SpringBootApplication
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+/**
+ * 测试配置类
+ */
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@ComponentScan(basePackages = "com.lawfirm.common.util")
 public class TestConfig {
-    
-    @Bean
-    public SpringUtils springUtils() {
-        return new SpringUtils();
-    }
 } 

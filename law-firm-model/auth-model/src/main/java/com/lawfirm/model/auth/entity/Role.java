@@ -1,43 +1,72 @@
 package com.lawfirm.model.auth.entity;
 
-import com.lawfirm.model.base.entity.ModelBaseEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.model.base.entity.TenantEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+/**
+ * 角色实体
+ */
 @Data
 @Entity
 @Table(name = "auth_role")
+@TableName("auth_role")
 @EqualsAndHashCode(callSuper = true)
-public class Role extends ModelBaseEntity<Role> {
-
-    @NotBlank(message = "角色名称不能为空")
-    @Size(max = 50, message = "角色名称长度不能超过50个字符")
-    @Column(nullable = false, length = 50)
+@Accessors(chain = true)
+public class Role extends TenantEntity {
+    
+    /**
+     * 角色名称
+     */
+    @Column(name = "name", nullable = false, length = 50)
+    @TableField("name")
     private String name;
-
-    @NotBlank(message = "角色编码不能为空")
-    @Size(max = 30, message = "角色编码长度不能超过30个字符")
-    @Column(nullable = false, length = 30, unique = true)
+    
+    /**
+     * 角色编码
+     */
+    @Column(name = "code", nullable = false, length = 100)
+    @TableField("code")
     private String code;
-
-    @Column(length = 200)
-    private String description;
-
-    @Column(nullable = false)
-    private Boolean enabled = true;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private RoleType roleType = RoleType.CUSTOM;
-
-    @Column(nullable = false)
-    private Integer dataScope = 1; // 数据权限范围
-
-    public enum RoleType {
-        SYSTEM,   // 系统角色
-        CUSTOM    // 自定义角色
-    }
+    
+    /**
+     * 角色类型（0-系统角色，1-自定义角色）
+     */
+    @Column(name = "type", nullable = false)
+    @TableField("type")
+    private Integer type;
+    
+    /**
+     * 数据范围（0-全部数据，1-本部门及以下数据，2-本部门数据，3-个人数据，4-自定义数据）
+     */
+    @Column(name = "data_scope", nullable = false)
+    @TableField("data_scope")
+    private Integer dataScope;
+    
+    /**
+     * 显示顺序
+     */
+    @Column(name = "sort", nullable = false)
+    @TableField("sort")
+    private Integer sort;
+    
+    /**
+     * 状态（0-正常，1-禁用）
+     */
+    @Column(name = "status", nullable = false)
+    @TableField("status")
+    private Integer status;
+    
+    /**
+     * 备注
+     */
+    @Column(name = "remark", length = 500)
+    @TableField("remark")
+    private String remark;
 } 

@@ -1,6 +1,6 @@
 package com.lawfirm.model.finance.dto;
 
-import com.lawfirm.common.data.dto.BaseDTO;
+import com.lawfirm.model.base.dto.BaseDTO;
 import com.lawfirm.model.finance.enums.PaymentMethodEnum;
 import com.lawfirm.model.finance.enums.TransactionTypeEnum;
 import jakarta.validation.constraints.NotNull;

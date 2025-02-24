@@ -3,22 +3,32 @@ package com.lawfirm.common.core.exception;
 import com.lawfirm.common.core.constant.ResultCode;
 import lombok.Getter;
 
+/**
+ * 基础异常类
+ * 所有自定义异常的基类
+ */
 @Getter
-public class BaseException extends RuntimeException {
+public abstract class BaseException extends RuntimeException {
+    
     private final int code;
 
-    public BaseException(ResultCode resultCode) {
+    protected BaseException(ResultCode resultCode) {
         super(resultCode.getMessage());
         this.code = resultCode.getCode();
     }
 
-    public BaseException(String message) {
+    protected BaseException(ResultCode resultCode, String message) {
         super(message);
-        this.code = ResultCode.FAILED.getCode();
+        this.code = resultCode.getCode();
     }
 
-    public BaseException(int code, String message) {
-        super(message);
-        this.code = code;
+    protected BaseException(ResultCode resultCode, Throwable cause) {
+        super(resultCode.getMessage(), cause);
+        this.code = resultCode.getCode();
+    }
+
+    protected BaseException(ResultCode resultCode, String message, Throwable cause) {
+        super(message, cause);
+        this.code = resultCode.getCode();
     }
 } 

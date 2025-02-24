@@ -1,35 +1,35 @@
 package com.lawfirm.model.client.enums;
 
-import com.lawfirm.common.core.enums.BaseEnum;
-import lombok.Getter;
-
-@Getter
-public enum ClientTypeEnum implements BaseEnum<String> {
+/**
+ * 客户类型枚举
+ */
+public enum ClientTypeEnum {
     
-    INDIVIDUAL("INDIVIDUAL", "个人客户"),
-    ENTERPRISE("ENTERPRISE", "企业客户"),
-    GOVERNMENT("GOVERNMENT", "政府机构"),
-    NON_PROFIT("NON_PROFIT", "非营利组织"),
-    FOREIGN("FOREIGN", "境外客户"),
-    VIP("VIP", "重点客户"),
-    SOCIAL_ORG("SOCIAL_ORG", "社会组织"),
-    OTHER("OTHER", "其他");
+    PERSONAL(1, "个人"),
+    ENTERPRISE(2, "企业");
 
-    private final String value;
-    private final String description;
+    private final Integer value;
+    private final String desc;
 
-    ClientTypeEnum(String value, String description) {
+    ClientTypeEnum(Integer value, String desc) {
         this.value = value;
-        this.description = description;
+        this.desc = desc;
     }
 
-    @Override
-    public String getValue() {
-        return this.value;
+    public Integer getValue() {
+        return value;
     }
 
-    @Override
-    public String getDescription() {
-        return this.description;
+    public String getDesc() {
+        return desc;
+    }
+
+    public static ClientTypeEnum getByValue(Integer value) {
+        for (ClientTypeEnum type : values()) {
+            if (type.getValue().equals(value)) {
+                return type;
+            }
+        }
+        return null;
     }
 } 

@@ -12,13 +12,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 /**
- * Web配置
+ * Web MVC 配置
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
+    
     /**
-     * 跨域配置
+     * 配置跨域
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {

@@ -44,20 +44,20 @@
         <!-- 数据模块，依赖core和util -->
         <module>common-data</module>
         
-        <!-- 安全模块，依赖core和web -->
-        <module>common-security</module>
-        
         <!-- 缓存模块，依赖core和util -->
         <module>common-cache</module>
+        
+        <!-- 安全模块，依赖core和web -->
+        <module>common-security</module>
         
         <!-- 日志模块，依赖core和security -->
         <module>common-log</module>
         
+        <!-- 消息模块，依赖core、util和cache -->
+        <module>common-message</module>
+        
         <!-- 测试模块，依赖所有模块，必须最后编译 -->
         <module>common-test</module>
-        
-        <!-- 新增模块 -->
-        <module>common-message</module>
     </modules>
 
     <dependencyManagement>

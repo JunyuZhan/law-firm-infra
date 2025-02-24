@@ -32,3 +32,4 @@ public class SysMenuController {
         return sysMenuClient.deleteMenu(id);
     }
 } 
+import com.lawfirm.model.base.enums.BaseEnum  

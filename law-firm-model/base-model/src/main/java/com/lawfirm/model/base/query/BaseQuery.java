@@ -1,23 +1,58 @@
 package com.lawfirm.model.base.query;
 
+import com.lawfirm.common.web.request.PageRequest;
 import lombok.Data;
-import java.io.Serializable;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+/**
+ * 基础查询对象
+ */
 @Data
-public class BaseQuery implements Serializable {
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
+public class BaseQuery extends PageRequest {
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * 关键字
+     */
+    private String keyword;
 
-    private Integer pageNum = 1;  // 当前页码
-    private Integer pageSize = 10;  // 每页大小
-    private String orderBy;  // 排序字段
-    private Boolean asc = true;  // 是否升序
+    /**
+     * 开始时间
+     */
+    private LocalDateTime startTime;
 
-    private Long tenantId;  // 租户ID
-    private Boolean enabled;  // 是否启用
-    private String keyword;  // 关键字搜索
-    
-    public Integer getOffset() {
-        return (pageNum - 1) * pageSize;
+    /**
+     * 结束时间
+     */
+    private LocalDateTime endTime;
+
+    @Override
+    public String toString() {
+        return "BaseQuery{" +
+                "keyword='" + keyword + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BaseQuery baseQuery = (BaseQuery) o;
+        return Objects.equals(keyword, baseQuery.keyword) &&
+                Objects.equals(startTime, baseQuery.startTime) &&
+                Objects.equals(endTime, baseQuery.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), keyword, startTime, endTime);
     }
 } 

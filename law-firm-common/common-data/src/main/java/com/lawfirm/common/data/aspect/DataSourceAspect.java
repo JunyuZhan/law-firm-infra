@@ -35,10 +35,12 @@ public class DataSourceAspect {
         if (Objects.nonNull(dataSource)) {
             String value = dataSource.value();
             DynamicDataSourceContextHolder.push(value);
+            log.debug("Switch DataSource to {}", value);
             try {
                 return point.proceed();
             } finally {
                 DynamicDataSourceContextHolder.poll();
+                log.debug("Restore DataSource");
             }
         }
 

@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"com.lawfirm.knowledge.controller"},{"l":"com.lawfirm.knowledge.entity"},{"l":"com.lawfirm.knowledge.mapper"},{"l":"com.lawfirm.knowledge.service"},{"l":"com.lawfirm.knowledge.service.impl"},{"l":"所有程序包","u":"allpackages-index.html"}];updateSearchResults();

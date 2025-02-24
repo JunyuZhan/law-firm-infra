@@ -1,14 +1,19 @@
 package com.lawfirm.common.util.compress;
 
+import com.lawfirm.common.util.BaseUtils;
 import cn.hutool.core.util.ZipUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.*;
 
+/**
+ * 压缩工具类
+ */
 @Slf4j
-public class CompressUtils {
+public class CompressUtils extends BaseUtils {
     
     public static void zip(String srcPath, String destPath) {
         try {

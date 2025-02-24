@@ -1,34 +1,37 @@
 package com.lawfirm.common.data.query;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 分页查询基类
  */
 @Data
+@Accessors(chain = true)
 public class PageQuery {
-    /**
-     * 当前页码
-     */
-    private Integer pageNum = 1;
 
     /**
-     * 每页大小
+     * 关键字
      */
-    private Integer pageSize = 10;
+    private String keyword;
+
+    /**
+     * 开始时间
+     */
+    private String startTime;
+
+    /**
+     * 结束时间
+     */
+    private String endTime;
 
     /**
      * 排序字段
      */
-    private String orderBy;
+    private String orderField;
 
     /**
-     * 排序方式（asc/desc）
+     * 排序方向（asc/desc）
      */
-    private String orderDirection = "asc";
-
-    /**
-     * 是否查询总数
-     */
-    private Boolean searchCount = true;
-}
+    private String orderDirection;
+} 

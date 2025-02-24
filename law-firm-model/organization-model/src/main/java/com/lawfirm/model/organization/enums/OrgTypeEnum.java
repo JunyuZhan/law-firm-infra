@@ -1,6 +1,6 @@
 package com.lawfirm.model.organization.enums;
 
-import com.lawfirm.common.core.enums.BaseEnum;
+import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
