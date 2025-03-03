@@ -88,24 +88,73 @@ public enum CaseStatusEnum implements BaseEnum<Integer> {
     }
 
     /**
-     * 是否是活跃状态
+     * 是否是初始状态
      */
-    public boolean isActive() {
-        return this == PENDING || this == ACCEPTING || this == ACCEPTED || this == IN_PROGRESS;
+    public boolean isInitialStatus() {
+        return this == PENDING;
     }
 
     /**
      * 是否是终止状态
      */
-    public boolean isTerminal() {
+    public boolean isTerminalStatus() {
         return this == TERMINATED || this == REVOKED || this == CLOSED || this == ARCHIVED;
     }
 
     /**
-     * 是否可以编辑
+     * 是否是活跃状态
      */
-    public boolean isEditable() {
+    public boolean isActiveStatus() {
+        return this == PENDING || this == ACCEPTING || this == ACCEPTED || this == IN_PROGRESS;
+    }
+
+    /**
+     * 是否是暂停状态
+     */
+    public boolean isPausedStatus() {
+        return this == SUSPENDED;
+    }
+
+    /**
+     * 是否是结案状态
+     */
+    public boolean isClosedStatus() {
+        return this == CLOSED || this == ARCHIVED;
+    }
+
+    /**
+     * 是否是异常状态
+     */
+    public boolean isAbnormalStatus() {
+        return this == TERMINATED || this == REVOKED;
+    }
+
+    /**
+     * 是否允许回退
+     */
+    public boolean allowRollback() {
+        return this != PENDING && this != ARCHIVED;
+    }
+
+    /**
+     * 是否允许跳转
+     */
+    public boolean allowSkip() {
         return this != ARCHIVED;
+    }
+
+    /**
+     * 是否允许编辑
+     */
+    public boolean allowEdit() {
+        return this != ARCHIVED;
+    }
+
+    /**
+     * 是否允许删除
+     */
+    public boolean allowDelete() {
+        return this == PENDING;
     }
 
     /**

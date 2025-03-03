@@ -1,13 +1,14 @@
 package com.lawfirm.model.search.dto.index;
 
 import com.lawfirm.model.base.dto.BaseDTO;
+import com.lawfirm.model.search.enums.FieldTypeEnum;
 import com.lawfirm.model.search.enums.IndexTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class IndexCreateDTO extends BaseDTO {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 索引名称
@@ -49,7 +52,7 @@ public class IndexCreateDTO extends BaseDTO {
     /**
      * 字段列表
      */
-    private List<FieldDTO> fields = new ArrayList<>();
+    private transient List<FieldDTO> fields = new ArrayList<>();
 
     /**
      * 索引别名

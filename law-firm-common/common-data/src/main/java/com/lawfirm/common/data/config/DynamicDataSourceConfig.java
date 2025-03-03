@@ -38,7 +38,7 @@ public class DynamicDataSourceConfig {
 
     @Bean
     @Primary
-    public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
+    public DataSource dataSource(@Qualifier("dynamicDataSourceProvider") DynamicDataSourceProvider dynamicDataSourceProvider) {
         DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource(Collections.singletonList(dynamicDataSourceProvider));
         dataSource.setPrimary("master");
         dataSource.setStrict(true);

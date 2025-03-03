@@ -1,7 +1,7 @@
-# 搜索模块
+# 搜索模型模块
 
 ## 模块说明
-搜索模块提供全文检索功能，支持对系统内各类数据进行索引和搜索。基于 Elasticsearch 实现，提供统一的搜索服务接口。
+搜索模型模块提供了律师事务所系统中搜索相关的核心数据模型和服务接口定义。该模块主要包含索引管理、搜索文档管理等功能的基础数据结构和服务定义。
 
 ## 功能特性
 1. 索引管理
@@ -135,7 +135,6 @@ search:
 ## 依赖说明
 - Spring Boot 3.2.2
 - Spring Data Elasticsearch
-- Spring Data JPA
 - Lombok
 - MyBatis-Plus（通过base-model）
 
@@ -155,3 +154,99 @@ search:
    - 相关性优化
    - 结果排序
    - 聚合分析 
+
+## 主要类说明
+
+### 实体类
+1. SearchIndex
+   - 索引配置信息，定义索引的基本属性
+   - 包含：索引名称、字段定义、分片设置等
+
+2. SearchField
+   - 索引字段定义，描述索引字段的属性
+   - 包含：字段名称、字段类型、是否分析等
+
+3. SearchDoc
+   - 搜索文档，表示已索引或待索引的文档
+   - 包含：文档ID、文档内容、索引状态等
+
+### 枚举类
+1. IndexTypeEnum
+   - 定义索引类型：如通用索引、案件索引、合同索引等
+
+2. FieldTypeEnum
+   - 定义字段类型：如文本、数字、日期、布尔值等
+
+3. SearchTypeEnum
+   - 定义搜索类型：如全文搜索、精确匹配、模糊搜索等
+
+### DTO类
+1. IndexCreateDTO
+   - 索引创建数据传输对象
+   - 包含创建索引所需的必要信息
+
+2. SearchRequestDTO
+   - 搜索请求数据传输对象
+   - 包含执行搜索所需的查询条件、分页排序等
+
+### VO类
+1. IndexVO
+   - 索引视图对象
+   - 用于展示索引信息
+
+2. SearchVO
+   - 搜索视图对象
+   - 用于展示搜索结果
+
+### 服务接口
+1. IndexService
+   - 提供索引相关的业务操作接口
+   - 包含索引的CRUD操作
+
+2. SearchService
+   - 提供搜索相关的业务操作接口
+   - 包含各种搜索方法
+
+## 使用说明
+1. 引入依赖
+```xml
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>search-model</artifactId>
+    <version>${project.version}</version>
+</dependency>
+```
+
+2. 创建索引
+```java
+@Autowired
+private IndexService indexService;
+
+SearchIndex index = new SearchIndex()
+    .setIndexName("case_index")
+    .setIndexType(IndexTypeEnum.CASE);
+indexService.createIndex(index);
+```
+
+3. 搜索数据
+```java
+@Autowired
+private SearchService searchService;
+
+SearchRequestDTO request = new SearchRequestDTO()
+    .setKeyword("合同纠纷")
+    .setPageNum(1)
+    .setPageSize(10);
+SearchVO result = searchService.search(request);
+```
+
+## 迁移记录
+
+### 2024-04-28 JPA到MyBatis Plus迁移
+- 添加MyBatis Plus相关注解（@TableName、@TableField）
+- 移除JPA相关注解和导入（@Entity、@Table、@Column等）
+- 修改pom.xml，移除JPA依赖，添加MyBatis Plus依赖
+- 以下实体类已完成迁移：
+  - SearchIndex.java
+  - SearchField.java
+  - SearchDoc.java 

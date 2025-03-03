@@ -10,6 +10,8 @@ import lombok.Getter;
 @Getter
 public abstract class BaseException extends RuntimeException {
     
+    private static final long serialVersionUID = 1L;
+    
     private final int code;
 
     protected BaseException(ResultCode resultCode) {

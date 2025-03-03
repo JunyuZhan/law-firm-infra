@@ -1,12 +1,13 @@
 package com.lawfirm.model.auth.enums;
 
 import lombok.Getter;
+import com.lawfirm.model.base.enums.BaseEnum;
 
 /**
  * 部门类型枚举
  */
 @Getter
-public enum DepartmentTypeEnum {
+public enum DepartmentTypeEnum implements BaseEnum<Integer> {
     
     /**
      * 公司
@@ -29,5 +30,15 @@ public enum DepartmentTypeEnum {
     DepartmentTypeEnum(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
+    }
+
+    @Override
+    public Integer getValue() {
+        return code;
+    }
+
+    @Override
+    public String getDescription() {
+        return desc;
     }
 } 

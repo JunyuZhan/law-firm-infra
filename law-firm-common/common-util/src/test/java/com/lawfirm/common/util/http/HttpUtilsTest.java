@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("unchecked")
 class HttpUtilsTest extends BaseUtilTest {
 
     private static final String TEST_URL = "http://localhost:8080/test";

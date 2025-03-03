@@ -108,18 +108,16 @@ storage:
 
 ### 5. 基础服务使用
 ```java
+// 注意：BaseServiceImpl已移动到base-model模块
+// 请使用 com.lawfirm.model.base.service.impl.BaseServiceImpl
 @Service
-public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserEntity, UserVO> {
+public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserEntity> implements UserService {
     
-    @Override
-    protected UserEntity createEntity() {
-        return new UserEntity();
+    public UserServiceImpl(UserMapper userMapper) {
+        super(userMapper);
     }
     
-    @Override
-    protected UserVO createVO() {
-        return new UserVO();
-    }
+    // 实现自定义业务方法...
 }
 ```
 
@@ -148,6 +146,7 @@ public class UserService {
 3. 文件存储服务需要提前创建对应的 bucket
 4. 主从数据源配置时注意数据同步机制
 5. 合理使用缓存，避免缓存穿透和雪崩
+6. `BaseServiceImpl` 已经移动到 `base-model` 模块，请使用新路径 `com.lawfirm.model.base.service.impl.BaseServiceImpl`
 
 ## 常见问题
 1. 数据源切换失败

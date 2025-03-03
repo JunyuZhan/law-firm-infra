@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>storage-model</artifactId>
-    <name>storage-model</name>
+    <name>${project.artifactId}</name>
     <description>存储管理模块</description>
 
     <dependencies>
@@ -35,10 +35,16 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         
-        <!-- JPA -->
+        <!-- MyBatis Plus -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        
+        <!-- Jakarta Validation API -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
         
         <!-- Lombok -->

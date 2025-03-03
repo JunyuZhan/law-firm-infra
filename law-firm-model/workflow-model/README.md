@@ -1,4 +1,4 @@
- # 工作流模型模块
+# 工作流模型模块
 
 ## 模块说明
 工作流模型模块提供了律师事务所系统中工作流相关的核心数据模型和服务接口定义。该模块主要包含流程管理、任务管理等功能的基础数据结构和服务定义。
@@ -12,6 +12,10 @@ workflow-model/
 │   │   └── ProcessTask.java      # 任务基类
 │   └── common/           # 通用流程
 │       └── CommonProcess.java    # 通用流程
+├── mapper/               # 数据访问层
+│   ├── ProcessMapper.java        # 流程Mapper
+│   ├── TaskMapper.java           # 任务Mapper
+│   └── CommonProcessMapper.java  # 通用流程Mapper
 ├── enums/
 │   ├── ProcessTypeEnum.java   # 流程类型
 │   ├── ProcessStatusEnum.java # 流程状态
@@ -46,20 +50,45 @@ workflow-model/
 - 任务类型：支持多种类型的任务定义
 - 任务查询：提供灵活的任务查询功能
 
+### 3. 数据访问层
+- Mapper接口：基于MyBatis-Plus提供高效的数据访问能力
+- 通用CRUD：继承BaseMapper获取通用的增删改查方法
+- 自定义查询：支持基于业务需求的复杂查询场景
+- 批量操作：支持高性能的批量数据处理
+
 ## 主要类说明
 
 ### 实体类
 1. BaseProcess
    - 流程基类，定义流程的基本属性
    - 包含：流程ID、流程名称、流程类型、创建时间等
+   - 数据表：workflow_process
 
 2. ProcessTask
    - 任务基类，定义任务的基本属性
    - 包含：任务ID、任务名称、任务类型、执行人等
+   - 数据表：workflow_task
 
 3. CommonProcess
    - 通用流程实现，继承自BaseProcess
    - 适用于常规业务流程
+   - 数据表：workflow_process
+
+### Mapper接口
+1. ProcessMapper
+   - 提供BaseProcess实体的数据访问能力
+   - 支持基于流程状态、业务类型等条件的复杂查询
+   - 实现流程数据的增删改查操作
+
+2. TaskMapper
+   - 提供ProcessTask实体的数据访问能力
+   - 支持基于任务类型、执行人、截止日期等条件的查询
+   - 实现任务数据的增删改查操作
+
+3. CommonProcessMapper
+   - 提供CommonProcess实体的数据访问能力
+   - 继承自BaseMapper<CommonProcess>
+   - 支持通用流程的数据操作
 
 ### 枚举类
 1. ProcessTypeEnum
@@ -132,8 +161,54 @@ Long processId = processService.createProcess(createDTO);
 ProcessVO process = processService.getProcess(processId);
 ```
 
+4. 使用Mapper接口
+```java
+@Autowired
+private ProcessMapper processMapper;
+
+// 基本查询
+BaseProcess process = processMapper.selectById(1L);
+
+// 条件查询
+List<BaseProcess> processList = processMapper.selectList(
+    new LambdaQueryWrapper<BaseProcess>()
+        .eq(BaseProcess::getBusinessType, "case")
+        .eq(BaseProcess::getStatus, ProcessStatusEnum.RUNNING.getCode())
+        .orderByDesc(BaseProcess::getCreateTime)
+);
+
+// 分页查询
+Page<BaseProcess> page = new Page<>(1, 10);
+IPage<BaseProcess> pageResult = processMapper.selectPage(page, 
+    new LambdaQueryWrapper<BaseProcess>()
+        .eq(BaseProcess::getStatus, ProcessStatusEnum.PENDING.getCode())
+);
+```
+
 ## 注意事项
 1. 所有实体类都继承自BaseModel，确保基础字段的一致性
 2. DTO类继承自BaseDTO，VO类继承自BaseVO
 3. 遵循统一的命名规范和代码风格
 4. 确保完整的单元测试覆盖
+5. Mapper接口继承BaseMapper，遵循MyBatis-Plus规范
+6. 复杂查询请使用XML配置，简单查询可使用LambdaQueryWrapper
+7. 注意添加适当的索引以提升查询性能
+
+## 迁移记录
+
+### 2024-04-28 JPA到MyBatis Plus迁移
+- 添加MyBatis Plus相关注解（@TableName、@TableField）
+- 移除JPA相关注解和导入
+- 修改pom.xml，移除JPA依赖，添加MyBatis Plus依赖
+- 更新实体类继承关系，使用ModelBaseEntity
+- 以下实体类已完成迁移：
+  - BaseProcess.java
+  - ProcessTask.java
+  - CommonProcess.java
+
+### 2024-05-01 添加Mapper接口
+- 添加ProcessMapper接口，对应BaseProcess实体
+- 添加TaskMapper接口，对应ProcessTask实体
+- 添加CommonProcessMapper接口，对应CommonProcess实体
+- 所有Mapper接口继承自MyBatis-Plus的BaseMapper
+- 添加Mapper接口目录README.md文档说明

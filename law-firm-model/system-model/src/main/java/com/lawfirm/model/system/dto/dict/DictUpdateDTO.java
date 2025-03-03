@@ -13,4 +13,6 @@ import lombok.experimental.Accessors;
 public class DictUpdateDTO extends DictCreateDTO {
     // 继承了DictCreateDTO的所有字段
     // 如果有特殊的更新字段，可以在这里添加
+    
+    private static final long serialVersionUID = 1L;
 } 

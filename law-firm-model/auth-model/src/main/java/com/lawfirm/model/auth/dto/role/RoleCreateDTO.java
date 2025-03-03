@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class RoleCreateDTO extends BaseDTO {
     
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 角色名称
      */

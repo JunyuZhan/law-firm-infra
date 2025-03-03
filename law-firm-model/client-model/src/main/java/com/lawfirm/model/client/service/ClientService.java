@@ -4,13 +4,15 @@ import com.lawfirm.model.client.dto.client.ClientCreateDTO;
 import com.lawfirm.model.client.dto.client.ClientQueryDTO;
 import com.lawfirm.model.client.dto.client.ClientUpdateDTO;
 import com.lawfirm.model.client.vo.ClientVO;
+import com.lawfirm.model.client.entity.base.Client;
+import com.lawfirm.model.base.service.BaseService;
 
 import java.util.List;
 
 /**
  * 客户服务接口
  */
-public interface ClientService {
+public interface ClientService extends BaseService<Client> {
 
     /**
      * 创建客户

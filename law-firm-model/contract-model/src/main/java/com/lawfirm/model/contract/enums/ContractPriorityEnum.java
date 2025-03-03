@@ -1,7 +1,5 @@
 package com.lawfirm.model.contract.enums;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
@@ -9,19 +7,15 @@ import lombok.Getter;
  */
 @Getter
 public enum ContractPriorityEnum {
-    
-    HIGH("HIGH", "高"),
-    MEDIUM("MEDIUM", "中"),
-    LOW("LOW", "低");
+    HIGH(1, "高优先级"),
+    NORMAL(2, "普通优先级"),
+    LOW(3, "低优先级");
 
-    @EnumValue
-    @JsonValue
-    private final String code;
+    private final int code;
     private final String description;
 
-    ContractPriorityEnum(String code, String description) {
+    ContractPriorityEnum(int code, String description) {
         this.code = code;
         this.description = description;
     }
-}
-
+} 

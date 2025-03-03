@@ -14,6 +14,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Region extends TreeEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 区域编码
      */

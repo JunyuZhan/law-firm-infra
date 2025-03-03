@@ -43,6 +43,14 @@ public class GlobalExceptionHandler {
         HttpMessageNotReadableException.class
     })
     public CommonResult<Void> handleValidationException(Exception e) {
+        if (e instanceof MethodArgumentNotValidException) {
+            MethodArgumentNotValidException manve = (MethodArgumentNotValidException) e;
+            if (manve.getBindingResult() != null && !manve.getBindingResult().getFieldErrors().isEmpty()) {
+                log.warn("无效参数: {}", manve.getBindingResult().getFieldErrors());
+            } else {
+                log.warn("无效参数: BindingResult 为 null 或没有错误");
+            }
+        }
         log.warn("参数验证异常: {}", e.getMessage());
         return CommonResult.error(ResultCode.VALIDATION_ERROR);
     }

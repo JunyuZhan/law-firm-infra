@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class CategoryVO extends BaseVO {
+public class CategoryVO extends BaseVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 父分类ID
@@ -110,10 +113,15 @@ public class CategoryVO extends BaseVO {
     /**
      * 子分类列表
      */
-    private List<CategoryVO> children = new ArrayList<>();
+    private transient List<CategoryVO> children = new ArrayList<>();
+
+    /**
+     * 文章列表（分类下的文章）
+     */
+    private transient List<ArticleVO.ArticleBriefVO> articles = new ArrayList<>();
 
     /**
      * 最新文章列表
      */
-    private List<ArticleVO.ArticleBriefVO> latestArticles = new ArrayList<>();
+    private transient List<ArticleVO.ArticleBriefVO> latestArticles = new ArrayList<>();
 } 

@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.TestPropertySource;
+import jakarta.servlet.Filter;
 
 import javax.sql.DataSource;
 
@@ -43,7 +44,7 @@ class DruidConfigTest {
     private DataSource dataSource;
 
     @Autowired
-    private FilterRegistrationBean filterRegistrationBean;
+    private FilterRegistrationBean<Filter> filterRegistrationBean;
 
     @Test
     void masterDataSource_ShouldBeConfigured() {

@@ -18,4 +18,9 @@ public enum InvoiceTypeEnum implements BaseEnum<String> {
         this.value = value;
         this.description = description;
     }
+
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
 } 

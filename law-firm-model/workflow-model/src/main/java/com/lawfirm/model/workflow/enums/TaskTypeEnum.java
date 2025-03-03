@@ -1,9 +1,13 @@
 package com.lawfirm.model.workflow.enums;
 
+import com.lawfirm.model.base.enums.BaseEnum;
+import lombok.Getter;
+
 /**
  * 任务类型枚举
  */
-public enum TaskTypeEnum {
+@Getter
+public enum TaskTypeEnum implements BaseEnum<Integer> {
     
     APPROVAL(1, "审批任务"),
     HANDLE(2, "处理任务"),
@@ -21,12 +25,14 @@ public enum TaskTypeEnum {
         this.desc = desc;
     }
 
+    @Override
     public Integer getValue() {
-        return value;
+        return this.value;
     }
 
-    public String getDesc() {
-        return desc;
+    @Override
+    public String getDescription() {
+        return this.desc;
     }
 
     public static TaskTypeEnum getByValue(Integer value) {

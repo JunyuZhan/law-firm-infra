@@ -1,149 +1,118 @@
 package com.lawfirm.core.workflow.controller;
 
-import com.lawfirm.common.web.controller.BaseController;
-import com.lawfirm.core.workflow.model.Task;
-import com.lawfirm.core.workflow.model.HistoricTask;
-import com.lawfirm.core.workflow.service.TaskService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.model.workflow.service.TaskService;
+import com.lawfirm.model.workflow.dto.task.TaskCreateDTO;
+import com.lawfirm.model.workflow.dto.task.TaskQueryDTO;
+import com.lawfirm.model.workflow.vo.TaskVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 /**
- * 任务控制器
+ * 任务管理接口
+ *
+ * @author claude
  */
-@Slf4j
+@Tag(name = "任务管理", description = "提供任务的增删改查等功能")
 @RestController
+@RequestMapping("/task")
 @RequiredArgsConstructor
-@RequestMapping("/api/workflow/tasks")
-public class TaskController extends BaseController {
-    
+@Validated
+public class TaskController {
+
     private final TaskService taskService;
-    
+
     /**
-     * 获取任务
+     * 创建任务
+     *
+     * @param createDTO 创建参数
+     * @return 任务ID
      */
-    @GetMapping("/{taskId}")
-    public Task getTask(@PathVariable String taskId) {
-        return taskService.getTask(taskId);
-    }
-    
-    /**
-     * 查询任务列表
-     */
-    @GetMapping
-    public List<Task> listTasks(
-            @RequestParam(required = false) String processInstanceId,
-            @RequestParam(required = false) String taskDefinitionKey,
-            @RequestParam(required = false) String assignee,
-            @RequestParam(required = false) String owner,
-            @RequestParam(required = false) String tenantId) {
-        return taskService.listTasks(processInstanceId, taskDefinitionKey, assignee, owner, tenantId);
-    }
-    
-    /**
-     * 认领任务
-     */
-    @PostMapping("/{taskId}/claim")
-    public void claimTask(@PathVariable String taskId, @RequestParam String userId) {
-        taskService.claimTask(taskId, userId);
-    }
-    
-    /**
-     * 取消认领任务
-     */
-    @PostMapping("/{taskId}/unclaim")
-    public void unclaimTask(@PathVariable String taskId) {
-        taskService.unclaimTask(taskId);
-    }
-    
-    /**
-     * 完成任务
-     */
-    @PostMapping("/{taskId}/complete")
-    public void completeTask(@PathVariable String taskId,
-                           @RequestBody(required = false) Map<String, Object> variables) {
-        taskService.completeTask(taskId, variables);
+    @PostMapping("/create")
+    @Operation(summary = "创建任务")
+    public ResponseEntity<TaskVO> createTask(
+            @Parameter(description = "创建参数") @RequestBody @Valid TaskCreateDTO createDTO) {
+        TaskVO task = taskService.createTask(createDTO);
+        return ResponseEntity.ok(task);
     }
 
     /**
-     * 委托任务
+     * 获取任务详情
+     *
+     * @param id 任务ID
+     * @return 任务详情
      */
-    @PostMapping("/{taskId}/delegate")
-    public void delegateTask(@PathVariable String taskId, @RequestParam String userId) {
-        taskService.delegateTask(taskId, userId);
+    @GetMapping("/{id}")
+    @Operation(summary = "获取任务详情")
+    public ResponseEntity<TaskVO> getTask(
+            @Parameter(description = "任务ID") @PathVariable Long id) {
+        TaskVO task = taskService.getTask(id);
+        return ResponseEntity.ok(task);
     }
 
     /**
-     * 转办任务
+     * 分页查询任务
+     *
+     * @param queryDTO 查询条件
+     * @param current 当前页
+     * @param size 每页大小
+     * @return 任务分页数据
      */
-    @PostMapping("/{taskId}/transfer")
-    public void transferTask(@PathVariable String taskId, @RequestParam String userId) {
-        taskService.transferTask(taskId, userId);
+    @GetMapping("/list")
+    @Operation(summary = "查询任务列表")
+    public ResponseEntity<List<TaskVO>> listTasks(
+            @Parameter(description = "查询条件") TaskQueryDTO queryDTO) {
+        List<TaskVO> tasks = taskService.listTasks(queryDTO);
+        return ResponseEntity.ok(tasks);
     }
 
     /**
-     * 设置任务处理人
+     * 获取流程的任务列表
+     *
+     * @param processId 流程ID
+     * @return 任务列表
      */
-    @PostMapping("/{taskId}/assignee")
-    public void setAssignee(@PathVariable String taskId, @RequestParam String userId) {
-        taskService.setAssignee(taskId, userId);
+    @GetMapping("/process/{processId}")
+    @Operation(summary = "获取流程的任务列表")
+    public ResponseEntity<List<TaskVO>> getProcessTasks(
+            @Parameter(description = "流程ID") @PathVariable Long processId) {
+        List<TaskVO> tasks = taskService.listProcessTasks(processId);
+        return ResponseEntity.ok(tasks);
     }
 
     /**
-     * 添加任务候选人
+     * 获取我的待办任务
+     *
+     * @param handlerId 处理人ID
+     * @return 任务列表
      */
-    @PostMapping("/{taskId}/candidate-users")
-    public void addCandidateUser(@PathVariable String taskId, @RequestParam String userId) {
-        taskService.addCandidateUser(taskId, userId);
+    @GetMapping("/my/todo")
+    @Operation(summary = "获取我的待办任务")
+    public ResponseEntity<List<TaskVO>> getMyTodoTasks(
+            @Parameter(description = "处理人ID") @RequestParam Long handlerId) {
+        List<TaskVO> tasks = taskService.listMyTodoTasks(handlerId);
+        return ResponseEntity.ok(tasks);
     }
 
     /**
-     * 删除任务候选人
+     * 获取我的已办任务
+     *
+     * @param handlerId 处理人ID
+     * @return 任务列表
      */
-    @DeleteMapping("/{taskId}/candidate-users/{userId}")
-    public void deleteCandidateUser(@PathVariable String taskId, @PathVariable String userId) {
-        taskService.deleteCandidateUser(taskId, userId);
-    }
-
-    /**
-     * 添加任务候选组
-     */
-    @PostMapping("/{taskId}/candidate-groups")
-    public void addCandidateGroup(@PathVariable String taskId, @RequestParam String groupId) {
-        taskService.addCandidateGroup(taskId, groupId);
-    }
-
-    /**
-     * 删除任务候选组
-     */
-    @DeleteMapping("/{taskId}/candidate-groups/{groupId}")
-    public void deleteCandidateGroup(@PathVariable String taskId, @PathVariable String groupId) {
-        taskService.deleteCandidateGroup(taskId, groupId);
-    }
-
-    /**
-     * 获取历史任务
-     */
-    @GetMapping("/history/{taskId}")
-    public HistoricTask getHistoricTask(@PathVariable String taskId) {
-        return taskService.getHistoricTask(taskId);
-    }
-
-    /**
-     * 查询历史任务列表
-     */
-    @GetMapping("/history")
-    public List<HistoricTask> listHistoricTasks(
-            @RequestParam(required = false) String processInstanceId,
-            @RequestParam(required = false) String taskDefinitionKey,
-            @RequestParam(required = false) String assignee,
-            @RequestParam(required = false) String owner,
-            @RequestParam(required = false) String tenantId,
-            @RequestParam(defaultValue = "false") boolean finished) {
-        return taskService.listHistoricTasks(processInstanceId, taskDefinitionKey,
-                assignee, owner, tenantId, finished);
+    @GetMapping("/my/done")
+    @Operation(summary = "获取我的已办任务")
+    public ResponseEntity<List<TaskVO>> getMyDoneTasks(
+            @Parameter(description = "处理人ID") @RequestParam Long handlerId) {
+        List<TaskVO> tasks = taskService.listMyDoneTasks(handlerId);
+        return ResponseEntity.ok(tasks);
     }
 } 

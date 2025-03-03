@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public abstract class TreeEntity extends ModelBaseEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 父级ID
      */

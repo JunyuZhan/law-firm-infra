@@ -1,8 +1,9 @@
 package com.lawfirm.model.search.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.search.enums.FieldTypeEnum;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -11,88 +12,88 @@ import lombok.experimental.Accessors;
  * 搜索字段实体
  */
 @Data
-@Entity
-@Table(name = "search_field")
+@TableName("search_field")
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class SearchField extends ModelBaseEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 字段名称
      */
-    @Column(name = "field_name", nullable = false)
+    @TableField("field_name")
     private String fieldName;
 
     /**
      * 字段类型
      */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "field_type", nullable = false)
+    @TableField("field_type")
     private FieldTypeEnum fieldType;
 
     /**
-     * 是否分词
+     * 是否分析
      */
-    @Column(name = "analyzed", nullable = false)
+    @TableField("analyzed")
     private Boolean analyzed = false;
 
     /**
      * 是否存储
      */
-    @Column(name = "stored", nullable = false)
+    @TableField("stored")
     private Boolean stored = true;
 
     /**
      * 是否索引
      */
-    @Column(name = "indexed", nullable = false)
+    @TableField("indexed")
     private Boolean indexed = true;
 
     /**
-     * 分词器
+     * 分析器
      */
-    @Column(name = "analyzer")
+    @TableField("analyzer")
     private String analyzer;
 
     /**
-     * 搜索分词器
+     * 搜索分析器
      */
-    @Column(name = "search_analyzer")
+    @TableField("search_analyzer")
     private String searchAnalyzer;
 
     /**
      * 权重
      */
-    @Column(name = "boost")
+    @TableField("boost")
     private Float boost = 1.0f;
 
     /**
      * 复制到字段
      */
-    @Column(name = "copy_to")
+    @TableField("copy_to")
     private String copyTo;
 
     /**
-     * 忽略大小写
+     * 是否忽略大小写
      */
-    @Column(name = "ignore_case", nullable = false)
+    @TableField("ignore_case")
     private Boolean ignoreCase = false;
 
     /**
      * 是否必填
      */
-    @Column(name = "required", nullable = false)
+    @TableField("required")
     private Boolean required = false;
 
     /**
      * 默认值
      */
-    @Column(name = "default_value")
+    @TableField("default_value")
     private String defaultValue;
 
     /**
      * 字段描述
      */
-    @Column(name = "description")
+    @TableField("description")
     private String description;
 } 

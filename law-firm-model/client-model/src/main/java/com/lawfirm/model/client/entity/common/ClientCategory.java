@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class ClientCategory extends BaseModel {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 分类名称
      */

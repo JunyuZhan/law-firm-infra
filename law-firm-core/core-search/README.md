@@ -1,169 +1,183 @@
-# 搜索模块 (Core Search)
+# 搜索核心模块 (Core Search)
 
 ## 模块说明
-搜索模块是律师事务所管理系统的核心搜索引擎，基于 Elasticsearch 构建，提供了高性能的全文检索、聚合分析等功能。该模块支持多种数据源的索引构建、实时搜索、数据同步等特性。
+搜索核心模块是律师事务所管理系统的搜索引擎实现层，基于Elasticsearch构建。该模块主要负责实现`search-model`中定义的接口，提供高性能的全文检索、聚合分析等功能的具体实现。
 
-## 核心功能
+## 技术栈
+- Spring Boot 3.2.x
+- Elasticsearch Java API Client
+- Elasticsearch 8.0
+- Lombok
+- JUnit 5 + Testcontainers (测试)
 
-### 1. 索引管理
-- 索引创建更新
-- 映射配置管理
-- 别名管理
-- 模板管理
-- 分片管理
-
-### 2. 数据管理
-- 数据索引
-- 数据更新
-- 数据删除
-- 数据同步
-- 数据清理
-
-### 3. 搜索功能
-- 全文检索
-- 精确匹配
-- 范围查询
-- 聚合分析
-- 关联搜索
-
-### 4. 高级特性
-- 分词器配置
-- 同义词处理
-- 高亮显示
-- 搜索建议
-- 相关性优化
-
-## 核心组件
-
-### 1. 搜索服务
-- SearchService：搜索服务接口
-- IndexService：索引服务
-- QueryService：查询服务
-- AnalysisService：分析服务
-- SuggestionService：建议服务
-
-### 2. 数据处理
-- DocumentProcessor：文档处理器
-- DataSynchronizer：数据同步器
-- IndexBuilder：索引构建器
-- DataCleaner：数据清理器
-- FieldAnalyzer：字段分析器
-
-### 3. 搜索增强
-- SearchEnhancer：搜索增强器
-- RelevanceOptimizer：相关性优化器
-- SynonymHandler：同义词处理器
-- HighlightHandler：高亮处理器
-- ScoreCalculator：评分计算器
-
-### 4. 监控管理
-- SearchMonitor：搜索监控器
-- IndexMonitor：索引监控器
-- PerformanceMonitor：性能监控器
-- HealthChecker：健康检查器
-- MetricsCollector：指标收集器
-
-## 使用示例
-
-### 1. 创建索引
-```java
-@Autowired
-private IndexService indexService;
-
-public void createIndex() {
-    // 创建索引配置
-    IndexConfig config = new IndexConfig()
-        .setIndexName("cases")
-        .setShards(3)
-        .setReplicas(1);
-    
-    // 设置映射
-    Map<String, Object> properties = new HashMap<>();
-    properties.put("title", new TextField()
-        .setAnalyzer("ik_max_word")
-        .setSearchAnalyzer("ik_smart"));
-    
-    // 创建索引
-    indexService.createIndex(config, properties);
-}
+## 项目结构
 ```
-
-### 2. 搜索数据
-```java
-@Autowired
-private SearchService searchService;
-
-public SearchResult search(String keyword) {
-    // 构建搜索条件
-    SearchQuery query = new SearchQuery()
-        .setKeyword(keyword)
-        .setFields(Arrays.asList("title", "content"))
-        .setHighlight(true)
-        .setPage(1)
-        .setSize(10);
-    
-    // 执行搜索
-    return searchService.search(query);
-}
-```
-
-### 3. 数据同步
-```java
-@Autowired
-private DataSynchronizer dataSynchronizer;
-
-public void syncData() {
-    // 配置同步
-    SyncConfig config = new SyncConfig()
-        .setTableName("case")
-        .setBatchSize(1000)
-        .setThreads(3);
-    
-    // 执行同步
-    dataSynchronizer.sync(config);
-}
+core-search
+├── src/main/java/com/lawfirm/core/search
+│   ├── config                    // ES配置
+│   │   ├── ElasticsearchConfig.java        // ES客户端配置
+│   │   └── ElasticsearchProperties.java    // ES配置属性
+│   ├── service                   // 服务实现
+│   │   └── impl
+│   │       ├── SearchServiceImpl.java      // 搜索服务实现
+│   │       └── IndexServiceImpl.java       // 索引服务实现
+│   ├── handler                   // 处理器
+│   │   ├── DocumentHandler.java            // 文档处理
+│   │   ├── IndexHandler.java              // 索引处理
+│   │   └── SearchHandler.java             // 搜索处理
+│   └── utils                     // 工具类
+│       ├── ElasticsearchUtils.java        // ES工具类
+│       └── QueryBuilderUtils.java         // 查询构建工具
+└── src/main/resources
+    └── application.yml                    // 配置文件
 ```
 
 ## 配置说明
 
-### 1. Elasticsearch配置
+### Elasticsearch配置
 ```yaml
 elasticsearch:
-  # 集群配置
   cluster:
     name: law-firm-cluster
     nodes: 
       - localhost:9200
-      - localhost:9201
-    
-  # 客户端配置
   client:
     connect-timeout: 5000
     socket-timeout: 60000
-    
-  # 索引配置
+    max-retries: 3
   index:
     number-of-shards: 3
     number-of-replicas: 1
 ```
 
-### 2. 搜索配置
-```yaml
-search:
-  # 基础配置
-  base:
-    max-result-window: 10000
-    batch-size: 1000
-    
-  # 分词器配置
-  analyzer:
-    default: ik_max_word
-    search: ik_smart
+## 业务模块集成说明
+
+### 1. 依赖引入
+在需要使用搜索功能的业务模块的`pom.xml`中添加：
+```xml
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-search</artifactId>
+</dependency>
 ```
 
+### 2. 配置导入
+业务模块需要在配置类上添加注解以启用搜索功能：
+```java
+@Configuration
+@EnableSearchCore  // 启用搜索核心功能
+public class BusinessConfig {
+    // 业务配置
+}
+```
+
+### 3. 使用方式
+1. 直接注入接口
+```java
+@Service
+public class BusinessService {
+    @Autowired
+    private SearchService searchService;
+    
+    @Autowired
+    private IndexService indexService;
+}
+```
+
+2. 配置覆盖
+业务模块可在自己的`application.yml`中覆盖默认配置：
+```yaml
+elasticsearch:
+  cluster:
+    name: ${CLUSTER_NAME:law-firm-cluster}
+    nodes: ${ES_NODES:localhost:9200}
+```
+
+### 4. 注意事项
+- 业务模块不要直接依赖`elasticsearch-java`等ES相关包，统一通过core-search模块调用
+- 建议使用search-model中定义的DTO、VO等对象进行数据传输
+- 索引命名规范：`{业务模块}-{业务类型}`，如：`case-document`
+- 建议实现SearchCallback接口来处理搜索结果的业务逻辑
+
+## 开发规范
+
+### 1. 代码规范
+- 遵循阿里巴巴Java开发手册
+- 使用Lombok简化代码
+- 保持与search-model定义的接口一致
+- 添加完整的Java文档注释
+
+### 2. 异常处理
+- 统一使用SearchException处理业务异常
+- 详细记录异常堆栈和上下文信息
+- 提供友好的错误提示
+
+### 3. 日志规范
+- 使用SLF4J + Logback
+- 记录关键操作和异常信息
+- 添加MDC支持，便于追踪
+
+### 4. 测试规范
+- 单元测试覆盖率 > 80%
+- 使用Testcontainers进行集成测试
+- 编写完整的测试用例文档
+
+## 开发计划
+
+### 1. 基础设施搭建 (Phase 1)
+- [x] 添加search-model依赖
+- [ ] 配置Elasticsearch客户端
+  - [ ] ElasticsearchProperties配置类
+  - [ ] ElasticsearchConfig配置类
+  - [ ] application.yml配置文件
+- [ ] 创建基础工具类
+  - [ ] ElasticsearchUtils
+  - [ ] QueryBuilderUtils
+
+### 2. 索引管理实现 (Phase 2)
+- [ ] 实现IndexService接口
+  - [ ] 索引CRUD操作
+  - [ ] 索引配置管理
+  - [ ] 索引映射管理
+  - [ ] 索引别名管理
+- [ ] 开发IndexHandler
+  - [ ] 索引模板管理
+  - [ ] 分片管理
+  - [ ] 索引监控
+
+### 3. 搜索功能实现 (Phase 3)
+- [ ] 实现SearchService接口
+  - [ ] 文档CRUD操作
+  - [ ] 批量操作支持
+  - [ ] 搜索功能实现
+  - [ ] 建议功能实现
+- [ ] 开发SearchHandler
+  - [ ] 查询构建
+  - [ ] 高亮处理
+  - [ ] 排序支持
+  - [ ] 聚合分析
+
+### 4. 高级特性实现 (Phase 4)
+- [ ] 分词器配置
+- [ ] 同义词处理
+- [ ] 相关性优化
+- [ ] 性能优化
+- [ ] 错误处理
+
+### 5. 测试与文档 (Phase 5)
+- [ ] 单元测试
+  - [ ] 服务层测试
+  - [ ] 处理器测试
+  - [ ] 工具类测试
+- [ ] 集成测试
+  - [ ] Testcontainers支持
+  - [ ] ES集群测试
+- [ ] 性能测试
+- [ ] 文档完善
+
 ## 注意事项
-1. 索引设计优化
-2. 数据同步策略
-3. 性能监控优化
-4. 资源使用控制
-5. 容错机制处理 
+1. 所有版本号统一在law-firm-dependencies中管理
+2. 确保与search-model模块的接口定义保持一致
+3. 关注ES操作的性能优化
+4. 实现优雅的错误处理机制
+5. 保持代码的可测试性 

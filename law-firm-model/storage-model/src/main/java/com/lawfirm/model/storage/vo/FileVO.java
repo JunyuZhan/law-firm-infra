@@ -15,6 +15,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class FileVO extends BaseVO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 文件名
      */

@@ -14,6 +14,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class ClientContact extends BaseModel {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 客户ID
      */

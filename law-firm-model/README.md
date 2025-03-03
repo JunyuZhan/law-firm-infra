@@ -448,75 +448,153 @@ workflow-model, message-model, storage-model, search-model, knowledge-model  # �
 ## 开发规范
 
 ### 1. 命名规范
-- 实体类：XxxEntity
-- DTO：XxxDTO
-- VO：XxxVO
-- 枚举：XxxEnum
-- 服务接口：XxxService
-- 查询对象：XxxQuery
-- 结果对象：XxxResult
+- 实体类：使用名词单数，如User、Role
+- DTO类：以DTO结尾，如UserDTO、RoleDTO
+- VO类：以VO结尾，如UserVO、RoleVO
+- 枚举类：以Enum结尾，如StatusEnum、TypeEnum
+- 服务接口：以Service结尾，如UserService、RoleService
 
-### 2. 包结构规范
-- 实体类放在entity包
-- DTO放在dto包
-- VO放在vo包
-- 枚举放在enums包
-- 服务接口放在service包
-- 查询对象放在query包
-- 结果对象放在result包
-
-### 3. 定义规范
-- 所有实体类都要继承common-data中的BaseEntity或base-model中的ModelBaseEntity
-- 所有枚举类都要实现相应的接口
-- 所有服务接口都要有清晰的注释
-- 所有DTO、VO都要有字段说明
-- 所有查询对象都要实现分页接口
-- 所有结果对象都要实现序列化接口
-
-### 4. 注释规范
-- 类注释：说明类的用途、作者、版本
-- 方法注释：说明方法的功能、参数、返回值
-- 字段注释：说明字段的含义、格式、约束
-
-### 5. 代码规范
-- 遵循阿里巴巴Java开发手册
+### 2. 编码规范
+- 遵循阿里巴巴Java开发手册规范
 - 使用Lombok简化代码
-- 合理使用设计模式
-- 保持代码简洁清晰
+- 使用JavaDoc注释
+- 使用统一的代码格式化
+- 保持代码整洁和可读性
 
-## 版本说明
+### 3. 序列化规范
+- 所有可序列化的类（Entity、DTO、VO等）必须定义serialVersionUID字段
+```java
+private static final long serialVersionUID = 1L;
+```
+- 对不需要序列化的字段使用transient关键字标记
+```java
+private transient String tempField;
+```
+- 确保序列化兼容性，避免在生产环境中出现不可预期的问题
+- 注意在继承关系中，子类也需要定义自己的serialVersionUID
 
-### 1.0.0 (2024-02-21)
-- 初始版本发布
-- 完整的模块化架构
-- 基础定义支持
-- 完整的文档支持
+### 4. 文档规范
+- 每个模块必须有README.md文件，说明模块用途、结构和用法
+- 关键类和方法必须有JavaDoc注释
+- 复杂的业务逻辑需要有流程说明
 
-### 1.1.0 (计划中)
-- 增强多租户支持
-- 完善审计功能
-- 优化数据权限
-- 支持更多业务场景
-- 实施模块整合重构
-  - 统一日志管理
-  - 统一文档中心
-  - 统一支付体系
-  - 统一消息系统
-  - 统一工作流
-  - 统一存储管理
-- 新增客户管理模块
-- 新增知识管理模块
-- 完善案件管理核心功能
-- 增强合同管理模块
-- 优化财务管理模块
-- 基础设施增强
-  - 统一树形结构支持
-  - 统一缓存管理
-  - 统一验证框架
-  - 服务接口标准化
-  - 跨模块通信规范
-  - 数据权限模型优化
-- 性能优化
-  - 优化日志性能
-  - 优化缓存策略
-  - 优化查询性能 
+### 5. 测试规范
+- 所有模型类应有对应的单元测试
+- 确保测试覆盖率达到预期标准
+- 使用mock框架测试依赖关系
+
+## 版本管理
+- 遵循语义化版本规范 (SemVer)
+- 主版本号：不兼容的API变更
+- 次版本号：向下兼容的功能性新增
+- 修订版本号：向下兼容的问题修正
+- 所有版本依赖由law-firm-dependencies统一管理
+
+## 数据模型层子模块
+
+### 1. 知识模型 (knowledge-model)
+- 负责知识相关的数据模型定义，包括分类和文章的 DTO 和 VO。
+
+### 2. 文档模型 (document-model)
+- 负责文档相关的数据模型定义，包括文档的创建、更新和查询。
+
+### 3. 合同模型 (contract-model)
+- 负责合同相关的数据模型定义，包括合同的创建、更新和查询。
+
+### 4. 基础模型 (base-model)
+- 提供通用的基础数据模型定义，包含基础实体、DTO、VO 和常量。
+
+### 5. 客户模型 (client-model)
+- 负责客户相关的数据模型定义，包括客户的创建、更新和查询。
+
+### 6. 案件模型 (case-model)
+- 负责案件相关的数据模型定义，包括案件的创建、更新和查询。
+
+### 7. 认证模型 (auth-model)
+- 负责用户认证和授权相关的数据模型定义，包括用户、角色和权限。
+
+### 8. 人事模型 (personnel-model)
+- 负责员工和人事相关的数据模型定义，包括员工的创建、更新和查询。
+
+### 9. 组织模型 (organization-model)
+- 负责组织结构相关的数据模型定义，包括部门和职位的创建、更新和查询。
+
+### 10. 财务模型 (finance-model)
+- 负责财务相关的数据模型定义，包括财务记录的创建、更新和查询。
+
+### 11. 系统模型 (system-model)
+- 负责系统配置和字典相关的数据模型定义，包括系统配置的创建、更新和查询。
+
+### 12. 日志模型 (log-model)
+- 负责日志记录和管理相关的数据模型定义，包括日志的创建、更新和查询。
+
+### 13. 搜索模型 (search-model)
+- 负责搜索功能相关的数据模型定义，包括搜索条件和结果的定义。
+
+### 14. 存储模型 (storage-model)
+- 负责文件存储和管理相关的数据模型定义，包括存储配置和提供者的定义。
+
+### 15. 消息模型 (message-model)
+- 负责消息通知和管理相关的数据模型定义，包括消息的创建、更新和查询。
+
+### 16. 工作流模型 (workflow-model)
+- 负责工作流相关的数据模型定义，包括工作流的创建、更新和查询。
+
+### 17. AI模型 (ai-model)
+- 负责人工智能相关的数据模型定义，包括AI服务配置、AI模型参数和结果的定义。
+
+## TODO事项列表
+
+### 技术框架迁移
+
+#### JPA迁移到MyBatis Plus
+- [x] auth-model模块实体类迁移
+  - [x] User
+  - [x] Role
+  - [x] Permission
+  - [x] Department
+  - [x] UserRole
+  - [x] RolePermission
+  - [x] UserGroup
+  - [x] Position
+  - [x] LoginHistory
+- [x] system-model模块实体类迁移
+  - [x] SysConfig
+  - [x] SysDict
+  - [x] SysDictItem
+- [x] document-model模块实体类迁移
+  - [x] BaseDocument
+  - [x] DocumentInfo
+  - [x] TemplateDocument
+  - [x] CaseDocument
+  - [x] ArticleDocument
+  - [x] ContractDocument
+- [x] storage-model模块实体类迁移
+- [x] log-model模块实体类迁移
+- [x] base-model模块实体类迁移
+  - [x] ModelBaseEntity
+  - [x] TenantEntity
+  - [x] TreeEntity
+- [x] client-model模块实体类迁移 (2024-04-28)
+- [x] case-model模块实体类迁移
+- [x] personnel-model模块实体类迁移 (2024-04-28)
+- [x] organization-model模块实体类迁移 (2024-04-28)
+- [x] finance-model模块实体类迁移 (2024-04-28)
+- [x] search-model模块实体类迁移 (2024-04-28)
+- [x] message-model模块实体类迁移 (2024-04-28)
+- [x] workflow-model模块实体类迁移 (2024-04-28)
+- [x] knowledge-model模块实体类迁移 (2024-04-28)
+- [x] contract-model模块实体类迁移
+- [x] ai-model模块实体类迁移 (没有需要迁移的代码)
+- [ ] 处理Lombok依赖问题，解决IDE中的"import lombok cannot be resolved"及"Data cannot be resolved to a type"等错误
+- [ ] 代码审查和测试，确保迁移后功能正常
+
+#### 迁移原因说明
+原系统同时使用了JPA和MyBatis Plus两种ORM框架，导致代码混乱且可能产生冲突。此次迁移目的是统一使用MyBatis Plus作为唯一的ORM框架，提高开发效率和系统性能，降低维护成本。
+
+#### 迁移规则
+1. 删除所有JPA相关导入（jakarta.persistence.*）
+2. 删除@Entity、@Table等JPA注解
+3. 保留@TableName和@TableField等MyBatis Plus注解
+4. 保留Lombok相关注解（@Data、@EqualsAndHashCode等）
+5. 确保实体类映射关系与数据库表保持一致 

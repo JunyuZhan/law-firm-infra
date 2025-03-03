@@ -175,3 +175,19 @@ knowledge:
 3. 标签数量建议控制在合理范围
 4. 评论功能可以根据需要开启或关闭
 5. 附件上传需要注意大小和类型限制 
+
+## 迁移记录
+
+### 2024-04-28 JPA到MyBatis Plus迁移
+- 添加MyBatis Plus相关注解（@TableName、@TableField）
+- 移除JPA相关注解和导入（@Entity、@Table、@Column、@JoinColumn等）
+- 修改pom.xml，移除JPA依赖，添加MyBatis Plus依赖
+- 以下实体类已完成迁移：
+  - Article.java（文章实体类）
+  - Category.java（分类实体类）
+  - Tag.java（标签实体类）
+  - Comment.java（评论实体类）
+  - Attachment.java（附件实体类）
+- 关系映射修改：
+  - 原JPA中的@ManyToOne、@ManyToMany关系映射，改为使用@TableField(exist = false)
+  - 双向关联实体的懒加载关系需要在Service层手动处理 

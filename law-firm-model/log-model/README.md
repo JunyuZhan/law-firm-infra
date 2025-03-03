@@ -126,3 +126,19 @@ log-model/
 - 具体实现在对应的服务模块中完成
 - 遵循接口定义规范
 - 注意依赖管理 
+
+## 迁移记录
+### JPA到MyBatis Plus迁移 (2024-04-28)
+- 验证完成：本模块已使用MyBatis Plus注解
+- 使用的注解包括@TableName和@TableField
+- 无需移除JPA相关注解和导入，因为本模块从创建开始就使用MyBatis Plus
+- 已确认pom.xml中使用的是MyBatis Plus依赖，没有包含Spring Data JPA依赖
+- 迁移完成的实体类:
+  - BaseLog
+  - AuditableLog
+  - SystemLog
+  - LoginLog
+  - AuditLog
+  - AuditRecord
+  - BusinessLog
+  - OperationLog 

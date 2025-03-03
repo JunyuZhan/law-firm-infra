@@ -17,6 +17,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class IndexVO extends BaseVO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 索引名称
      */
@@ -45,7 +47,7 @@ public class IndexVO extends BaseVO {
     /**
      * 字段列表
      */
-    private List<FieldVO> fields = new ArrayList<>();
+    private transient List<FieldVO> fields = new ArrayList<>();
 
     /**
      * 索引别名

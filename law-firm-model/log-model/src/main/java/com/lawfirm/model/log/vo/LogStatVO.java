@@ -16,6 +16,8 @@ import java.util.Map;
 @Accessors(chain = true)
 public class LogStatVO extends BaseVO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 总日志数
      */
@@ -34,57 +36,57 @@ public class LogStatVO extends BaseVO {
     /**
      * 按日志类型统计
      */
-    private Map<String, Long> logTypeStats;
+    private transient Map<String, Long> logTypeStats;
 
     /**
      * 按业务类型统计
      */
-    private Map<String, Long> businessTypeStats;
+    private transient Map<String, Long> businessTypeStats;
 
     /**
      * 按操作类型统计
      */
-    private Map<String, Long> operateTypeStats;
+    private transient Map<String, Long> operateTypeStats;
 
     /**
      * 按日志级别统计
      */
-    private Map<String, Long> logLevelStats;
+    private transient Map<String, Long> logLevelStats;
 
     /**
      * 按模块统计
      */
-    private Map<String, Long> moduleStats;
+    private transient Map<String, Long> moduleStats;
 
     /**
      * 按操作人统计
      */
-    private Map<String, Long> operatorStats;
+    private transient Map<String, Long> operatorStats;
 
     /**
      * 按IP地址统计
      */
-    private Map<String, Long> ipStats;
+    private transient Map<String, Long> ipStats;
 
     /**
      * 按地区统计
      */
-    private Map<String, Long> locationStats;
+    private transient Map<String, Long> locationStats;
 
     /**
      * 按浏览器统计
      */
-    private Map<String, Long> browserStats;
+    private transient Map<String, Long> browserStats;
 
     /**
      * 按操作系统统计
      */
-    private Map<String, Long> osStats;
+    private transient Map<String, Long> osStats;
 
     /**
      * 每日统计数据
      */
-    private List<DailyStats> dailyStats;
+    private transient List<DailyStats> dailyStats;
 
     /**
      * 平均响应时间(毫秒)

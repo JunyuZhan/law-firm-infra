@@ -1,12 +1,13 @@
 package com.lawfirm.model.auth.enums;
 
 import lombok.Getter;
+import com.lawfirm.model.base.enums.BaseEnum;
 
 /**
  * 权限类型枚举
  */
 @Getter
-public enum PermissionTypeEnum {
+public enum PermissionTypeEnum implements BaseEnum<Integer> {
     
     /**
      * 菜单
@@ -29,5 +30,15 @@ public enum PermissionTypeEnum {
     PermissionTypeEnum(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
+    }
+
+    @Override
+    public Integer getValue() {
+        return code;
+    }
+
+    @Override
+    public String getDescription() {
+        return desc;
     }
 } 

@@ -8,6 +8,8 @@ import com.lawfirm.common.core.constant.ResultCode;
  */
 public class FrameworkException extends BaseException {
     
+    private static final long serialVersionUID = 1L;
+    
     public FrameworkException(ResultCode resultCode) {
         super(resultCode);
     }

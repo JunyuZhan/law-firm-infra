@@ -17,6 +17,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class DictVO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 字典名称
      */
@@ -50,7 +52,7 @@ public class DictVO extends BaseDTO {
     /**
      * 字典项列表
      */
-    private List<DictItemVO> items;
+    private transient List<DictItemVO> items;
 
     /**
      * 创建时间

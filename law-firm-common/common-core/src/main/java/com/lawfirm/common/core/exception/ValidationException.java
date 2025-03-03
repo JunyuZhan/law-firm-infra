@@ -7,6 +7,8 @@ import com.lawfirm.common.core.constant.ResultCode;
  */
 public class ValidationException extends FrameworkException {
     
+    private static final long serialVersionUID = 1L;
+    
     public ValidationException(String message) {
         super(ResultCode.VALIDATION_ERROR, message);
     }

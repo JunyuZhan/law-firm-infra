@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @TableName("sys_business_log")
 public class BusinessLog extends AuditableLog {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 业务ID
      */

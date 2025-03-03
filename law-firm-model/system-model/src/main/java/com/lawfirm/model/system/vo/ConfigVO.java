@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class ConfigVO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 配置名称
      */

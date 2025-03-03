@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class UserUpdateDTO extends BaseDTO {
     
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 昵称
      */

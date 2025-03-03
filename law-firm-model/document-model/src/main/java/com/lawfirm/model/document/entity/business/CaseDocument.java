@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @TableName("doc_case")
 public class CaseDocument extends BaseDocument {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 案件ID
      */

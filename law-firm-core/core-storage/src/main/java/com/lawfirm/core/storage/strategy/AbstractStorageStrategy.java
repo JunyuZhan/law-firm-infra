@@ -1,135 +1,85 @@
 package com.lawfirm.core.storage.strategy;
 
-import com.lawfirm.core.storage.config.StorageProperties;
-import com.lawfirm.model.base.storage.enums.StorageTypeEnum;
-import com.lawfirm.model.base.storage.model.FileMetadata;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.InitializingBean;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import com.lawfirm.model.storage.enums.StorageTypeEnum;
 
+/**
+ * 抽象存储策略基类，提供通用实现
+ */
 @Slf4j
-@RequiredArgsConstructor
-public abstract class AbstractStorageStrategy implements StorageStrategy {
-
-    protected final StorageProperties storageProperties;
-
-    @Override
-    public FileMetadata uploadFile(MultipartFile file) {
-        try {
-            String filename = file.getOriginalFilename();
-            String contentType = file.getContentType();
-            long size = file.getSize();
-            
-            return uploadFile(filename, file.getInputStream(), size, contentType);
-        } catch (IOException e) {
-            log.error("文件上传失败: {}", e.getMessage(), e);
-            throw new RuntimeException("文件上传失败", e);
-        }
-    }
-
-    @Override
-    public FileMetadata uploadFile(String fileName, InputStream inputStream, long size, String contentType) {
-        try {
-            String path = doUpload(inputStream, fileName);
-            FileMetadata metadata = new FileMetadata();
-            metadata.setFilename(fileName);
-            metadata.setSize(size);
-            metadata.setContentType(contentType);
-            metadata.setStorageType(getStorageType().getCode());
-            metadata.setPath(path);
-            return metadata;
-        } catch (Exception e) {
-            log.error("文件上传失败: {}", e.getMessage(), e);
-            throw new RuntimeException("文件上传失败", e);
-        }
-    }
-
-    @Override
-    public void deleteFile(String filePath) {
-        try {
-            doDelete(filePath);
-        } catch (Exception e) {
-            log.error("文件删除失败: {}", e.getMessage(), e);
-            throw new RuntimeException("文件删除失败", e);
-        }
-    }
-
-    @Override
-    public String getFileUrl(String filePath) {
-        try {
-            return doGetUrl(filePath);
-        } catch (Exception e) {
-            log.error("获取文件URL失败: {}", e.getMessage(), e);
-            throw new RuntimeException("获取文件URL失败", e);
-        }
-    }
-
-    @Override
-    public String getFileUrl(String filePath, long expireSeconds) {
-        try {
-            return doGetUrl(filePath, expireSeconds);
-        } catch (Exception e) {
-            log.error("获取文件URL失败: {}", e.getMessage(), e);
-            throw new RuntimeException("获取文件URL失败", e);
-        }
-    }
-
-    @Override
-    public byte[] downloadFile(String filePath) {
-        try {
-            return doDownload(filePath);
-        } catch (Exception e) {
-            log.error("文件下载失败: {}", e.getMessage(), e);
-            throw new RuntimeException("文件下载失败", e);
-        }
-    }
-
-    @Override
-    public List<FileMetadata> listByBusiness(String businessType, String businessId) {
-        throw new UnsupportedOperationException("当前存储策略不支持按业务查询文件列表");
-    }
-
-    @Override
-    public boolean isFileExist(String filePath) {
-        try {
-            doGetUrl(filePath);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+public abstract class AbstractStorageStrategy implements StorageStrategy, InitializingBean {
 
     /**
-     * 获取存储类型
+     * 是否已初始化
      */
-    protected abstract StorageTypeEnum getStorageType();
-
+    protected boolean initialized = false;
+    
     /**
-     * 执行上传
+     * 存储类型
      */
-    protected abstract String doUpload(InputStream inputStream, String fileName) throws Exception;
-
+    protected final StorageTypeEnum storageType;
+    
     /**
-     * 执行删除
+     * 构造函数
+     * 
+     * @param storageType 存储类型
      */
-    protected abstract void doDelete(String filePath) throws Exception;
-
+    protected AbstractStorageStrategy(StorageTypeEnum storageType) {
+        this.storageType = storageType;
+    }
+    
+    @Override
+    public StorageTypeEnum getStorageType() {
+        return storageType;
+    }
+    
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (!isEnabled()) {
+            log.info("[存储策略] {} 未启用，跳过初始化", storageType);
+            return;
+        }
+        
+        log.info("[存储策略] 开始初始化 {}", storageType);
+        initialize();
+        initialized = true;
+        log.info("[存储策略] {} 初始化完成", storageType);
+    }
+    
     /**
-     * 获取文件URL
+     * 检查并确保已初始化
      */
-    protected abstract String doGetUrl(String filePath) throws Exception;
-
+    protected void ensureInitialized() {
+        if (!initialized) {
+            throw new IllegalStateException("存储策略 " + storageType + " 尚未初始化");
+        }
+    }
+    
     /**
-     * 获取带过期时间的文件URL
+     * 是否启用此存储策略
+     * 
+     * @return 是否启用
      */
-    protected abstract String doGetUrl(String filePath, long expireSeconds) throws Exception;
-
+    protected abstract boolean isEnabled();
+    
     /**
-     * 执行下载
+     * 格式化对象名称，移除开头的/
+     * 
+     * @param objectName 对象名称
+     * @return 格式化后的对象名称
      */
-    protected abstract byte[] doDownload(String filePath) throws Exception;
-}
+    protected String formatObjectName(String objectName) {
+        if (objectName == null) {
+            return null;
+        }
+        
+        // 移除开头的/
+        if (objectName.startsWith("/")) {
+            return objectName.substring(1);
+        }
+        
+        return objectName;
+    }
+} 

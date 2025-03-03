@@ -7,9 +7,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class ArticleCreateDTO extends BaseDTO {
+public class ArticleCreateDTO extends BaseDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 文章标题
@@ -44,13 +47,13 @@ public class ArticleCreateDTO extends BaseDTO {
      * 内容类型
      */
     @NotNull(message = "内容类型不能为空")
-    private ContentTypeEnum contentType;
+    private transient ContentTypeEnum contentType;
 
     /**
      * 文章类型
      */
     @NotNull(message = "文章类型不能为空")
-    private ArticleTypeEnum articleType;
+    private transient ArticleTypeEnum articleType;
 
     /**
      * 所属分类ID
@@ -61,7 +64,7 @@ public class ArticleCreateDTO extends BaseDTO {
     /**
      * 标签列表
      */
-    private List<String> tags = new ArrayList<>();
+    private transient List<String> tags = new ArrayList<>();
 
     /**
      * 封面图片
@@ -121,14 +124,17 @@ public class ArticleCreateDTO extends BaseDTO {
     /**
      * 附件列表
      */
-    private List<AttachmentDTO> attachments = new ArrayList<>();
+    private transient List<AttachmentDTO> attachments = new ArrayList<>();
 
     /**
      * 附件DTO
      */
     @Data
     @Accessors(chain = true)
-    public static class AttachmentDTO {
+    public static class AttachmentDTO implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
         /**
          * 附件名称
          */

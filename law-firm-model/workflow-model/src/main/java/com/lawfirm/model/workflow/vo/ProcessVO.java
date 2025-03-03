@@ -1,157 +1,156 @@
 package com.lawfirm.model.workflow.vo;
 
-import com.lawfirm.model.base.vo.BaseVO;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lawfirm.model.workflow.enums.ProcessStatusEnum;
+import com.lawfirm.model.workflow.enums.ProcessTypeEnum;
+import com.lawfirm.model.workflow.enums.TaskPriorityEnum;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 /**
  * 流程视图对象
+ *
+ * @author claude
  */
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class ProcessVO extends BaseVO {
+public class ProcessVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * ID
+     */
+    private Long id;
 
     /**
      * 流程编号
      */
     private String processNo;
-
+    
     /**
      * 流程名称
      */
     private String processName;
-
+    
     /**
      * 流程类型
+     * @see ProcessTypeEnum
      */
-    private Integer processType;
-
-    /**
-     * 流程类型名称
-     */
-    private String processTypeName;
-
+    private ProcessTypeEnum processType;
+    
     /**
      * 流程状态
+     * @see ProcessStatusEnum
      */
-    private Integer status;
-
-    /**
-     * 流程状态名称
-     */
-    private String statusName;
-
+    private ProcessStatusEnum status;
+    
     /**
      * 流程描述
      */
     private String description;
-
+    
     /**
      * 业务ID
      */
     private Long businessId;
-
+    
     /**
      * 业务类型
      */
     private String businessType;
-
+    
     /**
      * 发起人ID
      */
     private Long initiatorId;
-
+    
     /**
      * 发起人名称
      */
     private String initiatorName;
-
+    
     /**
      * 发起时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
-
+    
     /**
      * 结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
-
+    
     /**
      * 当前处理人ID
      */
     private Long currentHandlerId;
-
+    
     /**
      * 当前处理人名称
      */
     private String currentHandlerName;
-
+    
     /**
-     * 优先级 1-低 2-中 3-高
+     * 优先级
+     * @see TaskPriorityEnum
      */
-    private Integer priority;
-
+    private TaskPriorityEnum priority;
+    
     /**
-     * 优先级名称
+     * 是否允许撤回
+     * true: 允许
+     * false: 不允许
      */
-    private String priorityName;
-
+    private Boolean allowRevoke;
+    
     /**
-     * 是否允许撤回 0-不允许 1-允许
+     * 是否允许转办
+     * true: 允许
+     * false: 不允许
      */
-    private Integer allowRevoke;
-
-    /**
-     * 是否允许转办 0-不允许 1-允许
-     */
-    private Integer allowTransfer;
-
+    private Boolean allowTransfer;
+    
     /**
      * 流程配置（JSON格式）
      */
     private String processConfig;
+    
+    /**
+     * 流程变量
+     */
+    @JsonIgnore
+    private HashMap<String, Serializable> variables;
 
     /**
-     * 流程分类
+     * 创建时间
      */
-    private String category;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
 
     /**
-     * 流程标签
+     * 更新时间
      */
-    private String tags;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
 
     /**
-     * 流程模板ID
+     * 创建人
      */
-    private Long templateId;
+    private String createBy;
 
     /**
-     * 流程模板版本
+     * 更新人
      */
-    private String templateVersion;
+    private String updateBy;
 
     /**
-     * 流程变量（JSON格式）
+     * 租户ID
      */
-    private String variables;
-
-    /**
-     * 流程表单（JSON格式）
-     */
-    private String formData;
-
-    /**
-     * 流程附件IDs
-     */
-    private String attachmentIds;
-
-    /**
-     * 流程备注
-     */
-    private String notes;
-} 
+    private Long tenantId;
+}

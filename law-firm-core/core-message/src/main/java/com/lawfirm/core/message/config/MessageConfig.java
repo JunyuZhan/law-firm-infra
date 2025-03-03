@@ -1,19 +1,10 @@
 package com.lawfirm.core.message.config;
 
-import com.aliyun.teaopenapi.models.Config;
-import com.aliyun.dysmsapi20170525.Client;
-import com.lawfirm.common.message.handler.MessageIdempotentHandler;
-import com.lawfirm.common.message.handler.MessageRateLimiter;
-import com.lawfirm.common.message.metrics.MessageMetrics;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.concurrent.Executor;
 
 /**
  * 消息配置类
@@ -22,94 +13,64 @@ import java.util.concurrent.Executor;
 @Configuration
 @ConfigurationProperties(prefix = "message")
 public class MessageConfig {
-    
+
     /**
-     * 阿里云短信配置
+     * 发送者配置
      */
-    private AliyunSmsConfig sms = new AliyunSmsConfig();
-    
-    /**
-     * 微信配置
-     */
-    private WechatConfig wechat = new WechatConfig();
-    
-    /**
-     * Redis配置
-     */
-    private RedisConfig redis = new RedisConfig();
-    
-    /**
-     * 线程池配置
-     */
-    private ThreadPoolConfig threadPool = new ThreadPoolConfig();
-    
-    @Bean
-    public Client smsClient() throws Exception {
-        Config config = new Config()
-                .setAccessKeyId(sms.getAccessKeyId())
-                .setAccessKeySecret(sms.getAccessKeySecret())
-                .setEndpoint(sms.getEndpoint());
-        return new Client(config);
+    private SenderConfig sender = new SenderConfig();
+    private ReceiverConfig receiver;
+    private StorageConfig storage;
+
+    @Data
+    public static class SenderConfig {
+        /**
+         * 异步线程池大小
+         */
+        private int asyncPoolSize = 10;
+
+        /**
+         * 异步线程池最大大小
+         */
+        private int asyncPoolMaxSize = 20;
+
+        /**
+         * 异步线程池队列容量
+         */
+        private int asyncPoolQueueCapacity = 1000;
+
+        public int getAsyncPoolSize() {
+            return asyncPoolSize;
+        }
+
+        public int getAsyncPoolMaxSize() {
+            return asyncPoolMaxSize;
+        }
+
+        public int getAsyncPoolQueueCapacity() {
+            return asyncPoolQueueCapacity;
+        }
     }
-    
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
+
+    @Data
+    public static class ReceiverConfig {
+        private int poolSize = 10;
+        private int maxConcurrent = 100;
     }
-    
-    @Bean
-    public MessageMetrics messageMetrics() {
-        return new MessageMetrics();
+
+    @Data
+    public static class StorageConfig {
+        private String type = "redis";
+        private String ttl = "7d";
     }
-    
+
     @Bean
-    public MessageIdempotentHandler messageIdempotentHandler(RedisTemplate<String, Object> redisTemplate) {
-        return new MessageIdempotentHandler(redisTemplate, redis.getMessageExpireDays());
-    }
-    
-    @Bean
-    public MessageRateLimiter messageRateLimiter(RedisTemplate<String, Object> redisTemplate) {
-        return new MessageRateLimiter(redisTemplate);
-    }
-    
-    @Bean("messageTaskExecutor")
-    public Executor messageTaskExecutor() {
+    public ThreadPoolTaskExecutor messageTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(threadPool.getCorePoolSize());
-        executor.setMaxPoolSize(threadPool.getMaxPoolSize());
-        executor.setQueueCapacity(threadPool.getQueueCapacity());
-        executor.setThreadNamePrefix("message-task-");
+        executor.setCorePoolSize(sender.getAsyncPoolSize());
+        executor.setMaxPoolSize(sender.getAsyncPoolMaxSize());
+        executor.setQueueCapacity(sender.getAsyncPoolQueueCapacity());
+        executor.setThreadNamePrefix("message-async-");
         executor.initialize();
         return executor;
-    }
-    
-    @Data
-    public static class AliyunSmsConfig {
-        private String accessKeyId;
-        private String accessKeySecret;
-        private String endpoint = "dysmsapi.aliyuncs.com";
-        private String signName;
-    }
-    
-    @Data
-    public static class WechatConfig {
-        private String appId;
-        private String appSecret;
-        private String token;
-        private String aesKey;
-    }
-    
-    @Data
-    public static class RedisConfig {
-        private String messageKeyPrefix = "message:user:";
-        private String subscriptionKeyPrefix = "message:subscription:";
-        private Integer messageExpireDays = 7;
-    }
-    
-    @Data
-    public static class ThreadPoolConfig {
-        private int corePoolSize = 5;
-        private int maxPoolSize = 10;
-        private int queueCapacity = 25;
     }
 } 

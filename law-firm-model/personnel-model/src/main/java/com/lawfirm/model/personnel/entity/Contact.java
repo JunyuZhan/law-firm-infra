@@ -1,45 +1,120 @@
 package com.lawfirm.model.personnel.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import com.lawfirm.model.personnel.constant.PersonnelConstant;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
-@Entity
-@Table(name = "per_contact")
+/**
+ * 联系方式实体
+ */
+@Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-public class Contact extends ModelBaseEntity<Contact> {
+@TableName(PersonnelConstant.Table.CONTACT)
+public class Contact extends ModelBaseEntity {
 
-    @NotNull(message = "关联ID不能为空")
-    @Column(nullable = false)
-    private Long relatedId;  // 关联ID（员工ID或客户ID）
+    private static final long serialVersionUID = 1L;
 
-    @Size(max = 20, message = "关联类型长度不能超过20个字符")
-    @Column(length = 20)
-    private String relatedType;  // 关联类型（EMPLOYEE/CLIENT）
+    /**
+     * 人员ID
+     */
+    @TableField("person_id")
+    private Long personId;
 
-    @Size(max = 50, message = "联系人长度不能超过50个字符")
-    @Column(length = 50)
-    private String contactName;  // 联系人
+    /**
+     * 联系类型（1-个人 2-工作 3-其他）
+     */
+    @TableField("type")
+    private Integer type;
 
-    @Size(max = 20, message = "联系类型长度不能超过20个字符")
-    @Column(length = 20)
-    private String contactType;  // 联系类型（手机/固话/邮箱等）
+    /**
+     * 手机号码
+     */
+    @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号码格式不正确")
+    @TableField("mobile")
+    private String mobile;
 
-    @Size(max = 100, message = "联系方式长度不能超过100个字符")
-    @Column(length = 100)
-    private String contactValue;  // 联系方式值
+    /**
+     * 电话号码
+     */
+    @Pattern(regexp = "^\\d{3,4}-\\d{7,8}$", message = "电话号码格式不正确")
+    @TableField("phone")
+    private String phone;
 
-    @Size(max = 20, message = "是否主要联系方式长度不能超过20个字符")
-    @Column(length = 20)
-    private String isPrimary;  // 是否主要联系方式
+    /**
+     * 电子邮箱
+     */
+    @Email(message = "邮箱格式不正确")
+    @TableField("email")
+    private String email;
 
-    private Integer sortOrder = 0;  // 排序号
+    /**
+     * 微信号
+     */
+    @TableField("wechat")
+    private String wechat;
 
-    private Boolean enabled = true;  // 是否启用
+    /**
+     * QQ号
+     */
+    @TableField("qq")
+    private String qq;
 
-    @Size(max = 500, message = "备注长度不能超过500个字符")
-    @Column(length = 500)
-    private String remark;  // 备注
+    /**
+     * 国家
+     */
+    @TableField("country")
+    private String country;
+
+    /**
+     * 省份
+     */
+    @TableField("province")
+    private String province;
+
+    /**
+     * 城市
+     */
+    @TableField("city")
+    private String city;
+
+    /**
+     * 区县
+     */
+    @TableField("district")
+    private String district;
+
+    /**
+     * 详细地址
+     */
+    @Size(max = 256, message = "详细地址长度不能超过256个字符")
+    @TableField("address")
+    private String address;
+
+    /**
+     * 邮政编码
+     */
+    @Pattern(regexp = "^\\d{6}$", message = "邮政编码格式不正确")
+    @TableField("postal_code")
+    private String postalCode;
+
+    /**
+     * 是否默认联系方式
+     */
+    @TableField("is_default")
+    private Boolean isDefault;
+
+    /**
+     * 备注
+     */
+    @Size(max = 256, message = "备注长度不能超过256个字符")
+    @TableField("remark")
+    private String remark;
 } 

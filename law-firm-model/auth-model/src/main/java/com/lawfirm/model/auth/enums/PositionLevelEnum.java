@@ -1,12 +1,13 @@
 package com.lawfirm.model.auth.enums;
 
 import lombok.Getter;
+import com.lawfirm.model.base.enums.BaseEnum;
 
 /**
  * 职位级别枚举
  */
 @Getter
-public enum PositionLevelEnum {
+public enum PositionLevelEnum implements BaseEnum<Integer> {
     
     /**
      * 高层
@@ -29,5 +30,15 @@ public enum PositionLevelEnum {
     PositionLevelEnum(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
+    }
+
+    @Override
+    public Integer getValue() {
+        return code;
+    }
+
+    @Override
+    public String getDescription() {
+        return desc;
     }
 } 

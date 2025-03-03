@@ -1,3 +1,48 @@
+## 目录结构
+
+```
+auth-model/
+├── entity/           # 实体定义
+│   ├── user/         # 用户相关
+│   │   ├── User.java         # 用户实体
+│   │   └── UserGroup.java    # 用户组实体
+│   ├── role/         # 角色相关
+│   │   ├── Role.java         # 角色实体
+│   │   └── Permission.java   # 权限实体
+│   ├── relation/     # 关联关系
+│   │   ├── UserRole.java     # 用户角色关联
+│   │   └── RolePermission.java # 角色权限关联
+│   └── org/          # 组织相关
+│       ├── Department.java    # 部门实体
+│       └── Position.java      # 职位实体
+├── dto/              # 传输对象
+│   ├── auth/         # 认证相关
+│   │   ├── LoginDTO.java     # 登录请求
+│   │   └── TokenDTO.java     # 令牌信息
+│   ├── user/         # 用户相关
+│   │   ├── UserCreateDTO.java
+│   │   ├── UserUpdateDTO.java
+│   │   └── UserQueryDTO.java
+│   └── role/         # 角色相关
+│       ├── RoleCreateDTO.java
+│       └── RoleUpdateDTO.java
+├── vo/               # 视图对象
+│   ├── UserVO.java
+│   ├── RoleVO.java
+│   └── PermissionVO.java
+├── enums/            # 枚举定义
+│   ├── UserTypeEnum.java
+│   ├── UserStatusEnum.java
+│   └── PermissionTypeEnum.java
+└── service/          # 服务接口
+    ├── UserService.java
+    ├── RoleService.java
+    └── PermissionService.java
+```
+
+## 认证授权模型模块 (Auth Model)
+
+## 模块说明
 # 认证授权模型模块 (Auth Model)
 
 ## 模块说明
@@ -69,6 +114,22 @@
 - PermissionService：权限服务接口
 - DepartmentService：部门服务接口
 - PositionService：职位服务接口
+
+## 复用的人员相关枚举和常量
+
+本模块复用了以下人员相关的枚举和常量：
+
+### 1. EmployeeStatusEnum
+- 定义了员工的状态，包括试用期和正式状态。
+
+### 2. PersonTypeEnum
+- 定义了人员类型，包括律师和行政人员。
+
+### 3. PersonnelConstant
+- 包含与人员相关的常量，如状态、人员类型等。
+
+### 4. CenterTypeEnum
+- 定义了中心类型，包括人力资源中心、财务中心、行政中心、IT中心和其他中心。
 
 ## 目录结构
 ```

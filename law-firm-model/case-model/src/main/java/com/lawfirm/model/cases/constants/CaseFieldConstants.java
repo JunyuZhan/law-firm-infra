@@ -1,9 +1,11 @@
 package com.lawfirm.model.cases.constants;
 
+import com.lawfirm.model.base.constants.BaseConstants;
+
 /**
  * 案件字段限制常量
  */
-public interface CaseFieldConstants {
+public interface CaseFieldConstants extends BaseConstants {
 
     /**
      * 案件编号相关限制
@@ -190,4 +192,7 @@ public interface CaseFieldConstants {
          */
         int MAX_LENGTH = 500;
     }
+
+    // 定义特定于案件的字段常量
+    public static final String CASE_ID = "case_id";
 } 

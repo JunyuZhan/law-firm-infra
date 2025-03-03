@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>knowledge-model</artifactId>
-    <name>knowledge-model</name>
+    <name>${project.artifactId}</name>
     <description>知识管理模块</description>
 
     <dependencies>
@@ -35,10 +35,16 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         
-        <!-- JPA -->
+        <!-- MyBatis Plus -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        
+        <!-- Jakarta Validation API -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
         
         <!-- Lombok -->

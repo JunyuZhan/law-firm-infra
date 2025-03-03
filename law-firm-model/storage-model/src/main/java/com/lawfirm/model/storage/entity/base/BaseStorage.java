@@ -1,8 +1,8 @@
 package com.lawfirm.model.storage.entity.base;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -13,37 +13,37 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@MappedSuperclass
 public abstract class BaseStorage extends ModelBaseEntity {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 存储类型
      */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "storage_type", nullable = false)
+    @TableField("storage_type")
     private StorageTypeEnum storageType;
 
     /**
      * 存储路径
      */
-    @Column(name = "storage_path", nullable = false)
+    @TableField("storage_path")
     private String storagePath;
 
     /**
      * 存储大小（字节）
      */
-    @Column(name = "storage_size")
+    @TableField("storage_size")
     private Long storageSize;
 
     /**
      * 存储状态（0：无效，1：有效）
      */
-    @Column(name = "status", nullable = false)
+    @TableField("status")
     private Integer status = 1;
 
     /**
      * 备注
      */
-    @Column(name = "remark")
+    @TableField("remark")
     private String remark;
 } 

@@ -1,9 +1,11 @@
 package com.lawfirm.model.cases.constants;
 
+import com.lawfirm.model.base.constants.BaseConstants;
+
 /**
  * 案件错误码常量
  */
-public interface CaseErrorConstants {
+public interface CaseErrorConstants extends BaseConstants {
 
     /**
      * 系统错误码（5位数字：1xxxx）
@@ -169,4 +171,7 @@ public interface CaseErrorConstants {
          */
         String STATUS_EXPIRED = "50004";
     }
+
+    // 定义特定于案件的错误常量
+    public static final String ERROR_NOT_FOUND = "案件未找到";
 } 

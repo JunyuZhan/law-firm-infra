@@ -11,6 +11,9 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class DocumentUpdateDTO extends DocumentCreateDTO {
+
+    private static final long serialVersionUID = 1L;
+    
     // 继承了DocumentCreateDTO的所有字段
     // 如果有特殊的更新字段，可以在这里添加
 } 

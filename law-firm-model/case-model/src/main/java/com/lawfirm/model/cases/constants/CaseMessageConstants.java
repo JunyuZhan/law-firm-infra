@@ -1,9 +1,11 @@
 package com.lawfirm.model.cases.constants;
 
+import com.lawfirm.model.base.constants.BaseConstants;
+
 /**
  * 案件消息提示常量
  */
-public interface CaseMessageConstants {
+public interface CaseMessageConstants extends BaseConstants {
 
     /**
      * 操作成功提示
@@ -101,4 +103,7 @@ public interface CaseMessageConstants {
         String TEAM_CHANGED = "案件团队成员已变更";
         String PARTICIPANT_CHANGED = "案件参与方信息已变更";
     }
+
+    // 定义特定于案件的消息常量
+    public static final String MESSAGE_SUCCESS = "操作成功";
 } 

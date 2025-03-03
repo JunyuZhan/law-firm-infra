@@ -152,4 +152,31 @@ MessageVO message = messageService.getMessage(messageId);
 3. 遵循统一的命名规范和代码风格
 4. 确保完整的单元测试覆盖
 5. 注意消息发送的性能和可靠性
-6. 考虑消息存储的容量和清理策略 
+6. 考虑消息存储的容量和清理策略
+7. 所有可序列化的类都必须定义serialVersionUID字段，避免序列化兼容性问题
+
+/**
+ * 确保所有可序列化的类（包括：DTO、VO、Entity等）都定义了serialVersionUID字段：
+ * private static final long serialVersionUID = 1L;
+ * 
+ * 这对于Java对象的序列化和反序列化过程中的版本兼容性非常关键。
+ * 如果类结构发生变化但serialVersionUID保持不变，JVM仍然会尝试反序列化。
+ * 
+ * 目前已确保以下类添加了serialVersionUID：
+ * - BaseMessage 及其子类（SystemMessage, CaseMessage, ContractMessage等）
+ * - BaseNotify 及其子类（SystemNotify等）
+ * - 各种DTO（MessageCreateDTO, MessageQueryDTO, NotifyCreateDTO, NotifyQueryDTO等）
+ * - 各种VO（MessageVO, NotifyVO等）
+ */ 
+
+## 迁移记录
+
+### 2024-04-28 JPA到MyBatis Plus迁移
+- 添加MyBatis Plus相关注解（@TableName、@TableField）
+- 移除JPA相关注解和导入（@Entity、@Table、@Column等）
+- 修改pom.xml，移除JPA依赖，添加MyBatis Plus依赖
+- 以下实体类已完成迁移：
+  - BaseMessage.java（基础消息类）
+  - BaseNotify.java（基础通知类）
+  - CaseMessage.java（案件消息类）
+  - ContractMessage.java（合同消息类） 

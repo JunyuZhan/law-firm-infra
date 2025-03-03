@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class ContractParty extends ClientRelation {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 合同ID
      */
@@ -41,7 +43,7 @@ public class ContractParty extends ClientRelation {
     private LocalDateTime signTime;
 
     /**
-     * 履约状态 0-未履约 1-履约中 2-已履约 3-违约
+     * 履约状态 0-未履行 1-履约中 2-已履行 3-违约
      */
     private Integer performanceStatus;
 

@@ -12,6 +12,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class SystemNotify extends BaseNotify {
+    
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 通知级别
      */

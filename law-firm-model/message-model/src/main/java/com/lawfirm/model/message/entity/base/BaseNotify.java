@@ -1,6 +1,7 @@
 package com.lawfirm.model.message.entity.base;
 
-import com.lawfirm.model.base.BaseModel;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.message.enums.NotifyChannelEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,113 +13,97 @@ import java.time.LocalDateTime;
  * 通知基类
  */
 @Data
+@TableName("base_notify")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-public class BaseNotify extends BaseModel {
+public class BaseNotify extends BaseMessage {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 通知编号
      */
+    @TableField("notify_no")
     private String notifyNo;
 
     /**
      * 通知标题
      */
+    @TableField("title")
     private String title;
 
     /**
      * 通知内容
      */
+    @TableField("content")
     private String content;
 
     /**
      * 通知渠道
      * @see NotifyChannelEnum
      */
-    private Integer channel;
-
-    /**
-     * 通知状态 0-待发送 1-发送中 2-发送成功 3-发送失败
-     */
-    private Integer status;
-
-    /**
-     * 发送者ID
-     */
-    private Long senderId;
-
-    /**
-     * 发送者名称
-     */
-    private String senderName;
-
-    /**
-     * 接收者ID
-     */
-    private Long receiverId;
-
-    /**
-     * 接收者名称
-     */
-    private String receiverName;
+    @TableField("channel")
+    private NotifyChannelEnum channel;
 
     /**
      * 接收地址
      */
+    @TableField("receiver_address")
     private String receiverAddress;
 
     /**
      * 计划发送时间
      */
+    @TableField("plan_time")
     private LocalDateTime planTime;
-
-    /**
-     * 发送时间
-     */
-    private LocalDateTime sendTime;
 
     /**
      * 送达时间
      */
+    @TableField("delivery_time")
     private LocalDateTime deliveryTime;
 
     /**
      * 重试次数
      */
+    @TableField("retry_count")
     private Integer retryCount;
 
     /**
      * 最大重试次数
      */
+    @TableField("max_retry_count")
     private Integer maxRetryCount;
 
     /**
      * 失败原因
      */
+    @TableField("fail_reason")
     private String failReason;
 
     /**
      * 通知模板ID
      */
+    @TableField("template_id")
     private Long templateId;
 
     /**
      * 模板参数（JSON格式）
      */
+    @TableField("template_params")
     private String templateParams;
 
     /**
      * 通知配置（JSON格式）
      */
+    @TableField("notify_config")
     private String notifyConfig;
 
-    /**
-     * 关联业务ID
-     */
-    private Long businessId;
+    public void setChannel(NotifyChannelEnum channel) {
+        this.channel = channel;
+    }
 
-    /**
-     * 关联业务类型
-     */
-    private String businessType;
+    public NotifyChannelEnum getChannel() {
+        return this.channel;
+    }
 } 

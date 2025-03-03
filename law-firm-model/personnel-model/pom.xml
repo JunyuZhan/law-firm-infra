@@ -29,17 +29,10 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- 组织架构模块依赖 -->
+        <!-- MyBatis Plus -->
         <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>organization-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Spring Boot Starter Data JPA -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
         <!-- Validation API -->
@@ -53,6 +46,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Organization Model -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>organization-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

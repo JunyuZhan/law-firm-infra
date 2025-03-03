@@ -15,6 +15,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ConfigCreateDTO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 配置名称
      */

@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @TableName("sys_dict")
 public class SysDict extends ModelBaseEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 字典名称
      */

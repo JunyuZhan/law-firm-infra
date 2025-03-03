@@ -13,8 +13,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class LogExportDTO extends BaseExportDTO {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 导出条件
      */
-    private LogQueryDTO queryCondition;
+    private transient LogQueryDTO queryCondition;
 }

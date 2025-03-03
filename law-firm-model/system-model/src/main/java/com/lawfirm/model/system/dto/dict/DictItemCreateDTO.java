@@ -1,0 +1,68 @@
+package com.lawfirm.model.system.dto.dict;
+
+import com.lawfirm.model.base.dto.BaseDTO;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * 字典项创建DTO
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
+public class DictItemCreateDTO extends BaseDTO {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 字典ID
+     */
+    @NotNull(message = "字典ID不能为空")
+    private Long dictId;
+
+    /**
+     * 字典项标签
+     */
+    @NotBlank(message = "字典项标签不能为空")
+    @Size(max = 100, message = "字典项标签长度不能超过100个字符")
+    private String label;
+
+    /**
+     * 字典项值
+     */
+    @NotBlank(message = "字典项值不能为空")
+    @Size(max = 100, message = "字典项值长度不能超过100个字符")
+    private String value;
+
+    /**
+     * 字典项描述
+     */
+    @Size(max = 500, message = "字典项描述长度不能超过500个字符")
+    private String description;
+
+    /**
+     * 是否默认 0-否 1-是
+     */
+    private Integer isDefault;
+
+    /**
+     * 颜色类型
+     */
+    @Size(max = 50, message = "颜色类型长度不能超过50个字符")
+    private String colorType;
+
+    /**
+     * CSS样式
+     */
+    @Size(max = 200, message = "CSS样式长度不能超过200个字符")
+    private String cssClass;
+
+    /**
+     * 排序号
+     */
+    private Integer sort;
+} 

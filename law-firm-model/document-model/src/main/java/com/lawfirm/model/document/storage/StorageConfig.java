@@ -6,6 +6,7 @@ import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import java.io.Serializable;
 
 /**
  * 存储配置实体
@@ -14,7 +15,9 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @TableName("doc_storage_config")
-public class StorageConfig extends ModelBaseEntity {
+public class StorageConfig extends ModelBaseEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 存储类型（LOCAL、OSS、COS等）

@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DictItemVO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 字典ID
      */

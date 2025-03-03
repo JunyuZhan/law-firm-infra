@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 @TableName("doc_contract")
 public class ContractDocument extends BaseDocument {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 合同ID
      */

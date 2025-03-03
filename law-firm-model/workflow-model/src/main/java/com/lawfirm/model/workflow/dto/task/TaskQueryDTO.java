@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class TaskQueryDTO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 任务编号
      */

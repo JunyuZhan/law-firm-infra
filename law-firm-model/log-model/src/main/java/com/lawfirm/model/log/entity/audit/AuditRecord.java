@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @TableName("sys_audit_record")
 public class AuditRecord extends AuditableLog {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 审计日志ID
      */

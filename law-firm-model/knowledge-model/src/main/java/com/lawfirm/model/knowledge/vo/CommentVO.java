@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class CommentVO extends BaseVO {
+public class CommentVO extends BaseVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 文章ID
@@ -100,5 +103,10 @@ public class CommentVO extends BaseVO {
     /**
      * 回复列表
      */
-    private List<CommentVO> replies = new ArrayList<>();
+    private transient List<CommentVO> replies = new ArrayList<>();
+
+    /**
+     * 子评论列表
+     */
+    private transient List<CommentVO> children;
 } 

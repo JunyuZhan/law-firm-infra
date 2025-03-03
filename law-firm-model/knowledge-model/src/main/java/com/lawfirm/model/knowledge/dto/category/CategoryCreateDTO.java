@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * 分类创建DTO
@@ -17,6 +17,8 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class CategoryCreateDTO extends BaseDTO {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 父分类ID
@@ -41,7 +43,7 @@ public class CategoryCreateDTO extends BaseDTO {
      * 分类类型
      */
     @NotNull(message = "分类类型不能为空")
-    private CategoryTypeEnum categoryType;
+    private transient CategoryTypeEnum categoryType;
 
     /**
      * 分类描述

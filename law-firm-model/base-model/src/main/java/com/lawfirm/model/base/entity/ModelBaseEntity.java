@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public abstract class ModelBaseEntity extends DataEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 版本号
      */

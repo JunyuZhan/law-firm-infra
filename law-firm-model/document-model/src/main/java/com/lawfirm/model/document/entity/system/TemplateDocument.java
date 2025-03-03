@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @TableName("doc_template")
 public class TemplateDocument extends BaseDocument {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 模板编码
      */

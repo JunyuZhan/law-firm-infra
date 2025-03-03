@@ -17,25 +17,14 @@
         <!-- 基础模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>common-data</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Spring Data JPA -->
+        <!-- MyBatis Plus -->
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-        </dependency>
-
-        <!-- JPA API -->
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
         <!-- Validation API -->
@@ -48,6 +37,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Apache Commons -->

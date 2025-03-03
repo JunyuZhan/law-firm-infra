@@ -1,77 +1,87 @@
 package com.lawfirm.model.workflow.dto.task;
 
 import com.lawfirm.model.base.dto.BaseDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 任务创建DTO
+ * 
+ * @author claude
  */
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
+@ApiModel(description = "任务创建参数")
 public class TaskCreateDTO extends BaseDTO {
 
-    /**
-     * 任务名称
-     */
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty("任务名称")
+    @NotBlank(message = "任务名称不能为空")
     private String taskName;
 
-    /**
-     * 任务类型
-     */
+    @ApiModelProperty("任务类型")
+    @NotNull(message = "任务类型不能为空")
     private Integer taskType;
 
-    /**
-     * 流程ID
-     */
-    private Long processId;
+    @ApiModelProperty("流程实例ID")
+    private String processInstanceId;
 
-    /**
-     * 任务描述
-     */
+    @ApiModelProperty("任务描述")
     private String description;
 
-    /**
-     * 处理人ID
-     */
+    @ApiModelProperty("处理人ID")
     private Long handlerId;
 
-    /**
-     * 处理人名称
-     */
+    @ApiModelProperty("处理人名称")
     private String handlerName;
 
-    /**
-     * 处理人类型 1-用户 2-角色 3-部门
-     */
-    private Integer handlerType;
-
-    /**
-     * 截止时间
-     */
-    private LocalDateTime dueTime;
-
-    /**
-     * 优先级 1-低 2-中 3-高
-     */
+    @ApiModelProperty("优先级")
     private Integer priority;
 
-    /**
-     * 前置任务ID
-     */
-    private String prevTaskIds;
+    @ApiModelProperty("截止时间")
+    private Date dueDate;
 
     /**
-     * 后置任务ID
+     * 自定义序列化逻辑
      */
-    private String nextTaskIds;
-
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        // 保存时间戳
+        long dueTimeEpoch = dueDate != null ? dueDate.toInstant().toEpochMilli() : 0;
+        
+        // 执行默认序列化
+        out.defaultWriteObject();
+        
+        // 写入时间戳
+        out.writeLong(dueTimeEpoch);
+    }
+    
     /**
-     * 任务配置（JSON格式）
+     * 自定义反序列化逻辑
      */
-    private String taskConfig;
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        // 执行默认反序列化
+        in.defaultReadObject();
+        
+        // 读取时间戳并转换回LocalDateTime
+        long dueTimeEpoch = in.readLong();
+        
+        if (dueTimeEpoch > 0) {
+            this.dueDate = new Date(dueTimeEpoch);
+        }
+    }
 } 

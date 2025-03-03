@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class MessageVO extends BaseVO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 消息编号
      */

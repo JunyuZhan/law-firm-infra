@@ -1,5 +1,5 @@
 {
-    "java.compile.nullAnalysis.mode": "disabled",
+    "java.compile.nullAnalysis.mode": "automatic",
     "java.jdt.ls.vmargs": "-XX:+UseG1GC -XX:+UseStringDeduplication -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms512m -Xlog:disable",
     "files.exclude": {
         "**/.git": true,
@@ -29,7 +29,7 @@
         "**/bin/**": true
     },
     "java.autobuild.enabled": false,
-    "java.configuration.updateBuildConfiguration": "disabled",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "java.completion.maxResults": 50,
     "editor.suggest.maxVisibleSuggestions": 10,
     "java.debug.settings.maxStringLength": 1000,
@@ -39,5 +39,6 @@
         "jdk.*",
         "org.graalvm.*",
         "io.micrometer.shaded.*"
-    ]
+    ],
+    "java.jdt.ls.lombokSupport.enabled": true
 }

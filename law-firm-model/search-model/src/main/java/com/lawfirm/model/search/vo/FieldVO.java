@@ -14,6 +14,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class FieldVO extends BaseVO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 字段名称
      */

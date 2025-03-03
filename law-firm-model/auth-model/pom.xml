@@ -18,24 +18,7 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
-        </dependency>
-
-        <!-- 通用核心依赖 -->
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-core</artifactId>
-        </dependency>
-
-        <!-- 通用数据依赖 -->
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-data</artifactId>
-        </dependency>
-
-        <!-- 通用工具依赖 -->
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-util</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Lombok -->
@@ -55,6 +38,20 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+
+        <!-- Personnel Model -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>personnel-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- Organization Model -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>organization-model</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

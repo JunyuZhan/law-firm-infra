@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 @TableName("doc_info")
 public class DocumentInfo extends ModelBaseEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 文档ID
      */

@@ -1,0 +1,23 @@
+---
+description: 项目架构和依赖层级
+globs: 
+alwaysApply: false
+---
+
+# Your rule content
+这是律师事务所管理系统的后端开发项目，采用分层架构，从依赖版本统一管理层dependencies-common通用模块层-model数据模型层-core核心功能层-业务模块层modules，最后api层。我们不能把版本号定义在子模块，应该交给D:\weidi\law-firm-infra\law-firm-dependencies\pom.xml统一第三方依赖管理文件来定义和管理。创建任何文件前，请先搜索，不要盲目创建。
+[README.md](mdc:README.md)D:\weidi\law-firm-infra\README.md
+核心依赖
+- Spring Boot 3.2.x
+- Spring Cloud 2023.x
+- MyBatis Plus 3.5.x - ORM框架，负责数据库交互和数据映射
+- Redis 6.x
+- Spring Security 6.x
+- Swagger 3.0.0
+- Elasticsearch 8.0
+- RocketMQ 5.0
+- Flowable 6.8
+
+
+- You can @ files here
+- You can use markdown but dont have to

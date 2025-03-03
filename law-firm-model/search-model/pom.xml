@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>search-model</artifactId>
-    <name>search-model</name>
+    <name>${project.artifactId}</name>
     <description>搜索模块</description>
 
     <dependencies>
@@ -19,7 +19,6 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${project.version}</version>
         </dependency>
         
         <!-- 依赖 base-model 模块 -->
@@ -35,16 +34,22 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- JPA -->
+        <!-- MyBatis Plus -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
         
         <!-- Elasticsearch -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        
+        <!-- Jakarta Validation API -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
         
         <!-- Lombok -->

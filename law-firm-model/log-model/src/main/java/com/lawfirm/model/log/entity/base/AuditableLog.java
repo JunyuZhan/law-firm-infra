@@ -15,6 +15,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public abstract class AuditableLog extends BaseLog {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 操作人ID
      */

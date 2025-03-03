@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @TableName("sys_system_log")
 public class SystemLog extends AuditableLog {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 系统模块
      */

@@ -1,9 +1,11 @@
 package com.lawfirm.model.cases.constants;
 
+import com.lawfirm.model.base.constants.BaseConstants;
+
 /**
  * 案件状态相关常量
  */
-public interface CaseStatusConstants {
+public interface CaseStatusConstants extends BaseConstants {
 
     /**
      * 状态码定义
@@ -145,4 +147,7 @@ public interface CaseStatusConstants {
             StatusCode.IN_PROGRESS
         };
     }
+
+    // 定义特定于案件的状态常量
+    String STATUS_PENDING = "待处理";
 } 

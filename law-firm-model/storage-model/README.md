@@ -159,3 +159,8 @@ BucketVO bucket = bucketService.getBucket(bucketId);
 6. 考虑存储容量和清理策略
 7. 建议使用分布式存储方案
 8. 重要文件建议做备份 
+
+## 迁移记录
+1. 2024-04-28: 完成从JPA到MyBatis Plus的迁移，移除了所有JPA注解，转换成对应的MyBatis Plus注解。迁移的实体类包括:
+   - ChunkInfo.java
+   - FileInfo.java 

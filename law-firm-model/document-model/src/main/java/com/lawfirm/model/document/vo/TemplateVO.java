@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class TemplateVO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 模板编码
      */

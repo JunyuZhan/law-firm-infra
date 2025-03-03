@@ -4,6 +4,7 @@ import com.lawfirm.model.base.vo.BaseVO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import java.io.Serializable;
 
 /**
  * 附件视图对象
@@ -11,7 +12,9 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class AttachmentVO extends BaseVO {
+public class AttachmentVO extends BaseVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 文章ID

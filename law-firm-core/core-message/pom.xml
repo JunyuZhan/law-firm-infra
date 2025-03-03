@@ -6,24 +6,27 @@
     <parent>
         <groupId>com.lawfirm</groupId>
         <artifactId>law-firm-core</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>core-message</artifactId>
-    <name>${project.artifactId}</name>
-    <description>消息核心模块</description>
+    <name>消息处理模块</name>
+    <description>消息处理核心功能实现</description>
 
     <dependencies>
         <!-- 项目依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-message</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
-            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-log</artifactId>
         </dependency>
         
         <!-- Spring Boot -->
@@ -82,14 +85,12 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>dysmsapi20170525</artifactId>
-            <version>2.0.24</version>
         </dependency>
 
         <!-- 阿里云 SDK 核心 -->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>tea-openapi</artifactId>
-            <version>0.2.8</version>
         </dependency>
 
         <!-- 工具类依赖 -->
@@ -111,6 +112,45 @@
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
         </dependency>
+
+        <!-- 数据模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>message-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- 基础工具 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-util</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- 公共核心依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- 消息中间件 -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- 校验框架 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -119,8 +159,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

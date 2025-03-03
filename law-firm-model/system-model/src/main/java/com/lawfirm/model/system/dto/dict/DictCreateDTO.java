@@ -15,6 +15,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DictCreateDTO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 字典名称
      */

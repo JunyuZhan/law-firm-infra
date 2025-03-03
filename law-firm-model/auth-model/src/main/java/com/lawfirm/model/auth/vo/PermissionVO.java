@@ -15,6 +15,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class PermissionVO extends BaseVO {
     
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 权限名称
      */
@@ -93,7 +95,7 @@ public class PermissionVO extends BaseVO {
     /**
      * 子权限列表
      */
-    private List<PermissionVO> children;
+    private transient List<PermissionVO> children;
     
     /**
      * 角色数量

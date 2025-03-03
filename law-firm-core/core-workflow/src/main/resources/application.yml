@@ -4,14 +4,15 @@ spring:
     url: jdbc:mysql://localhost:3306/law_firm_workflow?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: root
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: true
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=600s
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 10000
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -20,6 +21,19 @@ spring:
     validate-on-migrate: true
     clean-disabled: true
     table: flyway_schema_history
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.core.workflow.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 
 flowable:
   database-schema-update: false
@@ -46,7 +60,23 @@ server:
   servlet:
     context-path: /workflow
 
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  packages-to-scan: com.lawfirm.core.workflow.controller
+
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: workflow-producer
+    send-message-timeout: 3000
+
 logging:
   level:
     org.flowable: debug
-    com.lawfirm.core.workflow: debug 
+    com.lawfirm.core.workflow: debug
+    com.baomidou.mybatisplus: debug 

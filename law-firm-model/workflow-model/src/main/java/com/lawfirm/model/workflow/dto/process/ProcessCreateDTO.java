@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class ProcessCreateDTO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 流程名称
      */

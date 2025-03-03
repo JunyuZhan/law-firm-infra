@@ -1,36 +1,60 @@
 package com.lawfirm.model.personnel.enums;
 
 import com.lawfirm.model.base.enums.BaseEnum;
-import lombok.Getter;
+import com.lawfirm.model.personnel.constant.EmployeeConstant;
 
-@Getter
-public enum EmployeeTypeEnum implements BaseEnum<String> {
+/**
+ * 员工类型枚举
+ */
+public enum EmployeeTypeEnum implements BaseEnum<Integer> {
     
-    LAWYER("LAWYER", "律师"),
-    PARALEGAL("PARALEGAL", "律师助理"),
-    ADMINISTRATIVE("ADMINISTRATIVE", "行政人员"),
-    FINANCE("FINANCE", "财务人员"),
-    HR("HR", "人力资源"),
-    IT("IT", "信息技术"),
-    MARKETING("MARKETING", "市场营销"),
-    INTERN("INTERN", "实习生"),
-    OTHER("OTHER", "其他");
+    /**
+     * 全职
+     */
+    FULL_TIME(EmployeeConstant.Type.FULL_TIME, "全职"),
 
-    private final String value;
+    /**
+     * 兼职
+     */
+    PART_TIME(EmployeeConstant.Type.PART_TIME, "兼职"),
+
+    /**
+     * 实习
+     */
+    INTERN(EmployeeConstant.Type.INTERN, "实习"),
+
+    /**
+     * 外包
+     */
+    OUTSOURCED(EmployeeConstant.Type.OUTSOURCED, "外包");
+
+    private final Integer value;
     private final String description;
 
-    EmployeeTypeEnum(String value, String description) {
+    EmployeeTypeEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
 
     @Override
-    public String getValue() {
-        return this.value;
+    public Integer getValue() {
+        return value;
     }
 
     @Override
     public String getDescription() {
-        return this.description;
+        return description;
+    }
+
+    public static EmployeeTypeEnum valueOf(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        for (EmployeeTypeEnum type : values()) {
+            if (type.value.equals(value)) {
+                return type;
+            }
+        }
+        return null;
     }
 } 

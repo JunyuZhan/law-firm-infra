@@ -15,6 +15,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class BucketVO extends BaseVO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 桶名称
      */

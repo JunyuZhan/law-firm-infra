@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class DocumentQueryDTO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 文档标题
      */

@@ -36,6 +36,7 @@ class CacheConfigTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void redisCacheConfiguration_ShouldBeConfigured() {
         assertNotNull(redisCacheConfiguration, "Redis cache configuration should be configured");
         assertEquals(Duration.ofHours(1), redisCacheConfiguration.getTtl(), 

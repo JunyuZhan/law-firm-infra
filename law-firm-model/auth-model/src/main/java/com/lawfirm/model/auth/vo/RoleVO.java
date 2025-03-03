@@ -15,6 +15,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class RoleVO extends BaseVO {
     
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 角色名称
      */
@@ -53,12 +55,12 @@ public class RoleVO extends BaseVO {
     /**
      * 权限ID列表
      */
-    private List<Long> permissionIds;
+    private transient List<Long> permissionIds;
     
     /**
      * 权限名称列表
      */
-    private List<String> permissionNames;
+    private transient List<String> permissionNames;
     
     /**
      * 用户数量

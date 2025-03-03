@@ -1,6 +1,5 @@
 package com.lawfirm.model.finance.entity;
 
-import com.lawfirm.common.core.enums.StatusEnum;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.finance.enums.InvoiceStatusEnum;
 import com.lawfirm.model.finance.enums.InvoiceTypeEnum;
@@ -23,7 +22,9 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @Entity
 @Table(name = "fin_invoice")
-public class Invoice extends ModelBaseEntity<Invoice> {
+public class Invoice extends ModelBaseEntity {
+
+    private static final long serialVersionUID = 1L;
 
     @NotBlank(message = "发票编号不能为空")
     @Size(max = 50, message = "发票编号长度不能超过50个字符")
@@ -90,29 +91,4 @@ public class Invoice extends ModelBaseEntity<Invoice> {
     @Size(max = 500, message = "备注长度不能超过500个字符")
     @Column(length = 500)
     private String remark;  // 备注信息
-
-    @Override
-    public StatusEnum getStatus() {
-        return super.getStatus();
-    }
-
-    @Override
-    public void setStatus(StatusEnum status) {
-        super.setStatus(status);
-    }
-
-    @Override
-    public Long getTenantId() {
-        return super.getTenantId();
-    }
-
-    @Override
-    public void setTenantId(Long tenantId) {
-        super.setTenantId(tenantId);
-    }
-
-    @Override
-    public Invoice setSort(Integer sort) {
-        return super.setSort(sort);
-    }
 }

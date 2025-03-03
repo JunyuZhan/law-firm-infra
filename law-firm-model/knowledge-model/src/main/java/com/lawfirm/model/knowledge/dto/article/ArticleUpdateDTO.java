@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 文章更新DTO
@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class ArticleUpdateDTO extends ArticleCreateDTO {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 文章ID

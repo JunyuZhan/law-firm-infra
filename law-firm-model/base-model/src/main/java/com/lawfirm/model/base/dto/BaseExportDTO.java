@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -15,6 +15,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class BaseExportDTO extends BaseDTO {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 导出文件名
@@ -30,7 +32,7 @@ public class BaseExportDTO extends BaseDTO {
      * 导出字段列表
      */
     @NotEmpty(message = "导出字段不能为空")
-    private List<String> fields;
+    private transient List<String> fields;
 
     /**
      * 是否导出全部数据

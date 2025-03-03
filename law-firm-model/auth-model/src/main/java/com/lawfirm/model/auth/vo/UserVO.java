@@ -17,6 +17,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class UserVO extends BaseVO {
     
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 用户名
      */
@@ -80,12 +82,12 @@ public class UserVO extends BaseVO {
     /**
      * 角色ID列表
      */
-    private List<Long> roleIds;
+    private transient List<Long> roleIds;
     
     /**
      * 角色名称列表
      */
-    private List<String> roleNames;
+    private transient List<String> roleNames;
     
     /**
      * 最后登录时间

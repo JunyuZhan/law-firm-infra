@@ -17,6 +17,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public abstract class BaseLog extends ModelBaseEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 日志标题
      */

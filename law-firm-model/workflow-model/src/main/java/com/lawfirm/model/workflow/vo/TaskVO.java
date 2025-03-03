@@ -1,137 +1,162 @@
 package com.lawfirm.model.workflow.vo;
 
-import com.lawfirm.model.base.vo.BaseVO;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.lawfirm.model.workflow.enums.TaskPriorityEnum;
+import com.lawfirm.model.workflow.enums.TaskStatusEnum;
+import com.lawfirm.model.workflow.enums.TaskTypeEnum;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * 任务视图对象
+ * 用于前端展示和交互的任务数据结构
+ *
+ * @author claude
  */
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class TaskVO extends BaseVO {
+public class TaskVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 任务编号
+     * 任务ID
      */
-    private String taskNo;
-
+    private Long id;
+    
     /**
      * 任务名称
      */
     private String taskName;
-
+    
     /**
      * 任务类型
+     * @see TaskTypeEnum
      */
-    private Integer taskType;
-
-    /**
-     * 任务类型名称
-     */
-    private String taskTypeName;
-
-    /**
-     * 流程ID
-     */
-    private Long processId;
-
-    /**
-     * 流程实例编号
-     */
-    private String processNo;
-
-    /**
-     * 流程名称
-     */
-    private String processName;
-
+    private TaskTypeEnum taskType;
+    
     /**
      * 任务描述
      */
     private String description;
-
+    
+    /**
+     * 任务状态
+     * @see TaskStatusEnum
+     */
+    private TaskStatusEnum status;
+    
+    /**
+     * 流程实例ID
+     * 关联ProcessVO.id
+     */
+    private String processInstanceId;
+    
+    /**
+     * 流程定义ID
+     * 流程定义的唯一标识
+     */
+    private String processDefinitionId;
+    
+    /**
+     * 工作流引擎任务ID
+     * @deprecated 考虑移除，实现细节不应暴露在VO中
+     */
+    @Deprecated
+    private String flowableTaskId;
+    
     /**
      * 处理人ID
+     * 关联用户表的ID
      */
     private Long handlerId;
-
+    
     /**
      * 处理人名称
      */
     private String handlerName;
-
+    
     /**
-     * 处理人类型 1-用户 2-角色 3-部门
+     * 任务优先级
+     * @see TaskPriorityEnum
      */
-    private Integer handlerType;
-
-    /**
-     * 处理人类型名称
-     */
-    private String handlerTypeName;
-
-    /**
-     * 开始时间
-     */
-    private LocalDateTime startTime;
-
-    /**
-     * 结束时间
-     */
-    private LocalDateTime endTime;
-
+    private TaskPriorityEnum priority;
+    
     /**
      * 截止时间
      */
-    private LocalDateTime dueTime;
-
-    /**
-     * 任务状态 0-待处理 1-处理中 2-已完成 3-已取消
-     */
-    private Integer status;
-
-    /**
-     * 任务状态名称
-     */
-    private String statusName;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dueDate;
+    
     /**
      * 处理结果
+     * 任务完成时的结果说明
      */
     private String result;
-
+    
     /**
      * 处理意见
+     * 任务处理过程中的备注或说明
      */
     private String comment;
+    
+    /**
+     * 是否超时
+     * true: 已超时
+     * false: 未超时
+     */
+    private Boolean overdue;
+    
+    /**
+     * 剩余处理时间（小时）
+     * 负数表示已超时的小时数
+     */
+    private Integer remainingHours;
+    
+    /**
+     * 可用操作列表
+     */
+    private ArrayList<String> availableOperations;
+    
+    /**
+     * 关联的业务数据ID
+     */
+    private Long businessId;
+    
+    /**
+     * 关联的业务类型
+     * 用于标识关联的具体业务模块
+     */
+    private String businessType;
 
     /**
-     * 优先级 1-低 2-中 3-高
+     * 创建时间
      */
-    private Integer priority;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
 
     /**
-     * 优先级名称
+     * 更新时间
      */
-    private String priorityName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
 
     /**
-     * 前置任务ID
+     * 创建人
      */
-    private String prevTaskIds;
+    private String createBy;
 
     /**
-     * 后置任务ID
+     * 更新人
      */
-    private String nextTaskIds;
+    private String updateBy;
 
     /**
-     * 任务配置（JSON格式）
+     * 租户ID
      */
-    private String taskConfig;
+    private Long tenantId;
 } 

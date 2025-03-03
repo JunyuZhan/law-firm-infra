@@ -3,7 +3,7 @@ package com.lawfirm.cases.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.model.cases.entity.CaseFile;
 import com.lawfirm.cases.mapper.CaseFileMapper;
-import com.lawfirm.cases.service.CaseFileService;
+import com.lawfirm.cases.service.CaseDocumentService;
 import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.common.core.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CaseFileServiceImpl extends ServiceImpl<CaseFileMapper, CaseFile> implements CaseFileService {
+public class CaseFileServiceImpl extends ServiceImpl<CaseFileMapper, CaseFile> implements CaseDocumentService {
 
     @Value("${app.file-storage.base-path}")
     private String baseStoragePath;

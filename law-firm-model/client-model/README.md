@@ -201,3 +201,19 @@ Long contactId = contactService.createContact(createDTO);
 5. 关注客户信息安全和隐私
 6. 确保联系人信息及时更新
 7. 注意客户分类的合理性 
+
+## 迁移记录
+
+### JPA到MyBatis Plus迁移 (2024-04-28)
+- 添加MyBatis Plus相关注解（@TableName, @TableField）
+- 移除JPA相关注解和导入
+- 修改pom.xml文件，移除JPA相关依赖，添加MyBatis Plus依赖
+- 更新实体类继承关系，使用ModelBaseEntity
+- 迁移的实体类包括：
+  - Client.java
+  - ClientRelation.java
+  - CaseParty.java
+  - ContractParty.java
+  - ClientAddress.java
+  - ClientCategory.java
+  - ClientContact.java 

@@ -41,7 +41,8 @@ import org.springframework.test.context.TestPropertySource;
 
 @TestConfiguration
 @TestPropertySource(properties = {
-    "spring.main.allow-bean-definition-overriding=true"
+    "spring.main.allow-bean-definition-overriding=true",
+    "spring.datasource.dynamic.provider.yml.enabled=false"
 })
 @ComponentScan(
     basePackages = {

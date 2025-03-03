@@ -1,121 +1,97 @@
 package com.lawfirm.core.storage.strategy;
 
-import com.lawfirm.model.base.storage.model.FileMetadata;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
-import java.util.List;
+
+import com.lawfirm.model.storage.entity.bucket.StorageBucket;
+import com.lawfirm.model.storage.entity.file.FileObject;
+import com.lawfirm.model.storage.enums.StorageTypeEnum;
 
 /**
- * 存储策略接口
+ * 存储策略接口，定义不同存储实现的通用操作
  */
 public interface StorageStrategy {
-    /**
-     * 获取业务相关的文件列表
-     *
-     * @param businessType 业务类型
-     * @param businessId 业务ID
-     * @return 文件元数据列表
-     */
-    List<FileMetadata> listByBusiness(String businessType, String businessId);
 
+    /**
+     * 获取存储类型
+     * 
+     * @return 存储类型
+     */
+    StorageTypeEnum getStorageType();
+    
+    /**
+     * 初始化存储策略
+     */
+    void initialize();
+    
+    /**
+     * 创建存储桶
+     * 
+     * @param bucketName 桶名称
+     * @param isPublic 是否公开
+     * @return 是否创建成功
+     */
+    boolean createBucket(String bucketName, boolean isPublic);
+    
+    /**
+     * 检查存储桶是否存在
+     * 
+     * @param bucketName 桶名称
+     * @return 是否存在
+     */
+    boolean bucketExists(String bucketName);
+    
+    /**
+     * 删除存储桶
+     * 
+     * @param bucketName 桶名称
+     * @return 是否删除成功
+     */
+    boolean removeBucket(String bucketName);
+    
     /**
      * 上传文件
-     *
-     * @param file 文件
-     * @return 文件元数据
+     * 
+     * @param bucket 存储桶信息
+     * @param fileObject 文件对象
+     * @param inputStream 文件输入流
+     * @return 是否上传成功
      */
-    FileMetadata uploadFile(MultipartFile file);
-
+    boolean uploadFile(StorageBucket bucket, FileObject fileObject, InputStream inputStream);
+    
     /**
-     * 上传文件
-     *
-     * @param fileName    文件名
-     * @param inputStream 输入流
-     * @param size       文件大小
-     * @param contentType 内容类型
-     * @return 文件元数据
-     */
-    FileMetadata uploadFile(String fileName, InputStream inputStream, long size, String contentType);
-
-    /**
-     * 下载文件
-     *
+     * 获取文件元数据
+     * 
+     * @param bucket 存储桶信息
      * @param objectName 对象名称
-     * @return 文件字节数组
+     * @return 文件元数据
      */
-    byte[] downloadFile(String objectName);
-
+    Object getObjectMetadata(StorageBucket bucket, String objectName);
+    
     /**
-     * 下载文件
-     *
+     * 获取文件输入流
+     * 
+     * @param bucket 存储桶信息
      * @param objectName 对象名称
      * @return 文件输入流
      */
-    InputStream downloadFileAsStream(String objectName);
-
+    InputStream getObject(StorageBucket bucket, String objectName);
+    
     /**
      * 删除文件
-     *
+     * 
+     * @param bucket 存储桶信息
      * @param objectName 对象名称
+     * @return 是否删除成功
      */
-    void deleteFile(String objectName);
-
+    boolean removeObject(StorageBucket bucket, String objectName);
+    
     /**
-     * 获取文件URL
-     *
+     * 生成文件访问URL
+     * 
+     * @param bucket 存储桶信息
      * @param objectName 对象名称
-     * @return 文件URL
+     * @param expireSeconds 过期时间(秒)，-1表示永不过期
+     * @return 访问URL
      */
-    String getFileUrl(String objectName);
-
-    /**
-     * 获取带过期时间的文件URL
-     *
-     * @param objectName 对象名称
-     * @param expireSeconds 过期时间（秒）
-     * @return 带过期时间的文件URL
-     */
-    String getFileUrl(String objectName, long expireSeconds);
-
-    /**
-     * 判断文件是否存在
-     *
-     * @param objectName 对象名称
-     * @return 是否存在
-     */
-    boolean isFileExist(String objectName);
-
-    /**
-     * 初始化分片上传
-     *
-     * @param objectName 对象名称
-     * @return 上传ID
-     */
-    String initMultipartUpload(String objectName);
-
-    /**
-     * 上传分片
-     *
-     * @param uploadId 上传ID
-     * @param partNumber 分片序号
-     * @param part 分片文件
-     * @return 分片ETag
-     */
-    String uploadPart(String uploadId, int partNumber, MultipartFile part);
-
-    /**
-     * 完成分片上传
-     *
-     * @param uploadId 上传ID
-     * @param objectName 对象名称
-     * @return 文件路径
-     */
-    String completeMultipartUpload(String uploadId, String objectName);
-
-    /**
-     * 终止分片上传
-     *
-     * @param uploadId 上传ID
-     */
-    void abortMultipartUpload(String uploadId);
+    String generatePresignedUrl(StorageBucket bucket, String objectName, Integer expireSeconds);
 } 

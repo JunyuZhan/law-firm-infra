@@ -1,9 +1,11 @@
 package com.lawfirm.model.client.entity.base;
 
-import com.lawfirm.model.base.BaseModel;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.client.enums.ClientLevelEnum;
 import com.lawfirm.model.client.enums.ClientSourceEnum;
 import com.lawfirm.model.client.enums.ClientTypeEnum;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -14,35 +16,79 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-public class Client extends BaseModel {
+@TableName("client_info")
+public class Client extends ModelBaseEntity {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 客户编号
      */
+    @TableField("client_no")
     private String clientNo;
 
     /**
      * 客户名称
      */
+    @TableField("client_name")
     private String clientName;
 
     /**
      * 客户类型
      * @see ClientTypeEnum
      */
+    @TableField("client_type")
     private Integer clientType;
 
     /**
      * 客户等级
      * @see ClientLevelEnum
      */
+    @TableField("client_level")
     private Integer clientLevel;
 
     /**
      * 客户来源
      * @see ClientSourceEnum
      */
+    @TableField("client_source")
     private Integer clientSource;
+
+    /**
+     * 客户行业
+     */
+    @TableField("industry")
+    private String industry;
+
+    /**
+     * 客户规模
+     */
+    @TableField("scale")
+    private String scale;
+
+    /**
+     * 联系电话
+     */
+    @TableField("phone")
+    private String phone;
+
+    /**
+     * 电子邮箱
+     */
+    @TableField("email")
+    private String email;
+
+    /**
+     * 负责人ID
+     */
+    @TableField("manager_id")
+    private Long managerId;
+
+    /**
+     * 状态（0正常 1停用）
+     */
+    @TableField("status")
+    private Integer status;
 
     /**
      * 证件类型
@@ -53,21 +99,6 @@ public class Client extends BaseModel {
      * 证件号码
      */
     private String idNumber;
-
-    /**
-     * 联系电话
-     */
-    private String contactPhone;
-
-    /**
-     * 电子邮箱
-     */
-    private String email;
-
-    /**
-     * 客户状态 0-待审核 1-正常 2-禁用
-     */
-    private Integer status;
 
     /**
      * 信用等级 A/B/C/D

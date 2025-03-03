@@ -2,7 +2,6 @@ package com.lawfirm.model.base.query;
 
 import com.lawfirm.common.web.request.PageRequest;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
@@ -13,7 +12,6 @@ import java.util.Objects;
  */
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
 public class BaseQuery extends PageRequest {
 
     /**

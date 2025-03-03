@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class ArticleVO extends BaseVO {
+public class ArticleVO extends BaseVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 文章标题
@@ -36,7 +39,7 @@ public class ArticleVO extends BaseVO {
     /**
      * 内容类型
      */
-    private ContentTypeEnum contentType;
+    private transient ContentTypeEnum contentType;
 
     /**
      * 文章类型
@@ -61,7 +64,7 @@ public class ArticleVO extends BaseVO {
     /**
      * 标签列表
      */
-    private List<TagVO> tags = new ArrayList<>();
+    private transient List<TagVO> tags = new ArrayList<>();
 
     /**
      * 封面图片
@@ -161,17 +164,17 @@ public class ArticleVO extends BaseVO {
     /**
      * 附件列表
      */
-    private List<AttachmentVO> attachments = new ArrayList<>();
+    private transient List<AttachmentVO> attachments = new ArrayList<>();
 
     /**
      * 评论列表（最新的N条）
      */
-    private List<CommentVO> latestComments = new ArrayList<>();
+    private transient List<CommentVO> latestComments = new ArrayList<>();
 
     /**
      * 相关文章（相同分类或标签的文章）
      */
-    private List<ArticleBriefVO> relatedArticles = new ArrayList<>();
+    private transient List<ArticleBriefVO> relatedArticles = new ArrayList<>();
 
     /**
      * 文章简要信息VO
@@ -179,7 +182,10 @@ public class ArticleVO extends BaseVO {
     @Data
     @EqualsAndHashCode(callSuper = true)
     @Accessors(chain = true)
-    public static class ArticleBriefVO extends BaseVO {
+    public static class ArticleBriefVO extends BaseVO implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
         private String title;
         private String summary;
         private String coverImage;

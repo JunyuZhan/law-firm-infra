@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class SystemMessage extends BaseMessage {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 消息级别 1-提示 2-警告 3-错误
      */

@@ -5,28 +5,30 @@
 
 ## 项目架构
 系统采用经典的分层架构，主要分为以下几层：
+1.依赖版本统一管理层（law-firm-dependencies）
+   - 负责依赖版本的统一管理，保证各层的所有模块依赖版本的统一。
 
-1. 基础设施层（law-firm-common）
+2. 基础设施层（law-firm-common）
    - 提供各个层共用的基础设施
    - 包含缓存、安全、日志等通用功能
    - 确保系统的可靠性和性能
 
-2. 数据模型层（law-firm-model）
+3. 数据模型层（law-firm-model）
    - 定义领域模型和数据传输对象
    - 规范数据结构和验证规则
    - 实现领域驱动设计
 
-3. 核心功能层（law-firm-core）
+4. 核心功能层（law-firm-core）
    - 实现核心业务逻辑
    - 提供基础服务支持
    - 处理复杂业务流程
 
-4. 业务模块层（law-firm-modules）
+5. 业务模块层（law-firm-modules）
    - 实现具体业务功能
    - 遵循单一职责原则
    - 保持业务逻辑独立
 
-5. API接口层（law-firm-api）
+6. API接口层（law-firm-api）
    - 提供统一的接口规范
    - 处理请求响应逻辑
    - 实现接口安全控制
@@ -35,8 +37,6 @@
 ```
 law-firm-infra
 ├── law-firm-dependencies    # 依赖管理
-│   ├── dependencies-bom     # 统一依赖版本
-│   └── dependencies-parent  # 父项目依赖
 ├── law-firm-common          # 基础设施层
 │   ├── common-core         # 核心功能
 │   ├── common-cache       # 缓存处理
@@ -105,15 +105,29 @@ law-firm-infra
 ## 技术栈
 
 ### 核心依赖
-- Spring Boot 2.7.x
-- Spring Cloud 2021.0.x
-- MyBatis Plus 3.5.x
+- Spring Boot 3.2.x
+- Spring Cloud 2023.x
+- MyBatis Plus 3.5.x - ORM框架，负责数据库交互和数据映射
 - Redis 6.x
-- Spring Security 5.7.x
+- Spring Security 6.x
 - Swagger 3.0.0
 - Elasticsearch 8.0
 - RocketMQ 5.0
 - Flowable 6.8
+
+### 数据访问层
+- **MyBatis Plus**：
+  * 默认CRUD操作无需编写SQL
+  * 强大的条件构造器
+  * 自动分页插件
+  * 数据权限控制
+  * 多租户支持
+  * 代码生成器
+- **数据源管理**：
+  * 动态数据源配置
+  * 主从读写分离
+  * 多租户数据隔离
+  * 分库分表策略
 
 ### 开发环境
 - JDK 1.8+
@@ -231,3 +245,23 @@ public class UserService {
 ## 许可证
 
 本项目采用 MIT 许可证 
+
+## 迁移进度
+
+### JPA到MyBatis Plus迁移
+- [x] auth-model模块 - 2024-04-26完成 
+- [x] system-model模块 - 2024-04-27完成
+- [x] document-model模块 - 2024-04-27完成  
+- [x] storage-model模块 - 2024-04-28完成
+- [x] organization-model模块 - 2024-04-28完成
+- [x] personnel-model模块 - 2024-04-28完成
+- [x] log-model模块 - 2024-04-28完成
+- [x] client-model模块 - 2024-04-28完成
+- [x] contract-model模块 - 2024-04-28完成
+- [x] case-model模块 - 2024-04-28完成
+- [x] finance-model模块 - 2024-04-28完成
+- [ ] workflow-model模块
+- [ ] search-model模块
+- [ ] message-model模块
+- [ ] knowledge-model模块
+- [ ] ai-model模块 

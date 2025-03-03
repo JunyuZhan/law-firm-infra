@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class CaseParty extends ClientRelation {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 案件ID
      */
@@ -46,7 +48,7 @@ public class CaseParty extends ClientRelation {
     private String agentAuthorities;
 
     /**
-     * 案件状态 0-未开始 1-进行中 2-已结案
+     * 案件状态 0-未开始 1-进行中 2-已结束
      */
     private Integer caseStatus;
 } 

@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class TokenDTO extends BaseDTO {
     
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 访问令牌
      */

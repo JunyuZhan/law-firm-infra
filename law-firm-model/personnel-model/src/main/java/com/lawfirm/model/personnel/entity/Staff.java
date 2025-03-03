@@ -1,52 +1,70 @@
 package com.lawfirm.model.personnel.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.model.personnel.constant.PersonnelConstant;
+import com.lawfirm.model.personnel.enums.CenterTypeEnum;
+import com.lawfirm.model.personnel.enums.FunctionTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
-import java.time.LocalDate;
-
+/**
+ * 行政人员信息实体
+ */
 @Data
-@Entity
-@Table(name = "staff")
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@PrimaryKeyJoinColumn(name = "employee_id")
+@TableName(PersonnelConstant.Table.STAFF)
 public class Staff extends Employee {
 
-    @Size(max = 100, message = "工作职责长度不能超过100个字符")
-    @Column(length = 100)
-    private String jobDuties;  // 工作职责
+    private static final long serialVersionUID = 1L;
 
-    @Size(max = 100, message = "工作范围长度不能超过100个字符")
-    @Column(length = 100)
-    private String workScope;  // 工作范围
+    /**
+     * 职能类型
+     */
+    @TableField("function_type")
+    private FunctionTypeEnum functionType;
 
-    @Size(max = 50, message = "教育背景长度不能超过50个字符")
-    @Column(length = 50)
-    private String education;  // 教育背景
+    /**
+     * 职能描述
+     */
+    @TableField("function_desc")
+    private String functionDesc;
 
-    @Size(max = 50, message = "专业长度不能超过50个字符")
-    @Column(length = 50)
-    private String major;  // 专业
+    /**
+     * 工作职责
+     */
+    @TableField("job_duties")
+    private String jobDuties;
 
-    @Size(max = 500, message = "工作经历长度不能超过500个字符")
-    @Column(length = 500)
-    private String workExperience;  // 工作经历
+    /**
+     * 服务范围
+     */
+    @TableField("service_scope")
+    private String serviceScope;
 
-    @Size(max = 500, message = "技能证书长度不能超过500个字符")
-    @Column(length = 500)
-    private String skillsCertificates;  // 技能证书
+    /**
+     * 技能证书
+     */
+    @TableField("skill_certificates")
+    private String skillCertificates;
 
-    private LocalDate contractStartDate;  // 合同开始日期
+    /**
+     * 所属中心
+     */
+    @TableField("center_type")
+    private CenterTypeEnum centerType;
 
-    private LocalDate contractEndDate;  // 合同结束日期
+    /**
+     * 是否兼任其他职能
+     */
+    @TableField("has_other_functions")
+    private Boolean hasOtherFunctions;
 
-    @Size(max = 20, message = "合同类型长度不能超过20个字符")
-    @Column(length = 20)
-    private String contractType;  // 合同类型
-
-    @Size(max = 500, message = "绩效记录长度不能超过500个字符")
-    @Column(length = 500)
-    private String performanceRecord;  // 绩效记录
+    /**
+     * 兼任职能描述
+     */
+    @TableField("other_functions")
+    private String otherFunctions;
 } 

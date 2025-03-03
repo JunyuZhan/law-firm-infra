@@ -7,29 +7,21 @@
     <parent>
         <groupId>com.lawfirm</groupId>
         <artifactId>law-firm</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>law-firm-model</artifactId>
     <packaging>pom</packaging>
-    <description>数据模型层</description>
+    <description>数据模型层，定义领域模型和数据传输对象</description>
 
-    <!-- 按依赖关系排序模块 -->
     <modules>
-        <!-- 基础模型层 -->
         <module>base-model</module>
-        
-        <!-- 系统基础模块 -->
-        <module>log-model</module>
         <module>auth-model</module>
         <module>system-model</module>
-        
-        <!-- 组织架构模块 -->
         <module>organization-model</module>
         <module>personnel-model</module>
-        
-        <!-- 业务模块 -->
+        <module>log-model</module>
         <module>client-model</module>
         <module>document-model</module>
         <module>contract-model</module>
@@ -38,43 +30,25 @@
         <module>workflow-model</module>
         <module>storage-model</module>
         <module>search-model</module>
+        <module>message-model</module>
+        <module>knowledge-model</module>
+        <module>ai-model</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
-            <!-- 基础设施层依赖 -->
             <dependency>
                 <groupId>com.lawfirm</groupId>
-                <artifactId>common-core</artifactId>
+                <artifactId>law-firm-dependencies</artifactId>
                 <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>com.lawfirm</groupId>
-                <artifactId>common-util</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lawfirm</groupId>
-                <artifactId>common-message</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lawfirm</groupId>
-                <artifactId>common-data</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- 基础模型层依赖 -->
+            
+            <!-- 内部模块依赖管理 -->
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>base-model</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            
-            <!-- 系统基础模块依赖 -->
-            <dependency>
-                <groupId>com.lawfirm</groupId>
-                <artifactId>log-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -87,72 +61,109 @@
                 <artifactId>system-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>organization-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>personnel-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>log-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>client-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>document-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>contract-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>case-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>finance-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>workflow-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>storage-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>search-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>message-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>knowledge-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>ai-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <!-- 引入common模块依赖 -->
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>common-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>common-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!-- 基础依赖 -->
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-data</artifactId>
-        </dependency>
-
-        <!-- 工具依赖 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <scope>provided</scope>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
-
-        <!-- 数据库依赖 -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-
-        <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-</project> 
+</project>

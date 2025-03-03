@@ -1,11 +1,12 @@
 package com.lawfirm.core.storage.config;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import lombok.Data;
+
 /**
- * 存储配置
+ * 存储配置属性
  */
 @Data
 @Component
@@ -13,176 +14,211 @@ import org.springframework.stereotype.Component;
 public class StorageProperties {
     
     /**
-     * 存储类型（minio/oss/mongodb）
+     * 默认存储类型
      */
-    private String type = "minio";
+    private String defaultType = "LOCAL";
     
     /**
-     * 存储桶名称
+     * 默认存储桶ID
      */
-    private String bucketName = "lawfirm";
+    private Long defaultBucketId = 1L;
     
     /**
-     * 默认URL过期时间（秒）
+     * 路径配置
      */
-    private Integer defaultUrlExpiry = 3600;
+    private PathConfig path = new PathConfig();
     
     /**
-     * MinIO 配置
+     * 上传配置
+     */
+    private UploadConfig upload = new UploadConfig();
+    
+    /**
+     * 本地存储配置
+     */
+    private LocalConfig local = new LocalConfig();
+    
+    /**
+     * MinIO存储配置
      */
     private MinioConfig minio = new MinioConfig();
     
     /**
-     * OSS 配置
+     * 阿里云OSS存储配置
      */
-    private OssConfig oss = new OssConfig();
+    private AliyunOssConfig aliyunOss = new AliyunOssConfig();
     
     /**
-     * MongoDB 配置
+     * 腾讯云COS存储配置
      */
-    private MongoConfig mongo = new MongoConfig();
+    private TencentCosConfig tencentCos = new TencentCosConfig();
     
     /**
-     * 默认存储桶
+     * 路径配置
      */
-    private String defaultBucket = "lawfirm";
-    
-    /**
-     * 分片存储配置
-     */
-    private ChunkConfig chunk = new ChunkConfig();
-    
-    private String endpoint;
-    private String accessKey;
-    private String secretKey;
-    private String region;
-    private boolean secure = true;
-    private int maxFileSize = 100 * 1024 * 1024; // 默认100MB
-    private int chunkSize = 5 * 1024 * 1024; // 默认5MB
-    private String tempDir = System.getProperty("java.io.tmpdir");
-    
-    /**
-     * 基础路径
-     */
-    private String basePath = "storage";
-    
-    /**
-     * 预览路径
-     */
-    private String previewPath = "preview";
-    
-    public String getBasePath() {
-        return basePath;
-    }
-    
-    public String getPreviewPath() {
-        return previewPath;
-    }
-    
     @Data
-    public static class MinioConfig {
+    public static class PathConfig {
         /**
-         * 是否启用MinIO
+         * 本地存储根路径
          */
-        private boolean enabled = false;
-        
-        /**
-         * 服务地址
-         */
-        private String endpoint;
-        
-        /**
-         * 访问密钥
-         */
-        private String accessKey;
-        
-        /**
-         * 密钥
-         */
-        private String secretKey;
-        
-        /**
-         * 存储桶名称
-         */
-        private String bucketName = "lawfirm";
-        
-        /**
-         * 默认URL过期时间（秒）
-         */
-        private long defaultUrlExpiry = 7200;
-    }
-    
-    @Data
-    public static class OssConfig {
-        /**
-         * 是否启用OSS
-         */
-        private boolean enabled = false;
-        
-        /**
-         * 服务地址
-         */
-        private String endpoint;
-        
-        /**
-         * 访问密钥
-         */
-        private String accessKey;
-        
-        /**
-         * 密钥
-         */
-        private String secretKey;
-        
-        /**
-         * 存储桶名称
-         */
-        private String bucketName = "lawfirm";
-        
-        /**
-         * 默认URL过期时间（秒）
-         */
-        private long defaultUrlExpiry = 7200;
-    }
-    
-    @Data
-    public static class MongoConfig {
-        /**
-         * 是否启用MongoDB存储
-         */
-        private boolean enabled = false;
-        
-        /**
-         * 数据库名称
-         */
-        private String database = "lawfirm";
-        
-        /**
-         * 集合名称
-         */
-        private String collection = "fs";
-        
-        /**
-         * 块大小（字节）
-         */
-        private int chunkSize = 261120;
-    }
-    
-    @Data
-    public static class ChunkConfig {
-        /**
-         * 分片大小（字节）
-         */
-        private int chunkSize = 5 * 1024 * 1024;
+        private String baseDir = "/data/files";
         
         /**
          * 临时目录
          */
-        private String tempDir = System.getProperty("java.io.tmpdir");
+        private String tempDir = "/data/temp";
         
         /**
-         * 清理时间（小时）
+         * URL前缀
          */
-        private int cleanupHours = 24;
+        private String urlPrefix = "http://localhost:8080/api/files";
+    }
+    
+    /**
+     * 上传配置
+     */
+    @Data
+    public static class UploadConfig {
+        /**
+         * 最大文件大小 (100MB)
+         */
+        private long maxSize = 104857600;
+        
+        /**
+         * 分片大小 (5MB)
+         */
+        private int chunkSize = 5242880;
+        
+        /**
+         * 允许的文件类型
+         */
+        private String allowedTypes = "*";
+        
+        /**
+         * 禁止的文件类型
+         */
+        private String deniedTypes = "exe,bat,sh,dll";
+    }
+    
+    /**
+     * 本地存储配置
+     */
+    @Data
+    public static class LocalConfig {
+        /**
+         * 是否启用
+         */
+        private boolean enabled = true;
+        
+        /**
+         * 存储根路径
+         */
+        private String basePath = "/data/files";
+        
+        /**
+         * URL前缀
+         */
+        private String urlPrefix = "http://localhost:8080/api/files";
+        
+        /**
+         * 获取临时文件存储路径
+         * @return 临时文件存储路径
+         */
+        public String getTempPath() {
+            return basePath + "/temp";
+        }
+    }
+    
+    /**
+     * MinIO存储配置
+     */
+    @Data
+    public static class MinioConfig {
+        /**
+         * 是否启用
+         */
+        private boolean enabled = true;
+        
+        /**
+         * 服务端点
+         */
+        private String endpoint = "http://minio.example.com";
+        
+        /**
+         * 端口号
+         */
+        private int port = 9000;
+        
+        /**
+         * 访问密钥
+         */
+        private String accessKey = "minioadmin";
+        
+        /**
+         * 访问密钥
+         */
+        private String secretKey = "minioadmin";
+        
+        /**
+         * 是否使用SSL
+         */
+        private boolean useSsl = false;
+    }
+    
+    /**
+     * 阿里云OSS存储配置
+     */
+    @Data
+    public static class AliyunOssConfig {
+        /**
+         * 是否启用
+         */
+        private boolean enabled = false;
+        
+        /**
+         * 服务端点
+         */
+        private String endpoint = "oss-cn-beijing.aliyuncs.com";
+        
+        /**
+         * 访问密钥
+         */
+        private String accessKey;
+        
+        /**
+         * 访问密钥
+         */
+        private String secretKey;
+    }
+    
+    /**
+     * 腾讯云COS存储配置
+     */
+    @Data
+    public static class TencentCosConfig {
+        /**
+         * 是否启用
+         */
+        private boolean enabled = false;
+        
+        /**
+         * 区域
+         */
+        private String region = "ap-beijing";
+        
+        /**
+         * 应用ID
+         */
+        private String appId;
+        
+        /**
+         * 密钥ID
+         */
+        private String secretId;
+        
+        /**
+         * 密钥
+         */
+        private String secretKey;
     }
 } 

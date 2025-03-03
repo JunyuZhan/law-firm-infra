@@ -6,7 +6,7 @@ import com.lawfirm.model.cases.enums.*;
 import com.lawfirm.model.cases.vo.CaseDetailVO;
 import com.lawfirm.model.cases.vo.CaseStatusVO;
 import com.lawfirm.model.base.result.Result;
-import com.lawfirm.cases.service.CaseFileService;
+import com.lawfirm.cases.service.CaseDocumentService;
 import com.lawfirm.cases.service.CaseService;
 import com.lawfirm.cases.service.CaseStatusService;
 import com.lawfirm.model.cases.dto.CaseCreateDTO;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 public class CaseController {
 
     private final CaseService caseService;
-    private final CaseFileService caseFileService;
+    private final CaseDocumentService caseFileService;
     private final CaseStatusService caseStatusService;
 
     @Operation(summary = "创建案件")

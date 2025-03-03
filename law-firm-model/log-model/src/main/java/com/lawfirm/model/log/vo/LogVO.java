@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class LogVO extends BaseVO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 日志标题
      */

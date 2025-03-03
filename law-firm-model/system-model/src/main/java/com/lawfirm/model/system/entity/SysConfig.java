@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @TableName("sys_config")
 public class SysConfig extends ModelBaseEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 配置名称
      */

@@ -15,6 +15,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DocumentCreateDTO extends BaseDTO {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 文档标题
      */

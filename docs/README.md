@@ -49,14 +49,16 @@ docs/
 - [移动端接口](api/mobile/)：移动应用接口文档
 
 ### 4. 部署文档
-- [环境要求](deployment/environment.md)：系统环境要求和配置说明
-- [安装部署](deployment/installation.md)：详细的安装部署步骤指南
-- [运维指南](deployment/operation.md)：系统运维和维护指南
+- [环境要求](deployment/environment.md)：系统运行环境要求
+- [安装部署](deployment/installation.md)：详细的安装部署步骤
+- [运维指南](deployment/operation.md)：系统运维指南和常见问题处理
 
 ### 5. 开发文档
-- [开发指南](development/guide.md)：开发环境搭建和开发流程指南
-- [开发规范](development/standard.md)：代码开发规范和最佳实践
-- [工作流程](development/workflow.md)：开发工作流程和协作规范
+- [开发指南](development/guide.md)：开发环境配置和开发流程
+- [开发规范](development/standard.md)：代码规范和提交规范
+- [工作流程](development/workflow.md)：开发工作流程
+- [JPA到MyBatis Plus迁移指南](development/orm-migration.md)：ORM框架迁移详解
+- [MyBatis Plus开发指南](development/mybatis-plus-guide.md)：MyBatis Plus使用最佳实践
 
 ## 文档更新记录
 

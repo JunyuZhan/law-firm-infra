@@ -1,7 +1,5 @@
 package com.lawfirm.model.contract.enums;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
@@ -9,26 +7,17 @@ import lombok.Getter;
  */
 @Getter
 public enum ContractStatusEnum {
-    
-    DRAFT("DRAFT", "草稿"),
-    PENDING_REVIEW("PENDING_REVIEW", "待审核"),
-    REVIEWING("REVIEWING", "审核中"),
-    REJECTED("REJECTED", "已驳回"),
-    APPROVED("APPROVED", "已审核"),
-    SIGNED("SIGNED", "已签署"),
-    EXECUTING("EXECUTING", "执行中"),
-    COMPLETED("COMPLETED", "已完成"),
-    TERMINATED("TERMINATED", "已终止"),
-    ARCHIVED("ARCHIVED", "已归档");
+    DRAFT(1, "草稿"),
+    UNDER_REVIEW(2, "审核中"),
+    EFFECTIVE(3, "已生效"),
+    TERMINATED(4, "已终止"),
+    EXPIRED(5, "已到期");
 
-    @EnumValue
-    @JsonValue
-    private final String code;
+    private final int code;
     private final String description;
 
-    ContractStatusEnum(String code, String description) {
+    ContractStatusEnum(int code, String description) {
         this.code = code;
         this.description = description;
     }
-}
-
+} 

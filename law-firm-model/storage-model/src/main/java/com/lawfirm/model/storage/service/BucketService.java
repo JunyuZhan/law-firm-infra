@@ -2,8 +2,11 @@ package com.lawfirm.model.storage.service;
 
 import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.storage.dto.bucket.BucketCreateDTO;
+import com.lawfirm.model.storage.dto.bucket.BucketUpdateDTO;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.vo.BucketVO;
+
+import java.util.List;
 
 /**
  * 存储桶服务接口
@@ -17,6 +20,37 @@ public interface BucketService extends BaseService<StorageBucket> {
      * @return 存储桶视图对象
      */
     BucketVO create(BucketCreateDTO createDTO);
+    
+    /**
+     * 获取存储桶信息
+     *
+     * @param bucketId 存储桶ID
+     * @return 存储桶视图对象
+     */
+    BucketVO getInfo(Long bucketId);
+    
+    /**
+     * 更新存储桶
+     *
+     * @param updateDTO 更新参数
+     * @return 存储桶视图对象
+     */
+    BucketVO update(BucketUpdateDTO updateDTO);
+    
+    /**
+     * 删除存储桶
+     *
+     * @param bucketId 存储桶ID
+     * @return 是否成功
+     */
+    boolean delete(Long bucketId);
+    
+    /**
+     * 获取所有存储桶
+     *
+     * @return 存储桶视图对象列表
+     */
+    List<BucketVO> listAll();
 
     /**
      * 更新存储桶配置

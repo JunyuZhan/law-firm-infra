@@ -1,8 +1,9 @@
 package com.lawfirm.model.storage.entity.bucket;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.storage.entity.base.BaseStorage;
 import com.lawfirm.model.storage.enums.BucketTypeEnum;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -11,64 +12,64 @@ import lombok.experimental.Accessors;
  * 存储桶实体
  */
 @Data
-@Entity
-@Table(name = "storage_bucket")
+@TableName("storage_bucket")
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class StorageBucket extends BaseStorage {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 桶名称
      */
-    @Column(name = "bucket_name", nullable = false)
+    @TableField("bucket_name")
     private String bucketName;
 
     /**
      * 桶类型
      */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "bucket_type", nullable = false)
+    @TableField("bucket_type")
     private BucketTypeEnum bucketType;
 
     /**
      * 访问域名
      */
-    @Column(name = "domain")
+    @TableField("domain")
     private String domain;
 
     /**
      * 访问密钥
      */
-    @Column(name = "access_key")
+    @TableField("access_key")
     private String accessKey;
 
     /**
      * 密钥密文
      */
-    @Column(name = "secret_key")
+    @TableField("secret_key")
     private String secretKey;
 
     /**
-     * 配置信息（JSON格式）
+     * 桶配置JSON
      */
-    @Column(name = "config", columnDefinition = "text")
+    @TableField("config")
     private String config;
 
     /**
-     * 最大存储容量（字节）
+     * 最大空间
      */
-    @Column(name = "max_size")
+    @TableField("max_size")
     private Long maxSize;
 
     /**
-     * 已用容量（字节）
+     * 已用空间
      */
-    @Column(name = "used_size")
+    @TableField("used_size")
     private Long usedSize = 0L;
-
+    
     /**
      * 文件数量
      */
-    @Column(name = "file_count")
+    @TableField("file_count")
     private Long fileCount = 0L;
 } 

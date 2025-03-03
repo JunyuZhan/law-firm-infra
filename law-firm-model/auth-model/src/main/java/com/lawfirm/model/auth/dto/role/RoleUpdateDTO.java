@@ -13,6 +13,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class RoleUpdateDTO extends BaseDTO {
     
+    private static final long serialVersionUID = 1L;
+    
     @NotNull(message = "角色ID不能为空")
     private Long id;
     
@@ -26,7 +28,7 @@ public class RoleUpdateDTO extends BaseDTO {
     
     private Integer status;
     
-    private List<Long> permissionIds;
+    private transient List<Long> permissionIds;
     
     private Integer sortOrder;
 } 

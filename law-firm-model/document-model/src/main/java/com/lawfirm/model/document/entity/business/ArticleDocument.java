@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 @TableName("doc_article")
 public class ArticleDocument extends BaseDocument {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 文章分类ID
      */

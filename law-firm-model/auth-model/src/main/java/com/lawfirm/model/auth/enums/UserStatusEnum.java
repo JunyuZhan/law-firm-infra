@@ -1,12 +1,13 @@
 package com.lawfirm.model.auth.enums;
 
 import lombok.Getter;
+import com.lawfirm.model.base.enums.BaseEnum;
 
 /**
  * 用户状态枚举
  */
 @Getter
-public enum UserStatusEnum {
+public enum UserStatusEnum implements BaseEnum<Integer> {
     
     /**
      * 正常
@@ -29,5 +30,15 @@ public enum UserStatusEnum {
     UserStatusEnum(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
+    }
+
+    @Override
+    public Integer getValue() {
+        return code;
+    }
+
+    @Override
+    public String getDescription() {
+        return desc;
     }
 } 

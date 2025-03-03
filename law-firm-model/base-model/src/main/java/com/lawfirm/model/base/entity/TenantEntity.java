@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public abstract class TenantEntity extends ModelBaseEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 租户ID
      */

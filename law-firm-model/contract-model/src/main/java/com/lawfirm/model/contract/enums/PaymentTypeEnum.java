@@ -1,31 +1,29 @@
 package com.lawfirm.model.contract.enums;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
- * 付款类型枚举
+ * 支付类型枚举
  */
 @Getter
 public enum PaymentTypeEnum {
-    
-    LUMP_SUM("LUMP_SUM", "一次性付款"),
-    INSTALLMENT("INSTALLMENT", "分期付款"),
-    MILESTONE("MILESTONE", "里程碑付款"),
-    MONTHLY("MONTHLY", "按月付款"),
-    QUARTERLY("QUARTERLY", "按季付款"),
-    YEARLY("YEARLY", "按年付款"),
-    CUSTOM("CUSTOM", "自定义付款");
+    ONE_TIME(1, "一次性付款"),
+    INSTALLMENT(2, "分期付款"),
+    PROGRESS_PAYMENT(3, "按进度付款"),
+    RETAINER_FEE(4, "顾问费"),
+    SUCCESS_FEE(5, "成功费"),
+    HOURLY_RATE(6, "按小时计费"),
+    CONTINGENCY_FEE(7, "按风险代理"),
+    FREE(8, "免费"),
+    LEGAL_AID(9, "法律援助"),
+    FLAT_FEE(10, "固定费用"),
+    DEPOSIT(11, "预付款");
 
-    @EnumValue
-    @JsonValue
-    private final String code;
+    private final int code;
     private final String description;
 
-    PaymentTypeEnum(String code, String description) {
+    PaymentTypeEnum(int code, String description) {
         this.code = code;
         this.description = description;
     }
-}
-
+} 
