@@ -16,10 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 流程启动事件监听器
- * 监听流程启动事件，记录流程启动信息，设置流程变量等
- *
- * @author cursor
+ * 流程启动事件监听�? * 监听流程启动事件，记录流程启动信息，设置流程变量�? *
+ * @author JunyuZhan
  * @date 2023/03/03
  */
 @Slf4j
@@ -43,7 +41,7 @@ public class ProcessStartListener implements FlowableEventListener {
                 String businessKey = processInstance.getBusinessKey();
                 String startUserId = processInstance.getStartUserId();
                 
-                log.info("流程实例启动：实例ID={}, 流程定义ID={}, 业务键={}, 启动用户={}",
+                log.info("流程实例启动：实例ID={}, 流程定义ID={}, 业务�?{}, 启动用户={}",
                         processInstanceId, processDefinitionId, businessKey, startUserId);
                 
                 try {
@@ -69,8 +67,7 @@ public class ProcessStartListener implements FlowableEventListener {
         variables.put("startTime", new Date());
         variables.put("processStartStatus", "SUCCESS");
         
-        // 2. 更新流程实例，在实际应用中可能会更新数据库中的流程记录
-        // processService.updateProcessInstance(processInstance.getProcessInstanceId(), variables);
+        // 2. 更新流程实例，在实际应用中可能会更新数据库中的流程记�?        // processService.updateProcessInstance(processInstance.getProcessInstanceId(), variables);
         
         // 3. 发送通知
         sendProcessStartNotification(processInstance);
@@ -96,16 +93,15 @@ public class ProcessStartListener implements FlowableEventListener {
         notifyParams.put("startTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         
         // 在实际应用中应调用消息服务发送通知
-        // messageService.sendMessage(startUserId, "流程启动通知", "您的流程已成功启动", notifyParams);
+        // messageService.sendMessage(startUserId, "流程启动通知", "您的流程已成功启�?, notifyParams);
         
         // 记录通知日志
-        log.info("流程启动通知已发送：实例ID={}, 接收人={}", processInstanceId, startUserId);
+        log.info("流程启动通知已发送：实例ID={}, 接收�?{}", processInstanceId, startUserId);
     }
 
     @Override
     public boolean isFailOnException() {
-        // 异常不中断流程执行
-        return false;
+        // 异常不中断流程执�?        return false;
     }
 
     @Override
@@ -116,7 +112,6 @@ public class ProcessStartListener implements FlowableEventListener {
 
     @Override
     public String getOnTransaction() {
-        // 事务提交后触发
-        return "COMMITTED";
+        // 事务提交后触�?        return "COMMITTED";
     }
 } 

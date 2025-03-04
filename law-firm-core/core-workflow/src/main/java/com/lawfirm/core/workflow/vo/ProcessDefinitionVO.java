@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * 流程定义视图对象
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @Accessors(chain = false)
@@ -58,8 +58,7 @@ public class ProcessDefinitionVO implements FlowableVO {
     private LocalDateTime deploymentTime;
     
     /**
-     * 流程图资源名称
-     */
+     * 流程图资源名�?     */
     private String diagramResourceName;
     
     /**
@@ -83,12 +82,10 @@ public class ProcessDefinitionVO implements FlowableVO {
     private String engineVersion;
     
     /**
-     * 是否有启动表单
-     */
+     * 是否有启动表�?     */
     private Boolean hasStartForm;
     
     /**
-     * 是否图形化流程
-     */
+     * 是否图形化流�?     */
     private Boolean graphicalNotation;
 } 

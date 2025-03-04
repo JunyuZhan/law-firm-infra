@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Flowable流程引擎适配器实现类
  * 
- * @author claude
+ * @author JunyuZhan
  */
 @Slf4j
 @Component
@@ -80,8 +80,8 @@ public class FlowableProcessAdapterImpl implements FlowableProcessAdapter {
             runtimeService.suspendProcessInstanceById(processInstanceId);
             log.info("流程挂起成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("流程实例不存在", e);
-            throw new ProcessException("流程实例不存在");
+            log.error("流程实例不存�?, e);
+            throw new ProcessException("流程实例不存�?);
         } catch (Exception e) {
             log.error("挂起流程失败", e);
             throw new ProcessException("挂起流程失败: " + e.getMessage());
@@ -90,17 +90,17 @@ public class FlowableProcessAdapterImpl implements FlowableProcessAdapter {
 
     @Override
     public void activateProcess(String processInstanceId) {
-        log.info("激活流程, 流程实例ID: {}", processInstanceId);
+        log.info("激活流�? 流程实例ID: {}", processInstanceId);
         
         try {
             runtimeService.activateProcessInstanceById(processInstanceId);
-            log.info("流程激活成功");
+            log.info("流程激活成�?);
         } catch (FlowableObjectNotFoundException e) {
-            log.error("流程实例不存在", e);
-            throw new ProcessException("流程实例不存在");
+            log.error("流程实例不存�?, e);
+            throw new ProcessException("流程实例不存�?);
         } catch (Exception e) {
-            log.error("激活流程失败", e);
-            throw new ProcessException("激活流程失败: " + e.getMessage());
+            log.error("激活流程失�?, e);
+            throw new ProcessException("激活流程失�? " + e.getMessage());
         }
     }
 
@@ -114,8 +114,8 @@ public class FlowableProcessAdapterImpl implements FlowableProcessAdapter {
             runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
             log.info("流程终止成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("流程实例不存在", e);
-            throw new ProcessException("流程实例不存在");
+            log.error("流程实例不存�?, e);
+            throw new ProcessException("流程实例不存�?);
         } catch (Exception e) {
             log.error("终止流程失败", e);
             throw new ProcessException("终止流程失败: " + e.getMessage());
@@ -133,8 +133,7 @@ public class FlowableProcessAdapterImpl implements FlowableProcessAdapter {
             try {
                 runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
             } catch (FlowableObjectNotFoundException e) {
-                // 流程实例可能已经结束，忽略异常
-                log.info("流程实例{}不存在于运行时数据库中，可能已经结束", processInstanceId);
+                // 流程实例可能已经结束，忽略异�?                log.info("流程实例{}不存在于运行时数据库中，可能已经结束", processInstanceId);
             }
             
             // 删除历史数据
@@ -162,13 +161,13 @@ public class FlowableProcessAdapterImpl implements FlowableProcessAdapter {
 
     @Override
     public Object getVariable(String processInstanceId, String variableName) {
-        log.info("获取流程变量, 流程实例ID: {}, 变量名: {}", processInstanceId, variableName);
+        log.info("获取流程变量, 流程实例ID: {}, 变量�? {}", processInstanceId, variableName);
         
         try {
             return runtimeService.getVariable(processInstanceId, variableName);
         } catch (FlowableObjectNotFoundException e) {
-            log.error("流程实例不存在", e);
-            throw new ProcessException("流程实例不存在");
+            log.error("流程实例不存�?, e);
+            throw new ProcessException("流程实例不存�?);
         } catch (Exception e) {
             log.error("获取流程变量失败", e);
             throw new ProcessException("获取流程变量失败: " + e.getMessage());
@@ -177,14 +176,14 @@ public class FlowableProcessAdapterImpl implements FlowableProcessAdapter {
 
     @Override
     public void setVariable(String processInstanceId, String variableName, Object value) {
-        log.info("设置流程变量, 流程实例ID: {}, 变量名: {}", processInstanceId, variableName);
+        log.info("设置流程变量, 流程实例ID: {}, 变量�? {}", processInstanceId, variableName);
         
         try {
             runtimeService.setVariable(processInstanceId, variableName, value);
             log.info("设置流程变量成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("流程实例不存在", e);
-            throw new ProcessException("流程实例不存在");
+            log.error("流程实例不存�?, e);
+            throw new ProcessException("流程实例不存�?);
         } catch (Exception e) {
             log.error("设置流程变量失败", e);
             throw new ProcessException("设置流程变量失败: " + e.getMessage());

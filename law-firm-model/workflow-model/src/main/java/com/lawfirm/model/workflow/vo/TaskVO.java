@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * 任务视图对象
  * 用于前端展示和交互的任务数据结构
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @Accessors(chain = true)
@@ -45,8 +45,7 @@ public class TaskVO implements Serializable {
     private String description;
     
     /**
-     * 任务状态
-     * @see TaskStatusEnum
+     * 任务状�?     * @see TaskStatusEnum
      */
     private TaskStatusEnum status;
     
@@ -64,8 +63,7 @@ public class TaskVO implements Serializable {
     
     /**
      * 工作流引擎任务ID
-     * @deprecated 考虑移除，实现细节不应暴露在VO中
-     */
+     * @deprecated 考虑移除，实现细节不应暴露在VO�?     */
     @Deprecated
     private String flowableTaskId;
     
@@ -76,13 +74,11 @@ public class TaskVO implements Serializable {
     private Long handlerId;
     
     /**
-     * 处理人名称
-     */
+     * 处理人名�?     */
     private String handlerName;
     
     /**
-     * 任务优先级
-     * @see TaskPriorityEnum
+     * 任务优先�?     * @see TaskPriorityEnum
      */
     private TaskPriorityEnum priority;
     
@@ -100,21 +96,17 @@ public class TaskVO implements Serializable {
     
     /**
      * 处理意见
-     * 任务处理过程中的备注或说明
-     */
+     * 任务处理过程中的备注或说�?     */
     private String comment;
     
     /**
      * 是否超时
-     * true: 已超时
-     * false: 未超时
-     */
+     * true: 已超�?     * false: 未超�?     */
     private Boolean overdue;
     
     /**
      * 剩余处理时间（小时）
-     * 负数表示已超时的小时数
-     */
+     * 负数表示已超时的小时�?     */
     private Integer remainingHours;
     
     /**
@@ -128,9 +120,7 @@ public class TaskVO implements Serializable {
     private Long businessId;
     
     /**
-     * 关联的业务类型
-     * 用于标识关联的具体业务模块
-     */
+     * 关联的业务类�?     * 用于标识关联的具体业务模�?     */
     private String businessType;
 
     /**
@@ -146,13 +136,11 @@ public class TaskVO implements Serializable {
     private LocalDateTime updateTime;
 
     /**
-     * 创建人
-     */
+     * 创建�?     */
     private String createBy;
 
     /**
-     * 更新人
-     */
+     * 更新�?     */
     private String updateBy;
 
     /**

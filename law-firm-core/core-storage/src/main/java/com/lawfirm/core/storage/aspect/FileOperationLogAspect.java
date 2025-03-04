@@ -15,9 +15,8 @@ import java.util.Arrays;
 
 /**
  * 文件操作日志切面
- * 用于记录文件上传、下载、删除等操作的日志
- *
- * @author Claude
+ * 用于记录文件上传、下载、删除等操作的日�? *
+ * @author JunyuZhan
  */
 @Aspect
 @Component
@@ -47,8 +46,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件上传前记录日志
-     */
+     * 文件上传前记录日�?     */
     @Before("uploadPointcut()")
     public void beforeUpload(JoinPoint joinPoint) {
         log.info("准备上传文件: {}", Arrays.toString(joinPoint.getArgs()));
@@ -58,8 +56,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件上传成功后记录日志
-     */
+     * 文件上传成功后记录日�?     */
     @AfterReturning(pointcut = "uploadPointcut()", returning = "result")
     public void afterUploadReturning(JoinPoint joinPoint, Object result) {
         log.info("文件上传成功: {}", result);
@@ -68,8 +65,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件上传失败后记录日志
-     */
+     * 文件上传失败后记录日�?     */
     @AfterThrowing(pointcut = "uploadPointcut()", throwing = "e")
     public void afterUploadThrowing(JoinPoint joinPoint, Throwable e) {
         log.error("文件上传失败: {}", e.getMessage(), e);
@@ -78,8 +74,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件下载前记录日志
-     */
+     * 文件下载前记录日�?     */
     @Before("downloadPointcut()")
     public void beforeDownload(JoinPoint joinPoint) {
         log.info("准备下载文件: {}", Arrays.toString(joinPoint.getArgs()));
@@ -87,8 +82,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件下载成功后记录日志
-     */
+     * 文件下载成功后记录日�?     */
     @AfterReturning(pointcut = "downloadPointcut()", returning = "result")
     public void afterDownloadReturning(JoinPoint joinPoint, Object result) {
         log.info("文件下载成功: {}", result);
@@ -96,8 +90,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件下载失败后记录日志
-     */
+     * 文件下载失败后记录日�?     */
     @AfterThrowing(pointcut = "downloadPointcut()", throwing = "e")
     public void afterDownloadThrowing(JoinPoint joinPoint, Throwable e) {
         log.error("文件下载失败: {}", e.getMessage(), e);
@@ -105,8 +98,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件删除前记录日志
-     */
+     * 文件删除前记录日�?     */
     @Before("deletePointcut()")
     public void beforeDelete(JoinPoint joinPoint) {
         log.info("准备删除文件: {}", Arrays.toString(joinPoint.getArgs()));
@@ -114,8 +106,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件删除成功后记录日志
-     */
+     * 文件删除成功后记录日�?     */
     @AfterReturning(pointcut = "deletePointcut()")
     public void afterDeleteReturning(JoinPoint joinPoint) {
         log.info("文件删除成功");
@@ -123,8 +114,7 @@ public class FileOperationLogAspect {
     }
 
     /**
-     * 文件删除失败后记录日志
-     */
+     * 文件删除失败后记录日�?     */
     @AfterThrowing(pointcut = "deletePointcut()", throwing = "e")
     public void afterDeleteThrowing(JoinPoint joinPoint, Throwable e) {
         log.error("文件删除失败: {}", e.getMessage(), e);

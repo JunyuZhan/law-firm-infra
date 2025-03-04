@@ -5,9 +5,8 @@ import java.util.Map;
 
 /**
  * 通知服务接口
- * 提供通知相关的功能
- *
- * @author claude
+ * 提供通知相关的功�? *
+ * @author JunyuZhan
  */
 public interface NotificationService {
 

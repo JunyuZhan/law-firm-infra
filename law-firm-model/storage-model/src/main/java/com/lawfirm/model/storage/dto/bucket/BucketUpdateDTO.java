@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 /**
  * 存储桶更新DTO
  * 
- * @author AI助手
+ * @author JunyuZhan
  */
 @Data
 @NoArgsConstructor
@@ -59,7 +59,7 @@ public class BucketUpdateDTO {
     /**
      * 设置ID，映射到bucketId
      * 
-     * @param id ID值
+     * @param id ID
      * @return 当前对象
      */
     public BucketUpdateDTO setId(Long id) {
@@ -70,7 +70,7 @@ public class BucketUpdateDTO {
     /**
      * 获取ID，实际获取bucketId
      * 
-     * @return bucketId值
+     * @return bucketId
      */
     public Long getId() {
         return this.bucketId;

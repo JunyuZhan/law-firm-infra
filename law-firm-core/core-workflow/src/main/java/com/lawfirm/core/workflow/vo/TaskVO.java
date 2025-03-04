@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 任务视图对象
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 public class TaskVO {
@@ -37,8 +37,7 @@ public class TaskVO {
     private Long handlerId;
     
     /**
-     * 处理人名称
-     */
+     * 处理人名�?     */
     private String handlerName;
     
     /**
@@ -87,8 +86,7 @@ public class TaskVO {
     private Long creatorId;
     
     /**
-     * 创建人名称
-     */
+     * 创建人名�?     */
     private String creatorName;
     
     /**
@@ -97,13 +95,11 @@ public class TaskVO {
     private Long updaterId;
     
     /**
-     * 更新人名称
-     */
+     * 更新人名�?     */
     private String updaterName;
     
     /**
-     * 任务优先级
-     */
+     * 任务优先�?     */
     private Integer priority;
     
     /**
@@ -127,7 +123,6 @@ public class TaskVO {
     private Long businessId;
     
     /**
-     * 关联的业务类型
-     */
+     * 关联的业务类�?     */
     private String businessType;
 } 

@@ -12,17 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * 流程数据转换器
- * 
- * @author claude
+ * 流程数据转换�? * 
+ * @author JunyuZhan
  */
 @Component
 @RequiredArgsConstructor
 public class ProcessConverter {
 
     /**
-     * 将创建DTO转换为实体
-     * 
+     * 将创建DTO转换为实�?     * 
      * @param createDTO 创建DTO
      * @return 实体对象
      */

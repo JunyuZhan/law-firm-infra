@@ -16,7 +16,7 @@ import java.util.Arrays;
 /**
  * 操作日志记录处理
  * 
- * @author weidi
+ * @author JunyuZhan
  */
 @Aspect
 @Component

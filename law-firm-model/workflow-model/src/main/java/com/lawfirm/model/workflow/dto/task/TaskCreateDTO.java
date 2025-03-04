@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 /**
  * 任务创建DTO
  * 
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @Accessors(chain = true)
@@ -47,10 +47,10 @@ public class TaskCreateDTO extends BaseDTO {
     @ApiModelProperty("处理人ID")
     private Long handlerId;
 
-    @ApiModelProperty("处理人名称")
+    @ApiModelProperty("处理人名�?)
     private String handlerName;
 
-    @ApiModelProperty("优先级")
+    @ApiModelProperty("优先�?)
     private Integer priority;
 
     @ApiModelProperty("截止时间")
@@ -60,14 +60,11 @@ public class TaskCreateDTO extends BaseDTO {
      * 自定义序列化逻辑
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
-        // 保存时间戳
-        long dueTimeEpoch = dueDate != null ? dueDate.toInstant().toEpochMilli() : 0;
+        // 保存时间�?        long dueTimeEpoch = dueDate != null ? dueDate.toInstant().toEpochMilli() : 0;
         
-        // 执行默认序列化
-        out.defaultWriteObject();
+        // 执行默认序列�?        out.defaultWriteObject();
         
-        // 写入时间戳
-        out.writeLong(dueTimeEpoch);
+        // 写入时间�?        out.writeLong(dueTimeEpoch);
     }
     
     /**

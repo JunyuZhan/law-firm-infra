@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Swagger API文档配置
  *
- * @author weidi
+ * @author JunyuZhan
  */
 @Configuration
 public class SwaggerConfig {

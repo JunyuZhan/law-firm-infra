@@ -10,9 +10,8 @@ import lombok.experimental.Accessors;
 import java.time.LocalDateTime;
 
 /**
- * 任务实体类
- * 
- * @author claude
+ * 任务实体�? * 
+ * @author JunyuZhan
  */
 @Data
 @TableName(value = "wf_task")
@@ -53,14 +52,12 @@ public class Task extends TenantEntity {
     private Long handlerId;
 
     /**
-     * 处理人名称
-     */
+     * 处理人名�?     */
     @TableField(value = "handler_name")
     private String handlerName;
 
     /**
-     * 优先级
-     */
+     * 优先�?     */
     @TableField(value = "priority")
     private Integer priority;
 
@@ -71,12 +68,7 @@ public class Task extends TenantEntity {
     private LocalDateTime dueDate;
 
     /**
-     * 任务状态
-     * 0-待处理
-     * 1-处理中
-     * 2-已完成
-     * 3-已取消
-     */
+     * 任务状�?     * 0-待处�?     * 1-处理�?     * 2-已完�?     * 3-已取�?     */
     @TableField(value = "status")
     private Integer status;
 

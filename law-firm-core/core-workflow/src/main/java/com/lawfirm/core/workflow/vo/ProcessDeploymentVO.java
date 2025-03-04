@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * 流程部署视图对象
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @Accessors(chain = false)
@@ -50,8 +50,7 @@ public class ProcessDeploymentVO implements FlowableVO {
     private String engineVersion;
     
     /**
-     * 部署的资源列表
-     */
+     * 部署的资源列�?     */
     private ArrayList<String> resourceNames;
     
     /**
@@ -70,8 +69,7 @@ public class ProcessDeploymentVO implements FlowableVO {
     private String description;
     
     /**
-     * 是否激活
-     */
+     * 是否激�?     */
     private Boolean active;
 
     /**

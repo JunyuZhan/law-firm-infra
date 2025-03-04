@@ -15,17 +15,15 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
- * 任务数据转换器
- * 
- * @author claude
+ * 任务数据转换�? * 
+ * @author JunyuZhan
  */
 @Component
 @RequiredArgsConstructor
 public class TaskConverter {
 
     /**
-     * 将创建DTO转换为实体
-     * 
+     * 将创建DTO转换为实�?     * 
      * @param createDTO 创建DTO
      * @return 实体对象
      */
@@ -49,8 +47,7 @@ public class TaskConverter {
     }
     
     /**
-     * 将Flowable任务转换为实体
-     * 
+     * 将Flowable任务转换为实�?     * 
      * @param flowableTask Flowable任务
      * @return 实体对象
      */

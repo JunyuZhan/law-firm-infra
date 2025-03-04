@@ -1,9 +1,8 @@
 package com.lawfirm.core.workflow.exception;
 
 /**
- * 流程异常类
- * 
- * @author claude
+ * 流程异常�? * 
+ * @author JunyuZhan
  */
 public class ProcessException extends WorkflowException {
 

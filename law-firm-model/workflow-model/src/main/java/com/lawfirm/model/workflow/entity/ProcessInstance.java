@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 /**
  * 流程实例实体类，扩展BaseProcess
  * 
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @Accessors(chain = true)
@@ -57,8 +57,7 @@ public class ProcessInstance extends BaseProcess {
     private String deploymentId;
     
     /**
-     * 业务键
-     */
+     * 业务�?     */
     @TableField("business_key")
     private String businessKey;
 } 

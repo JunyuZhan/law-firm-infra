@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * 流程实例视图对象
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @Accessors(chain = false)
@@ -53,8 +53,7 @@ public class ProcessInstanceVO implements FlowableVO {
     private String businessKey;
     
     /**
-     * 开始时间
-     */
+     * 开始时�?     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
     
@@ -105,8 +104,7 @@ public class ProcessInstanceVO implements FlowableVO {
     private String description;
     
     /**
-     * 流程状态
-     */
+     * 流程状�?     */
     private String processStatus;
     
     /**
@@ -115,7 +113,6 @@ public class ProcessInstanceVO implements FlowableVO {
     private String currentTaskName;
     
     /**
-     * 当前处理人
-     */
+     * 当前处理�?     */
     private String currentHandler;
 } 

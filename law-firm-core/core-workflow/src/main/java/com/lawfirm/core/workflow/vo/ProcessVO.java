@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * 流程视图对象
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @Accessors(chain = true)
@@ -35,8 +35,7 @@ public class ProcessVO implements Serializable {
     private LocalDateTime createTime;
 
     /**
-     * 创建人
-     */
+     * 创建�?     */
     private String createBy;
 
     /**
@@ -46,13 +45,11 @@ public class ProcessVO implements Serializable {
     private LocalDateTime updateTime;
 
     /**
-     * 更新人
-     */
+     * 更新�?     */
     private String updateBy;
 
     /**
-     * 状态（0正常 1停用）
-     */
+     * 状态（0正常 1停用�?     */
     private Integer status;
 
     /**
@@ -91,13 +88,11 @@ public class ProcessVO implements Serializable {
     private Long currentHandlerId;
     
     /**
-     * 当前处理人名称
-     */
+     * 当前处理人名�?     */
     private String currentHandlerName;
     
     /**
-     * 开始时间
-     */
+     * 开始时�?     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
     

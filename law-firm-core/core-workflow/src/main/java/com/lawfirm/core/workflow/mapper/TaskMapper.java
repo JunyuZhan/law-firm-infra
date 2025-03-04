@@ -13,7 +13,7 @@ import java.util.List;
  * 任务Mapper接口
  * 基于MyBatis Plus提供任务的数据库访问
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Mapper
 public interface TaskMapper extends BaseMapper<Task> {

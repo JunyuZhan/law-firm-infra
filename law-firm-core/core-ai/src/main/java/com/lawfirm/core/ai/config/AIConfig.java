@@ -10,10 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import lombok.Data;
 
 /**
- * AI核心配置类
- *
- * @author AI开发团队
- */
+ * AI核心配置�? *
+ * @author JunyuZhan */
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "lawfirm.ai")
@@ -22,18 +20,15 @@ import lombok.Data;
 public class AIConfig {
 
     /**
-     * 默认AI提供商（openai, baidu, local）
-     */
+     * 默认AI提供商（openai, baidu, local�?     */
     private String defaultProvider = "openai";
     
     /**
-     * 模型超时时间（秒）
-     */
+     * 模型超时时间（秒�?     */
     private Integer timeout = 30;
     
     /**
-     * 并发请求数限制
-     */
+     * 并发请求数限�?     */
     private Integer maxConcurrentRequests = 10;
     
     /**
@@ -42,13 +37,11 @@ public class AIConfig {
     private Boolean enableLogging = true;
     
     /**
-     * 敏感信息过滤开关
-     */
+     * 敏感信息过滤开�?     */
     private Boolean enablePrivacyFilter = true;
     
     /**
-     * 是否开启风险评估
-     */
+     * 是否开启风险评�?     */
     private Boolean enableRiskAssessment = true;
     
     /**
@@ -57,10 +50,8 @@ public class AIConfig {
     private String localModelPath;
     
     /**
-     * 初始化方法
-     */
+     * 初始化方�?     */
     @Bean
     public void init() {
-        // 初始化操作
-    }
+        // 初始化操�?    }
 } 

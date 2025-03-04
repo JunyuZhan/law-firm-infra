@@ -1,9 +1,8 @@
 package com.lawfirm.core.workflow.exception;
 
 /**
- * 任务异常类
- * 
- * @author claude
+ * 任务异常�? * 
+ * @author JunyuZhan
  */
 public class TaskException extends WorkflowException {
 

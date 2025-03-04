@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 /**
  * 流程实例视图对象
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @Accessors(chain = true)
@@ -49,8 +49,7 @@ public class ProcessInstanceVO implements Serializable {
     private String deploymentId;
 
     /**
-     * 业务键
-     */
+     * 业务�?     */
     private String businessKey;
 
     /**
@@ -64,8 +63,7 @@ public class ProcessInstanceVO implements Serializable {
     private String description;
 
     /**
-     * 开始时间
-     */
+     * 开始时�?     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 

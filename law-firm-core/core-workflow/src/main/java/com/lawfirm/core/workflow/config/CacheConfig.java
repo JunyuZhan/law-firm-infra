@@ -9,9 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Arrays;
 
 /**
- * 工作流缓存配置
- * 
- * @author claude
+ * 工作流缓存配�? * 
+ * @author JunyuZhan
  */
 @Configuration
 @EnableCaching
@@ -38,10 +37,8 @@ public class CacheConfig {
     public static final String PROCESS_TEMPLATE_CACHE = "process_template";
     
     /**
-     * 缓存管理器
-     * 
-     * @return 缓存管理器
-     */
+     * 缓存管理�?     * 
+     * @return 缓存管理�?     */
     @Bean
     public CacheManager cacheManager() {
         ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();

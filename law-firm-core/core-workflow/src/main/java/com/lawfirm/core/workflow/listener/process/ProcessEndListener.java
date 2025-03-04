@@ -15,10 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 流程结束事件监听器
- * 监听流程结束事件，记录流程结束信息，更新业务状态等
+ * 流程结束事件监听�? * 监听流程结束事件，记录流程结束信息，更新业务状态等
  *
- * @author cursor
+ * @author JunyuZhan
  * @date 2023/03/03
  */
 @Slf4j
@@ -66,8 +65,7 @@ public class ProcessEndListener implements FlowableEventListener {
         // 由于缺少特定的事件类型，这里使用反射或其他方法尝试获取流程实例ID
         // 实际开发中，应根据Flowable版本和事件类型的具体实现进行提取
         try {
-            // 尝试从事件对象中获取processInstanceId属性
-            java.lang.reflect.Method method = event.getClass().getMethod("getProcessInstanceId");
+            // 尝试从事件对象中获取processInstanceId属�?            java.lang.reflect.Method method = event.getClass().getMethod("getProcessInstanceId");
             return (String) method.invoke(event);
         } catch (Exception e) {
             log.warn("从事件中提取流程实例ID失败", e);
@@ -89,33 +87,28 @@ public class ProcessEndListener implements FlowableEventListener {
         variables.put("endTime", new Date());
         variables.put("processEndStatus", "COMPLETED");
         
-        // 2. 更新流程实例状态
-        // processService.updateProcessInstance(processInstanceId, variables);
+        // 2. 更新流程实例状�?        // processService.updateProcessInstance(processInstanceId, variables);
         
-        // 3. 更新业务状态
-        updateBusinessStatus(businessKey);
+        // 3. 更新业务状�?        updateBusinessStatus(businessKey);
         
         // 4. 发送通知
         sendProcessCompletedNotification(processInstance);
     }
 
     /**
-     * 更新业务状态
-     *
-     * @param businessKey 业务键
-     */
+     * 更新业务状�?     *
+     * @param businessKey 业务�?     */
     private void updateBusinessStatus(String businessKey) {
         if (businessKey == null || businessKey.isEmpty()) {
-            log.warn("业务键为空，无法更新业务状态");
+            log.warn("业务键为空，无法更新业务状�?);
             return;
         }
         
         try {
-            // 在实际应用中，应根据业务键解析出业务类型和ID，并更新对应的业务状态
-            // 例如：合同审批完成后，更新合同状态为"已审批"
+            // 在实际应用中，应根据业务键解析出业务类型和ID，并更新对应的业务状�?            // 例如：合同审批完成后，更新合同状态为"已审�?
             log.info("业务状态已更新: businessKey={}", businessKey);
         } catch (Exception e) {
-            log.error("更新业务状态异常: businessKey={}", businessKey, e);
+            log.error("更新业务状态异�? businessKey={}", businessKey, e);
         }
     }
 
@@ -136,16 +129,15 @@ public class ProcessEndListener implements FlowableEventListener {
         notifyParams.put("completionTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         
         // 在实际应用中应调用消息服务发送通知
-        // messageService.sendMessage(startUserId, "流程完成通知", "您启动的流程已成功完成", notifyParams);
+        // messageService.sendMessage(startUserId, "流程完成通知", "您启动的流程已成功完�?, notifyParams);
         
         // 记录通知日志
-        log.info("流程完成通知已发送：实例ID={}, 接收人={}", processInstanceId, startUserId);
+        log.info("流程完成通知已发送：实例ID={}, 接收�?{}", processInstanceId, startUserId);
     }
 
     @Override
     public boolean isFailOnException() {
-        // 异常不中断流程执行
-        return false;
+        // 异常不中断流程执�?        return false;
     }
 
     @Override
@@ -156,14 +148,11 @@ public class ProcessEndListener implements FlowableEventListener {
 
     @Override
     public String getOnTransaction() {
-        // 事务提交后触发
-        return "COMMITTED";
+        // 事务提交后触�?        return "COMMITTED";
     }
     
     /**
-     * 流程实例包装类
-     * 由于无法直接获取流程实例对象，我们创建一个简单的包装类来模拟ProcessInstance的行为
-     */
+     * 流程实例包装�?     * 由于无法直接获取流程实例对象，我们创建一个简单的包装类来模拟ProcessInstance的行�?     */
     private class ProcessInstanceWrapper {
         private final String processInstanceId;
         private String businessKey;
@@ -173,8 +162,7 @@ public class ProcessEndListener implements FlowableEventListener {
         public ProcessInstanceWrapper(String processInstanceId) {
             this.processInstanceId = processInstanceId;
             
-            // 在实际应用中，可以从历史服务中查询这些信息
-            // HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
+            // 在实际应用中，可以从历史服务中查询这些信�?            // HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
             //         .processInstanceId(processInstanceId)
             //         .singleResult();
             //
@@ -184,8 +172,7 @@ public class ProcessEndListener implements FlowableEventListener {
             //     this.startUserId = historicProcessInstance.getStartUserId();
             // }
             
-            // 这里为了演示，使用模拟数据
-            this.businessKey = "demo:1001";
+            // 这里为了演示，使用模拟数�?            this.businessKey = "demo:1001";
             this.processDefinitionId = "process:1:1001";
             this.startUserId = "admin";
         }

@@ -19,9 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 全局异常处理器
- *
- * @author weidi
+ * 全局异常处理�? *
+ * @author JunyuZhan
  */
 @Slf4j
 @RestControllerAdvice
@@ -90,7 +89,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Result<?> handleAccessDeniedException(AccessDeniedException e) {
         log.error("授权异常", e);
-        return Result.error("403", "没有权限访问该资源");
+        return Result.error("403", "没有权限访问该资�?);
     }
 
     /**
@@ -110,6 +109,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<?> handleException(Exception e) {
         log.error("系统异常", e);
-        return Result.error("500", "系统异常，请联系管理员");
+        return Result.error("500", "系统异常，请联系管理�?);
     }
 } 

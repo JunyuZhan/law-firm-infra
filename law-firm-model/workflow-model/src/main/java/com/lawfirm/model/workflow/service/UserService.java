@@ -4,18 +4,15 @@ import java.util.List;
 
 /**
  * 用户服务接口
- * 提供用户相关的功能
- *
- * @author claude
+ * 提供用户相关的功�? *
+ * @author JunyuZhan
  */
 public interface UserService {
 
     /**
-     * 根据用户ID获取用户名
-     *
+     * 根据用户ID获取用户�?     *
      * @param userId 用户ID
-     * @return 用户名
-     */
+     * @return 用户�?     */
     String getUserName(Long userId);
 
     /**
@@ -35,16 +32,14 @@ public interface UserService {
     List<Long> getUsersByDept(Long deptId);
 
     /**
-     * 获取用户的角色列表
-     *
+     * 获取用户的角色列�?     *
      * @param userId 用户ID
      * @return 角色ID列表
      */
     List<Long> getUserRoles(Long userId);
 
     /**
-     * 获取用户的部门列表
-     *
+     * 获取用户的部门列�?     *
      * @param userId 用户ID
      * @return 部门ID列表
      */
@@ -55,7 +50,6 @@ public interface UserService {
      *
      * @param userId 用户ID
      * @param permission 权限标识
-     * @return 是否有权限
-     */
+     * @return 是否有权�?     */
     boolean hasPermission(Long userId, String permission);
 } 

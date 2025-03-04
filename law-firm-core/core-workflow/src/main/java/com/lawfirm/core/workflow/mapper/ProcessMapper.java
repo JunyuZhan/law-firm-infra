@@ -14,7 +14,7 @@ import java.util.List;
  * 流程Mapper接口
  * 基于MyBatis Plus提供流程的数据库访问
  *
- * @author cursor
+ * @author JunyuZhan
  * @date 2023/03/03
  */
 @Mapper

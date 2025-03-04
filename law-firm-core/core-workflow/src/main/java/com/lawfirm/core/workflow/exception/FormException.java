@@ -1,9 +1,8 @@
 package com.lawfirm.core.workflow.exception;
 
 /**
- * 表单异常类
- * 
- * @author claude
+ * 表单异常�? * 
+ * @author JunyuZhan
  */
 public class FormException extends WorkflowException {
 

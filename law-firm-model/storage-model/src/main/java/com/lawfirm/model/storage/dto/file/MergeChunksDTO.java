@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 分片合并DTO
  * 
- * @author AI助手
+ * @author JunyuZhan
  */
 @Data
 @NoArgsConstructor

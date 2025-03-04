@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 /**
  * 工作流模块配置类
  * 
- * @author claude
+ * @author JunyuZhan
  */
 @Slf4j
 @Configuration

@@ -1,9 +1,8 @@
 package com.lawfirm.core.workflow.exception;
 
 /**
- * 工作流异常基类
- * 
- * @author claude
+ * 工作流异常基�? * 
+ * @author JunyuZhan
  */
 public class WorkflowException extends RuntimeException {
 

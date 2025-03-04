@@ -91,7 +91,6 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-util</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- 测试依赖 -->

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 /**
  * 统一响应处理
  *
- * @author weidi
+ * @author JunyuZhan
  */
 @RestControllerAdvice(basePackages = "com.lawfirm.staff.controller")
 public class ResponseAdvice implements ResponseBodyAdvice<Object> {
@@ -25,12 +25,10 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, 
             MediaType selectedContentType, Class selectedConverterType,
             ServerHttpRequest request, ServerHttpResponse response) {
-        // 如果响应结果已经是Result类型，直接返回
-        if (body instanceof Result) {
+        // 如果响应结果已经是Result类型，直接返�?        if (body instanceof Result) {
             return body;
         }
-        // 如果是String类型，需要特殊处理
-        if (body instanceof String) {
+        // 如果是String类型，需要特殊处�?        if (body instanceof String) {
             return Result.success(body);
         }
         // 其他类型，统一包装成Result

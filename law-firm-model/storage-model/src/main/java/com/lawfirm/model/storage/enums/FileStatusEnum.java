@@ -5,17 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 文件状态枚举
- * 
- * @author AI助手
+ * 文件状态枚�? * 
+ * @author JunyuZhan
  */
 @Getter
 @AllArgsConstructor
 public enum FileStatusEnum implements BaseEnum<Integer> {
     /**
-     * 上传中
-     */
-    UPLOADING(0, "上传中"),
+     * 上传�?     */
+    UPLOADING(0, "上传�?),
     
     /**
      * 上传完成
@@ -28,9 +26,8 @@ public enum FileStatusEnum implements BaseEnum<Integer> {
     FAILED(2, "上传失败"),
     
     /**
-     * 已删除
-     */
-    DELETED(3, "已删除");
+     * 已删�?     */
+    DELETED(3, "已删�?);
     
     /**
      * 状态码
@@ -53,8 +50,7 @@ public enum FileStatusEnum implements BaseEnum<Integer> {
     }
     
     /**
-     * 根据值获取枚举
-     */
+     * 根据值获取枚�?     */
     public static FileStatusEnum getByValue(Integer value) {
         if (value == null) {
             return null;

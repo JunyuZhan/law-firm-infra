@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Flowable引擎相关的VO基础接口
  *
- * @author claude
+ * @author JunyuZhan
  */
 public interface FlowableVO extends Serializable {
     

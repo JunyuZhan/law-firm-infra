@@ -8,7 +8,7 @@ import com.lawfirm.model.log.dto.LogQueryDTO;
 /**
  * 日志服务接口
  *
- * @author weidi
+ * @author JunyuZhan
  */
 public interface LogService<T extends BaseLogDTO> {
 

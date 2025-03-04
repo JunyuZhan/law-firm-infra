@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 任务管理接口
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Tag(name = "任务管理", description = "提供任务的增删改查等功能")
 @RestController
@@ -62,8 +62,7 @@ public class TaskController {
      * 分页查询任务
      *
      * @param queryDTO 查询条件
-     * @param current 当前页
-     * @param size 每页大小
+     * @param current 当前�?     * @param size 每页大小
      * @return 任务分页数据
      */
     @GetMapping("/list")
@@ -75,13 +74,12 @@ public class TaskController {
     }
 
     /**
-     * 获取流程的任务列表
-     *
+     * 获取流程的任务列�?     *
      * @param processId 流程ID
      * @return 任务列表
      */
     @GetMapping("/process/{processId}")
-    @Operation(summary = "获取流程的任务列表")
+    @Operation(summary = "获取流程的任务列�?)
     public ResponseEntity<List<TaskVO>> getProcessTasks(
             @Parameter(description = "流程ID") @PathVariable Long processId) {
         List<TaskVO> tasks = taskService.listProcessTasks(processId);

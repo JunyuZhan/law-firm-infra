@@ -8,9 +8,8 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
- * 员工端API启动类
- *
- * @author weidi
+ * 员工端API启动�? *
+ * @author JunyuZhan
  */
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = {"com.lawfirm"})

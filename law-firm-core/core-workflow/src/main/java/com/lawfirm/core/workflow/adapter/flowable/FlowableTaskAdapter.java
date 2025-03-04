@@ -7,10 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Flowable任务引擎适配器接口
- * 用于适配Flowable任务引擎API，屏蔽底层实现
- * 
- * @author claude
+ * Flowable任务引擎适配器接�? * 用于适配Flowable任务引擎API，屏蔽底层实�? * 
+ * @author JunyuZhan
  */
 public interface FlowableTaskAdapter {
 
@@ -18,8 +16,7 @@ public interface FlowableTaskAdapter {
      * 创建任务
      * 
      * @param taskName 任务名称
-     * @param assignee 处理人
-     * @param processInstanceId 流程实例ID
+     * @param assignee 处理�?     * @param processInstanceId 流程实例ID
      * @param variables 任务变量
      * @return 任务实例
      */
@@ -58,8 +55,7 @@ public interface FlowableTaskAdapter {
     void deleteTask(String taskId, String reason);
 
     /**
-     * 查询流程实例的任务
-     * 
+     * 查询流程实例的任�?     * 
      * @param processInstanceId 流程实例ID
      * @return 任务列表
      */
@@ -68,22 +64,19 @@ public interface FlowableTaskAdapter {
     /**
      * 查询用户待办任务
      * 
-     * @param assignee 处理人
-     * @return 任务列表
+     * @param assignee 处理�?     * @return 任务列表
      */
     List<Task> listUserTodoTasks(String assignee);
 
     /**
      * 查询用户已办任务
      * 
-     * @param assignee 处理人
-     * @return 历史任务列表
+     * @param assignee 处理�?     * @return 历史任务列表
      */
     List<HistoricTaskInstance> listUserDoneTasks(String assignee);
 
     /**
-     * 查询组任务
-     * 
+     * 查询组任�?     * 
      * @param candidateGroup 候选组
      * @return 任务列表
      */
@@ -130,28 +123,22 @@ public interface FlowableTaskAdapter {
     void addCandidateGroup(String taskId, String candidateGroup);
     
     /**
-     * 设置任务优先级
-     * 
+     * 设置任务优先�?     * 
      * @param taskId 任务ID
-     * @param priority 优先级
-     */
+     * @param priority 优先�?     */
     void setPriority(String taskId, int priority);
     
     /**
      * 获取任务变量
      * 
      * @param taskId 任务ID
-     * @param variableName 变量名
-     * @return 变量值
-     */
+     * @param variableName 变量�?     * @return 变量�?     */
     Object getTaskVariable(String taskId, String variableName);
     
     /**
      * 设置任务变量
      * 
      * @param taskId 任务ID
-     * @param variableName 变量名
-     * @param value 变量值
-     */
+     * @param variableName 变量�?     * @param value 变量�?     */
     void setTaskVariable(String taskId, String variableName, Object value);
 } 

@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
  * 流程模板Mapper接口
  * 基于MyBatis Plus提供流程模板的数据库访问
  *
- * @author cursor
+ * @author JunyuZhan
  * @date 2023/03/03
  */
 @Mapper
@@ -29,8 +29,7 @@ public interface ProcessTemplateMapper extends BaseMapper<ProcessTemplate> {
      * 根据模板标识和版本号查询模板
      * 
      * @param key 模板标识
-     * @param version 版本号
-     * @return 流程模板
+     * @param version 版本�?     * @return 流程模板
      */
     ProcessTemplate selectByKeyAndVersion(@Param("key") String key, @Param("version") Integer version);
     

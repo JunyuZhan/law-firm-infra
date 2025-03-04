@@ -14,9 +14,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import java.io.IOException;
 
 /**
- * Flowable工作流引擎配置
- * 
- * @author claude
+ * Flowable工作流引擎配�? * 
+ * @author JunyuZhan
  */
 @Slf4j
 @Configuration
@@ -31,14 +30,11 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
     public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
         log.info("配置Flowable流程引擎...");
         
-        // 设置流程实例ID生成器
-        processEngineConfiguration.setIdGenerator(new StrongUuidGenerator());
+        // 设置流程实例ID生成�?        processEngineConfiguration.setIdGenerator(new StrongUuidGenerator());
         
-        // 设置异步执行器激活
-        processEngineConfiguration.setAsyncExecutorActivate(true);
+        // 设置异步执行器激�?        processEngineConfiguration.setAsyncExecutorActivate(true);
         
-        // 设置历史记录级别为完整级别，保存所有历史记录
-        processEngineConfiguration.setHistoryLevel(HistoryLevel.FULL);
+        // 设置历史记录级别为完整级别，保存所有历史记�?        processEngineConfiguration.setHistoryLevel(HistoryLevel.FULL);
         
         // 部署流程定义文件
         deployProcessDefinitions(processEngineConfiguration);
@@ -51,15 +47,14 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      */
     private void deployProcessDefinitions(SpringProcessEngineConfiguration processEngineConfiguration) {
         try {
-            // 获取classpath:bpmn/下的所有流程定义文件
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            // 获取classpath:bpmn/下的所有流程定义文�?            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             Resource[] resources = resolver.getResources("classpath:bpmn/**/*.bpmn20.xml");
             
             if (resources != null && resources.length > 0) {
-                log.info("发现{}个流程定义文件", resources.length);
+                log.info("发现{}个流程定义文�?, resources.length);
                 processEngineConfiguration.setDeploymentResources(resources);
             } else {
-                log.warn("未发现流程定义文件");
+                log.warn("未发现流程定义文�?);
             }
         } catch (IOException e) {
             log.error("加载流程定义文件失败", e);
@@ -67,8 +62,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
     }
     
     /**
-     * 流程运行时服务
-     */
+     * 流程运行时服�?     */
     @Bean
     public RuntimeService runtimeService(ProcessEngine processEngine) {
         return processEngine.getRuntimeService();
@@ -99,8 +93,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
     }
     
     /**
-     * 存储库服务
-     */
+     * 存储库服�?     */
     @Bean
     public RepositoryService repositoryService(ProcessEngine processEngine) {
         return processEngine.getRepositoryService();
@@ -115,8 +108,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
     }
     
     /**
-     * 动态表单服务
-     */
+     * 动态表单服�?     */
     @Bean
     public DynamicBpmnService dynamicBpmnService(ProcessEngine processEngine) {
         return processEngine.getDynamicBpmnService();

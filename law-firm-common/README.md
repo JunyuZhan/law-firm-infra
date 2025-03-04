@@ -1,254 +1,172 @@
-# 通用层 (Common Layer)
+# 律师事务所管理系统 - 通用模块层
 
 ## 模块说明
-通用层是律师事务所管理系统的基础设施层，提供了各个业务模块所需的通用功能支持。该层采用模块化设计，每个子模块都专注于特定的功能领域，以确保代码的高内聚低耦合。
 
-## 技术栈
-- JDK 21
-- Spring Boot 3.2.2
-- SpringDoc OpenAPI 2.3.0
-- Knife4j 4.3.0
-- MapStruct 1.5.5.Final
-- Lombok 1.18.30
-- Hutool 5.8.25
-- Apache Commons
-- Guava 32.1.3
-- FastJSON 2.0.45
+通用模块层提供了系统的基础功能支持，包括核心工具、Web功能、数据访问、缓存、安全、日志、消息处理和测试等通用功能。这些模块被其他层复用，提供了统一的基础设施支持。
 
 ## 模块结构
 
 ### 1. 核心模块 (common-core)
-核心模块是整个通用层的基础，提供最基本的功能支持。
-
-```
-common-core/
-├── api/          # 基础API接口定义
-├── config/       # 核心配置类
-├── constant/     # 系统常量定义
-├── context/      # 上下文管理
-├── entity/       # 基础实体类
-└── exception/    # 异常处理机制
-```
-
-主要功能：
-- 基础接口定义
-- 核心配置管理
-- 全局常量维护
-- 上下文管理机制
-- 基础实体类定义
-- 统一异常处理
+系统最基础的核心功能支持：
+- api: 通用API接口定义
+- context: 上下文管理
+- entity: 基础实体定义
+- exception: 异常处理机制
+- constant: 系统常量定义
+- config: 核心配置类
 
 ### 2. 工具模块 (common-util)
-提供丰富的工具类支持，简化开发过程。
-
-```
-common-util/
-├── base/         # 基础工具类
-│   ├── BaseUtils.java
-│   ├── ServletUtils.java
-│   └── SpringUtils.java
-├── collection/   # 集合工具
-├── compress/     # 压缩解压工具
-├── crypto/       # 加密解密工具
-├── date/         # 日期时间工具
-├── excel/        # Excel处理工具
-├── file/         # 文件操作工具
-├── geo/          # 地理位置工具
-├── http/         # HTTP请求工具
-├── id/           # ID生成工具
-├── image/        # 图片处理工具
-├── json/         # JSON处理工具
-├── string/       # 字符串处理工具
-└── validate/     # 数据验证工具
-```
-
-主要功能：
-- 通用工具类集合
-- 数据格式转换
-- 文件操作处理
-- 加密解密功能
-- 验证工具集合
+通用工具类库：
+- 字符串处理
+- 日期时间
+- 加密解密
+- 文件操作
+- JSON处理
+- 数学计算
+- 验证工具
+- 集合工具
 
 ### 3. Web模块 (common-web)
-提供Web应用开发所需的各种支持。
+Web相关功能支持：
+- 统一响应处理
+- 全局异常处理
+- 请求参数处理
+- 跨域配置
+- 文件上传下载
+- API文档配置
+- 接口版本控制
 
-```
-common-web/
-├── config/       # Web配置
-├── constant/     # Web常量
-├── context/      # Web上下文
-├── exception/    # Web异常处理
-├── filter/       # 过滤器
-├── request/      # 请求处理
-├── response/     # 响应处理
-├── support/      # 支持类
-└── utils/        # Web工具类
-```
-
-主要功能：
-- Web环境配置
-- 请求响应处理
-- 统一异常处理
-- 过滤器链管理
-- 上下文管理
-
-### 4. 安全模块 (common-security)
-提供系统安全相关的基础设施。
-
-```
-common-security/
-├── annotation/   # 安全注解
-├── authentication/ # 认证相关
-├── authorization/  # 授权相关
-├── audit/         # 安全审计
-├── context/       # 安全上下文
-├── crypto/        # 加密服务
-├── token/         # 令牌服务
-└── constants/     # 安全常量
-```
-
-主要功能：
-- 认证授权框架
-- 安全注解支持
-- 审计日志记录
-- 加密解密服务
-- 令牌管理服务
-
-### 5. 数据模块 (common-data)
-提供数据访问和处理的统一支持。
-
-```
-common-data/
-├── config/       # 数据源配置
-├── handler/      # 数据处理器
-├── interceptor/  # 数据拦截器
-└── utils/        # 数据工具类
-```
-
-主要功能：
+### 4. 数据访问模块 (common-data)
+数据访问层支持：
+- MyBatis Plus配置
 - 数据源管理
-- 数据访问支持
-- 数据处理工具
-- 拦截器支持
+- 事务管理
+- 分页处理
+- 数据审计
+- 多租户支持
+- 动态数据源
 
-### 6. 缓存模块 (common-cache)
-提供统一的缓存处理机制。
+### 5. 缓存模块 (common-cache)
+缓存处理功能：
+- Redis配置
+- 缓存管理
+- 分布式锁
+- 缓存注解
+- 缓存工具
+- 缓存监控
 
-```
-common-cache/
-├── config/       # 缓存配置
-├── handler/      # 缓存处理器
-└── utils/        # 缓存工具类
-```
-
-主要功能：
-- 缓存配置管理
-- 缓存操作封装
-- 缓存工具支持
+### 6. 安全模块 (common-security)
+安全相关功能：
+- 认证授权
+- 密码管理
+- 令牌处理
+- 安全过滤
+- 权限验证
+- 数据加密
+- 防护配置
 
 ### 7. 日志模块 (common-log)
-提供统一的日志处理机制。
-
-```
-common-log/
-├── annotation/   # 日志注解
-├── aspect/       # 日志切面
-├── event/        # 日志事件
-└── service/      # 日志服务
-```
-
-主要功能：
-- 操作日志记录
-- 审计日志管理
-- 日志切面处理
-- 日志事件发布
+日志处理功能：
+- 操作日志
+- 审计日志
+- 安全日志
+- 性能日志
+- 日志切面
+- 日志配置
+- 日志工具
 
 ### 8. 消息模块 (common-message)
-提供消息处理的统一支持。
-
-```
-common-message/
-├── config/       # 消息配置
-├── handler/      # 消息处理器
-├── producer/     # 消息生产者
-└── consumer/     # 消息消费者
-```
-
-主要功能：
-- 消息配置管理
-- 消息发送接收
-- 消息处理机制
+消息处理功能：
+- 消息发送
+- 消息接收
+- 消息转换
+- 消息模板
+- 消息队列
+- 事件总线
+- 通知管理
 
 ### 9. 测试模块 (common-test)
-提供测试相关的支持。
+测试支持功能：
+- 测试工具类
+- 测试数据构建
+- Mock支持
+- 断言工具
+- 测试配置
+- 性能测试
 
-```
-common-test/
-├── annotation/   # 测试注解
-├── mock/         # Mock工具
-└── utils/        # 测试工具类
-```
+## 开发规范
 
-主要功能：
-- 测试工具支持
-- Mock数据生成
-- 测试用例支持
+### 1. 代码规范
+- 遵循阿里巴巴Java开发规范
+- 统一的代码格式化模板
+- 完整的注释文档
+- 单元测试覆盖
+- 代码审查机制
 
-## 依赖关系
-```
-common-core           # 基础依赖
-    ├── common-util   # 依赖core
-    ├── common-web    # 依赖core
-    ├── common-data   # 依赖core和util
-    ├── common-cache  # 依赖core和util
-    ├── common-security # 依赖core和web
-    ├── common-log    # 依赖core和security
-    ├── common-message # 依赖core、util和cache
-    └── common-test   # 依赖所有模块
-```
+### 2. 异常处理
+- 统一的异常体系
+- 异常信息国际化
+- 异常日志记录
+- 优雅的异常处理
+- 异常监控告警
 
-## 使用说明
+### 3. 日志规范
+- 统一的日志配置
+- 分级日志管理
+- 日志脱敏处理
+- 日志收集分析
+- 日志监控预警
 
-### 1. 添加依赖
-在需要使用通用层功能的模块的pom.xml中添加相应依赖：
+### 4. 安全规范
+- 身份认证
+- 权限控制
+- 数据加密
+- 安全审计
+- 攻击防护
 
-```xml
-<dependency>
-    <groupId>com.lawfirm</groupId>
-    <artifactId>common-core</artifactId>
-    <version>${project.version}</version>
-</dependency>
-```
+## 技术架构
 
-### 2. 配置说明
-各模块的配置项都在application.yml中进行配置，例如：
+### 1. 核心依赖
+- JDK 21
+- Spring Boot 3.2.x
+- Spring Cloud 2023.x
+- MyBatis Plus 3.5.x
+- Redis 6.x
+- RocketMQ 5.x
 
-```yaml
-lawfirm:
-  common:
-    web:
-      cors:
-      enabled: true
-    security:
-      token:
-        expire: 7200
-    cache:
-      type: redis
-    log:
-      enabled: true
-```
+### 2. 工具框架
+- Lombok
+- Hutool
+- MapStruct
+- Jackson
+- Commons Lang3
+- Guava
 
-### 3. 开发建议
-1. 遵循依赖关系，避免循环依赖
-2. 优先使用工具模块提供的工具类
-3. 遵循接口定义，实现自定义扩展
-4. 合理使用注解简化开发
-5. 注意异常处理和日志记录
+### 3. 安全框架
+- Spring Security
+- JWT
+- Spring OAuth2
 
-## 版本历史
+### 4. 文档工具
+- Springdoc OpenAPI
+- Knife4j
 
-### 1.0.0 (2024-02-21)
-- 初始版本发布
-- 完整的模块化架构
-- 基础功能支持
-- 完整的文档支持 
+## 版本说明
+
+当前版本：1.0.0
+发布日期：2024-03-04
+
+### 主要特性
+- 完整的通用功能支持
+- 统一的异常处理
+- 规范的日志管理
+- 安全的认证授权
+- 高效的缓存处理
+- 可靠的消息机制
+
+### 注意事项
+1. 通用模块的修改需要考虑对其他模块的影响
+2. 保持接口的向后兼容性
+3. 注意性能和安全性
+4. 完善文档和测试
+5. 遵循最小依赖原则 

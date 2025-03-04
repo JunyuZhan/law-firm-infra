@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * 流程权限实体类
- * 定义流程相关权限，包括启动、查看、取消等
+ * 流程权限实体�? * 定义流程相关权限，包括启动、查看、取消等
  *
- * @author claude
+ * @author JunyuZhan
  */
 @Data
 @NoArgsConstructor
@@ -30,38 +29,35 @@ public class ProcessPermission extends ModelBaseEntity {
     private String processDefinitionKey;
 
     /**
-     * 权限类型：1-流程定义权限，2-流程实例权限
+     * 权限类型�?-流程定义权限�?-流程实例权限
      */
     @TableField("permission_type")
     private Integer permissionType;
 
     /**
-     * 操作类型：1-启动，2-查看，3-处理，4-取消，5-挂起，6-激活
-     */
+     * 操作类型�?-启动�?-查看�?-处理�?-取消�?-挂起�?-激�?     */
     @TableField("operation_type")
     private Integer operationType;
 
     /**
-     * 权限目标类型：1-角色，2-用户，3-部门
+     * 权限目标类型�?-角色�?-用户�?-部门
      */
     @TableField("target_type")
     private Integer targetType;
 
     /**
-     * 权限目标ID（角色ID、用户ID或部门ID）
-     */
+     * 权限目标ID（角色ID、用户ID或部门ID�?     */
     @TableField("target_id")
     private Long targetId;
 
     /**
-     * 权限策略：1-允许，2-拒绝
+     * 权限策略�?-允许�?-拒绝
      */
     @TableField("permission_policy")
     private Integer permissionPolicy;
 
     /**
-     * 排序号
-     */
+     * 排序�?     */
     @TableField("sort_order")
     private Integer sortOrder;
     
@@ -120,8 +116,7 @@ public class ProcessPermission extends ModelBaseEntity {
         SUSPEND(5),
         
         /**
-         * 激活流程
-         */
+         * 激活流�?         */
         ACTIVATE(6);
         
         private final int value;

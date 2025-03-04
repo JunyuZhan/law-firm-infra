@@ -14,10 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 流程取消事件监听器
- * 监听流程取消事件，记录流程取消信息，恢复业务状态等
+ * 流程取消事件监听�? * 监听流程取消事件，记录流程取消信息，恢复业务状态等
  *
- * @author cursor
+ * @author JunyuZhan
  * @date 2023/03/03
  */
 @Slf4j
@@ -65,8 +64,7 @@ public class ProcessCancelListener implements FlowableEventListener {
         // 由于缺少特定的事件类型，这里使用反射或其他方法尝试获取流程实例ID
         // 实际开发中，应根据Flowable版本和事件类型的具体实现进行提取
         try {
-            // 尝试从事件对象中获取processInstanceId属性
-            java.lang.reflect.Method method = event.getClass().getMethod("getProcessInstanceId");
+            // 尝试从事件对象中获取processInstanceId属�?            java.lang.reflect.Method method = event.getClass().getMethod("getProcessInstanceId");
             return (String) method.invoke(event);
         } catch (Exception e) {
             log.warn("从事件中提取流程实例ID失败", e);
@@ -83,8 +81,7 @@ public class ProcessCancelListener implements FlowableEventListener {
         String processInstanceId = processInstance.getProcessInstanceId();
         String businessKey = processInstance.getBusinessKey();
         
-        // 1. 记录流程取消时间和原因
-        Map<String, Object> variables = new HashMap<>();
+        // 1. 记录流程取消时间和原�?        Map<String, Object> variables = new HashMap<>();
         variables.put("cancelTime", new Date());
         variables.put("processEndStatus", "CANCELLED");
         
@@ -94,11 +91,9 @@ public class ProcessCancelListener implements FlowableEventListener {
             variables.put("cancelReason", cancelReason);
         }
         
-        // 2. 更新流程实例状态
-        // processService.updateProcessInstance(processInstanceId, variables);
+        // 2. 更新流程实例状�?        // processService.updateProcessInstance(processInstanceId, variables);
         
-        // 3. 恢复业务状态
-        revertBusinessStatus(businessKey);
+        // 3. 恢复业务状�?        revertBusinessStatus(businessKey);
         
         // 4. 发送通知
         sendProcessCancelledNotification(processInstance, cancelReason);
@@ -111,34 +106,29 @@ public class ProcessCancelListener implements FlowableEventListener {
      * @return 取消原因
      */
     private String getCancelReason(String processInstanceId) {
-        // 在实际应用中，可以从历史服务中查询取消原因
-        // HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
+        // 在实际应用中，可以从历史服务中查询取消原�?        // HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
         //         .processInstanceId(processInstanceId)
         //         .singleResult();
         //
         // return historicProcessInstance != null ? historicProcessInstance.getDeleteReason() : null;
         
-        // 这里为了演示，返回一个默认原因
-        return "用户手动取消";
+        // 这里为了演示，返回一个默认原�?        return "用户手动取消";
     }
 
     /**
-     * 恢复业务状态
-     *
-     * @param businessKey 业务键
-     */
+     * 恢复业务状�?     *
+     * @param businessKey 业务�?     */
     private void revertBusinessStatus(String businessKey) {
         if (businessKey == null || businessKey.isEmpty()) {
-            log.warn("业务键为空，无法恢复业务状态");
+            log.warn("业务键为空，无法恢复业务状�?);
             return;
         }
         
         try {
-            // 在实际应用中，应根据业务键解析出业务类型和ID，并恢复对应的业务状态
-            // 例如：合同审批被取消，恢复合同状态为"草稿"
+            // 在实际应用中，应根据业务键解析出业务类型和ID，并恢复对应的业务状�?            // 例如：合同审批被取消，恢复合同状态为"草稿"
             log.info("业务状态已恢复: businessKey={}", businessKey);
         } catch (Exception e) {
-            log.error("恢复业务状态异常: businessKey={}", businessKey, e);
+            log.error("恢复业务状态异�? businessKey={}", businessKey, e);
         }
     }
 
@@ -164,13 +154,12 @@ public class ProcessCancelListener implements FlowableEventListener {
         // messageService.sendMessage(startUserId, "流程取消通知", "您启动的流程已被取消", notifyParams);
         
         // 记录通知日志
-        log.info("流程取消通知已发送：实例ID={}, 接收人={}, 取消原因={}", processInstanceId, startUserId, cancelReason);
+        log.info("流程取消通知已发送：实例ID={}, 接收�?{}, 取消原因={}", processInstanceId, startUserId, cancelReason);
     }
 
     @Override
     public boolean isFailOnException() {
-        // 异常不中断流程执行
-        return false;
+        // 异常不中断流程执�?        return false;
     }
 
     @Override
@@ -181,14 +170,11 @@ public class ProcessCancelListener implements FlowableEventListener {
 
     @Override
     public String getOnTransaction() {
-        // 事务提交后触发
-        return "COMMITTED";
+        // 事务提交后触�?        return "COMMITTED";
     }
     
     /**
-     * 流程实例包装类
-     * 由于无法直接获取流程实例对象，我们创建一个简单的包装类来模拟ProcessInstance的行为
-     */
+     * 流程实例包装�?     * 由于无法直接获取流程实例对象，我们创建一个简单的包装类来模拟ProcessInstance的行�?     */
     private class ProcessInstanceWrapper {
         private final String processInstanceId;
         private String businessKey;
@@ -198,8 +184,7 @@ public class ProcessCancelListener implements FlowableEventListener {
         public ProcessInstanceWrapper(String processInstanceId) {
             this.processInstanceId = processInstanceId;
             
-            // 在实际应用中，可以从历史服务中查询这些信息
-            // HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
+            // 在实际应用中，可以从历史服务中查询这些信�?            // HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
             //         .processInstanceId(processInstanceId)
             //         .singleResult();
             //
@@ -209,8 +194,7 @@ public class ProcessCancelListener implements FlowableEventListener {
             //     this.startUserId = historicProcessInstance.getStartUserId();
             // }
             
-            // 这里为了演示，使用模拟数据
-            this.businessKey = "demo:1001";
+            // 这里为了演示，使用模拟数�?            this.businessKey = "demo:1001";
             this.processDefinitionId = "process:1:1001";
             this.startUserId = "admin";
         }

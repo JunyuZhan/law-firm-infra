@@ -12,9 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 流程监控服务实现类
- *
- * @author claude
+ * 流程监控服务实现�? *
+ * @author JunyuZhan
  */
 @Slf4j
 @Service
@@ -40,7 +39,7 @@ public class ProcessMonitorServiceImpl implements ProcessMonitorService {
 
     @Override
     public void createCustomProcessMetric(String metricName, Number value, Map<String, String> tags) {
-        log.info("创建自定义流程指标: metricName={}, value={}, tags={}", metricName, value, tags);
+        log.info("创建自定义流程指�? metricName={}, value={}, tags={}", metricName, value, tags);
         // TODO: 实现创建自定义流程指标逻辑
     }
 

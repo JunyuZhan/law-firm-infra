@@ -26,10 +26,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 任务服务实现类
- * 提供任务管理相关的所有业务功能实现
- *
- * @author claude
+ * 任务服务实现�? * 提供任务管理相关的所有业务功能实�? *
+ * @author JunyuZhan
  */
 @Slf4j
 @Service
@@ -51,12 +49,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         Assert.hasText(createDTO.getTaskName(), "任务名称不能为空");
         Assert.notNull(createDTO.getTaskType(), "任务类型不能为空");
         
-        // 转换为实体
-        Task task = taskConverter.toEntity(createDTO);
+        // 转换为实�?        Task task = taskConverter.toEntity(createDTO);
         
-        // 设置初始状态
-        task.setStatus(0); // 0-待处理
-        
+        // 设置初始状�?        task.setStatus(0); // 0-待处�?        
         // 保存任务
         save(task);
         
@@ -110,8 +105,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
             return null;
         }
         
-        // 转换为视图对象
-        return taskConverter.toVO(task);
+        // 转换为视图对�?        return taskConverter.toVO(task);
     }
 
     @Override
@@ -142,23 +136,20 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void startTask(Long id) {
-        log.info("开始处理任务: {}", id);
+        log.info("开始处理任�? {}", id);
         Assert.notNull(id, "任务ID不能为空");
         
         // 查询任务
         Task task = taskMapper.selectById(id);
         if (task == null) {
-            throw new IllegalArgumentException("任务不存在");
+            throw new IllegalArgumentException("任务不存�?);
         }
         
-        // 检查任务状态
-        if (task.getStatus() != 0) {
+        // 检查任务状�?        if (task.getStatus() != 0) {
             throw new IllegalStateException("任务状态不正确");
         }
         
-        // 更新任务状态
-        task.setStatus(1); // 1-处理中
-        taskMapper.updateById(task);
+        // 更新任务状�?        task.setStatus(1); // 1-处理�?        taskMapper.updateById(task);
     }
 
     @Override
@@ -170,17 +161,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         // 查询任务
         Task task = taskMapper.selectById(id);
         if (task == null) {
-            throw new IllegalArgumentException("任务不存在");
+            throw new IllegalArgumentException("任务不存�?);
         }
         
-        // 检查任务状态
-        if (task.getStatus() != 1) {
+        // 检查任务状�?        if (task.getStatus() != 1) {
             throw new IllegalStateException("任务状态不正确");
         }
         
         // 更新任务
-        task.setStatus(2); // 2-已完成
-        task.setResult(result);
+        task.setStatus(2); // 2-已完�?        task.setResult(result);
         task.setComment(comment);
         taskMapper.updateById(task);
         
@@ -212,17 +201,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         // 查询任务
         Task task = taskMapper.selectById(id);
         if (task == null) {
-            throw new IllegalArgumentException("任务不存在");
+            throw new IllegalArgumentException("任务不存�?);
         }
         
-        // 检查任务状态
-        if (task.getStatus() == 2 || task.getStatus() == 3) {
-            throw new IllegalStateException("任务已完成或已取消");
+        // 检查任务状�?        if (task.getStatus() == 2 || task.getStatus() == 3) {
+            throw new IllegalStateException("任务已完成或已取�?);
         }
         
-        // 更新任务状态
-        task.setStatus(3); // 3-已取消
-        taskMapper.updateById(task);
+        // 更新任务状�?        task.setStatus(3); // 3-已取�?        taskMapper.updateById(task);
         
         // 如果是流程任务，同时取消Flowable中的任务
         if (task.getProcessInstanceId() != null) {
@@ -241,29 +227,26 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         log.info("转办任务: {}, 新处理人: {}({})", id, handlerName, handlerId);
         Assert.notNull(id, "任务ID不能为空");
         Assert.notNull(handlerId, "处理人ID不能为空");
-        Assert.hasText(handlerName, "处理人名称不能为空");
+        Assert.hasText(handlerName, "处理人名称不能为�?);
         
         // 查询任务
         Task task = taskMapper.selectById(id);
         if (task == null) {
-            throw new IllegalArgumentException("任务不存在");
+            throw new IllegalArgumentException("任务不存�?);
         }
         
-        // 检查任务状态
-        if (task.getStatus() == 2 || task.getStatus() == 3) {
-            throw new IllegalStateException("任务已完成或已取消");
+        // 检查任务状�?        if (task.getStatus() == 2 || task.getStatus() == 3) {
+            throw new IllegalStateException("任务已完成或已取�?);
         }
         
         // 记录原处理人
         String oldHandlerId = String.valueOf(task.getHandlerId());
         
-        // 更新任务处理人
-        task.setHandlerId(handlerId);
+        // 更新任务处理�?        task.setHandlerId(handlerId);
         task.setHandlerName(handlerName);
         taskMapper.updateById(task);
         
-        // 如果是流程任务，同时更新Flowable中的任务处理人
-        if (task.getProcessInstanceId() != null) {
+        // 如果是流程任务，同时更新Flowable中的任务处理�?        if (task.getProcessInstanceId() != null) {
             org.flowable.task.api.Task flowableTask = flowableTaskService.createTaskQuery()
                 .processInstanceId(task.getProcessInstanceId())
                 .singleResult();
@@ -284,7 +267,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 
     @Override
     public List<TaskVO> listProcessTasks(Long processId) {
-        log.info("获取流程的任务列表: {}", processId);
+        log.info("获取流程的任务列�? {}", processId);
         Assert.notNull(processId, "流程ID不能为空");
         
         LambdaQueryWrapper<Task> wrapper = new LambdaQueryWrapper<>();
@@ -301,8 +284,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         
         LambdaQueryWrapper<Task> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Task::getHandlerId, userId)
-               .eq(Task::getStatus, 0); // 待处理状态
-        return list(wrapper).stream()
+               .eq(Task::getStatus, 0); // 待处理状�?        return list(wrapper).stream()
                 .map(taskConverter::toVO)
                 .collect(Collectors.toList());
     }
@@ -314,15 +296,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         
         LambdaQueryWrapper<Task> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Task::getHandlerId, userId)
-               .eq(Task::getStatus, 2); // 已完成状态
-        return list(wrapper).stream()
+               .eq(Task::getStatus, 2); // 已完成状�?        return list(wrapper).stream()
                 .map(taskConverter::toVO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Long> getCandidateUsersByRole(Long roleId) {
-        log.info("根据角色获取候选用户: {}", roleId);
+        log.info("根据角色获取候选用�? {}", roleId);
         Assert.notNull(roleId, "角色ID不能为空");
         
         // 调用用户服务获取角色下的用户列表
@@ -331,7 +312,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 
     @Override
     public List<Long> getCandidateUsersByDept(Long deptId) {
-        log.info("根据部门获取候选用户: {}", deptId);
+        log.info("根据部门获取候选用�? {}", deptId);
         Assert.notNull(deptId, "部门ID不能为空");
         
         // 调用用户服务获取部门下的用户列表
@@ -340,9 +321,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 
     @Override
     public Long autoAssignTask(String taskId, List<Long> candidateUserIds) {
-        log.info("自动分配任务: {}, 候选用户: {}", taskId, candidateUserIds);
+        log.info("自动分配任务: {}, 候选用�? {}", taskId, candidateUserIds);
         Assert.hasText(taskId, "任务ID不能为空");
-        Assert.notEmpty(candidateUserIds, "候选用户列表不能为空");
+        Assert.notEmpty(candidateUserIds, "候选用户列表不能为�?);
         
         // 首先尝试负载均衡分配
         Long assigneeId = loadBalanceAssignTask(taskId, candidateUserIds);
@@ -356,15 +337,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 
     @Override
     public Long roundRobinAssignTask(String taskId, List<Long> candidateUserIds) {
-        log.info("轮询分配任务: {}, 候选用户: {}", taskId, candidateUserIds);
+        log.info("轮询分配任务: {}, 候选用�? {}", taskId, candidateUserIds);
         Assert.hasText(taskId, "任务ID不能为空");
-        Assert.notEmpty(candidateUserIds, "候选用户列表不能为空");
+        Assert.notEmpty(candidateUserIds, "候选用户列表不能为�?);
         
         // 获取上一次分配的用户索引
         int lastIndex = getLastAssignedIndex(taskId);
         
-        // 计算下一个用户索引
-        int nextIndex = (lastIndex + 1) % candidateUserIds.size();
+        // 计算下一个用户索�?        int nextIndex = (lastIndex + 1) % candidateUserIds.size();
         
         // 获取分配的用户ID
         Long assigneeId = candidateUserIds.get(nextIndex);
@@ -377,9 +357,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 
     @Override
     public Long loadBalanceAssignTask(String taskId, List<Long> candidateUserIds) {
-        log.info("负载均衡分配任务: {}, 候选用户: {}", taskId, candidateUserIds);
+        log.info("负载均衡分配任务: {}, 候选用�? {}", taskId, candidateUserIds);
         Assert.hasText(taskId, "任务ID不能为空");
-        Assert.notEmpty(candidateUserIds, "候选用户列表不能为空");
+        Assert.notEmpty(candidateUserIds, "候选用户列表不能为�?);
         
         Long minLoadUserId = null;
         double minLoadScore = Double.MAX_VALUE;
@@ -437,11 +417,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
      * 
      * @param taskId 任务ID
      * @param assigneeId 处理人ID
-     * @param assignedIndex 分配的用户索引
-     */
+     * @param assignedIndex 分配的用户索�?     */
     private void saveAssignRecord(String taskId, Long assigneeId, int assignedIndex) {
-        // TODO: 保存分配记录到缓存或数据库
-    }
+        // TODO: 保存分配记录到缓存或数据�?    }
 
     @Override
     public void sendTaskCreatedNotification(String taskId, String taskName, String assigneeId, Map<String, Object> variables) {
@@ -451,7 +429,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         Assert.hasText(assigneeId, "处理人ID不能为空");
         
         String subject = "新任务通知";
-        String content = String.format("您有一个新的任务需要处理：%s（任务ID：%s）", taskName, taskId);
+        String content = String.format("您有一个新的任务需要处理：%s（任务ID�?s�?, taskName, taskId);
         
         notificationService.sendNotification(assigneeId, subject, content, variables);
     }
@@ -465,13 +443,13 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         
         // 发送给新处理人
         String newSubject = "任务分配通知";
-        String newContent = String.format("任务\"%s\"（任务ID：%s）已分配给您处理", taskName, taskId);
+        String newContent = String.format("任务\"%s\"（任务ID�?s）已分配给您处理", taskName, taskId);
         notificationService.sendNotification(assigneeId, newSubject, newContent, variables);
         
         // 如果存在原处理人，也发送通知
         if (oldAssigneeId != null) {
             String oldSubject = "任务转办通知";
-            String oldContent = String.format("任务\"%s\"（任务ID：%s）已转办给其他人处理", taskName, taskId);
+            String oldContent = String.format("任务\"%s\"（任务ID�?s）已转办给其他人处理", taskName, taskId);
             notificationService.sendNotification(oldAssigneeId, oldSubject, oldContent, variables);
         }
     }
@@ -484,21 +462,21 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
         Assert.hasText(assigneeId, "处理人ID不能为空");
         
         String subject = "任务完成通知";
-        String content = String.format("任务\"%s\"（任务ID：%s）已完成处理", taskName, taskId);
+        String content = String.format("任务\"%s\"（任务ID�?s）已完成处理", taskName, taskId);
         
         notificationService.sendNotification(assigneeId, subject, content, variables);
     }
 
     @Override
     public void sendTaskDueReminder(String taskId, String taskName, String assigneeId, Date dueDate) {
-        log.info("发送任务过期提醒: {}, {}, {}, {}", taskId, taskName, assigneeId, dueDate);
+        log.info("发送任务过期提�? {}, {}, {}, {}", taskId, taskName, assigneeId, dueDate);
         Assert.hasText(taskId, "任务ID不能为空");
         Assert.hasText(taskName, "任务名称不能为空");
         Assert.hasText(assigneeId, "处理人ID不能为空");
         Assert.notNull(dueDate, "截止时间不能为空");
         
         String subject = "任务即将过期提醒";
-        String content = String.format("您的任务\"%s\"（任务ID：%s）即将于%tF %tT到期，请及时处理", 
+        String content = String.format("您的任务\"%s\"（任务ID�?s）即将于%tF %tT到期，请及时处理", 
             taskName, taskId, dueDate, dueDate);
         
         notificationService.sendNotification(assigneeId, subject, content, null);
@@ -506,14 +484,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 
     @Override
     public void sendTaskOverdueNotification(String taskId, String taskName, String assigneeId, Date dueDate) {
-        log.info("发送任务超时提醒: {}, {}, {}, {}", taskId, taskName, assigneeId, dueDate);
+        log.info("发送任务超时提�? {}, {}, {}, {}", taskId, taskName, assigneeId, dueDate);
         Assert.hasText(taskId, "任务ID不能为空");
         Assert.hasText(taskName, "任务名称不能为空");
         Assert.hasText(assigneeId, "处理人ID不能为空");
         Assert.notNull(dueDate, "截止时间不能为空");
         
         String subject = "任务已超时通知";
-        String content = String.format("您的任务\"%s\"（任务ID：%s）已于%tF %tT超时，请尽快处理", 
+        String content = String.format("您的任务\"%s\"（任务ID�?s）已�?tF %tT超时，请尽快处理", 
             taskName, taskId, dueDate, dueDate);
         
         notificationService.sendNotification(assigneeId, subject, content, null);
@@ -522,7 +500,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
     @Override
     public void sendBatchTaskNotification(List<String> recipientIds, String subject, String content, Map<String, Object> variables) {
         log.info("发送批量任务通知: {}, {}, {}", recipientIds, subject, content);
-        Assert.notEmpty(recipientIds, "接收人列表不能为空");
+        Assert.notEmpty(recipientIds, "接收人列表不能为�?);
         Assert.hasText(subject, "通知主题不能为空");
         Assert.hasText(content, "通知内容不能为空");
         

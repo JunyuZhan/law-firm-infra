@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * Web配置
  *
- * @author weidi
+ * @author JunyuZhan
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -28,8 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
         // swagger配置
         registry.addResourceHandler("/swagger-ui/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
-        // 静态资源配置
-        registry.addResourceHandler("/static/**")
+        // 静态资源配�?        registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
     }
 } 
