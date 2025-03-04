@@ -1,0 +1,25 @@
+# AI服务配置
+lawfirm:
+  ai:
+    default-provider: openai  # 默认服务提供商，你可以改为dify
+    timeout: 30000           # 超时时间(毫秒)
+    max-token: 4000          # 最大Token数
+    providers:
+      # Dify配置
+      dify:
+        api-url: http://localhost:5001  # 本地Dify服务地址
+        api-key: ${DIFY_API_KEY:your-api-key-here}  # API密钥，可以从环境变量获取
+        timeout: 30000
+      
+      # OpenAI配置
+      openai:
+        api-key: ${OPENAI_API_KEY:}
+        api-url: https://api.openai.com/v1
+        model: gpt-4
+      
+      # 百度文心配置
+      baidu:
+        app-id: ${BAIDU_APP_ID:}
+        api-key: ${BAIDU_API_KEY:}
+        secret-key: ${BAIDU_SECRET_KEY:}
+        model: ernie-bot-4 

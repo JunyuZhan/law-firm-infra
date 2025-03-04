@@ -2,10 +2,12 @@ package com.lawfirm.model.log.entity.audit;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.model.log.entity.base.AuditableLog;
+import com.lawfirm.common.core.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 /**
  * 审计记录实体
@@ -13,8 +15,8 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("sys_audit_record")
-public class AuditRecord extends AuditableLog {
+@TableName("t_audit_record")
+public class AuditRecord extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,7 +60,7 @@ public class AuditRecord extends AuditableLog {
      * 审计时间
      */
     @TableField("audit_time")
-    private String auditTime;
+    private LocalDateTime auditTime;
 
     /**
      * 审计节点

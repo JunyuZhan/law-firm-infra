@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>core-message</artifactId>
-    <name>消息处理模块</name>
+    <name>core-message</name>
     <description>消息处理核心功能实现</description>
 
     <dependencies>
@@ -19,6 +19,10 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-message</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-security</artifactId>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>

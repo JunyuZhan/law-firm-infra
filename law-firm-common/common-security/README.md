@@ -151,4 +151,56 @@ public interface SensitiveDataService {
   - 统一的加密服务
   - 通用的数据脱敏
   - 完整的安全审计
-  - 令牌管理服务 
+  - 令牌管理服务
+
+### 数据脱敏服务
+
+数据脱敏服务(SensitiveDataService)提供了多种敏感信息脱敏方法，可用于日志记录、数据展示等场景。
+
+#### 引入依赖
+
+```xml
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-security</artifactId>
+</dependency>
+```
+
+#### 使用示例
+
+```java
+import com.lawfirm.common.security.crypto.SensitiveDataService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private SensitiveDataService sensitiveDataService;
+    
+    public void processUserInfo(String name, String idCard, String phone) {
+        // 对敏感信息进行脱敏
+        String maskedName = sensitiveDataService.maskName(name);
+        String maskedIdCard = sensitiveDataService.maskIdCard(idCard);
+        String maskedPhone = sensitiveDataService.maskPhoneNumber(phone);
+        
+        // 记录日志时使用脱敏后的信息
+        log.info("处理用户信息: 姓名={}, 身份证={}, 手机号={}", 
+                maskedName, maskedIdCard, maskedPhone);
+                
+        // 业务处理...
+    }
+}
+```
+
+#### 支持的脱敏方法
+
+| 方法 | 描述 | 示例 |
+|------|------|------|
+| maskPhoneNumber | 手机号脱敏，保留前3位和后4位 | 134****8888 |
+| maskIdCard | 身份证号脱敏，保留前6位和后4位 | 310101********1234 |
+| maskBankCard | 银行卡号脱敏，仅显示后4位 | ************1234 |
+| maskEmail | 邮箱脱敏，保留首字符和域名 | t***t@example.com |
+| maskName | 姓名脱敏，仅显示姓氏 | 张** |
+| mask | 自定义脱敏规则 | 自定义前后保留位数 | 

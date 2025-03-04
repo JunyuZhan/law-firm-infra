@@ -434,6 +434,39 @@
                 <artifactId>base-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <!-- Core模块 -->
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>core-audit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>core-storage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>core-search</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>core-ai</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>core-message</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>core-workflow</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>auth-model</artifactId>

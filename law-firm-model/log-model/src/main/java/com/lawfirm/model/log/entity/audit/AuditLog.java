@@ -2,10 +2,14 @@ package com.lawfirm.model.log.entity.audit;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.model.log.entity.base.AuditableLog;
+import com.lawfirm.common.core.entity.BaseEntity;
+import com.lawfirm.model.log.enums.BusinessTypeEnum;
+import com.lawfirm.model.log.enums.OperateTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 /**
  * 审计日志实体
@@ -13,28 +17,70 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("sys_audit_log")
-public class AuditLog extends AuditableLog {
+@TableName("t_audit_log")
+public class AuditLog extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 审计对象ID
+     * 操作人ID
      */
-    @TableField("target_id")
-    private Long targetId;
+    @TableField("operator_id")
+    private Long operatorId;
 
     /**
-     * 审计对象类型
+     * 操作人名称
      */
-    @TableField("target_type")
-    private String targetType;
+    @TableField("operator_name")
+    private String operatorName;
 
     /**
-     * 审计对象名称
+     * 操作人IP
      */
-    @TableField("target_name")
-    private String targetName;
+    @TableField("operator_ip")
+    private String operatorIp;
+
+    /**
+     * 操作类型
+     */
+    @TableField("operate_type")
+    private OperateTypeEnum operateType;
+
+    /**
+     * 业务类型
+     */
+    @TableField("business_type")
+    private BusinessTypeEnum businessType;
+
+    /**
+     * 操作模块
+     */
+    @TableField("module")
+    private String module;
+
+    /**
+     * 操作描述
+     */
+    @TableField("description")
+    private String description;
+
+    /**
+     * 操作状态（0正常 1异常）
+     */
+    @TableField("status")
+    private Integer status;
+
+    /**
+     * 错误消息
+     */
+    @TableField("error_msg")
+    private String errorMsg;
+
+    /**
+     * 操作时间
+     */
+    @TableField("operation_time")
+    private LocalDateTime operationTime;
 
     /**
      * 操作前数据
@@ -53,16 +99,4 @@ public class AuditLog extends AuditableLog {
      */
     @TableField("changed_fields")
     private String changedFields;
-
-    /**
-     * 审计结果（0通过 1不通过）
-     */
-    @TableField("audit_result")
-    private Integer auditResult;
-
-    /**
-     * 审计意见
-     */
-    @TableField("audit_opinion")
-    private String auditOpinion;
 } 

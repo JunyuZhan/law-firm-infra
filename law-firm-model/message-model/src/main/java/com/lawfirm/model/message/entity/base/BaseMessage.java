@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -77,7 +78,7 @@ public class BaseMessage extends BaseModel {
      * 接收者列表
      */
     @TableField(exist = false)
-    private List<String> receivers;
+    private ArrayList<String> receivers;
 
     /**
      * 接收者ID
@@ -151,6 +152,12 @@ public class BaseMessage extends BaseModel {
     @TableField("business_type")
     private String businessType;
 
+    /**
+     * 是否包含敏感数据
+     */
+    @TableField("contains_sensitive_data")
+    private boolean containsSensitiveData;
+
     public void setType(MessageTypeEnum type) {
         this.messageType = type;
     }
@@ -160,10 +167,22 @@ public class BaseMessage extends BaseModel {
     }
 
     public void setReceivers(List<String> receivers) {
-        this.receivers = receivers;
+        if (receivers == null) {
+            this.receivers = null;
+        } else {
+            this.receivers = new ArrayList<>(receivers);
+        }
     }
 
     public List<String> getReceivers() {
-        return this.receivers;
+        return receivers;
+    }
+
+    /**
+     * 判断消息是否包含敏感数据
+     */
+    public boolean isContainsSensitiveData() {
+        return containsSensitiveData || 
+               (messageType != null && (messageType == MessageTypeEnum.CASE || messageType == MessageTypeEnum.SYSTEM));
     }
 } 

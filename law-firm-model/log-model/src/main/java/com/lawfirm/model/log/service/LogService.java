@@ -1,25 +1,25 @@
 package com.lawfirm.model.log.service;
 
-import com.lawfirm.model.base.service.BaseService;
-import com.lawfirm.model.log.entity.base.BaseLog;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.model.log.dto.BaseLogDTO;
 import com.lawfirm.model.log.dto.LogExportDTO;
+import com.lawfirm.model.log.dto.LogQueryDTO;
 
 /**
  * 日志服务接口
- * 继承BaseService获取基础的CRUD功能
  *
  * @author weidi
  */
-public interface LogService<T extends BaseLog> extends BaseService<T> {
+public interface LogService<T extends BaseLogDTO> {
 
     /**
      * 记录日志
      * 此方法会自动处理日志的创建时间、更新时间等基础字段
      *
-     * @param log 日志实体
+     * @param logDTO 日志DTO
      * @return 日志ID
      */
-    Long recordLog(T log);
+    Long recordLog(T logDTO);
 
     /**
      * 清理过期日志
@@ -38,4 +38,21 @@ public interface LogService<T extends BaseLog> extends BaseService<T> {
      * @return 导出文件路径
      */
     String exportLogs(LogExportDTO exportDTO);
+
+    /**
+     * 分页查询日志
+     *
+     * @param page 分页参数
+     * @param queryDTO 查询条件
+     * @return 日志分页数据
+     */
+    Page<T> page(Page<T> page, LogQueryDTO queryDTO);
+
+    /**
+     * 根据ID获取日志
+     *
+     * @param id 日志ID
+     * @return 日志详情
+     */
+    T getById(Long id);
 } 

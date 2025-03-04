@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>com.lawfirm</groupId>
+        <artifactId>law-firm-core</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>core-ai</artifactId>
+    <packaging>jar</packaging>
+    <description>律所系统AI核心服务模块</description>
+
+    <dependencies>
+        <!-- 引入AI模型定义模块 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>ai-model</artifactId>
+        </dependency>
+        
+        <!-- Spring Boot相关依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        
+        <!-- Spring AOP -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        
+        <!-- 公共核心模块 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+        
+        <!-- 公共数据模块 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-data</artifactId>
+        </dependency>
+        
+        <!-- 公共日志模块 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-log</artifactId>
+        </dependency>
+        
+        <!-- 公共工具模块 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-util</artifactId>
+        </dependency>
+        
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        
+        <!-- Apache Commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        
+        <!-- Jakarta Annotation API -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+        
+        <!-- 测试依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project> 

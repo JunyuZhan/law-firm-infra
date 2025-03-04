@@ -16,10 +16,12 @@
     <description>核心功能层，提供核心业务功能</description>
 
     <modules>
-        <module>core-workflow</module>
+        <module>core-audit</module>
         <module>core-storage</module>
-        <module>core-message</module>
         <module>core-search</module>
+        <module>core-ai</module>
+        <module>core-message</module>
+        <module>core-workflow</module>
     </modules>
 
     <!-- 显式添加依赖管理 -->

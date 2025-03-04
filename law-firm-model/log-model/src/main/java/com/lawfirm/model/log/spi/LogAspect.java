@@ -1,9 +1,10 @@
-package com.lawfirm.model.log.aspect;
+package com.lawfirm.model.log.spi;
 
 import com.lawfirm.model.log.entity.base.BaseLog;
 
 /**
  * 日志切面接口
+ * 定义日志记录的服务提供者接口
  */
 public interface LogAspect {
 
