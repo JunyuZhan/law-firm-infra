@@ -8,7 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * 流程模板实体�? * 
+ * 流程模板实体类
+ * 
  * @author JunyuZhan
  */
 @Data
@@ -44,7 +45,8 @@ public class ProcessTemplate extends TenantEntity {
     private String businessType;
 
     /**
-     * 模板版本�?     */
+     * 模板版本号
+     */
     @TableField(value = "template_version")
     private String templateVersion;
 
@@ -73,12 +75,14 @@ public class ProcessTemplate extends TenantEntity {
     private Boolean suspended;
 
     /**
-     * 创建人名�?     */
+     * 创建人名称
+     */
     @TableField(value = "creator_name")
     private String creatorName;
 
     /**
-     * 更新人名�?     */
+     * 更新人名称
+     */
     @TableField(value = "updater_name")
     private String updaterName;
 } 

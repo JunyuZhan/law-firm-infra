@@ -15,6 +15,12 @@
     <packaging>pom</packaging>
     <description>核心功能层，提供核心业务功能</description>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
+
     <modules>
         <module>core-audit</module>
         <module>core-storage</module>

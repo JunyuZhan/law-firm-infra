@@ -5,7 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 流程模板服务接口
- * 提供流程模板管理相关的业务功�? * 
+ * 提供流程模板管理相关的业务功能
+ * 
  * @author JunyuZhan
  */
 public interface ProcessTemplateService {
@@ -46,7 +47,8 @@ public interface ProcessTemplateService {
      * @param key 模板标识
      * @param name 模板名称
      * @param category 模板分类
-     * @param current 当前�?     * @param size 每页条数
+     * @param current 当前页
+     * @param size 每页条数
      * @return 模板分页数据
      */
     Page<?> getProcessTemplatePage(String key, String name, String category, int current, int size);

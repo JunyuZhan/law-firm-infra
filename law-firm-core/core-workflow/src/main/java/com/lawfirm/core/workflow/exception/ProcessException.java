@@ -1,10 +1,11 @@
 package com.lawfirm.core.workflow.exception;
 
 /**
- * 流程异常�? * 
+ * 流程异常类
+ *
  * @author JunyuZhan
  */
-public class ProcessException extends WorkflowException {
+public class ProcessException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

@@ -35,8 +35,9 @@ public class ChunkUploadVO {
     private String chunkPath;
 
     /**
-     * 上传状�?     */
-    @Schema(description = "上传状�?, allowableValues = {"success", "failure"})
+     * 上传状态
+     */
+    @Schema(description = "上传状态", allowableValues = "success,failure")
     private String status;
 
     /**
@@ -46,7 +47,8 @@ public class ChunkUploadVO {
     private String message;
 
     /**
-     * 分片上传完成后是否所有分片都已上�?     */
-    @Schema(description = "是否所有分片都已上�?)
+     * 分片上传完成后是否所有分片都已上传
+     */
+    @Schema(description = "是否所有分片都已上传")
     private Boolean completed;
 } 

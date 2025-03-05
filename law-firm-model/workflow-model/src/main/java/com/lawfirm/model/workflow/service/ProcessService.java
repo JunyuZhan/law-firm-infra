@@ -11,7 +11,8 @@ import java.util.Map;
 
 /**
  * 流程服务接口
- * 提供流程实例相关的基本操作功�? *
+ * 提供流程实例相关的基本操作功能
+ *
  * @author JunyuZhan
  */
 public interface ProcessService {
@@ -57,7 +58,8 @@ public interface ProcessService {
      * 分页查询流程列表
      *
      * @param queryDTO 查询参数
-     * @param current 当前�?     * @param size 每页条数
+     * @param current 当前页
+     * @param size 每页条数
      * @return 分页流程列表
      */
     Page<ProcessVO> getProcessList(ProcessQueryDTO queryDTO, int current, int size);
@@ -107,7 +109,9 @@ public interface ProcessService {
     /**
      * 启动流程实例
      *
-     * @param processDefinitionKey 流程定义�?     * @param businessKey 业务�?     * @param variables 变量
+     * @param processDefinitionKey 流程定义键
+     * @param businessKey 业务键
+     * @param variables 变量
      * @return 流程实例ID
      */
     String startProcessInstance(String processDefinitionKey, String businessKey, Map<String, Object> variables);

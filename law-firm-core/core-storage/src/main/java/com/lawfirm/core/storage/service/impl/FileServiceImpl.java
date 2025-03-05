@@ -26,7 +26,7 @@ import com.lawfirm.model.storage.dto.file.FileQueryDTO;
 import com.lawfirm.model.storage.dto.file.FileUploadDTO;
 import com.lawfirm.model.storage.entity.file.FileInfo;
 import com.lawfirm.model.storage.entity.file.FileObject;
-import com.lawfirm.model.storage.repository.FileObjectRepository;
+import com.lawfirm.model.storage.mapper.FileObjectMapper;
 import com.lawfirm.model.storage.service.FileService;
 import com.lawfirm.model.storage.vo.FileVO;
 import com.lawfirm.model.storage.vo.PageVO;
@@ -38,13 +38,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-public class FileServiceImpl extends BaseServiceImpl<FileObjectRepository, FileObject> implements FileService {
+public class FileServiceImpl extends BaseServiceImpl<FileObjectMapper, FileObject> implements FileService {
 
     private final FileUploader fileUploader;
     private final FileOperator fileOperator;
     private final StorageProperties storageProperties;
     
-    public FileServiceImpl(FileObjectRepository baseMapper, FileUploader fileUploader, 
+    public FileServiceImpl(FileObjectMapper baseMapper, FileUploader fileUploader, 
                           FileOperator fileOperator, StorageProperties storageProperties) {
         super(baseMapper);
         this.fileUploader = fileUploader;

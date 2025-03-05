@@ -57,7 +57,8 @@ public class ProcessInstance extends BaseProcess {
     private String deploymentId;
     
     /**
-     * 业务�?     */
+     * 业务键
+     */
     @TableField("business_key")
     private String businessKey;
 } 

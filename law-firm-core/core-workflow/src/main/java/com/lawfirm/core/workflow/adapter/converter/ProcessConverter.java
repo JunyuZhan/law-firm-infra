@@ -8,11 +8,14 @@ import com.lawfirm.model.workflow.entity.base.BaseProcess;
 import com.lawfirm.model.workflow.enums.ProcessStatusEnum;
 import com.lawfirm.model.workflow.enums.ProcessTypeEnum;
 import com.lawfirm.model.workflow.enums.TaskPriorityEnum;
+import com.lawfirm.core.workflow.vo.ProcessDefinitionVO;
+import org.flowable.engine.repository.ProcessDefinition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * 流程数据转换�? * 
+ * 流程数据转换器
+ * 
  * @author JunyuZhan
  */
 @Component
@@ -20,7 +23,8 @@ import org.springframework.stereotype.Component;
 public class ProcessConverter {
 
     /**
-     * 将创建DTO转换为实�?     * 
+     * 将创建DTO转换为实体
+     * 
      * @param createDTO 创建DTO
      * @return 实体对象
      */
@@ -120,6 +124,36 @@ public class ProcessConverter {
         vo.setName(process.getProcessName());
         vo.setDescription(process.getDescription());
         
+        return vo;
+    }
+
+    /**
+     * 将Flowable流程定义转换为视图对象
+     * 
+     * @param processDefinition Flowable流程定义
+     * @return 流程定义视图对象
+     */
+    public ProcessDefinitionVO toProcessDefinitionVO(ProcessDefinition processDefinition) {
+        if (processDefinition == null) {
+            return null;
+        }
+
+        ProcessDefinitionVO vo = new ProcessDefinitionVO();
+        vo.setId(processDefinition.getId());
+        vo.setKey(processDefinition.getKey());
+        vo.setName(processDefinition.getName());
+        vo.setCategory(processDefinition.getCategory());
+        vo.setVersion(processDefinition.getVersion());
+        vo.setDeploymentId(processDefinition.getDeploymentId());
+        vo.setResourceName(processDefinition.getResourceName());
+        vo.setDiagramResourceName(processDefinition.getDiagramResourceName());
+        vo.setDescription(processDefinition.getDescription());
+        vo.setSuspended(processDefinition.isSuspended());
+        vo.setTenantId(processDefinition.getTenantId());
+        vo.setEngineVersion(processDefinition.getEngineVersion());
+        vo.setHasStartForm(processDefinition.hasStartFormKey());
+        vo.setGraphicalNotation(processDefinition.hasGraphicalNotation());
+
         return vo;
     }
 } 

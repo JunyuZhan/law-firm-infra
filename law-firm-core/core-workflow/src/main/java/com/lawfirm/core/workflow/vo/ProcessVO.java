@@ -35,7 +35,8 @@ public class ProcessVO implements Serializable {
     private LocalDateTime createTime;
 
     /**
-     * 创建�?     */
+     * 创建人
+     */
     private String createBy;
 
     /**
@@ -45,78 +46,82 @@ public class ProcessVO implements Serializable {
     private LocalDateTime updateTime;
 
     /**
-     * 更新�?     */
+     * 更新人
+     */
     private String updateBy;
 
     /**
-     * 状态（0正常 1停用�?     */
+     * 流程状态
+     */
     private Integer status;
 
     /**
      * 备注
      */
     private String remark;
-    
+
     /**
      * 流程名称
      */
     private String processName;
-    
+
     /**
-     * 流程Key
+     * 流程标识
      */
     private String processKey;
-    
+
     /**
      * 流程分类
      */
     private String category;
-    
+
     /**
      * 流程描述
      */
     private String description;
-    
+
     /**
      * 当前节点
      */
     private String currentNode;
-    
+
     /**
      * 当前处理人ID
      */
     private Long currentHandlerId;
-    
+
     /**
-     * 当前处理人名�?     */
+     * 当前处理人名称
+     */
     private String currentHandlerName;
-    
+
     /**
-     * 开始时�?     */
+     * 开始时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
-    
+
     /**
      * 结束时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
-    
+
     /**
      * 是否挂起
      */
     private Boolean suspended;
-    
+
     /**
-     * 业务数据ID
+     * 业务ID
      */
     private Long businessId;
-    
+
     /**
      * 业务类型
      */
     private String businessType;
-    
+
     /**
      * 流程变量
      */

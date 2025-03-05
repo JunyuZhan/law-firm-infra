@@ -13,10 +13,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lawfirm.core.storage.config.StorageProperties;
+import com.lawfirm.core.storage.util.FileTypeUtils;
 import com.lawfirm.model.storage.dto.file.FileUploadDTO;
+import com.lawfirm.model.storage.entity.file.FileInfo;
 import com.lawfirm.model.storage.entity.file.FileObject;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
-import com.lawfirm.model.storage.repository.BucketRepository;
+import com.lawfirm.model.storage.mapper.StorageBucketMapper;
+import com.lawfirm.model.storage.mapper.FileObjectMapper;
 import com.lawfirm.model.storage.enums.FileTypeEnum;
 
 import lombok.RequiredArgsConstructor;
@@ -33,7 +36,8 @@ public class FileUploader {
     
     private final StorageProperties storageProperties;
     private final FileOperator fileOperator;
-    private final BucketRepository bucketRepository;
+    private final StorageBucketMapper bucketMapper;
+    private final FileObjectMapper fileObjectMapper;
     
     /**
      * 上传文件 - 从MultipartFile
@@ -184,7 +188,7 @@ public class FileUploader {
         FileObject fileObject = createFileObject(bucketId, fileName, size, null, null);
         
         // 获取存储桶
-        StorageBucket bucket = bucketRepository.findById(bucketId);
+        StorageBucket bucket = bucketMapper.selectById(bucketId);
         if (bucket == null) {
             throw new IllegalArgumentException("存储桶不存在: " + bucketId);
         }
@@ -201,21 +205,31 @@ public class FileUploader {
     /**
      * 创建文件对象
      */
-    private FileObject createFileObject(Long bucketId, String fileName, long fileSize, 
-            String description, String tags) {
+    private FileObject createFileObject(Long bucketId, String fileName, long size, String description, String tags) {
+        // 获取存储桶
+        StorageBucket bucket = bucketMapper.selectById(bucketId);
+        if (bucket == null) {
+            throw new IllegalArgumentException("存储桶不存在: " + bucketId);
+        }
+        
+        // 创建文件对象
         FileObject fileObject = new FileObject();
         fileObject.setFileName(fileName);
+        fileObject.setStorageSize(size);
         fileObject.setBucketId(bucketId);
-        fileObject.setFileSize(fileSize);
-        fileObject.setFileType(FileTypeEnum.getByValue(getFileType(fileName)));
-        fileObject.setExtension(getFileExtension(fileName));
-        fileObject.setDescription(description);
-        fileObject.setTags(tags);
-        fileObject.setUploadTime(System.currentTimeMillis());
-        fileObject.setStatus(1); // 1表示正常状态
-        fileObject.setAccessCount(0L);
-        fileObject.setDownloadCount(0L);
-        fileObject.setUuid(UUID.randomUUID().toString().replace("-", ""));
+        
+        // 设置文件类型
+        String extension = FileTypeUtils.getExtension(fileName);
+        fileObject.setExtension(extension);
+        fileObject.setContentType(FileTypeUtils.getContentType(extension));
+        
+        // 设置文件信息
+        if (StringUtils.hasText(description) || StringUtils.hasText(tags)) {
+            FileInfo fileInfo = new FileInfo();
+            fileInfo.setDescription(description);
+            fileInfo.setTags(tags);
+            fileObject.setFileInfo(fileInfo);
+        }
         
         return fileObject;
     }

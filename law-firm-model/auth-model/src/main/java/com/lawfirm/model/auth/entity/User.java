@@ -75,16 +75,16 @@ public class User extends TenantEntity {
     private Integer status;
     
     /**
-     * 部门ID
-     */
-    @TableField("department_id")
-    private Long departmentId;
-    
-    /**
      * 职位ID
      */
     @TableField("position_id")
     private Long positionId;
+    
+    /**
+     * 用户类型（0-系统管理员，1-律所主管，2-合伙人，3-律师，4-实习律师，5-行政人员）
+     */
+    @TableField("user_type")
+    private Integer userType;
     
     /**
      * 最后登录时间
@@ -97,4 +97,16 @@ public class User extends TenantEntity {
      */
     @TableField("last_login_ip")
     private String lastLoginIp;
+    
+    /**
+     * 账号过期时间
+     */
+    @TableField("account_expire_time")
+    private LocalDateTime accountExpireTime;
+    
+    /**
+     * 密码过期时间
+     */
+    @TableField("password_expire_time")
+    private LocalDateTime passwordExpireTime;
 } 

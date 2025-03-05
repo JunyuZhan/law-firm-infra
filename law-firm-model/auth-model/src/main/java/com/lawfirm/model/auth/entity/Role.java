@@ -43,6 +43,18 @@ public class Role extends TenantEntity {
     private Integer dataScope;
     
     /**
+     * 父级角色ID，用于角色继承
+     */
+    @TableField("parent_id")
+    private Long parentId;
+    
+    /**
+     * 角色层级（0-系统管理员，1-律所主管，2-合伙人，3-律师，4-实习律师，5-行政人员）
+     */
+    @TableField("level")
+    private Integer level;
+    
+    /**
      * 显示顺序
      */
     @TableField("sort")

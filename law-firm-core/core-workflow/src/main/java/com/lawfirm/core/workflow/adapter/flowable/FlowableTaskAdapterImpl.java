@@ -32,7 +32,7 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
 
     @Override
     public Task createTask(String taskName, String assignee, String processInstanceId, Map<String, Object> variables) {
-        log.info("创建任务, 任务名称: {}, 处理�? {}, 流程实例ID: {}", taskName, assignee, processInstanceId);
+        log.info("创建任务, 任务名称: {}, 处理人: {}, 流程实例ID: {}", taskName, assignee, processInstanceId);
         
         try {
             // 创建独立任务
@@ -48,7 +48,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
             
             // 设置变量
             if (variables != null && !variables.isEmpty()) {
-                // 如果有流程实例ID，添加到变量�?                if (StringUtils.hasText(processInstanceId)) {
+                // 如果有流程实例ID，添加到变量中
+                if (StringUtils.hasText(processInstanceId)) {
                     variables.put("processInstanceId", processInstanceId);
                 }
                 taskService.setVariables(task.getId(), variables);
@@ -77,7 +78,7 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
                     .singleResult();
             
             if (task == null) {
-                log.warn("任务不存�? 任务ID: {}", taskId);
+                log.warn("任务不存在, 任务ID: {}", taskId);
             }
             
             return task;
@@ -97,7 +98,7 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
                     .singleResult();
             
             if (task == null) {
-                log.warn("历史任务不存�? 任务ID: {}", taskId);
+                log.warn("历史任务不存在, 任务ID: {}", taskId);
             }
             
             return task;
@@ -119,8 +120,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
             taskService.complete(taskId, variables);
             log.info("完成任务成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("完成任务失败", e);
             throw new TaskException("完成任务失败: " + e.getMessage());
@@ -135,8 +136,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
             taskService.deleteTask(taskId, reason);
             log.info("删除任务成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("删除任务失败", e);
             throw new TaskException("删除任务失败: " + e.getMessage());
@@ -161,7 +162,7 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
 
     @Override
     public List<Task> listUserTodoTasks(String assignee) {
-        log.info("查询用户待办任务, 处理�? {}", assignee);
+        log.info("查询用户待办任务, 处理人: {}", assignee);
         
         try {
             return taskService.createTaskQuery()
@@ -177,7 +178,7 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
 
     @Override
     public List<HistoricTaskInstance> listUserDoneTasks(String assignee) {
-        log.info("查询用户已办任务, 处理�? {}", assignee);
+        log.info("查询用户已办任务, 处理人: {}", assignee);
         
         try {
             return historyService.createHistoricTaskInstanceQuery()
@@ -194,7 +195,7 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
 
     @Override
     public List<Task> listGroupTasks(String candidateGroup) {
-        log.info("查询组任�? 候选组: {}", candidateGroup);
+        log.info("查询组任务, 候选组: {}", candidateGroup);
         
         try {
             return taskService.createTaskQuery()
@@ -203,8 +204,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
                     .desc()
                     .list();
         } catch (Exception e) {
-            log.error("查询组任务失�?, e);
-            throw new TaskException("查询组任务失�? " + e.getMessage());
+            log.error("查询组任务失败, e");
+            throw new TaskException("查询组任务失败 " + e.getMessage());
         }
     }
 
@@ -216,8 +217,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
             taskService.setAssignee(taskId, assignee);
             log.info("转办任务成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("转办任务失败", e);
             throw new TaskException("转办任务失败: " + e.getMessage());
@@ -232,8 +233,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
             taskService.delegateTask(taskId, assignee);
             log.info("委派任务成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("委派任务失败", e);
             throw new TaskException("委派任务失败: " + e.getMessage());
@@ -248,8 +249,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
             taskService.setDueDate(taskId, dueDate);
             log.info("设置过期时间成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("设置过期时间失败", e);
             throw new TaskException("设置过期时间失败: " + e.getMessage());
@@ -264,8 +265,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
             taskService.addCandidateUser(taskId, candidateUser);
             log.info("添加候选人成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("添加候选人失败", e);
             throw new TaskException("添加候选人失败: " + e.getMessage());
@@ -280,8 +281,8 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
             taskService.addCandidateGroup(taskId, candidateGroup);
             log.info("添加候选组成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("添加候选组失败", e);
             throw new TaskException("添加候选组失败: " + e.getMessage());
@@ -290,29 +291,29 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
     
     @Override
     public void setPriority(String taskId, int priority) {
-        log.info("设置任务优先�? 任务ID: {}, 优先�? {}", taskId, priority);
+        log.info("设置任务优先级, 任务ID: {}, 优先级: {}", taskId, priority);
         
         try {
             taskService.setPriority(taskId, priority);
-            log.info("设置任务优先级成�?);
+            log.info("设置任务优先级成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
-            log.error("设置任务优先级失�?, e);
-            throw new TaskException("设置任务优先级失�? " + e.getMessage());
+            log.error("设置任务优先级失败, e");
+            throw new TaskException("设置任务优先级失败 " + e.getMessage());
         }
     }
     
     @Override
     public Object getTaskVariable(String taskId, String variableName) {
-        log.info("获取任务变量, 任务ID: {}, 变量�? {}", taskId, variableName);
+        log.info("获取任务变量, 任务ID: {}, 变量名: {}", taskId, variableName);
         
         try {
             return taskService.getVariable(taskId, variableName);
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("获取任务变量失败", e);
             throw new TaskException("获取任务变量失败: " + e.getMessage());
@@ -321,14 +322,14 @@ public class FlowableTaskAdapterImpl implements FlowableTaskAdapter {
     
     @Override
     public void setTaskVariable(String taskId, String variableName, Object value) {
-        log.info("设置任务变量, 任务ID: {}, 变量�? {}", taskId, variableName);
+        log.info("设置任务变量, 任务ID: {}, 变量名: {}", taskId, variableName);
         
         try {
             taskService.setVariable(taskId, variableName, value);
             log.info("设置任务变量成功");
         } catch (FlowableObjectNotFoundException e) {
-            log.error("任务不存�?, e);
-            throw new TaskException("任务不存�?);
+            log.error("任务不存在, e");
+            throw new TaskException("任务不存在");
         } catch (Exception e) {
             log.error("设置任务变量失败", e);
             throw new TaskException("设置任务变量失败: " + e.getMessage());

@@ -62,7 +62,8 @@ public class TaskController {
      * 分页查询任务
      *
      * @param queryDTO 查询条件
-     * @param current 当前�?     * @param size 每页大小
+     * @param current 当前页
+     * @param size 每页大小
      * @return 任务分页数据
      */
     @GetMapping("/list")
@@ -74,12 +75,13 @@ public class TaskController {
     }
 
     /**
-     * 获取流程的任务列�?     *
+     * 获取流程的任务列表
+     *
      * @param processId 流程ID
      * @return 任务列表
      */
     @GetMapping("/process/{processId}")
-    @Operation(summary = "获取流程的任务列�?)
+    @Operation(summary = "获取流程的任务列表")
     public ResponseEntity<List<TaskVO>> getProcessTasks(
             @Parameter(description = "流程ID") @PathVariable Long processId) {
         List<TaskVO> tasks = taskService.listProcessTasks(processId);

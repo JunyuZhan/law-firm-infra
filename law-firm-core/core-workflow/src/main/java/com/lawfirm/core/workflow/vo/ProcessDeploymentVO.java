@@ -50,7 +50,8 @@ public class ProcessDeploymentVO implements FlowableVO {
     private String engineVersion;
     
     /**
-     * 部署的资源列�?     */
+     * 部署的资源列表
+     */
     private ArrayList<String> resourceNames;
     
     /**
@@ -69,7 +70,8 @@ public class ProcessDeploymentVO implements FlowableVO {
     private String description;
     
     /**
-     * 是否激�?     */
+     * 是否激活
+     */
     private Boolean active;
 
     /**

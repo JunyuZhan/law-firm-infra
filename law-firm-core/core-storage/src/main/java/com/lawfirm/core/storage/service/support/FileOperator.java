@@ -12,8 +12,8 @@ import com.lawfirm.core.storage.strategy.StorageContext;
 import com.lawfirm.core.storage.strategy.StorageStrategy;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.entity.file.FileObject;
-import com.lawfirm.model.storage.repository.BucketRepository;
-import com.lawfirm.model.storage.repository.FileObjectRepository;
+import com.lawfirm.model.storage.mapper.StorageBucketMapper;
+import com.lawfirm.model.storage.mapper.FileObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 public class FileOperator {
     
     private final StorageContext storageContext;
-    private final BucketRepository bucketRepository;
-    private final FileObjectRepository fileObjectRepository;
+    private final StorageBucketMapper bucketMapper;
+    private final FileObjectMapper fileObjectMapper;
     
     /**
      * 上传文件
@@ -39,7 +39,7 @@ public class FileOperator {
      * @return 是否上传成功
      */
     public boolean uploadFile(Long bucketId, FileObject fileObject, MultipartFile multipartFile) {
-        StorageBucket bucket = bucketRepository.findById(bucketId);
+        StorageBucket bucket = bucketMapper.selectById(bucketId);
         if (bucket == null) {
             log.error("存储桶不存在: {}", bucketId);
             return false;
@@ -62,7 +62,7 @@ public class FileOperator {
      * @return 是否上传成功
      */
     public boolean uploadFile(Long bucketId, FileObject fileObject, byte[] fileContent) {
-        StorageBucket bucket = bucketRepository.findById(bucketId);
+        StorageBucket bucket = bucketMapper.selectById(bucketId);
         if (bucket == null) {
             log.error("存储桶不存在: {}", bucketId);
             return false;
@@ -100,7 +100,7 @@ public class FileOperator {
         // 更新文件记录
         fileObject.setStoragePath(newStoragePath);
         try {
-            fileObjectRepository.insert(fileObject);
+            fileObjectMapper.insert(fileObject);
             return true;
         } catch (Exception e) {
             log.error("更新文件记录失败", e);
@@ -117,13 +117,13 @@ public class FileOperator {
      * @return 文件输入流
      */
     public InputStream downloadFile(Long fileId) {
-        FileObject fileObject = fileObjectRepository.findById(fileId);
+        FileObject fileObject = fileObjectMapper.selectById(fileId);
         if (fileObject == null) {
             log.error("文件不存在: {}", fileId);
             return null;
         }
         
-        StorageBucket bucket = bucketRepository.findById(fileObject.getBucketId());
+        StorageBucket bucket = bucketMapper.selectById(fileObject.getBucketId());
         if (bucket == null) {
             log.error("存储桶不存在: {}", fileObject.getBucketId());
             return null;
@@ -134,7 +134,7 @@ public class FileOperator {
         // 更新访问计数和时间
         fileObject.setAccessCount(fileObject.getAccessCount() + 1);
         fileObject.setLastAccessTime(System.currentTimeMillis());
-        fileObjectRepository.updateById(fileObject);
+        fileObjectMapper.updateById(fileObject);
         
         return strategy.getObject(bucket, fileObject.getStoragePath());
     }
@@ -146,13 +146,13 @@ public class FileOperator {
      * @return 是否删除成功
      */
     public boolean deleteFile(Long fileId) {
-        FileObject fileObject = fileObjectRepository.findById(fileId);
+        FileObject fileObject = fileObjectMapper.selectById(fileId);
         if (fileObject == null) {
             log.error("文件不存在: {}", fileId);
             return false;
         }
         
-        StorageBucket bucket = bucketRepository.findById(fileObject.getBucketId());
+        StorageBucket bucket = bucketMapper.selectById(fileObject.getBucketId());
         if (bucket == null) {
             log.error("存储桶不存在: {}", fileObject.getBucketId());
             return false;
@@ -164,7 +164,7 @@ public class FileOperator {
         if (result) {
             try {
                 // 删除文件记录
-                fileObjectRepository.deleteById(fileObject.getId());
+                fileObjectMapper.deleteById(fileObject.getId());
                 return true;
             } catch (Exception e) {
                 log.error("删除文件记录失败", e);
@@ -183,12 +183,12 @@ public class FileOperator {
      * @return 访问URL
      */
     public String getFileUrl(Long fileId, Integer expireSeconds) {
-        FileObject fileObject = fileObjectRepository.findById(fileId);
+        FileObject fileObject = fileObjectMapper.selectById(fileId);
         if (fileObject == null) {
             return null;
         }
         
-        StorageBucket bucket = bucketRepository.findById(fileObject.getBucketId());
+        StorageBucket bucket = bucketMapper.selectById(fileObject.getBucketId());
         if (bucket == null) {
             return null;
         }

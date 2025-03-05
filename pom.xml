@@ -40,8 +40,8 @@
         <module>law-firm-common</module>
         <module>law-firm-model</module>
         <module>law-firm-core</module>
-        <module>law-firm-api</module>
-        <module>law-firm-modules</module>
+        <!-- <module>law-firm-api</module> -->
+        <!-- <module>law-firm-modules</module> -->
         <!-- 其他模块 -->
     </modules>
 

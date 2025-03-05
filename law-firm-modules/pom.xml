@@ -33,7 +33,6 @@
         <module>law-firm-seal</module>
         <module>law-firm-analysis</module>
         <module>law-firm-conflict</module>
-        <module>law-firm-workflow</module>
     </modules>
 
     <dependencies>

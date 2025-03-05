@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 流程权限服务实现�? *
+ * 流程权限服务实现类
+ *
  * @author JunyuZhan
  */
 @Slf4j
@@ -78,7 +79,7 @@ public class ProcessPermissionServiceImpl implements ProcessPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long assignUserDefinitionPermission(Long userId, String processDefinitionKey, Integer operationType, Integer permissionPolicy) {
-        log.info("为用户分配流程定义权�? userId={}, processDefinitionKey={}, operationType={}, permissionPolicy={}",
+        log.info("为用户分配流程定义权限: userId={}, processDefinitionKey={}, operationType={}, permissionPolicy={}",
                 userId, processDefinitionKey, operationType, permissionPolicy);
         // TODO: 实现为用户分配流程定义权限逻辑
         return null;
@@ -87,7 +88,7 @@ public class ProcessPermissionServiceImpl implements ProcessPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long assignRoleDefinitionPermission(Long roleId, String processDefinitionKey, Integer operationType, Integer permissionPolicy) {
-        log.info("为角色分配流程定义权�? roleId={}, processDefinitionKey={}, operationType={}, permissionPolicy={}",
+        log.info("为角色分配流程定义权限: roleId={}, processDefinitionKey={}, operationType={}, permissionPolicy={}",
                 roleId, processDefinitionKey, operationType, permissionPolicy);
         // TODO: 实现为角色分配流程定义权限逻辑
         return null;
@@ -96,7 +97,7 @@ public class ProcessPermissionServiceImpl implements ProcessPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long assignDeptDefinitionPermission(Long deptId, String processDefinitionKey, Integer operationType, Integer permissionPolicy) {
-        log.info("为部门分配流程定义权�? deptId={}, processDefinitionKey={}, operationType={}, permissionPolicy={}",
+        log.info("为部门分配流程定义权限: deptId={}, processDefinitionKey={}, operationType={}, permissionPolicy={}",
                 deptId, processDefinitionKey, operationType, permissionPolicy);
         // TODO: 实现为部门分配流程定义权限逻辑
         return null;
@@ -105,7 +106,7 @@ public class ProcessPermissionServiceImpl implements ProcessPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int assignStartPermission(String processDefinitionKey, Integer targetType, List<Long> targetIds, Integer permissionPolicy) {
-        log.info("为流程指定启动权�? processDefinitionKey={}, targetType={}, targetIds={}, permissionPolicy={}",
+        log.info("为流程指定启动权限: processDefinitionKey={}, targetType={}, targetIds={}, permissionPolicy={}",
                 processDefinitionKey, targetType, targetIds, permissionPolicy);
         // TODO: 实现为流程指定启动权限逻辑
         return 0;
@@ -113,21 +114,21 @@ public class ProcessPermissionServiceImpl implements ProcessPermissionService {
 
     @Override
     public boolean checkStartProcessPermission(Long userId, String processDefinitionKey) {
-        log.info("检查用户是否有启动流程的权�? userId={}, processDefinitionKey={}", userId, processDefinitionKey);
+        log.info("检查用户是否有启动流程的权限: userId={}, processDefinitionKey={}", userId, processDefinitionKey);
         // TODO: 实现检查用户是否有启动流程的权限逻辑
         return false;
     }
 
     @Override
     public boolean checkViewProcessPermission(Long userId, String processDefinitionKey) {
-        log.info("检查用户是否有查看流程的权�? userId={}, processDefinitionKey={}", userId, processDefinitionKey);
+        log.info("检查用户是否有查看流程的权限: userId={}, processDefinitionKey={}", userId, processDefinitionKey);
         // TODO: 实现检查用户是否有查看流程的权限逻辑
         return false;
     }
 
     @Override
     public boolean checkCancelProcessPermission(Long userId, String processDefinitionKey) {
-        log.info("检查用户是否有取消流程的权�? userId={}, processDefinitionKey={}", userId, processDefinitionKey);
+        log.info("检查用户是否有取消流程的权限: userId={}, processDefinitionKey={}", userId, processDefinitionKey);
         // TODO: 实现检查用户是否有取消流程的权限逻辑
         return false;
     }
@@ -135,7 +136,7 @@ public class ProcessPermissionServiceImpl implements ProcessPermissionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deletePermissionsByProcessDefinitionKey(String processDefinitionKey) {
-        log.info("删除流程定义相关的所有权�? processDefinitionKey={}", processDefinitionKey);
+        log.info("删除流程定义相关的所有权限: processDefinitionKey={}", processDefinitionKey);
         // TODO: 实现删除流程定义相关的所有权限逻辑
     }
 } 

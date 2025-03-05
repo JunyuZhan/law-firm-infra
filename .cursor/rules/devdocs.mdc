@@ -5,7 +5,12 @@ alwaysApply: false
 ---
 
 # Your rule content
-这是律师事务所管理系统的后端开发项目，采用分层架构，从依赖版本统一管理层dependencies-common通用模块层-model数据模型层-core核心功能层-业务模块层modules，最后api层。我们不能把版本号定义在子模块，应该交给D:\weidi\law-firm-infra\law-firm-dependencies\pom.xml统一第三方依赖管理文件来定义和管理。创建任何文件前，请先搜索，不要盲目创建。
+1.这是律师事务所管理系统的后端开发项目，采用分层架构，项目结构：
+2.从依赖版本统一管理层dependencies-common通用模块层-model数据模型层-core核心功能层-业务模块层modules，最后api层。
+3.第三方依赖管理规则：不能把版本号定义在子模块，应该交给law-firm-dependencies\pom.xml统一第三方依赖管理文件来定义和管理。
+4.创建任何文件前，请先搜索，不要盲目创建。
+5.正在进行项目重构，底层已经完成，现在正在重构law-firm-modules层
+
 [README.md](mdc:README.md)D:\weidi\law-firm-infra\README.md
 核心依赖
 - Spring Boot 3.2.x

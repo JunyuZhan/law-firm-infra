@@ -5,6 +5,7 @@ import com.lawfirm.model.workflow.vo.FlowableVO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 流程定义视图对象
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Accessors(chain = false)
+@Schema(description = "流程定义视图对象")
 public class ProcessDefinitionVO implements FlowableVO {
 
     private static final long serialVersionUID = 1L;
@@ -20,26 +22,31 @@ public class ProcessDefinitionVO implements FlowableVO {
     /**
      * 流程定义ID
      */
+    @Schema(description = "流程定义ID")
     private String id;
     
     /**
      * 流程定义Key
      */
+    @Schema(description = "流程定义标识")
     private String key;
     
     /**
      * 流程定义名称
      */
+    @Schema(description = "流程定义名称")
     private String name;
     
     /**
      * 流程定义分类
      */
+    @Schema(description = "流程定义分类")
     private String category;
     
     /**
      * 流程定义版本
      */
+    @Schema(description = "流程定义版本")
     private Integer version;
     
     /**
@@ -58,12 +65,14 @@ public class ProcessDefinitionVO implements FlowableVO {
     private LocalDateTime deploymentTime;
     
     /**
-     * 流程图资源名�?     */
+     * 流程图资源名
+     */
     private String diagramResourceName;
     
     /**
      * 描述
      */
+    @Schema(description = "流程定义描述")
     private String description;
     
     /**
@@ -82,10 +91,12 @@ public class ProcessDefinitionVO implements FlowableVO {
     private String engineVersion;
     
     /**
-     * 是否有启动表�?     */
+     * 是否有启动表
+     */
     private Boolean hasStartForm;
     
     /**
-     * 是否图形化流�?     */
+     * 是否图形化流
+     */
     private Boolean graphicalNotation;
 } 

@@ -5,7 +5,8 @@ import java.util.Map;
 
 /**
  * 流程权限服务接口
- * 提供流程权限管理相关的所有业务功�? *
+ * 提供流程权限管理相关的所有业务功能
+ *
  * @author JunyuZhan
  */
 public interface ProcessPermissionService {
@@ -21,7 +22,8 @@ public interface ProcessPermissionService {
      * 批量创建流程权限
      *
      * @param permissions 权限实体列表
-     * @return 成功创建的数�?     */
+     * @return 成功创建的数量
+     */
     int batchCreatePermissions(List<Map<String, Object>> permissions);
 
     /**
@@ -44,7 +46,8 @@ public interface ProcessPermissionService {
      * 批量删除流程权限
      *
      * @param permissionIds 权限ID列表
-     * @return 成功删除的数�?     */
+     * @return 成功删除的数量
+     */
     int batchDeletePermissions(List<Long> permissionIds);
 
     /**
@@ -60,7 +63,8 @@ public interface ProcessPermissionService {
      *
      * @param pageNum           页码
      * @param pageSize          每页大小
-     * @param processDefinitionKey 流程定义�?     * @param permissionType    权限类型
+     * @param processDefinitionKey 流程定义键
+     * @param permissionType    权限类型
      * @param operationType     操作类型
      * @param targetType        目标类型
      * @param targetId          目标ID
@@ -71,60 +75,80 @@ public interface ProcessPermissionService {
                                           Integer targetType, Long targetId);
 
     /**
-     * 为用户分配流程定义权�?     *
+     * 为用户分配流程定义权限
+     *
      * @param userId             用户ID
-     * @param processDefinitionKey 流程定义�?     * @param operationType      操作类型
+     * @param processDefinitionKey 流程定义键
+     * @param operationType      操作类型
      * @param permissionPolicy   权限策略
      * @return 权限ID
      */
     Long assignUserDefinitionPermission(Long userId, String processDefinitionKey, Integer operationType, Integer permissionPolicy);
 
     /**
-     * 为角色分配流程定义权�?     *
+     * 为角色分配流程定义权限
+     *
      * @param roleId             角色ID
-     * @param processDefinitionKey 流程定义�?     * @param operationType      操作类型
+     * @param processDefinitionKey 流程定义键
+     * @param operationType      操作类型
      * @param permissionPolicy   权限策略
      * @return 权限ID
      */
     Long assignRoleDefinitionPermission(Long roleId, String processDefinitionKey, Integer operationType, Integer permissionPolicy);
 
     /**
-     * 为部门分配流程定义权�?     *
+     * 为部门分配流程定义权限
+     *
      * @param deptId             部门ID
-     * @param processDefinitionKey 流程定义�?     * @param operationType      操作类型
+     * @param processDefinitionKey 流程定义键
+     * @param operationType      操作类型
      * @param permissionPolicy   权限策略
      * @return 权限ID
      */
     Long assignDeptDefinitionPermission(Long deptId, String processDefinitionKey, Integer operationType, Integer permissionPolicy);
 
     /**
-     * 为流程指定启动权�?     *
-     * @param processDefinitionKey 流程定义�?     * @param targetType          目标类型
+     * 为流程指定启动权限
+     *
+     * @param processDefinitionKey 流程定义键
+     * @param targetType          目标类型
      * @param targetIds           目标ID列表
      * @param permissionPolicy    权限策略
-     * @return 成功创建的权限数�?     */
+     * @return 成功创建的权限数量
+     */
     int assignStartPermission(String processDefinitionKey, Integer targetType, List<Long> targetIds, Integer permissionPolicy);
 
     /**
-     * 检查用户是否有启动流程的权�?     *
+     * 检查用户是否有启动流程的权限
+     *
      * @param userId             用户ID
-     * @param processDefinitionKey 流程定义�?     * @return 是否有权�?     */
+     * @param processDefinitionKey 流程定义键
+     * @return 是否有权限
+     */
     boolean checkStartProcessPermission(Long userId, String processDefinitionKey);
 
     /**
-     * 检查用户是否有查看流程的权�?     *
+     * 检查用户是否有查看流程的权限
+     *
      * @param userId             用户ID
-     * @param processDefinitionKey 流程定义�?     * @return 是否有权�?     */
+     * @param processDefinitionKey 流程定义键
+     * @return 是否有权限
+     */
     boolean checkViewProcessPermission(Long userId, String processDefinitionKey);
 
     /**
-     * 检查用户是否有取消流程的权�?     *
+     * 检查用户是否有取消流程的权限
+     *
      * @param userId             用户ID
-     * @param processDefinitionKey 流程定义�?     * @return 是否有权�?     */
+     * @param processDefinitionKey 流程定义键
+     * @return 是否有权限
+     */
     boolean checkCancelProcessPermission(Long userId, String processDefinitionKey);
 
     /**
-     * 删除流程定义相关的所有权�?     *
-     * @param processDefinitionKey 流程定义�?     */
+     * 删除流程定义相关的所有权限
+     *
+     * @param processDefinitionKey 流程定义键
+     */
     void deletePermissionsByProcessDefinitionKey(String processDefinitionKey);
 } 

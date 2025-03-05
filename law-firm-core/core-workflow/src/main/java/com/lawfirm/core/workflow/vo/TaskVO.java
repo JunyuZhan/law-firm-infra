@@ -37,7 +37,8 @@ public class TaskVO {
     private Long handlerId;
     
     /**
-     * 处理人名�?     */
+     * 处理人名称
+     */
     private String handlerName;
     
     /**
@@ -61,12 +62,12 @@ public class TaskVO {
     private String processDefinitionId;
     
     /**
-     * 流程任务ID
+     * Flowable任务ID
      */
     private String flowableTaskId;
     
     /**
-     * 截止时间
+     * 到期时间
      */
     private Date dueDate;
     
@@ -86,7 +87,8 @@ public class TaskVO {
     private Long creatorId;
     
     /**
-     * 创建人名�?     */
+     * 创建人名称
+     */
     private String creatorName;
     
     /**
@@ -95,34 +97,37 @@ public class TaskVO {
     private Long updaterId;
     
     /**
-     * 更新人名�?     */
+     * 更新人名称
+     */
     private String updaterName;
     
     /**
-     * 任务优先�?     */
+     * 优先级
+     */
     private Integer priority;
     
     /**
-     * 是否超时
+     * 是否逾期
      */
     private Boolean isOverdue;
     
     /**
-     * 剩余处理时间（小时）
+     * 剩余小时数
      */
     private Integer remainingHours;
     
     /**
-     * 可执行的操作列表
+     * 可用操作列表
      */
     private List<String> availableOperations;
     
     /**
-     * 关联的业务数据ID
+     * 业务ID
      */
     private Long businessId;
     
     /**
-     * 关联的业务类�?     */
+     * 业务类型
+     */
     private String businessType;
 } 

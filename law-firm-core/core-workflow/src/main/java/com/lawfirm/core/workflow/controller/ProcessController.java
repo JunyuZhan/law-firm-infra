@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 流程控制�? * 提供流程管理的RESTful API
+ * 流程控制器
+ * 提供流程管理的RESTful API
  * 
  * @author JunyuZhan
  */
@@ -72,7 +73,7 @@ public class ProcessController {
         
         List<ProcessVO> processList = processService.listProcesses(queryDTO);
         
-        log.info("查询流程列表成功，共 {} 条记�?, processList.size());
+        log.info("查询流程列表成功，共 {} 条记录", processList.size());
         return ResponseEntity.ok(processList);
     }
     
@@ -89,7 +90,7 @@ public class ProcessController {
         
         Page<ProcessVO> page = processService.getProcessList(queryDTO, current, size);
         
-        log.info("分页查询流程成功，共 {} 条记�?, page.getTotal());
+        log.info("分页查询流程成功，共 {} 条记录", page.getTotal());
         return ResponseEntity.ok(page);
     }
     

@@ -50,7 +50,8 @@ public interface TaskService {
     List<TaskVO> listTasks(TaskQueryDTO queryDTO);
 
     /**
-     * 开始处理任�?     *
+     * 开始处理任务
+     *
      * @param id 任务ID
      */
     void startTask(Long id);
@@ -76,11 +77,13 @@ public interface TaskService {
      *
      * @param id 任务ID
      * @param handlerId 处理人ID
-     * @param handlerName 处理人名�?     */
+     * @param handlerName 处理人名称
+     */
     void transferTask(Long id, Long handlerId, String handlerName);
 
     /**
-     * 获取流程的任务列�?     *
+     * 获取流程的任务列表
+     *
      * @param processId 流程ID
      * @return 任务列表
      */
@@ -105,21 +108,24 @@ public interface TaskService {
     // =============== 任务分配 ===============
     
     /**
-     * 根据角色获取候选用�?     *
+     * 根据角色获取候选用户
+     *
      * @param roleId 角色ID
      * @return 用户ID列表
      */
     List<Long> getCandidateUsersByRole(Long roleId);
 
     /**
-     * 根据部门获取候选用�?     *
+     * 根据部门获取候选用户
+     *
      * @param deptId 部门ID
      * @return 用户ID列表
      */
     List<Long> getCandidateUsersByDept(Long deptId);
 
     /**
-     * 自动分配任务给最合适的处理�?     * 
+     * 自动分配任务给最合适的处理人
+     * 
      * @param taskId 任务ID
      * @param candidateUserIds 候选用户ID列表
      * @return 处理人ID
@@ -153,7 +159,8 @@ public interface TaskService {
     int getUserTaskCount(Long userId);
 
     /**
-     * 计算用户的任务负载分�?     * 分数越低表示负载越轻
+     * 计算用户的任务负载分数
+     * 分数越低表示负载越轻
      * 
      * @param userId 用户ID
      * @return 负载分数
@@ -194,7 +201,8 @@ public interface TaskService {
     void sendTaskCompletedNotification(String taskId, String taskName, String assigneeId, Map<String, Object> variables);
 
     /**
-     * 发送任务过期提�?     *
+     * 发送任务过期提醒
+     *
      * @param taskId 任务ID
      * @param taskName 任务名称
      * @param assigneeId 处理人ID
@@ -203,7 +211,8 @@ public interface TaskService {
     void sendTaskDueReminder(String taskId, String taskName, String assigneeId, Date dueDate);
 
     /**
-     * 发送任务超时提�?     *
+     * 发送任务超时提醒
+     *
      * @param taskId 任务ID
      * @param taskName 任务名称
      * @param assigneeId 处理人ID

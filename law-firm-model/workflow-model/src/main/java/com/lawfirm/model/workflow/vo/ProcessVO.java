@@ -44,7 +44,8 @@ public class ProcessVO implements Serializable {
     private ProcessTypeEnum processType;
     
     /**
-     * 流程状�?     * @see ProcessStatusEnum
+     * 流程状态
+     * @see ProcessStatusEnum
      */
     private ProcessStatusEnum status;
     
@@ -69,7 +70,8 @@ public class ProcessVO implements Serializable {
     private Long initiatorId;
     
     /**
-     * 发起人名�?     */
+     * 发起人名称
+     */
     private String initiatorName;
     
     /**
@@ -90,28 +92,33 @@ public class ProcessVO implements Serializable {
     private Long currentHandlerId;
     
     /**
-     * 当前处理人名�?     */
+     * 当前处理人名称
+     */
     private String currentHandlerName;
     
     /**
-     * 优先�?     * @see TaskPriorityEnum
+     * 优先级
+     * @see TaskPriorityEnum
      */
     private TaskPriorityEnum priority;
     
     /**
      * 是否允许撤回
      * true: 允许
-     * false: 不允�?     */
+     * false: 不允许
+     */
     private Boolean allowRevoke;
     
     /**
      * 是否允许转办
      * true: 允许
-     * false: 不允�?     */
+     * false: 不允许
+     */
     private Boolean allowTransfer;
     
     /**
-     * 流程配置（JSON格式�?     */
+     * 流程配置（JSON格式）
+     */
     private String processConfig;
     
     /**
@@ -133,11 +140,13 @@ public class ProcessVO implements Serializable {
     private LocalDateTime updateTime;
 
     /**
-     * 创建�?     */
+     * 创建者
+     */
     private String createBy;
 
     /**
-     * 更新�?     */
+     * 更新者
+     */
     private String updateBy;
 
     /**

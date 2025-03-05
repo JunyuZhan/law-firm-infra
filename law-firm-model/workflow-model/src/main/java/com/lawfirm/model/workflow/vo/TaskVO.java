@@ -45,15 +45,21 @@ public class TaskVO implements Serializable {
     private String description;
     
     /**
-     * 任务状�?     * @see TaskStatusEnum
+     * 任务状态
+     * @see TaskStatusEnum
      */
     private TaskStatusEnum status;
     
     /**
-     * 流程实例ID
+     * 流程ID
      * 关联ProcessVO.id
      */
-    private String processInstanceId;
+    private Long processId;
+    
+    /**
+     * 流程编号
+     */
+    private String processNo;
     
     /**
      * 流程定义ID
@@ -63,7 +69,8 @@ public class TaskVO implements Serializable {
     
     /**
      * 工作流引擎任务ID
-     * @deprecated 考虑移除，实现细节不应暴露在VO�?     */
+     * @deprecated 考虑移除，实现细节不应暴露在VO中
+     */
     @Deprecated
     private String flowableTaskId;
     
@@ -74,11 +81,13 @@ public class TaskVO implements Serializable {
     private Long handlerId;
     
     /**
-     * 处理人名�?     */
+     * 处理人名称
+     */
     private String handlerName;
     
     /**
-     * 任务优先�?     * @see TaskPriorityEnum
+     * 任务优先级
+     * @see TaskPriorityEnum
      */
     private TaskPriorityEnum priority;
     
@@ -96,17 +105,21 @@ public class TaskVO implements Serializable {
     
     /**
      * 处理意见
-     * 任务处理过程中的备注或说�?     */
+     * 任务处理过程中的备注或说明
+     */
     private String comment;
     
     /**
      * 是否超时
-     * true: 已超�?     * false: 未超�?     */
+     * true: 已超时
+     * false: 未超时
+     */
     private Boolean overdue;
     
     /**
      * 剩余处理时间（小时）
-     * 负数表示已超时的小时�?     */
+     * 负数表示已超时的小时数
+     */
     private Integer remainingHours;
     
     /**
@@ -120,7 +133,9 @@ public class TaskVO implements Serializable {
     private Long businessId;
     
     /**
-     * 关联的业务类�?     * 用于标识关联的具体业务模�?     */
+     * 关联的业务类型
+     * 用于标识关联的具体业务模块
+     */
     private String businessType;
 
     /**
@@ -136,15 +151,17 @@ public class TaskVO implements Serializable {
     private LocalDateTime updateTime;
 
     /**
-     * 创建�?     */
+     * 创建者
+     */
     private String createBy;
 
     /**
-     * 更新�?     */
+     * 更新者
+     */
     private String updateBy;
 
     /**
      * 租户ID
      */
     private Long tenantId;
-} 
+}

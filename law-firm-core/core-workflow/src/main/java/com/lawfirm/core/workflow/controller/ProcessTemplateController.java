@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * 流程模板控制�? * 提供流程模板管理的RESTful API
+ * 流程模板控制器
+ * 提供流程模板管理的RESTful API
  * 
  * @author JunyuZhan
  */
@@ -91,7 +92,8 @@ public class ProcessTemplateController {
      * @param key 模板标识
      * @param name 模板名称
      * @param category 模板分类
-     * @param current 当前�?     * @param size 每页条数
+     * @param current 当前页
+     * @param size 每页条数
      * @return 模板分页数据
      */
     @GetMapping
@@ -100,7 +102,7 @@ public class ProcessTemplateController {
             @ApiParam("模板标识") @RequestParam(required = false) String key,
             @ApiParam("模板名称") @RequestParam(required = false) String name,
             @ApiParam("模板分类") @RequestParam(required = false) String category,
-            @ApiParam("当前�?) @RequestParam(defaultValue = "1") int current,
+            @ApiParam("当前页") @RequestParam(defaultValue = "1") int current,
             @ApiParam("每页条数") @RequestParam(defaultValue = "10") int size) {
         log.info("分页查询流程模板请求, Key: {}, 名称: {}, 分类: {}", key, name, category);
         Page<?> page = processTemplateService.getProcessTemplatePage(key, name, category, current, size);

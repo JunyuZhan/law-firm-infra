@@ -37,6 +37,18 @@ public class Permission extends TenantEntity {
     private Integer type;
     
     /**
+     * 操作类型（0-完全权限，1-只读权限，2-申请权限）
+     */
+    @TableField("operation_type")
+    private Integer operationType;
+    
+    /**
+     * 数据权限范围（0-全部数据，1-部门数据，2-个人数据，3-自定义数据）
+     */
+    @TableField("data_scope")
+    private Integer dataScope;
+    
+    /**
      * 菜单图标
      */
     @TableField("icon")

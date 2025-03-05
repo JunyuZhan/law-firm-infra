@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.cache.annotation.RepeatSubmit;
 import com.lawfirm.common.cache.annotation.SimpleCache;
 import com.lawfirm.common.security.annotation.RequiresPermissions;
@@ -16,12 +17,14 @@ import com.lawfirm.core.storage.strategy.StorageContext;
 import com.lawfirm.core.storage.strategy.StorageStrategy;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.storage.dto.bucket.BucketCreateDTO;
+import com.lawfirm.model.storage.dto.bucket.BucketQueryDTO;
 import com.lawfirm.model.storage.dto.bucket.BucketUpdateDTO;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
-import com.lawfirm.model.storage.repository.BucketRepository;
+import com.lawfirm.model.storage.mapper.StorageBucketMapper;
 import com.lawfirm.model.storage.service.BucketService;
 import com.lawfirm.model.storage.vo.BucketVO;
+import com.lawfirm.model.storage.vo.PageVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,12 +33,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-public class BucketServiceImpl extends BaseServiceImpl<BucketRepository, StorageBucket> implements BucketService {
+public class BucketServiceImpl extends BaseServiceImpl<StorageBucketMapper, StorageBucket> implements BucketService {
 
     private final StorageContext storageContext;
     private final StorageProperties storageProperties;
     
-    public BucketServiceImpl(BucketRepository baseMapper, 
+    public BucketServiceImpl(StorageBucketMapper baseMapper, 
                            StorageContext storageContext,
                            StorageProperties storageProperties) {
         super(baseMapper);
@@ -152,6 +155,10 @@ public class BucketServiceImpl extends BaseServiceImpl<BucketRepository, Storage
             bucket.setBucketName(updateDTO.getBucketName());
         }
         
+        if (updateDTO.getBucketType() != null) {
+            bucket.setBucketType(updateDTO.getBucketType());
+        }
+        
         // 保存更新
         update(bucket);
         
@@ -256,6 +263,48 @@ public class BucketServiceImpl extends BaseServiceImpl<BucketRepository, Storage
         QueryWrapper<StorageBucket> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("bucket_name", bucketName);
         return !exists(queryWrapper);
+    }
+    
+    @RequiresPermissions("storage:bucket:query")
+    public PageVO<BucketVO> query(BucketQueryDTO queryDTO) {
+        log.info("查询存储桶列表: {}", queryDTO);
+        
+        // 构建查询条件
+        QueryWrapper<StorageBucket> wrapper = new QueryWrapper<>();
+        if (queryDTO.getStorageType() != null) {
+            wrapper.eq("storage_type", queryDTO.getStorageType());
+        }
+        if (queryDTO.getBucketType() != null) {
+            wrapper.eq("bucket_type", queryDTO.getBucketType());
+        }
+        if (queryDTO.getBucketName() != null) {
+            wrapper.like("bucket_name", queryDTO.getBucketName());
+        }
+        
+        // 分页查询
+        Page<StorageBucket> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
+        page = page(page, wrapper);
+        
+        // 转换为VO列表
+        List<BucketVO> voList = new ArrayList<>();
+        for (StorageBucket bucket : page.getRecords()) {
+            voList.add(convertToVO(bucket));
+        }
+        
+        return new PageVO<>(voList, page.getTotal(), queryDTO.getPageNum(), queryDTO.getPageSize());
+    }
+    
+    @Override
+    @RequiresPermissions("storage:bucket:list")
+    public List<StorageBucket> list(QueryWrapper<StorageBucket> wrapper) {
+        log.info("获取存储桶列表");
+        return super.list(wrapper);
+    }
+    
+    @Override
+    @RequiresPermissions("storage:bucket:list")
+    public Page<StorageBucket> page(Page<StorageBucket> page, QueryWrapper<StorageBucket> wrapper) {
+        return super.page(page, wrapper);
     }
     
     /**

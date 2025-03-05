@@ -58,10 +58,55 @@ public class FileTypeUtils {
         MIME_TYPE_MAP.put("video/quicktime", "mov");
         MIME_TYPE_MAP.put("video/x-matroska", "mkv");
         MIME_TYPE_MAP.put("video/webm", "webm");
+        
+        // 文本文件
+        MIME_TYPE_MAP.put("text/plain", "txt");
+        MIME_TYPE_MAP.put("text/html", "html");
+        MIME_TYPE_MAP.put("text/xml", "xml");
+        MIME_TYPE_MAP.put("text/css", "css");
+        MIME_TYPE_MAP.put("text/javascript", "js");
     }
     
     /**
-     * 检测文件类型
+     * 获取文件扩展名
+     *
+     * @param fileName 文件名
+     * @return 扩展名
+     */
+    public static String getExtension(String fileName) {
+        if (!StringUtils.hasText(fileName)) {
+            return "";
+        }
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex > -1 && dotIndex < fileName.length() - 1) 
+            ? fileName.substring(dotIndex + 1).toLowerCase() 
+            : "";
+    }
+    
+    /**
+     * 获取文件的MIME类型
+     *
+     * @param extension 文件扩展名
+     * @return MIME类型
+     */
+    public static String getContentType(String extension) {
+        if (!StringUtils.hasText(extension)) {
+            return "application/octet-stream";
+        }
+        
+        // 遍历MIME_TYPE_MAP查找对应的MIME类型
+        for (Map.Entry<String, String> entry : MIME_TYPE_MAP.entrySet()) {
+            if (extension.equalsIgnoreCase(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        
+        // 如果找不到对应的MIME类型，返回通用二进制流类型
+        return "application/octet-stream";
+    }
+    
+    /**
+     * 检测文件的MIME类型
      *
      * @param file 文件对象
      * @return MIME类型
@@ -75,23 +120,9 @@ public class FileTypeUtils {
     }
     
     /**
-     * 检测文件类型
+     * 检测输入流的MIME类型
      *
-     * @param data 文件数据
-     * @return MIME类型
-     */
-    public static String detectMimeType(byte[] data) {
-        try {
-            return tika.detect(data);
-        } catch (Exception e) {
-            return "application/octet-stream";
-        }
-    }
-    
-    /**
-     * 检测文件类型
-     *
-     * @param inputStream 文件输入流
+     * @param inputStream 输入流
      * @return MIME类型
      */
     public static String detectMimeType(InputStream inputStream) {
@@ -108,7 +139,7 @@ public class FileTypeUtils {
      * @param fileName 文件名
      * @return 扩展名
      */
-    public static String getExtension(String fileName) {
+    public static String getExtensionByMimeType(String fileName) {
         if (!StringUtils.hasText(fileName)) {
             return "";
         }
@@ -118,20 +149,6 @@ public class FileTypeUtils {
             return fileName.substring(dotIndex + 1).toLowerCase();
         }
         return "";
-    }
-    
-    /**
-     * 根据MIME类型获取扩展名
-     *
-     * @param mimeType MIME类型
-     * @return 扩展名
-     */
-    public static String getExtensionByMimeType(String mimeType) {
-        if (!StringUtils.hasText(mimeType)) {
-            return "";
-        }
-        
-        return MIME_TYPE_MAP.getOrDefault(mimeType.toLowerCase(), "");
     }
     
     /**

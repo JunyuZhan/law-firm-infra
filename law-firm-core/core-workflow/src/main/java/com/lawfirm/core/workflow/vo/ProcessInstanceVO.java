@@ -33,7 +33,7 @@ public class ProcessInstanceVO implements FlowableVO {
     private String processDefinitionName;
     
     /**
-     * 流程定义Key
+     * 流程定义标识
      */
     private String processDefinitionKey;
     
@@ -48,12 +48,13 @@ public class ProcessInstanceVO implements FlowableVO {
     private String deploymentId;
     
     /**
-     * 业务Key
+     * 业务键
      */
     private String businessKey;
     
     /**
-     * 开始时�?     */
+     * 开始时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
     
@@ -74,7 +75,7 @@ public class ProcessInstanceVO implements FlowableVO {
     private String startUserId;
     
     /**
-     * 启动活动ID
+     * 开始活动ID
      */
     private String startActivityId;
     
@@ -104,7 +105,8 @@ public class ProcessInstanceVO implements FlowableVO {
     private String description;
     
     /**
-     * 流程状�?     */
+     * 流程状态
+     */
     private String processStatus;
     
     /**
@@ -113,6 +115,7 @@ public class ProcessInstanceVO implements FlowableVO {
     private String currentTaskName;
     
     /**
-     * 当前处理�?     */
+     * 当前处理人
+     */
     private String currentHandler;
 } 

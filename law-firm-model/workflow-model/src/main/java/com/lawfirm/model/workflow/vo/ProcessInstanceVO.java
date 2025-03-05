@@ -49,7 +49,8 @@ public class ProcessInstanceVO implements Serializable {
     private String deploymentId;
 
     /**
-     * 业务�?     */
+     * 业务键
+     */
     private String businessKey;
 
     /**
@@ -63,7 +64,8 @@ public class ProcessInstanceVO implements Serializable {
     private String description;
 
     /**
-     * 开始时�?     */
+     * 开始时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
