@@ -17,7 +17,7 @@ import com.lawfirm.model.system.vo.SysRoleVO;
 import com.lawfirm.system.service.SysRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;

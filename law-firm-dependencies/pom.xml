@@ -10,6 +10,7 @@
     <description>依赖版本统一管理层</description>
 
     <properties>
+        <revision>1.0.0</revision>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>3.2.2</spring-boot.version>
@@ -69,6 +70,28 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- 内部依赖 -->
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>common-util</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>auth-model</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            
             <!-- Spring Boot BOM -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -467,11 +490,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.lawfirm</groupId>
-                <artifactId>auth-model</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>case-model</artifactId>

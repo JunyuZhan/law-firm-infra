@@ -9,7 +9,6 @@ import com.lawfirm.model.system.dto.SysTemplateDTO;
 import com.lawfirm.system.mapper.SysTemplateMapper;
 import com.lawfirm.system.service.SysTemplateService;
 import com.lawfirm.common.data.vo.BaseVO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
+import com.lawfirm.common.util.BeanUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;

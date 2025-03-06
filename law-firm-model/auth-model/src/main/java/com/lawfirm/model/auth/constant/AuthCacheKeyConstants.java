@@ -31,6 +31,21 @@ public interface AuthCacheKeyConstants {
     String ROLE_PERMISSIONS = AUTH_CACHE_PREFIX + "role:permissions:";
     
     /**
+     * 部门权限缓存键
+     */
+    String DEPARTMENT_PERMISSIONS = AUTH_CACHE_PREFIX + "department:permissions:";
+    
+    /**
+     * 职位权限缓存键
+     */
+    String POSITION_PERMISSIONS = AUTH_CACHE_PREFIX + "position:permissions:";
+    
+    /**
+     * 用户组权限缓存键
+     */
+    String USER_GROUP_PERMISSIONS = AUTH_CACHE_PREFIX + "user:group:permissions:";
+    
+    /**
      * 验证码缓存键
      */
     String CAPTCHA = AUTH_CACHE_PREFIX + "captcha:";

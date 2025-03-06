@@ -9,7 +9,7 @@ import com.lawfirm.model.system.entity.SysUserRole;
 import com.lawfirm.system.mapper.SysUserRoleMapper;
 import com.lawfirm.system.service.SysUserRoleService;
 import com.lawfirm.model.system.vo.SysUserRoleVO;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lawfirm.model.auth.mapper.UserGroupMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.lawfirm.model.auth.entity.UserGroup">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="sort" property="sort"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, code, parent_id, sort, status, remark, tenant_id, created_by, created_time, updated_by, updated_time, deleted
+    </sql>
+
+    <!-- 根据ID查询用户组 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_user_group
+        WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <!-- 根据用户组编码查询用户组 -->
+    <select id="selectByCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_user_group
+        WHERE code = #{code} AND deleted = 0
+    </select>
+
+    <!-- 查询所有用户组 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_user_group
+        WHERE deleted = 0
+        ORDER BY sort ASC
+    </select>
+
+    <!-- 分页查询用户组列表 -->
+    <select id="selectPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_user_group
+        WHERE deleted = 0
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        ORDER BY sort ASC
+        LIMIT #{pageSize} OFFSET (#{pageNum} - 1) * #{pageSize}
+    </select>
+
+    <!-- 查询用户组总数 -->
+    <select id="selectCount" resultType="int">
+        SELECT COUNT(*)
+        FROM auth_user_group
+        WHERE deleted = 0
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+    </select>
+
+    <!-- 新增用户组 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO auth_user_group (
+            name, code, parent_id, sort, status, remark, tenant_id, created_by, updated_by
+        ) VALUES (
+            #{name}, #{code}, #{parentId}, #{sort}, #{status}, #{remark}, #{tenantId}, #{createdBy}, #{updatedBy}
+        )
+    </insert>
+
+    <!-- 更新用户组 -->
+    <update id="update">
+        UPDATE auth_user_group
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            updated_by = #{updatedBy},
+            updated_time = NOW()
+        </set>
+        WHERE id = #{id} AND deleted = 0
+    </update>
+
+    <!-- 删除用户组（逻辑删除） -->
+    <update id="deleteById">
+        UPDATE auth_user_group
+        SET deleted = 1, updated_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 批量删除用户组（逻辑删除） -->
+    <update id="deleteBatchByIds">
+        UPDATE auth_user_group
+        SET deleted = 1, updated_time = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- 查询用户所属的用户组 -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT g.*
+        FROM auth_user_group g
+        JOIN auth_user_group_user ugu ON g.id = ugu.user_group_id
+        WHERE ugu.user_id = #{userId} AND g.deleted = 0
+        ORDER BY g.sort ASC
+    </select>
+
+    <!-- 添加用户到用户组 -->
+    <insert id="addUserToGroup">
+        INSERT INTO auth_user_group_user (user_group_id, user_id)
+        VALUES (#{userGroupId}, #{userId})
+        ON DUPLICATE KEY UPDATE user_group_id = #{userGroupId}
+    </insert>
+
+    <!-- 从用户组中移除用户 -->
+    <delete id="removeUserFromGroup">
+        DELETE FROM auth_user_group_user
+        WHERE user_group_id = #{userGroupId} AND user_id = #{userId}
+    </delete>
+
+    <!-- 移除用户组中的所有用户 -->
+    <delete id="removeAllUsersFromGroup">
+        DELETE FROM auth_user_group_user
+        WHERE user_group_id = #{userGroupId}
+    </delete>
+</mapper>

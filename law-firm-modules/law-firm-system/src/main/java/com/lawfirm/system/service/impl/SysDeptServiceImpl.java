@@ -9,7 +9,7 @@ import com.lawfirm.model.system.vo.SysDeptVO;
 import com.lawfirm.system.mapper.SysDeptMapper;
 import com.lawfirm.system.service.SysDeptService;
 import com.lawfirm.common.data.vo.BaseVO;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

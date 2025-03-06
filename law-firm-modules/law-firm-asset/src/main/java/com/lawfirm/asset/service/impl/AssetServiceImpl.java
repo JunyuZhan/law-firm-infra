@@ -12,7 +12,7 @@ import com.lawfirm.asset.entity.Asset;
 import com.lawfirm.asset.mapper.AssetMapper;
 import com.lawfirm.asset.service.IAssetService;
 import com.lawfirm.common.core.exception.BusinessException;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;

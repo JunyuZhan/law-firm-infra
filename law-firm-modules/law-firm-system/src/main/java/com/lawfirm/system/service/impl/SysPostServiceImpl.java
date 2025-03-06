@@ -9,7 +9,7 @@ import com.lawfirm.model.system.vo.SysPostVO;
 import com.lawfirm.model.system.dto.SysPostDTO;
 import com.lawfirm.system.service.SysPostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

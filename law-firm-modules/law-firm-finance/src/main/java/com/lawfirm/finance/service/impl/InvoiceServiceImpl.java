@@ -14,7 +14,7 @@ import com.lawfirm.finance.dto.request.InvoiceQueryRequest;
 import com.lawfirm.finance.dto.response.InvoiceResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

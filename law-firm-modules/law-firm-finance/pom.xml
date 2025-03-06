@@ -27,6 +27,11 @@
             <artifactId>common-data</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- MyBatis Plus -->
         <dependency>

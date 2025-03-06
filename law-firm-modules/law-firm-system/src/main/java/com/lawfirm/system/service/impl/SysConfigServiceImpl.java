@@ -9,7 +9,7 @@ import com.lawfirm.model.system.vo.SysConfigVO;
 import com.lawfirm.model.system.dto.SysConfigDTO;
 import com.lawfirm.system.mapper.SysConfigMapper;
 import com.lawfirm.system.service.SysConfigService;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

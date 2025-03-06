@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lawfirm.model.auth.mapper.DepartmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lawfirm.model.auth.entity.Department">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="type" property="type"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="sort" property="sort"/>
+        <result column="leader_id" property="leaderId"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, code, type, parent_id, sort, leader_id, phone, email, status, remark,
+        tenant_id, created_by, created_time, updated_by, updated_time, deleted
+    </sql>
+
+    <!-- 根据ID查询部门 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_department
+        WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <!-- 根据编码查询部门 -->
+    <select id="selectByCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_department
+        WHERE code = #{code} AND tenant_id = #{tenantId} AND deleted = 0
+    </select>
+
+    <!-- 查询子部门列表 -->
+    <select id="selectChildren" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_department
+        WHERE parent_id = #{parentId} AND deleted = 0
+        <if test="tenantId != null">
+            AND tenant_id = #{tenantId}
+        </if>
+        ORDER BY sort ASC
+    </select>
+
+    <!-- 查询部门树 -->
+    <select id="selectTree" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_department
+        WHERE deleted = 0
+        <if test="tenantId != null">
+            AND tenant_id = #{tenantId}
+        </if>
+        ORDER BY sort ASC
+    </select>
+
+    <!-- 分页查询部门 -->
+    <select id="selectPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM auth_department
+        <where>
+            deleted = 0
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="code != null and code != ''">
+                AND code LIKE CONCAT('%', #{code}, '%')
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="tenantId != null">
+                AND tenant_id = #{tenantId}
+            </if>
+        </where>
+        ORDER BY sort ASC
+        LIMIT #{pageSize} OFFSET #{pageNum}
+    </select>
+
+    <!-- 新增部门 -->
+    <insert id="insert" parameterType="com.lawfirm.model.auth.entity.Department">
+        INSERT INTO auth_department (
+            name, code, type, parent_id, sort, leader_id, phone, email,
+            status, remark, tenant_id, created_by, created_time, updated_by, updated_time
+        ) VALUES (
+            #{name}, #{code}, #{type}, #{parentId}, #{sort}, #{leaderId}, #{phone}, #{email},
+            #{status}, #{remark}, #{tenantId}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}
+        )
+    </insert>
+
+    <!-- 更新部门 -->
+    <update id="update" parameterType="com.lawfirm.model.auth.entity.Department">
+        UPDATE auth_department
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            updated_by = #{updatedBy},
+            updated_time = #{updatedTime}
+        </set>
+        WHERE id = #{id} AND tenant_id = #{tenantId}
+    </update>
+
+    <!-- 删除部门（逻辑删除） -->
+    <update id="deleteById">
+        UPDATE auth_department
+        SET deleted = 1,
+            updated_by = #{updatedBy},
+            updated_time = NOW()
+        WHERE id = #{id} AND tenant_id = #{tenantId}
+    </update>
+
+    <!-- 批量删除部门（逻辑删除） -->
+    <update id="deleteBatchIds">
+        UPDATE auth_department
+        SET deleted = 1,
+            updated_by = #{updatedBy},
+            updated_time = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND tenant_id = #{tenantId}
+    </update>
+</mapper>

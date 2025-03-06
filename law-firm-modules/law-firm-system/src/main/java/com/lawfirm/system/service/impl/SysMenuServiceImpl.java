@@ -16,7 +16,7 @@ import com.lawfirm.system.service.SysMenuService;
 import com.lawfirm.system.util.TreeUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;

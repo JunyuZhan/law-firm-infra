@@ -4,7 +4,7 @@ import com.lawfirm.finance.dto.request.FeeRecordAddRequest;
 import com.lawfirm.finance.dto.request.FeeRecordUpdateRequest;
 import com.lawfirm.finance.dto.response.FeeRecordResponse;
 import com.lawfirm.finance.entity.FeeRecord;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

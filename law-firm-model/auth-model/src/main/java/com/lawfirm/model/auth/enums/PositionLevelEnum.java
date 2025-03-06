@@ -10,20 +10,90 @@ import com.lawfirm.model.base.enums.BaseEnum;
 public enum PositionLevelEnum implements BaseEnum<Integer> {
     
     /**
-     * 高层
+     * 高级合伙人
      */
-    HIGH(0, "高层"),
+    SENIOR_PARTNER(0, "高级合伙人"),
     
     /**
-     * 中层
+     * 合伙人
      */
-    MIDDLE(1, "中层"),
+    PARTNER(1, "合伙人"),
     
     /**
-     * 基层
+     * 高级律师
      */
-    LOW(2, "基层");
+    SENIOR_LAWYER(2, "高级律师"),
     
+    /**
+     * 资深律师
+     */
+    EXPERIENCED_LAWYER(3, "资深律师"),
+    
+    /**
+     * 专职律师
+     */
+    FULL_TIME_LAWYER(4, "专职律师"),
+    
+    /**
+     * 实习律师
+     */
+    TRAINEE_LAWYER(5, "实习律师"),
+    
+    /**
+     * 律师助理
+     */
+    LEGAL_ASSISTANT(6, "律师助理"),
+    
+    /**
+     * 行政总监
+     */
+    ADMIN_DIRECTOR(7, "行政总监"),
+    
+    /**
+     * 财务总监
+     */
+    FINANCE_DIRECTOR(8, "财务总监"),
+    
+    /**
+     * 人力资源总监
+     */
+    HR_DIRECTOR(9, "人力资源总监"),
+    
+    /**
+     * IT总监
+     */
+    IT_DIRECTOR(10, "IT总监"),
+    
+    /**
+     * 行政主管
+     */
+    ADMIN_MANAGER(11, "行政主管"),
+    
+    /**
+     * 财务主管
+     */
+    FINANCE_MANAGER(12, "财务主管"),
+    
+    /**
+     * 人力资源主管
+     */
+    HR_MANAGER(13, "人力资源主管"),
+    
+    /**
+     * 行政专员
+     */
+    ADMIN_SPECIALIST(14, "行政专员"),
+    
+    /**
+     * 财务专员
+     */
+    FINANCE_SPECIALIST(15, "财务专员"),
+    
+    /**
+     * 人力资源专员
+     */
+    HR_SPECIALIST(16, "人力资源专员");
+
     private final Integer code;
     private final String desc;
     

@@ -2,7 +2,8 @@ package com.lawfirm.system.util;
 
 import com.lawfirm.model.system.entity.SysMenu;
 import com.lawfirm.model.system.dto.SysMenuDTO;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.system.model.entity.TreeNode;
+import com.lawfirm.common.util.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;

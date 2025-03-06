@@ -13,7 +13,7 @@ import com.lawfirm.model.system.vo.SysUpgradeVO;
 import com.lawfirm.model.system.vo.UpgradeLogVO;
 import com.lawfirm.model.system.vo.UpgradePackageVO;
 import com.lawfirm.system.service.SysUpgradeService;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

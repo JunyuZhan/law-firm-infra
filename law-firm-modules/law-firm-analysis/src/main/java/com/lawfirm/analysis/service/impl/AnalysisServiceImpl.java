@@ -12,7 +12,7 @@ import com.lawfirm.analysis.service.AnalysisService;
 import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.common.core.model.page.PageResult;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

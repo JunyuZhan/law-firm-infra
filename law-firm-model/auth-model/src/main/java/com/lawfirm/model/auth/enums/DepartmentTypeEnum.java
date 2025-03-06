@@ -10,20 +10,50 @@ import com.lawfirm.model.base.enums.BaseEnum;
 public enum DepartmentTypeEnum implements BaseEnum<Integer> {
     
     /**
-     * 公司
+     * 管理部门
      */
-    COMPANY(0, "公司"),
+    MANAGEMENT(0, "管理部门"),
     
     /**
-     * 部门
+     * 业务部门
      */
-    DEPARTMENT(1, "部门"),
+    BUSINESS(1, "业务部门"),
     
     /**
-     * 团队
+     * 诉讼部门
      */
-    TEAM(2, "团队");
+    LITIGATION(2, "诉讼部门"),
     
+    /**
+     * 非诉讼部门
+     */
+    NON_LITIGATION(3, "非诉讼部门"),
+    
+    /**
+     * 行政部门
+     */
+    ADMINISTRATIVE(4, "行政部门"),
+    
+    /**
+     * 财务部门
+     */
+    FINANCE(5, "财务部门"),
+    
+    /**
+     * 人力资源部门
+     */
+    HR(6, "人力资源部门"),
+    
+    /**
+     * IT部门
+     */
+    IT(7, "IT部门"),
+    
+    /**
+     * 分所
+     */
+    BRANCH(8, "分所");
+
     private final Integer code;
     private final String desc;
     

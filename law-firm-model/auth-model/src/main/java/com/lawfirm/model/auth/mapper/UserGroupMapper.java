@@ -112,4 +112,12 @@ public interface UserGroupMapper {
      * @return 影响行数
      */
     int removeUserFromGroup(@Param("userGroupId") Long userGroupId, @Param("userId") Long userId);
+    
+    /**
+     * 移除用户组中的所有用户
+     * 
+     * @param userGroupId 用户组ID
+     * @return 影响行数
+     */
+    int removeAllUsersFromGroup(@Param("userGroupId") Long userGroupId);
 } 

@@ -7,7 +7,7 @@ import com.lawfirm.model.system.entity.SysLawFirm;
 import com.lawfirm.model.system.vo.SysLawFirmVO;
 import com.lawfirm.system.mapper.SysLawFirmMapper;
 import com.lawfirm.system.service.SysLawFirmService;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;

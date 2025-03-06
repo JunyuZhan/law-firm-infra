@@ -6,7 +6,7 @@ import com.lawfirm.client.mapper.ClientMapper;
 import com.lawfirm.common.data.processor.EntityProcessor;
 import com.lawfirm.model.client.entity.Client;
 import com.lawfirm.model.client.dto.ClientDTO;
-import org.springframework.beans.BeanUtils;
+import com.lawfirm.common.util.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

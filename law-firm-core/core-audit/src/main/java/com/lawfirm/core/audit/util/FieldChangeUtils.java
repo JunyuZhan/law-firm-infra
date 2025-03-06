@@ -1,8 +1,8 @@
 package com.lawfirm.core.audit.util;
 
 import com.lawfirm.core.audit.annotation.AuditIgnore;
+import com.lawfirm.common.util.BeanUtils;
 import lombok.experimental.UtilityClass;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
