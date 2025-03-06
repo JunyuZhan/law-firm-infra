@@ -31,19 +31,19 @@ public interface SecurityConstants {
     String TENANT_ID_HEADER = "X-Tenant-Id";
     
     /**
-     * JWT密钥
+     * JWT密钥配置键
      */
-    String JWT_SECRET_KEY = "${law.firm.security.jwt.secret:defaultSecretKey}";
+    String JWT_SECRET_KEY_CONFIG = "${law.firm.security.jwt.secret}";
     
     /**
-     * JWT过期时间（毫秒）
+     * JWT过期时间配置键（毫秒）
      */
-    long JWT_EXPIRATION = 86400000; // 默认24小时
+    String JWT_EXPIRATION_CONFIG = "${law.firm.security.jwt.expiration:86400000}";
     
     /**
-     * 刷新Token过期时间（毫秒）
+     * 刷新Token过期时间配置键（毫秒）
      */
-    long REFRESH_TOKEN_EXPIRATION = 604800000; // 默认7天
+    String REFRESH_TOKEN_EXPIRATION_CONFIG = "${law.firm.security.jwt.refresh-expiration:604800000}";
     
     /**
      * 登录路径
@@ -81,22 +81,42 @@ public interface SecurityConstants {
     };
     
     /**
-     * 最大登录失败次数
+     * 最大登录失败次数配置键
      */
-    int MAX_LOGIN_FAIL_TIMES = 5;
+    String MAX_LOGIN_FAIL_TIMES_CONFIG = "${law.firm.security.login.max-fail-times:5}";
     
     /**
-     * 登录失败锁定时间（分钟）
+     * 登录失败锁定时间配置键（分钟）
      */
-    int LOGIN_LOCK_MINUTES = 30;
+    String LOGIN_LOCK_MINUTES_CONFIG = "${law.firm.security.login.lock-minutes:30}";
     
     /**
-     * 验证码有效期（分钟）
+     * 验证码有效期配置键（分钟）
      */
-    int CAPTCHA_EXPIRE_MINUTES = 5;
+    String CAPTCHA_EXPIRE_MINUTES_CONFIG = "${law.firm.security.captcha.expire-minutes:5}";
     
     /**
-     * 默认密码
+     * 密码最小长度配置键
      */
-    String DEFAULT_PASSWORD = "Law@123456";
+    String PASSWORD_MIN_LENGTH_CONFIG = "${law.firm.security.password.min-length:8}";
+    
+    /**
+     * 密码是否需要包含数字配置键
+     */
+    String PASSWORD_REQUIRE_DIGIT_CONFIG = "${law.firm.security.password.require-digit:true}";
+    
+    /**
+     * 密码是否需要包含小写字母配置键
+     */
+    String PASSWORD_REQUIRE_LOWERCASE_CONFIG = "${law.firm.security.password.require-lowercase:true}";
+    
+    /**
+     * 密码是否需要包含大写字母配置键
+     */
+    String PASSWORD_REQUIRE_UPPERCASE_CONFIG = "${law.firm.security.password.require-uppercase:true}";
+    
+    /**
+     * 密码是否需要包含特殊字符配置键
+     */
+    String PASSWORD_REQUIRE_SPECIAL_CHAR_CONFIG = "${law.firm.security.password.require-special-char:true}";
 } 

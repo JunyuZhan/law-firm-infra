@@ -6,52 +6,32 @@ import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 用户类型枚举
+ * 性别枚举
  */
 @Getter
-public enum UserTypeEnum implements BaseEnum<Integer> {
+public enum GenderEnum implements BaseEnum<Integer> {
     
     /**
-     * 系统管理员
+     * 未知
      */
-    SYSTEM_ADMIN(0, "系统管理员"),
+    UNKNOWN(0, "未知"),
     
     /**
-     * 律所主任
+     * 男
      */
-    DIRECTOR(1, "律所主任"),
+    MALE(1, "男"),
     
     /**
-     * 合伙人律师
+     * 女
      */
-    PARTNER(2, "合伙人律师"),
-    
-    /**
-     * 执业律师
-     */
-    LAWYER(3, "执业律师"),
-    
-    /**
-     * 实习律师
-     */
-    TRAINEE(4, "实习律师"),
-    
-    /**
-     * 行政人员
-     */
-    CLERK(5, "行政人员"),
-    
-    /**
-     * 财务人员
-     */
-    FINANCE(6, "财务人员");
+    FEMALE(2, "女");
     
     @EnumValue
     @JsonValue
     private final Integer code;
     private final String desc;
     
-    UserTypeEnum(Integer code, String desc) {
+    GenderEnum(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
     }

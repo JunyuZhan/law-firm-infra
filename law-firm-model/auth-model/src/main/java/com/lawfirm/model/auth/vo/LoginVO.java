@@ -61,15 +61,15 @@ public class LoginVO extends BaseVO {
     /**
      * 角色列表
      */
-    private List<String> roles;
+    private transient List<String> roles;
     
     /**
      * 权限列表
      */
-    private List<String> permissions;
+    private transient List<String> permissions;
     
     /**
      * 令牌信息
      */
-    private TokenDTO token;
+    private transient TokenDTO token;
 } 

@@ -8,65 +8,95 @@ public interface AuthCacheKeyConstants {
     /**
      * 缓存键前缀
      */
-    String AUTH_CACHE_PREFIX = "law:firm:auth:";
+    String PREFIX = "law:firm:auth:";
+    
+    /**
+     * 用户相关缓存键前缀
+     */
+    String USER = PREFIX + "user:";
+    
+    /**
+     * 角色相关缓存键前缀
+     */
+    String ROLE = PREFIX + "role:";
+    
+    /**
+     * 权限相关缓存键前缀
+     */
+    String PERMISSION = PREFIX + "permission:";
+    
+    /**
+     * 部门相关缓存键前缀
+     */
+    String DEPARTMENT = PREFIX + "department:";
+    
+    /**
+     * 用户组相关缓存键前缀
+     */
+    String USER_GROUP = PREFIX + "user:group:";
+    
+    /**
+     * 登录相关缓存键前缀
+     */
+    String LOGIN = PREFIX + "login:";
+    
+    /**
+     * Token相关缓存键前缀
+     */
+    String TOKEN = PREFIX + "token:";
     
     /**
      * 用户信息缓存键
      */
-    String USER_INFO = AUTH_CACHE_PREFIX + "user:info:";
+    String USER_INFO = USER + "info:";
     
     /**
      * 用户权限缓存键
      */
-    String USER_PERMISSIONS = AUTH_CACHE_PREFIX + "user:permissions:";
+    String USER_PERMISSIONS = USER + "permissions:";
     
     /**
      * 用户角色缓存键
      */
-    String USER_ROLES = AUTH_CACHE_PREFIX + "user:roles:";
+    String USER_ROLES = USER + "roles:";
     
     /**
      * 角色权限缓存键
      */
-    String ROLE_PERMISSIONS = AUTH_CACHE_PREFIX + "role:permissions:";
+    String ROLE_PERMISSIONS = ROLE + "permissions:";
     
     /**
      * 部门权限缓存键
      */
-    String DEPARTMENT_PERMISSIONS = AUTH_CACHE_PREFIX + "department:permissions:";
-    
-    /**
-     * 职位权限缓存键
-     */
-    String POSITION_PERMISSIONS = AUTH_CACHE_PREFIX + "position:permissions:";
+    String DEPARTMENT_PERMISSIONS = DEPARTMENT + "permissions:";
     
     /**
      * 用户组权限缓存键
      */
-    String USER_GROUP_PERMISSIONS = AUTH_CACHE_PREFIX + "user:group:permissions:";
+    String USER_GROUP_PERMISSIONS = USER_GROUP + "permissions:";
     
     /**
      * 验证码缓存键
      */
-    String CAPTCHA = AUTH_CACHE_PREFIX + "captcha:";
+    String CAPTCHA = LOGIN + "captcha:";
     
     /**
      * 登录失败次数缓存键
      */
-    String LOGIN_FAIL_COUNT = AUTH_CACHE_PREFIX + "login:fail:count:";
+    String LOGIN_FAIL_COUNT = LOGIN + "fail:count:";
     
     /**
      * 登录锁定缓存键
      */
-    String LOGIN_LOCK = AUTH_CACHE_PREFIX + "login:lock:";
+    String LOGIN_LOCK = LOGIN + "lock:";
     
     /**
      * Token黑名单缓存键
      */
-    String TOKEN_BLACKLIST = AUTH_CACHE_PREFIX + "token:blacklist:";
+    String TOKEN_BLACKLIST = TOKEN + "blacklist:";
     
     /**
      * 刷新Token缓存键
      */
-    String REFRESH_TOKEN = AUTH_CACHE_PREFIX + "refresh:token:";
+    String REFRESH_TOKEN = TOKEN + "refresh:";
 } 

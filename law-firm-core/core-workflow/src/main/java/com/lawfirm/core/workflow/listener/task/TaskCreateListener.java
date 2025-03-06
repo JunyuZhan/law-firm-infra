@@ -17,7 +17,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TaskCreateListener implements TaskListener {
 
-    private final TaskService taskService;
+    private static final long serialVersionUID = 1L;
+
+    private transient final TaskService taskService;
 
     @Override
     public void notify(DelegateTask delegateTask) {

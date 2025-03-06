@@ -1,6 +1,7 @@
 package com.lawfirm.model.auth.dto.usergroup;
 
 import com.lawfirm.model.base.dto.BaseDTO;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -20,10 +21,23 @@ public class UserGroupUpdateDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
     
     /**
+     * 用户组ID
+     */
+    @NotNull(message = "用户组ID不能为空")
+    private Long id;
+    
+    /**
      * 用户组名称
      */
     @Size(max = 50, message = "用户组名称长度不能超过50个字符")
     private String name;
+    
+    /**
+     * 用户组编码
+     */
+    @Pattern(regexp = "^[A-Za-z0-9_]+$", message = "用户组编码只能包含字母、数字和下划线")
+    @Size(max = 50, message = "用户组编码长度不能超过50个字符")
+    private String code;
     
     /**
      * 父级ID
@@ -49,5 +63,5 @@ public class UserGroupUpdateDTO extends BaseDTO {
     /**
      * 用户ID列表
      */
-    private List<Long> userIds;
+    private transient List<Long> userIds;
 } 

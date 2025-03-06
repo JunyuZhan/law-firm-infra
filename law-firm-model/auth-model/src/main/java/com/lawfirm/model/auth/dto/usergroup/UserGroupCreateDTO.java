@@ -59,5 +59,5 @@ public class UserGroupCreateDTO extends BaseDTO {
     /**
      * 用户ID列表
      */
-    private List<Long> userIds;
+    private transient List<Long> userIds;
 } 

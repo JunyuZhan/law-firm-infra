@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  * AI模型配置实体类
  * 用于存储不同AI模型的配置信息
  */
-public class AiModelConfig extends ModelBaseEntity {
+public class AIModelConfig extends ModelBaseEntity {
     
     private static final long serialVersionUID = 1L;
     
@@ -30,7 +30,7 @@ public class AiModelConfig extends ModelBaseEntity {
     /**
      * 默认构造函数，仅初始化自身字段，不调用父类方法
      */
-    public AiModelConfig() {
+    public AIModelConfig() {
         this.temperature = 0.7;
         this.topP = 1.0;
         this.maxTokens = 2048;
@@ -40,8 +40,8 @@ public class AiModelConfig extends ModelBaseEntity {
      * 创建一个完全初始化的AiModelConfig实例
      * @return 初始化的AiModelConfig实例
      */
-    public static AiModelConfig createDefault() {
-        AiModelConfig config = new AiModelConfig();
+    public static AIModelConfig createDefault() {
+        AIModelConfig config = new AIModelConfig();
         config.setStatus(0); // 正常状态
         return config;
     }
@@ -149,7 +149,7 @@ public class AiModelConfig extends ModelBaseEntity {
     }
     
     @Override
-    public AiModelConfig setStatus(Integer status) {
+    public AIModelConfig setStatus(Integer status) {
         super.setStatus(status);
         return this;
     }

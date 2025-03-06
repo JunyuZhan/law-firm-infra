@@ -20,7 +20,7 @@ public class TaskAssignListener implements TaskListener {
 
     private static final long serialVersionUID = 1L;
 
-    private final TaskService taskService;
+    private transient final TaskService taskService;
 
     /**
      * 当任务被分配时触发

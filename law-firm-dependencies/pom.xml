@@ -427,11 +427,6 @@
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
-                <artifactId>common-util</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lawfirm</groupId>
                 <artifactId>common-cache</artifactId>
                 <version>${project.version}</version>
             </dependency>

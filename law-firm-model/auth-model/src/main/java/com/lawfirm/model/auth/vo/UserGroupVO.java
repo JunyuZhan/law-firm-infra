@@ -1,10 +1,12 @@
 package com.lawfirm.model.auth.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lawfirm.model.base.vo.BaseVO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -65,20 +67,28 @@ public class UserGroupVO extends BaseVO {
     /**
      * 创建时间
      */
-    private String createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Override
+    public LocalDateTime getCreateTime() {
+        return super.getCreateTime();
+    }
     
     /**
      * 更新时间
      */
-    private String updateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Override
+    public LocalDateTime getUpdateTime() {
+        return super.getUpdateTime();
+    }
     
     /**
      * 子用户组
      */
-    private List<UserGroupVO> children;
+    private transient List<UserGroupVO> children;
     
     /**
      * 用户列表
      */
-    private List<UserVO> users;
+    private transient List<UserVO> users;
 } 

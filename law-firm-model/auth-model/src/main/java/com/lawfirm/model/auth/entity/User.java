@@ -2,7 +2,12 @@ package com.lawfirm.model.auth.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lawfirm.model.auth.enums.GenderEnum;
+import com.lawfirm.model.auth.enums.UserTypeEnum;
 import com.lawfirm.model.base.entity.TenantEntity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -29,6 +34,7 @@ public class User extends TenantEntity {
     /**
      * 密码
      */
+    @JsonIgnore
     @TableField("password")
     private String password;
     
@@ -63,10 +69,11 @@ public class User extends TenantEntity {
     private String mobile;
     
     /**
-     * 性别（0-未知，1-男，2-女）
+     * 性别
      */
+    @Enumerated(EnumType.STRING)
     @TableField("gender")
-    private Integer gender;
+    private GenderEnum gender;
     
     /**
      * 状态（0-正常，1-禁用）
@@ -81,10 +88,11 @@ public class User extends TenantEntity {
     private Long positionId;
     
     /**
-     * 用户类型（0-系统管理员，1-律所主管，2-合伙人，3-律师，4-实习律师，5-行政人员）
+     * 用户类型
      */
+    @Enumerated(EnumType.STRING)
     @TableField("user_type")
-    private Integer userType;
+    private UserTypeEnum userType;
     
     /**
      * 最后登录时间

@@ -19,7 +19,7 @@ import java.util.Set;
  * Bean属性复制工具类
  * 对Spring的BeanUtils进行扩展，提供更多实用功能
  */
-public class BeanUtils extends com.lawfirm.common.util.BeanUtils {
+public class BeanUtils {
 
     /**
      * 复制对象属性到目标类型（会创建新实例）
@@ -33,8 +33,8 @@ public class BeanUtils extends com.lawfirm.common.util.BeanUtils {
         if (source == null) {
             return null;
         }
-        T target = instantiateClass(targetClass);
-        copyProperties(source, target);
+        T target = instantiate(targetClass);
+        org.springframework.beans.BeanUtils.copyProperties(source, target);
         return target;
     }
 
@@ -48,7 +48,7 @@ public class BeanUtils extends com.lawfirm.common.util.BeanUtils {
         if (source == null) {
             return;
         }
-        copyProperties(source, target, getNullPropertyNames(source));
+        org.springframework.beans.BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
     }
 
     /**
@@ -84,7 +84,7 @@ public class BeanUtils extends com.lawfirm.common.util.BeanUtils {
         }
         List<T> targetList = new ArrayList<>(sourceList.size());
         for (Object source : sourceList) {
-            T target = instantiateClass(targetClass);
+            T target = instantiate(targetClass);
             copyPropertiesIgnoreNull(source, target);
             targetList.add(target);
         }
@@ -99,11 +99,12 @@ public class BeanUtils extends com.lawfirm.common.util.BeanUtils {
      */
     private static String[] getNullPropertyNames(Object source) {
         Assert.notNull(source, "Source must not be null");
-        PropertyDescriptor[] pds = com.lawfirm.common.util.BeanUtils.getPropertyDescriptors(source.getClass());
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        PropertyDescriptor[] pds = src.getPropertyDescriptors();
         List<String> nullPropertyNames = new ArrayList<>();
         for (PropertyDescriptor pd : pds) {
             try {
-                if (pd.getReadMethod() != null && pd.getReadMethod().invoke(source) == null) {
+                if (pd.getReadMethod() != null && src.getPropertyValue(pd.getName()) == null) {
                     nullPropertyNames.add(pd.getName());
                 }
             } catch (Exception e) {

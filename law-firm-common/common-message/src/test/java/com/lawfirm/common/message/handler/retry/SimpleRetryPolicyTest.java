@@ -3,6 +3,7 @@ package com.lawfirm.common.message.handler.retry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.Duration;
+import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SimpleRetryPolicyTest {
@@ -10,13 +11,24 @@ class SimpleRetryPolicyTest {
     private static class SimpleRetryPolicy implements RetryPolicy {
         private final int maxRetries;
         private final Duration baseDelay;
-        private final Class<? extends Throwable>[] retryableExceptions;
+        private final List<Class<? extends Throwable>> retryableExceptions;
 
-        @SafeVarargs
-        public SimpleRetryPolicy(int maxRetries, Duration baseDelay, Class<? extends Throwable>... retryableExceptions) {
+        /**
+         * 使用List构造重试策略
+         */
+        public SimpleRetryPolicy(int maxRetries, Duration baseDelay, List<Class<? extends Throwable>> retryableExceptions) {
             this.maxRetries = maxRetries;
             this.baseDelay = baseDelay;
             this.retryableExceptions = retryableExceptions;
+        }
+
+        /**
+         * 使用可变参数构造重试策略
+         */
+        @SafeVarargs
+        @SuppressWarnings({"unchecked", "varargs"})
+        public static SimpleRetryPolicy of(int maxRetries, Duration baseDelay, Class<? extends Throwable>... retryableExceptions) {
+            return new SimpleRetryPolicy(maxRetries, baseDelay, List.of(retryableExceptions));
         }
 
         @Override
@@ -57,7 +69,7 @@ class SimpleRetryPolicyTest {
 
     @BeforeEach
     void setUp() {
-        retryPolicy = new SimpleRetryPolicy(
+        retryPolicy = SimpleRetryPolicy.of(
             3,  // 最大重试次数
             Duration.ofSeconds(1),  // 基础延迟时间
             IllegalStateException.class,  // 可重试的异常
