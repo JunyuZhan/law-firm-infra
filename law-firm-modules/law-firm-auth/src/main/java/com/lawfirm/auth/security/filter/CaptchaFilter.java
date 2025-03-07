@@ -1,7 +1,7 @@
 package com.lawfirm.auth.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lawfirm.common.model.Result;
+import com.lawfirm.common.core.api.CommonResult;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,8 +14,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
+/**
+ * 验证码过滤器
+ * 在登录前验证验证码是否正确
+ */
 @Component
 @RequiredArgsConstructor
 public class CaptchaFilter extends OncePerRequestFilter {
@@ -34,9 +37,9 @@ public class CaptchaFilter extends OncePerRequestFilter {
                 validateCaptcha(request);
             } catch (AuthenticationServiceException e) {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+                response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(
-                    objectMapper.writeValueAsString(Result.error().message(e.getMessage()))
+                    objectMapper.writeValueAsString(CommonResult.error(e.getMessage()))
                 );
                 return;
             }

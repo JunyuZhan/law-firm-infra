@@ -1,6 +1,6 @@
 package com.lawfirm.auth.security.details;
 
-import com.lawfirm.auth.mapper.UserMapper;
+import com.lawfirm.model.auth.mapper.UserMapper;
 import com.lawfirm.model.auth.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

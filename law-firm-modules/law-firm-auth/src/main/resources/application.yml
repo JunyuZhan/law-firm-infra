@@ -43,6 +43,20 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     default-property-inclusion: NON_NULL
 
+# Redisson配置
+redisson:
+  single:
+    address: redis://${spring.data.redis.host}:${spring.data.redis.port}
+    password: ${spring.data.redis.password}
+    database: ${spring.data.redis.database}
+    idle-connection-timeout: 10000
+    connect-timeout: 10000
+    timeout: 3000
+    retry-attempts: 3
+    retry-interval: 1500
+    connection-minimum-idle-size: 10
+    connection-pool-size: 64
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.lawfirm.model.auth.entity

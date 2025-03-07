@@ -1,14 +1,16 @@
 package com.lawfirm.auth.controller;
 
-import com.lawfirm.auth.service.AuthService;
-import com.lawfirm.common.model.Result;
+import com.lawfirm.common.cache.annotation.RateLimiter;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.auth.dto.auth.LoginDTO;
 import com.lawfirm.model.auth.dto.auth.TokenDTO;
+import com.lawfirm.model.auth.service.AuthService;
 import com.lawfirm.model.auth.vo.LoginVO;
 import com.wf.captcha.SpecCaptcha;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RateIntervalUnit;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,8 +38,9 @@ public class AuthController {
     /**
      * 获取验证码
      */
+    @RateLimiter(rate = 10, rateInterval = 60, rateIntervalUnit = RateIntervalUnit.SECONDS, message = "验证码获取频率超限")
     @GetMapping("/captcha")
-    public Result<Map<String, String>> captcha() {
+    public CommonResult<Map<String, String>> captcha() {
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
         String captchaKey = UUID.randomUUID().toString();
         String captchaValue = specCaptcha.text().toLowerCase();
@@ -54,37 +57,39 @@ public class AuthController {
         result.put("captchaKey", captchaKey);
         result.put("captchaImage", specCaptcha.toBase64());
 
-        return Result.ok().data(result);
+        return CommonResult.success(result);
     }
     
     /**
      * 用户登录
      */
+    @RateLimiter(rate = 5, rateInterval = 60, rateIntervalUnit = RateIntervalUnit.SECONDS, message = "登录请求频率超限")
     @PostMapping("/login")
-    public Result<LoginVO> login(@RequestBody @Valid LoginDTO loginDTO) {
+    public CommonResult<LoginVO> login(@RequestBody @Valid LoginDTO loginDTO) {
         LoginVO loginVO = authService.login(loginDTO);
-        return Result.ok().data(loginVO);
+        return CommonResult.success(loginVO);
     }
     
     /**
      * 用户登出
      */
     @PostMapping("/logout")
-    public Result<Void> logout(HttpServletRequest request) {
+    public CommonResult<Void> logout(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             authService.logout(userDetails.getUsername());
         }
-        return Result.ok();
+        return CommonResult.success();
     }
     
     /**
      * 刷新令牌
      */
+    @RateLimiter(rate = 30, rateInterval = 60, rateIntervalUnit = RateIntervalUnit.SECONDS, message = "刷新令牌请求频率超限")
     @PostMapping("/refresh")
-    public Result<TokenDTO> refreshToken(@RequestParam String refreshToken) {
-        TokenDTO tokenDTO = authService.refreshToken(refreshToken);
-        return Result.ok().data(tokenDTO);
+    public CommonResult<TokenDTO> refreshToken(@RequestBody TokenDTO tokenDTO) {
+        TokenDTO newToken = authService.refreshToken(tokenDTO.getRefreshToken());
+        return CommonResult.success(newToken);
     }
 }

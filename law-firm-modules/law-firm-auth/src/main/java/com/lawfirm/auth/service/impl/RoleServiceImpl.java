@@ -48,7 +48,8 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 创建角色实体并保存
-        Role role = BeanUtils.copyProperties(createDTO, Role.class);
+        Role role = new Role();
+        BeanUtils.copyProperties(createDTO, role, RoleCreateDTO.class, Role.class);
         role.setStatus(0); // 默认正常状态
         
         boolean saved = roleMapper.insert(role) > 0;
@@ -79,8 +80,29 @@ public class RoleServiceImpl implements RoleService {
             throw new BusinessException("角色编码已存在");
         }
 
-        // 更新角色信息
-        BeanUtils.copyProperties(updateDTO, role);
+        // 创建一个新的角色对象，然后将更新DTO的属性复制到新对象上
+        Role updatedRole = new Role();
+        BeanUtils.copyProperties(updateDTO, updatedRole, RoleCreateDTO.class, Role.class);
+        // 设置ID
+        updatedRole.setId(id);
+        
+        // 手动将更新对象上的非null字段拷贝到原始对象
+        if (updatedRole.getName() != null) {
+            role.setName(updatedRole.getName());
+        }
+        if (updatedRole.getCode() != null) {
+            role.setCode(updatedRole.getCode());
+        }
+        if (updatedRole.getDescription() != null) {
+            role.setDescription(updatedRole.getDescription());
+        }
+        if (updatedRole.getSort() != null) {
+            role.setSort(updatedRole.getSort());
+        }
+        if (updatedRole.getStatus() != null) {
+            role.setStatus(updatedRole.getStatus());
+        }
+        
         boolean updated = roleMapper.update(role) > 0;
         if (!updated) {
             throw new BusinessException("角色更新失败");
@@ -133,7 +155,8 @@ public class RoleServiceImpl implements RoleService {
             return null;
         }
 
-        RoleVO roleVO = BeanUtils.copyProperties(role, RoleVO.class);
+        RoleVO roleVO = new RoleVO();
+        BeanUtils.copyProperties(role, roleVO, Role.class, RoleVO.class);
 
         // 获取角色权限ID列表
         List<Long> permissionIds = getRolePermissionIds(id);
@@ -159,8 +182,14 @@ public class RoleServiceImpl implements RoleService {
         List<Role> roles = roleMapper.selectPage(pageNum, pageSize, name);
         int total = roleMapper.selectCount(name);
         
-        // 转换为VO
-        List<RoleVO> roleVOList = BeanUtils.copyList(roles, RoleVO.class);
+        // 使用正确的 BeanUtils.copyList 方法
+        List<RoleVO> roleVOList = roles.stream()
+                .map(role -> {
+                    RoleVO roleVO = new RoleVO();
+                    BeanUtils.copyProperties(role, roleVO, Role.class, RoleVO.class);
+                    return roleVO;
+                })
+                .collect(Collectors.toList());
         
         // 设置用户数量
         for (RoleVO roleVO : roleVOList) {
@@ -179,7 +208,14 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleVO> listAllRoles() {
         List<Role> roles = roleMapper.selectAll();
-        return BeanUtils.copyList(roles, RoleVO.class);
+        // 使用 stream 替代 BeanUtils.copyList
+        return roles.stream()
+                .map(role -> {
+                    RoleVO roleVO = new RoleVO();
+                    BeanUtils.copyProperties(role, roleVO, Role.class, RoleVO.class);
+                    return roleVO;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

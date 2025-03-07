@@ -51,13 +51,13 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
             }
         }
 
-        // 构建权限实体
+        // 构建权限实体，使用正确的 BeanUtils.copyProperties 方法
         Permission permission = new Permission();
-        BeanUtils.copyProperties(createDTO, permission);
+        BeanUtils.copyProperties(createDTO, permission, PermissionCreateDTO.class, Permission.class);
         
         // 设置默认值
-        if (permission.getSortOrder() == null) {
-            permission.setSortOrder(0);
+        if (permission.getSort() == null) {
+            permission.setSort(0);
         }
         if (permission.getStatus() == null) {
             permission.setStatus(1);
@@ -82,7 +82,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
 
         // 检查权限编码是否已存在（排除自身）
         if (StringUtils.isNotBlank(updateDTO.getPermissionCode()) && 
-                !updateDTO.getPermissionCode().equals(permission.getPermissionCode()) && 
+                !updateDTO.getPermissionCode().equals(permission.getCode()) && 
                 isPermissionCodeExists(updateDTO.getPermissionCode(), id)) {
             throw new BusinessException("权限编码已存在");
         }
@@ -104,8 +104,46 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
             }
         }
 
-        // 更新权限
-        BeanUtils.copyProperties(updateDTO, permission);
+        // 更新权限，先创建一个新的对象进行属性拷贝，然后只复制需要更新的属性
+        Permission updatedPermission = new Permission();
+        BeanUtils.copyProperties(updateDTO, updatedPermission, PermissionUpdateDTO.class, Permission.class);
+        // 保留原始对象的ID和其他不应被覆盖的字段
+        updatedPermission.setId(id);
+        // 更新Entity的有效属性
+        if (updateDTO.getName() != null) {
+            permission.setName(updatedPermission.getName());
+        }
+        if (updateDTO.getPermissionCode() != null) {
+            permission.setCode(updatedPermission.getCode());
+        }
+        if (updateDTO.getParentId() != null) {
+            permission.setParentId(updatedPermission.getParentId());
+        }
+        if (updateDTO.getType() != null) {
+            permission.setType(updatedPermission.getType());
+        }
+        if (updateDTO.getPath() != null) {
+            permission.setPath(updatedPermission.getPath());
+        }
+        if (updateDTO.getComponent() != null) {
+            permission.setComponent(updatedPermission.getComponent());
+        }
+        if (updateDTO.getPermission() != null) {
+            permission.setPermission(updatedPermission.getPermission());
+        }
+        if (updateDTO.getIcon() != null) {
+            permission.setIcon(updatedPermission.getIcon());
+        }
+        if (updateDTO.getSort() != null) {
+            permission.setSort(updatedPermission.getSort());
+        }
+        if (updateDTO.getStatus() != null) {
+            permission.setStatus(updatedPermission.getStatus());
+        }
+        if (updateDTO.getRemark() != null) {
+            permission.setRemark(updatedPermission.getRemark());
+        }
+        
         this.updateById(permission);
     }
 
@@ -145,7 +183,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     @Override
     public List<PermissionVO> listAllPermissions() {
         List<Permission> permissions = this.list(Wrappers.<Permission>lambdaQuery()
-                .orderByAsc(Permission::getSortOrder));
+                .orderByAsc(Permission::getSort));
         return permissions.stream()
                 .map(permissionSupport::convertToVO)
                 .collect(Collectors.toList());
@@ -154,7 +192,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     @Override
     public List<PermissionVO> getPermissionTree() {
         List<Permission> permissions = this.list(Wrappers.<Permission>lambdaQuery()
-                .orderByAsc(Permission::getSortOrder));
+                .orderByAsc(Permission::getSort));
         
         return buildPermissionTree(permissions);
     }
@@ -188,7 +226,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     public List<String> listPermissionCodesByUserId(Long userId) {
         List<Permission> permissions = permissionMapper.selectByUserId(userId);
         return permissions.stream()
-                .map(Permission::getPermissionCode)
+                .map(Permission::getCode)
                 .collect(Collectors.toList());
     }
 
@@ -201,7 +239,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
      */
     private boolean isPermissionCodeExists(String permissionCode, Long excludeId) {
         LambdaQueryWrapper<Permission> wrapper = Wrappers.<Permission>lambdaQuery()
-                .eq(Permission::getPermissionCode, permissionCode);
+                .eq(Permission::getCode, permissionCode);
         
         if (excludeId != null) {
             wrapper.ne(Permission::getId, excludeId);

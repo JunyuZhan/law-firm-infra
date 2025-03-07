@@ -2,6 +2,7 @@ package com.lawfirm.common.security.token;
 
 import com.lawfirm.common.security.authentication.Authentication;
 import com.lawfirm.common.security.test.MockSecurityObjects.MockAuthentication;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,6 +35,38 @@ public class TokenServiceTest {
             // 模拟从token中提取认证信息
             String principal = token.substring(0, token.length() - 6); // 移除"_token"
             return new MockAuthentication(principal, null, true);
+        }
+        
+        @Override
+        public String getToken(HttpServletRequest request) {
+            return request != null ? request.getHeader("Authorization") : null;
+        }
+        
+        @Override
+        public void removeToken(String token) {
+            // 模拟移除token的操作，测试中无实际作用
+        }
+        
+        @Override
+        public String createToken(String username) {
+            if (username == null) return null;
+            // 模拟创建token
+            return username + "_token";
+        }
+        
+        @Override
+        public String refreshToken(String refreshToken) {
+            if (!validateToken(refreshToken)) return null;
+            // 模拟刷新token
+            String username = getUsernameFromToken(refreshToken);
+            return createToken(username);
+        }
+        
+        @Override
+        public String getUsernameFromToken(String token) {
+            if (!validateToken(token)) return null;
+            // 模拟从token中提取用户名
+            return token.substring(0, token.length() - 6); // 移除"_token"
         }
     }
 

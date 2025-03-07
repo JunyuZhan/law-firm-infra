@@ -175,4 +175,20 @@ public interface UserMapper {
      * @return 角色ID列表
      */
     List<Long> selectRoleIdsByUserId(Long userId);
+    
+    /**
+     * 查询用户所有权限
+     * 
+     * @param userId 用户ID
+     * @return 权限编码列表
+     */
+    List<String> selectUserPermissions(Long userId);
+    
+    /**
+     * 查询用户所有权限
+     * 
+     * @param userId 用户ID
+     * @return 权限编码列表
+     */
+    List<String> selectPermissionsByUserId(Long userId);
 }

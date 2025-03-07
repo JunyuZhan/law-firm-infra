@@ -1,79 +1,117 @@
 package com.lawfirm.cases.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.common.data.entity.BaseEntity;
 import com.lawfirm.model.cases.entity.Case;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 
+/**
+ * 案件审批实体
+ */
 @Data
-@Entity
-@Table(name = "case_approval")
+@TableName("case_approval")
 @EqualsAndHashCode(callSuper = true)
 public class CaseApproval extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Comment("案件ID")
-    @Column(nullable = false)
+    /**
+     * 案件ID
+     */
+    @TableField("case_id")
     private Long caseId;
 
-    @Comment("审批类型(CASE_CREATE-立案审批/CASE_CLOSE-结案审批/FEE_ADJUSTMENT-收费调整)")
-    @Column(nullable = false, length = 32)
+    /**
+     * 审批类型(CASE_CREATE-立案审批/CASE_CLOSE-结案审批/FEE_ADJUSTMENT-收费调整)
+     */
+    @TableField("approval_type")
     private String approvalType;
 
-    @Comment("申请人")
-    @Column(nullable = false, length = 64)
+    /**
+     * 申请人
+     */
+    @TableField("applicant")
     private String applicant;
 
-    @Comment("申请时间")
-    @Column(nullable = false)
+    /**
+     * 申请时间
+     */
+    @TableField("apply_time")
     private LocalDateTime applyTime;
 
-    @Comment("申请原因")
-    @Column(length = 512)
+    /**
+     * 申请原因
+     */
+    @TableField("apply_reason")
     private String applyReason;
 
-    @Comment("审批人")
-    @Column(nullable = false, length = 64)
+    /**
+     * 审批人
+     */
+    @TableField("approver")
     private String approver;
 
-    @Comment("审批状态(PENDING-待审批/APPROVED-已通过/REJECTED-已驳回)")
-    @Column(nullable = false, length = 32)
+    /**
+     * 审批状态(PENDING-待审批/APPROVED-已通过/REJECTED-已驳回)
+     */
+    @TableField("approval_status")
     private String approvalStatus;
 
-    @Comment("审批时间")
+    /**
+     * 审批时间
+     */
+    @TableField("approval_time")
     private LocalDateTime approvalTime;
 
-    @Comment("审批意见")
-    @Column(length = 512)
+    /**
+     * 审批意见
+     */
+    @TableField("approval_opinion")
     private String approvalOpinion;
 
-    @Comment("是否需要上级审批")
-    @Column(nullable = false)
+    /**
+     * 是否需要上级审批
+     */
+    @TableField("need_superior_approval")
     private Boolean needSuperiorApproval = false;
 
-    @Comment("上级审批人")
-    @Column(length = 64)
+    /**
+     * 上级审批人
+     */
+    @TableField("superior_approver")
     private String superiorApprover;
 
-    @Comment("上级审批状态")
-    @Column(length = 32)
+    /**
+     * 上级审批状态
+     */
+    @TableField("superior_approval_status")
     private String superiorApprovalStatus;
 
-    @Comment("上级审批时间")
+    /**
+     * 上级审批时间
+     */
+    @TableField("superior_approval_time")
     private LocalDateTime superiorApprovalTime;
 
-    @Comment("上级审批意见")
-    @Column(length = 512)
+    /**
+     * 上级审批意见
+     */
+    @TableField("superior_approval_opinion")
     private String superiorApprovalOpinion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "case_id", insertable = false, updatable = false)
+    /**
+     * 关联的案件对象 - 使用exist=false表示非数据库字段，只用于关联查询
+     */
+    @TableField(exist = false)
     private Case lawCase;
 } 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,24 +19,34 @@ public class PermissionVO extends BaseVO {
     private static final long serialVersionUID = 1L;
     
     /**
+     * 权限ID
+     */
+    private Long id;
+    
+    /**
      * 权限名称
      */
     private String name;
     
     /**
-     * 权限编码
+     * 权限标识
      */
     private String code;
     
     /**
-     * 权限类型（0-菜单，1-按钮，2-API）
+     * 上级权限ID
      */
-    private Integer type;
+    private Long parentId;
     
     /**
-     * 菜单图标
+     * 上级权限名称
      */
-    private String icon;
+    private String parentName;
+    
+    /**
+     * 权限类型（1:菜单 2:按钮 3:接口）
+     */
+    private Integer type;
     
     /**
      * 路由路径
@@ -48,49 +59,49 @@ public class PermissionVO extends BaseVO {
     private String component;
     
     /**
-     * 权限标识
+     * 重定向路径
      */
-    private String permission;
+    private String redirect;
     
     /**
-     * 父级ID
+     * 菜单图标
      */
-    private Long parentId;
-    
-    /**
-     * 父级名称
-     */
-    private String parentName;
+    private String icon;
     
     /**
      * 显示顺序
      */
-    private Integer sort;
+    private Integer orderNum;
     
     /**
-     * 状态（0-正常，1-禁用）
+     * 是否隐藏（0显示 1隐藏）
+     */
+    private Boolean hidden;
+    
+    /**
+     * 是否缓存（0不缓存 1缓存）
+     */
+    private Boolean keepAlive;
+    
+    /**
+     * 是否外链（0否 1是）
+     */
+    private Boolean external;
+    
+    /**
+     * 权限状态（0正常 1停用）
      */
     private Integer status;
     
     /**
-     * 是否外链（0-否，1-是）
+     * 创建时间
      */
-    private Integer external;
+    private LocalDateTime createTime;
     
     /**
-     * 是否缓存（0-否，1-是）
+     * 更新时间
      */
-    private Integer cache;
-    
-    /**
-     * 是否显示（0-否，1-是）
-     */
-    private Integer visible;
-    
-    /**
-     * 备注
-     */
-    private String remark;
+    private LocalDateTime updateTime;
     
     /**
      * 子权限列表
@@ -98,7 +109,7 @@ public class PermissionVO extends BaseVO {
     private transient List<PermissionVO> children;
     
     /**
-     * 角色数量
+     * 备注
      */
-    private Long roleCount;
+    private String remark;
 } 

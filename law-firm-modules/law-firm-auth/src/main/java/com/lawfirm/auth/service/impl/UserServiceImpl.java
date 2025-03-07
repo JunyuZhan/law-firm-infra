@@ -12,9 +12,11 @@ import com.lawfirm.model.auth.dto.user.UserUpdateDTO;
 import com.lawfirm.model.auth.entity.User;
 import com.lawfirm.model.auth.entity.UserRole;
 import com.lawfirm.model.auth.vo.UserVO;
-import com.lawfirm.core.exception.BusinessException;
-import com.lawfirm.core.utils.BeanUtils;
+import com.lawfirm.common.core.exception.BusinessException;
+import com.lawfirm.common.util.BeanUtils;
+import com.lawfirm.common.security.crypto.SensitiveDataService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,16 +27,26 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
+    private final SensitiveDataService sensitiveDataService;
 
     @Override
     @Transactional
     public Long createUser(UserCreateDTO createDTO) {
+        // 记录创建用户操作，脱敏敏感信息
+        String maskedMobile = createDTO.getMobile() != null ? 
+            sensitiveDataService.maskPhoneNumber(createDTO.getMobile()) : null;
+        String maskedEmail = createDTO.getEmail() != null ? 
+            sensitiveDataService.maskEmail(createDTO.getEmail()) : null;
+        log.info("创建用户: {}, 手机号: {}, 邮箱: {}", 
+                createDTO.getUsername(), maskedMobile, maskedEmail);
+        
         // 检查用户名是否已存在
         if (getByUsername(createDTO.getUsername()) != null) {
             throw new BusinessException("用户名已存在");
@@ -52,7 +64,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException("邮箱已存在");
         }
 
-        User user = BeanUtils.copyProperties(createDTO, User.class);
+        User user = new User();
+        BeanUtils.copyProperties(createDTO, user, UserCreateDTO.class, User.class);
         // 设置默认密码
         if (StringUtils.isBlank(user.getPassword())) {
             user.setPassword(RandomStringUtils.randomAlphanumeric(8));
@@ -100,7 +113,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException("邮箱已存在");
         }
 
-        BeanUtils.copyPropertiesIgnoreNull(updateDTO, user);
+        // 创建新对象，拷贝非空属性
+        User updatedUser = new User();
+        BeanUtils.copyProperties(updateDTO, updatedUser, UserUpdateDTO.class, User.class);
+        // 手动设置ID
+        updatedUser.setId(id);
+        
+        // 手动将更新对象上的非null字段拷贝到原始对象
+        if (updatedUser.getUsername() != null) {
+            user.setUsername(updatedUser.getUsername());
+        }
+        if (updatedUser.getRealName() != null) {
+            user.setRealName(updatedUser.getRealName());
+        }
+        if (updatedUser.getNickname() != null) {
+            user.setNickname(updatedUser.getNickname());
+        }
+        if (updatedUser.getMobile() != null) {
+            user.setMobile(updatedUser.getMobile());
+        }
+        if (updatedUser.getEmail() != null) {
+            user.setEmail(updatedUser.getEmail());
+        }
+        if (updatedUser.getGender() != null) {
+            user.setGender(updatedUser.getGender());
+        }
+        if (updatedUser.getAvatar() != null) {
+            user.setAvatar(updatedUser.getAvatar());
+        }
+        if (updatedUser.getBirthday() != null) {
+            user.setBirthday(updatedUser.getBirthday());
+        }
+        if (updatedUser.getPositionId() != null) {
+            user.setPositionId(updatedUser.getPositionId());
+        }
+        if (updatedUser.getDepartmentId() != null) {
+            user.setDepartmentId(updatedUser.getDepartmentId());
+        }
+        if (updatedUser.getUserType() != null) {
+            user.setUserType(updatedUser.getUserType());
+        }
+        if (updatedUser.getStatus() != null) {
+            user.setStatus(updatedUser.getStatus());
+        }
+        if (updatedUser.getRemark() != null) {
+            user.setRemark(updatedUser.getRemark());
+        }
+        
         updateById(user);
         
         // 更新角色
@@ -135,7 +194,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user == null) {
             return null;
         }
-        UserVO userVO = BeanUtils.copyProperties(user, UserVO.class);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO, User.class, UserVO.class);
         userVO.setRoleIds(getUserRoleIds(id));
         return userVO;
     }
@@ -162,7 +222,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Page<User> userPage = page(page, wrapper);
         
         return userPage.convert(user -> {
-            UserVO userVO = BeanUtils.copyProperties(user, UserVO.class);
+            UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(user, userVO, User.class, UserVO.class);
             userVO.setRoleIds(getUserRoleIds(user.getId()));
             return userVO;
         });
@@ -263,4 +324,4 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         return super.updateById(user);
     }
-} 
+}

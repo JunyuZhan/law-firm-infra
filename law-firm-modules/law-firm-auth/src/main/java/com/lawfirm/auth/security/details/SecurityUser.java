@@ -4,14 +4,14 @@ import com.lawfirm.model.auth.entity.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class SecurityUser implements UserDetails {
+public class SecurityUser implements SecurityUserDetails {
     private final User user;
     private final List<String> permissions;
 
@@ -39,8 +39,9 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return user.getAccountExpireTime() == null || 
-               user.getAccountExpireTime().after(new java.util.Date());
+        LocalDateTime expireTime = user.getAccountExpireTime();
+        return expireTime == null || 
+               expireTime.isAfter(LocalDateTime.now());
     }
 
     @Override
@@ -50,12 +51,14 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return user.getPasswordExpireTime() == null || 
-               user.getPasswordExpireTime().after(new java.util.Date());
+        LocalDateTime expireTime = user.getPasswordExpireTime();
+        return expireTime == null || 
+               expireTime.isAfter(LocalDateTime.now());
     }
 
     @Override
     public boolean isEnabled() {
-        return user.getStatus();
+        // 假设0为正常状态，其他为禁用
+        return user.getStatus() != null && user.getStatus() == 0;
     }
 } 

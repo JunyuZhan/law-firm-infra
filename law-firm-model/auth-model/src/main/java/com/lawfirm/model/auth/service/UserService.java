@@ -6,6 +6,7 @@ import com.lawfirm.model.auth.dto.user.UserUpdateDTO;
 import com.lawfirm.model.auth.dto.user.UserQueryDTO;
 import com.lawfirm.model.auth.entity.User;
 import com.lawfirm.model.auth.vo.UserVO;
+import com.lawfirm.model.auth.vo.UserInfoVO;
 import com.lawfirm.model.base.service.BaseService;
 
 import java.util.List;
@@ -117,4 +118,12 @@ public interface UserService extends BaseService<User> {
      * @return 权限标识列表
      */
     List<String> getUserPermissions(Long id);
+    
+    /**
+     * 获取当前登录用户信息
+     *
+     * @param userId 用户ID
+     * @return 用户信息
+     */
+    UserInfoVO getUserInfo(Long userId);
 } 

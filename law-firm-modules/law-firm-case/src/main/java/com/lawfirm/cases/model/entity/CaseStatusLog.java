@@ -1,52 +1,70 @@
 package com.lawfirm.cases.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.common.data.entity.BaseEntity;
 import com.lawfirm.model.cases.enums.CaseStatusEnum;
 import com.lawfirm.model.cases.entity.Case;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 
+/**
+ * 案件状态日志实体
+ */
 @Data
-@Entity
-@Table(name = "case_status_log")
+@TableName("case_status_log")
 @EqualsAndHashCode(callSuper = true)
-public class CaseStatusLog extends ModelBaseEntity {
+public class CaseStatusLog extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Comment("案件ID")
-    @Column(nullable = false)
+    /**
+     * 案件ID
+     */
+    @TableField("case_id")
     private Long caseId;
 
-    @Comment("原状态")
-    @Column(nullable = false, length = 32)
-    @Enumerated(EnumType.STRING)
+    /**
+     * 原状态
+     */
+    @TableField("from_status")
     private CaseStatusEnum fromStatus;
 
-    @Comment("新状态")
-    @Column(nullable = false, length = 32)
-    @Enumerated(EnumType.STRING)
+    /**
+     * 新状态
+     */
+    @TableField("to_status")
     private CaseStatusEnum toStatus;
 
-    @Comment("操作人")
-    @Column(nullable = false, length = 64)
+    /**
+     * 操作人
+     */
+    @TableField("operator")
     private String operator;
 
-    @Comment("变更原因")
-    @Column(length = 512)
+    /**
+     * 变更原因
+     */
+    @TableField("reason")
     private String reason;
 
-    @Comment("变更时间")
-    @Column(nullable = false)
+    /**
+     * 变更时间
+     */
+    @TableField("change_time")
     private LocalDateTime changeTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "case_id", insertable = false, updatable = false)
+    /**
+     * 关联的案件对象
+     */
+    @TableField(exist = false)
     private Case lawCase;
 } 

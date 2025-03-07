@@ -47,7 +47,7 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
 
         // 创建用户组
         UserGroup userGroup = new UserGroup();
-        BeanUtils.copyProperties(createDTO, userGroup);
+        BeanUtils.copyProperties(createDTO, userGroup, UserGroupCreateDTO.class, UserGroup.class);
         
         // 设置默认值
         if (userGroup.getStatus() == null) {
@@ -78,8 +78,32 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
             throw new BusinessException("用户组不存在");
         }
         
-        // 更新基本信息
-        BeanUtils.copyProperties(updateDTO, userGroup);
+        // 创建一个新的用户组对象，然后将更新DTO的属性复制到新对象上
+        UserGroup updatedGroup = new UserGroup();
+        BeanUtils.copyProperties(updateDTO, updatedGroup, UserGroupUpdateDTO.class, UserGroup.class);
+        // 设置ID
+        updatedGroup.setId(id);
+        
+        // 手动将更新对象上的非null字段拷贝到原始对象
+        if (updatedGroup.getName() != null) {
+            userGroup.setName(updatedGroup.getName());
+        }
+        if (updatedGroup.getCode() != null) {
+            userGroup.setCode(updatedGroup.getCode());
+        }
+        if (updatedGroup.getDescription() != null) {
+            userGroup.setDescription(updatedGroup.getDescription());
+        }
+        if (updatedGroup.getParentId() != null) {
+            userGroup.setParentId(updatedGroup.getParentId());
+        }
+        if (updatedGroup.getSort() != null) {
+            userGroup.setSort(updatedGroup.getSort());
+        }
+        if (updatedGroup.getStatus() != null) {
+            userGroup.setStatus(updatedGroup.getStatus());
+        }
+        
         this.updateById(userGroup);
         
         // 更新用户关联（如果提供）
@@ -148,9 +172,13 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
         Page<UserGroup> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
         Page<UserGroup> userGroupPage = this.page(page, wrapper);
         
-        // 转换结果
+        // 创建结果页
         Page<UserGroupVO> resultPage = new Page<>();
-        BeanUtils.copyProperties(userGroupPage, resultPage, "records");
+        // 手动设置分页信息
+        resultPage.setCurrent(userGroupPage.getCurrent());
+        resultPage.setSize(userGroupPage.getSize());
+        resultPage.setTotal(userGroupPage.getTotal());
+        resultPage.setPages(userGroupPage.getPages());
         
         // 转换记录列表
         List<UserGroupVO> voList = userGroupPage.getRecords().stream()
@@ -298,7 +326,7 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
         }
         
         UserGroupVO vo = new UserGroupVO();
-        BeanUtils.copyProperties(userGroup, vo);
+        BeanUtils.copyProperties(userGroup, vo, UserGroup.class, UserGroupVO.class);
         
         // 设置状态名称
         vo.setStatusName(userGroup.getStatus() == 0 ? "正常" : "禁用");
@@ -316,4 +344,4 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
         
         return vo;
     }
-} 
+}

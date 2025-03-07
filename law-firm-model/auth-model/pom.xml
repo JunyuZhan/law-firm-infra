@@ -33,12 +33,6 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
-        <!-- JPA -->
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-        </dependency>
-
         <!-- Personnel Model -->
         <dependency>
             <groupId>com.lawfirm</groupId>

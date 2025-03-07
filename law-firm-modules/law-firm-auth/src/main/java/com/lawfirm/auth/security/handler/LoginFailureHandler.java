@@ -1,27 +1,34 @@
 package com.lawfirm.auth.security.handler;
 
-import com.lawfirm.common.utils.JsonUtils;
-import com.lawfirm.common.model.Result;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lawfirm.common.core.api.CommonResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
+/**
+ * 登录失败处理器
+ */
 @Component
+@RequiredArgsConstructor
 public class LoginFailureHandler implements AuthenticationFailureHandler {
+
+    private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                       AuthenticationException exception) throws IOException {
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getOutputStream().write(
-            JsonUtils.toJson(Result.error().message(exception.getMessage()))
-                .getBytes(StandardCharsets.UTF_8)
-        );
+        
+        CommonResult<?> result = CommonResult.error("登录失败：" + exception.getMessage());
+        response.getWriter().write(objectMapper.writeValueAsString(result));
     }
 } 

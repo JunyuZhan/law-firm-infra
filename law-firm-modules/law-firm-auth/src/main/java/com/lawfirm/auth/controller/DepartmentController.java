@@ -1,6 +1,6 @@
 package com.lawfirm.auth.controller;
 
-import com.lawfirm.common.model.Result;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.auth.dto.department.DepartmentCreateDTO;
 import com.lawfirm.model.auth.dto.department.DepartmentQueryDTO;
 import com.lawfirm.model.auth.dto.department.DepartmentUpdateDTO;
@@ -28,9 +28,9 @@ public class DepartmentController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('system:department:add')")
-    public Result<Long> createDepartment(@RequestBody @Valid DepartmentCreateDTO createDTO) {
+    public CommonResult<Long> createDepartment(@RequestBody @Valid DepartmentCreateDTO createDTO) {
         Long departmentId = departmentService.createDepartment(createDTO);
-        return Result.ok().data(departmentId);
+        return CommonResult.success(departmentId);
     }
 
     /**
@@ -38,9 +38,9 @@ public class DepartmentController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('system:department:edit')")
-    public Result<Void> updateDepartment(@PathVariable Long id, @RequestBody @Valid DepartmentUpdateDTO updateDTO) {
+    public CommonResult<Void> updateDepartment(@PathVariable Long id, @RequestBody @Valid DepartmentUpdateDTO updateDTO) {
         departmentService.updateDepartment(id, updateDTO);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -48,9 +48,9 @@ public class DepartmentController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('system:department:remove')")
-    public Result<Void> deleteDepartment(@PathVariable Long id) {
+    public CommonResult<Void> deleteDepartment(@PathVariable Long id) {
         departmentService.deleteDepartment(id);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -58,9 +58,9 @@ public class DepartmentController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('system:department:list')")
-    public Result<DepartmentVO> getDepartment(@PathVariable Long id) {
+    public CommonResult<DepartmentVO> getDepartment(@PathVariable Long id) {
         DepartmentVO departmentVO = departmentService.getDepartmentById(id);
-        return Result.ok().data(departmentVO);
+        return CommonResult.success(departmentVO);
     }
 
     /**
@@ -68,9 +68,9 @@ public class DepartmentController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('system:department:list')")
-    public Result<List<DepartmentVO>> listDepartments(DepartmentQueryDTO queryDTO) {
+    public CommonResult<List<DepartmentVO>> listDepartments(DepartmentQueryDTO queryDTO) {
         List<DepartmentVO> departments = departmentService.listDepartments(queryDTO);
-        return Result.ok().data(departments);
+        return CommonResult.success(departments);
     }
 
     /**
@@ -78,8 +78,8 @@ public class DepartmentController {
      */
     @GetMapping("/tree")
     @PreAuthorize("hasAuthority('system:department:list')")
-    public Result<List<DepartmentVO>> getDepartmentTree() {
+    public CommonResult<List<DepartmentVO>> getDepartmentTree() {
         List<DepartmentVO> departmentTree = departmentService.getDepartmentTree();
-        return Result.ok().data(departmentTree);
+        return CommonResult.success(departmentTree);
     }
 }

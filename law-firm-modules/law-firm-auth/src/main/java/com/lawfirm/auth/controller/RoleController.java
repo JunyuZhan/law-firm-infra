@@ -1,9 +1,8 @@
 package com.lawfirm.auth.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.model.Result;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.auth.dto.role.RoleCreateDTO;
-import com.lawfirm.model.auth.dto.role.RoleQueryDTO;
 import com.lawfirm.model.auth.dto.role.RoleUpdateDTO;
 import com.lawfirm.model.auth.service.RoleService;
 import com.lawfirm.model.auth.vo.RoleVO;
@@ -29,9 +28,9 @@ public class RoleController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('system:role:add')")
-    public Result<Long> createRole(@RequestBody @Valid RoleCreateDTO createDTO) {
+    public CommonResult<Long> createRole(@RequestBody @Valid RoleCreateDTO createDTO) {
         Long roleId = roleService.createRole(createDTO);
-        return Result.ok().data(roleId);
+        return CommonResult.success(roleId);
     }
 
     /**
@@ -39,9 +38,9 @@ public class RoleController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('system:role:edit')")
-    public Result<Void> updateRole(@PathVariable Long id, @RequestBody @Valid RoleUpdateDTO updateDTO) {
+    public CommonResult<Void> updateRole(@PathVariable Long id, @RequestBody @Valid RoleCreateDTO updateDTO) {
         roleService.updateRole(id, updateDTO);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -49,9 +48,9 @@ public class RoleController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('system:role:remove')")
-    public Result<Void> deleteRole(@PathVariable Long id) {
+    public CommonResult<Void> deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -59,9 +58,9 @@ public class RoleController {
      */
     @DeleteMapping("/batch")
     @PreAuthorize("hasAuthority('system:role:remove')")
-    public Result<Void> batchDeleteRoles(@RequestBody List<Long> ids) {
+    public CommonResult<Void> batchDeleteRoles(@RequestBody List<Long> ids) {
         roleService.deleteRoles(ids);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -69,9 +68,9 @@ public class RoleController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('system:role:list')")
-    public Result<RoleVO> getRole(@PathVariable Long id) {
+    public CommonResult<RoleVO> getRole(@PathVariable Long id) {
         RoleVO roleVO = roleService.getRoleById(id);
-        return Result.ok().data(roleVO);
+        return CommonResult.success(roleVO);
     }
 
     /**
@@ -79,9 +78,9 @@ public class RoleController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('system:role:list')")
-    public Result<Page<RoleVO>> pageRoles(RoleQueryDTO queryDTO) {
+    public CommonResult<Page<RoleVO>> pageRoles(RoleUpdateDTO queryDTO) {
         Page<RoleVO> page = roleService.pageRoles(queryDTO);
-        return Result.ok().data(page);
+        return CommonResult.success(page);
     }
 
     /**
@@ -89,9 +88,9 @@ public class RoleController {
      */
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('system:role:list')")
-    public Result<List<RoleVO>> listAllRoles() {
+    public CommonResult<List<RoleVO>> listAllRoles() {
         List<RoleVO> roles = roleService.listAllRoles();
-        return Result.ok().data(roles);
+        return CommonResult.success(roles);
     }
 
     /**
@@ -99,9 +98,9 @@ public class RoleController {
      */
     @PutMapping("/{id}/permissions")
     @PreAuthorize("hasAuthority('system:role:edit')")
-    public Result<Void> assignPermissions(@PathVariable Long id, @RequestBody List<Long> permissionIds) {
+    public CommonResult<Void> assignPermissions(@PathVariable Long id, @RequestBody List<Long> permissionIds) {
         roleService.assignPermissions(id, permissionIds);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -109,8 +108,8 @@ public class RoleController {
      */
     @GetMapping("/{id}/permissions")
     @PreAuthorize("hasAuthority('system:role:list')")
-    public Result<List<Long>> getRolePermissions(@PathVariable Long id) {
-        List<Long> permissionIds = roleService.listPermissionIdsByRoleId(id);
-        return Result.ok().data(permissionIds);
+    public CommonResult<List<Long>> getRolePermissions(@PathVariable Long id) {
+        List<Long> permissionIds = roleService.getRolePermissionIds(id);
+        return CommonResult.success(permissionIds);
     }
 }

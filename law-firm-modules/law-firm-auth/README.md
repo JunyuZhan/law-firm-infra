@@ -11,6 +11,8 @@
 - 完整的用户、角色、权限管理
 - 部门和职位管理
 - 登录历史记录
+- 接口限流保护
+- 敏感数据脱敏
 
 ## 目录结构
 ```
@@ -21,8 +23,12 @@ law-firm-auth/
 │       │   └── com/
 │       │       └── lawfirm/
 │       │           └── auth/
+│       │               ├── annotation/        # 自定义注解
+│       │               ├── aspect/            # 切面类
 │       │               ├── config/           # 配置类
-│       │               │   └── SecurityConfig.java    # 安全配置
+│       │               │   ├── AuthAutoConfiguration.java  # 认证自动配置类
+│       │               │   ├── SecurityConfig.java    # 安全配置
+│       │               │   └── RateLimitConfiguration.java  # 限流配置类
 │       │               ├── controller/       # 控制器
 │       │               │   ├── AuthController.java    # 认证相关接口
 │       │               │   ├── UserController.java    # 用户管理接口
@@ -104,6 +110,8 @@ law-firm-auth/
 - XSS防护
 - CSRF防护
 - SQL注入防护
+- 接口限流保护
+- 敏感数据脱敏处理
 
 ## 依赖说明
 - Spring Boot
@@ -112,6 +120,7 @@ law-firm-auth/
 - MyBatis Plus
 - Redis
 - MySQL
+- Redisson
 
 ## 配置说明
 主要配置项在 application.yml 中：
@@ -131,6 +140,12 @@ law:
       login:
         retry-limit: 5
         lock-duration: 30  # 30分钟
+
+# Redisson配置（用于分布式限流）
+redisson:
+  single:
+    address: redis://localhost:6379
+    database: 0
 ```
 
 ## 使用示例
@@ -183,13 +198,44 @@ Content-Type: application/json
 1. 继承或修改相应的认证处理器
 2. 在 SecurityConfig 中配置自定义的处理器
 
+### 4. 配置接口限流
+1. 使用 `@RateLimiter` 注解标注需要限流的接口方法
+2. 配置限流参数（如每分钟允许访问次数、限流策略等）
+```java
+@RateLimiter(rate = 5, rateInterval = 60, rateIntervalUnit = RateIntervalUnit.SECONDS, message = "登录请求频率超限")
+@PostMapping("/login")
+public Result<LoginVO> login(@RequestBody @Valid LoginDTO loginDTO) {
+    // 方法实现
+}
+```
+
+### 5. 敏感数据脱敏
+认证模块通过 `SensitiveDataService` 对以下敏感数据进行脱敏处理：
+- 日志中的用户名、手机号、邮箱等敏感信息
+- 返回给前端的用户信息中的手机号、邮箱、身份证等
+- 异常信息中可能包含的敏感数据
+
+```java
+// 注入敏感数据服务
+private final SensitiveDataService sensitiveDataService;
+
+// 手机号脱敏示例
+String maskedMobile = sensitiveDataService.maskPhoneNumber(mobile);
+
+// 邮箱脱敏示例
+String maskedEmail = sensitiveDataService.maskEmail(email);
+```
+
 ## 注意事项
 1. 所有密码必须加密存储
 2. 注意防止SQL注入和XSS攻击
 3. 敏感操作需要进行权限校验
 4. 注意多租户数据隔离
 5. 定期清理过期的登录历史记录
+6. 敏感数据必须进行脱敏处理，特别是在日志和API响应中
+7. 关键接口必须配置合理的限流策略，防止恶意请求
 
 ## 更新日志
+- 2024-03-07: 添加接口限流和敏感数据脱敏功能
 - 2024-03-06: 完善认证授权功能，添加多种认证方式支持
 - 2024-03-05: 初始化项目结构，实现基础认证功能

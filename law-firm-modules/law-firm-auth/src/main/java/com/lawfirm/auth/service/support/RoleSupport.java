@@ -2,11 +2,13 @@ package com.lawfirm.auth.service.support;
 
 import com.lawfirm.model.auth.entity.Role;
 import com.lawfirm.model.auth.vo.RoleVO;
+import com.lawfirm.model.base.enums.StatusEnum;
 import lombok.RequiredArgsConstructor;
 import com.lawfirm.common.util.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 /**
  * 角色支持类
@@ -30,10 +32,10 @@ public class RoleSupport {
         }
         
         RoleVO vo = new RoleVO();
-        BeanUtils.copyProperties(role, vo);
+        BeanUtils.copyProperties(role, vo, Role.class, RoleVO.class);
         
-        // 设置状态名称
-        vo.setStatusName(role.getStatus() == 1 ? "启用" : "禁用");
+        // 设置状态名称 - 使用枚举代替硬编码条件判断
+        vo.setStatusName(getStatusName(role.getStatus()));
         
         // 格式化时间
         if (role.getCreatedTime() != null) {
@@ -44,5 +46,23 @@ public class RoleSupport {
         }
         
         return vo;
+    }
+    
+    /**
+     * 获取状态名称
+     *
+     * @param status 状态编码
+     * @return 状态名称
+     */
+    private String getStatusName(Integer status) {
+        if (status == null) {
+            return StatusEnum.ENABLED.getDescription();
+        }
+        
+        return Arrays.stream(StatusEnum.values())
+                .filter(e -> e.getValue().equals(status))
+                .findFirst()
+                .map(StatusEnum::getDescription)
+                .orElse(StatusEnum.ENABLED.getDescription());
     }
 }

@@ -1,26 +1,13 @@
 package com.lawfirm.auth.config;
 
-import com.lawfirm.auth.security.filter.JwtAuthenticationFilter;
-import org.springframework.context.annotation.ComponentScan;
+import com.lawfirm.common.core.config.BaseAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
- * 认证模块自动配置类
- * 用于自动配置认证模块的各个组件
+ * Auth模块自动配置
+ * 继承自common-core模块的基础自动配置
  */
 @Configuration
-@ComponentScan(basePackages = {
-    "com.lawfirm.auth.controller",
-    "com.lawfirm.auth.service",
-    "com.lawfirm.auth.security"
-})
-@Import({
-    SecurityConfig.class,
-    WebSecurityConfig.class,
-    RedisConfig.class,
-    MybatisPlusConfig.class
-})
-public class AuthAutoConfiguration {
-    // 自动配置类，通过导入方式整合所有配置
+public class AuthAutoConfiguration extends BaseAutoConfiguration {
+    // 保留auth模块特有的自动配置
 }

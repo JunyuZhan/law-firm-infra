@@ -1,7 +1,7 @@
 package com.lawfirm.auth.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lawfirm.common.model.Result;
+import com.lawfirm.common.core.api.CommonResult;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,7 +37,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
         response.setCharacterEncoding("UTF-8");
         
         // 构建错误响应
-        Result<Void> result = Result.error(HttpStatus.FORBIDDEN.value(), "权限不足，无法访问");
+        CommonResult<?> result = CommonResult.forbidden("权限不足，无法访问");
         
         // 写入响应
         response.getWriter().write(objectMapper.writeValueAsString(result));

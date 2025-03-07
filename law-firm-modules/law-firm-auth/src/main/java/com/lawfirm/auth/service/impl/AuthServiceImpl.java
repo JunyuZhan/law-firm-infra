@@ -2,10 +2,10 @@ package com.lawfirm.auth.service.impl;
 
 import com.lawfirm.auth.security.token.JwtTokenProvider;
 import com.lawfirm.auth.security.token.TokenStore;
-import com.lawfirm.auth.service.AuthService;
-import com.lawfirm.auth.service.UserService;
-import com.lawfirm.common.exception.BusinessException;
-import com.lawfirm.common.utils.SecurityUtils;
+import com.lawfirm.model.auth.service.AuthService;
+import com.lawfirm.model.auth.service.UserService;
+import com.lawfirm.common.core.exception.BusinessException;
+import com.lawfirm.common.security.crypto.SensitiveDataService;
 import com.lawfirm.model.auth.dto.auth.LoginDTO;
 import com.lawfirm.model.auth.dto.auth.TokenDTO;
 import com.lawfirm.model.auth.entity.User;
@@ -24,6 +24,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -45,6 +46,8 @@ public class AuthServiceImpl implements AuthService {
     private final TokenStore tokenStore;
     private final UserService userService;
     private final RedisTemplate<String, String> redisTemplate;
+    private final SensitiveDataService sensitiveDataService;
+    private final UserDetailsService userDetailsService;
 
     @Value("${jwt.expiration}")
     private Long accessTokenExpiration;
@@ -56,6 +59,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginVO login(LoginDTO loginDTO) {
+        // 记录登录尝试，脱敏用户名和手机号
+        String maskedUsername = loginDTO.getUsername();
+        if (maskedUsername != null && maskedUsername.contains("@")) {
+            maskedUsername = sensitiveDataService.maskEmail(maskedUsername);
+        } else if (maskedUsername != null && maskedUsername.matches("\\d{11}")) {
+            maskedUsername = sensitiveDataService.maskPhoneNumber(maskedUsername);
+        }
+        log.info("用户登录尝试: {}", maskedUsername);
+        
         // 1. 验证验证码
         if (StringUtils.isNotBlank(loginDTO.getCaptcha()) && StringUtils.isNotBlank(loginDTO.getCaptchaKey())) {
             if (!validateCaptcha(loginDTO.getCaptcha(), loginDTO.getCaptchaKey())) {
@@ -107,17 +119,21 @@ public class AuthServiceImpl implements AuthService {
                 .setUsername(user.getUsername())
                 .setRealName(user.getRealName())
                 .setAvatar(user.getAvatar())
-                .setMobile(user.getMobile())
-                .setEmail(user.getEmail())
-                .setDeptId(user.getDeptId())
-                .setDeptName(user.getDeptName())
+                .setMobile(user.getMobile() != null ? sensitiveDataService.maskPhoneNumber(user.getMobile()) : null)
+                .setEmail(user.getEmail() != null ? sensitiveDataService.maskEmail(user.getEmail()) : null)
+                .setDeptId(null)
+                .setDeptName(null)
                 .setRoles(roles)
                 .setPermissions(permissions)
                 .setToken(tokenDTO);
 
+            // 记录登录成功，使用脱敏后的用户信息
+            log.info("用户登录成功: {}", maskedUsername);
+            
             return loginVO;
         } catch (AuthenticationException e) {
-            log.error("用户登录失败: {}", e.getMessage());
+            // 记录登录失败，使用脱敏后的用户信息
+            log.error("用户登录失败: {}, 原因: {}", maskedUsername, e.getMessage());
             throw new BusinessException("用户名或密码错误");
         }
     }
@@ -143,7 +159,7 @@ public class AuthServiceImpl implements AuthService {
         }
         
         // 2. 加载用户信息
-        UserDetails userDetails = userService.loadUserByUsername(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (userDetails == null) {
             throw new BusinessException("用户不存在");
         }

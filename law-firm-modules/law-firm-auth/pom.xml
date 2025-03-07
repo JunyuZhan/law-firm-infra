@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lawfirm</groupId>
         <artifactId>law-firm-modules</artifactId>
-        <version>${revision}</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>law-firm-auth</artifactId>
@@ -21,15 +21,47 @@
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-core</artifactId>
+            <artifactId>base-model</artifactId>
         </dependency>
+        
+        <!-- Core模块依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-audit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-storage</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-search</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
+        </dependency>
+        
+        <!-- Common模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-util</artifactId>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-common</artifactId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-web</artifactId>
         </dependency>
 
         <!-- Spring Boot -->
@@ -128,6 +160,12 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Spring LDAP -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-ldap</artifactId>
         </dependency>
     </dependencies>
 

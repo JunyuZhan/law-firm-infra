@@ -1,8 +1,11 @@
 package com.lawfirm.model.auth.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.model.auth.dto.permission.PermissionCreateDTO;
+import com.lawfirm.model.auth.dto.permission.PermissionUpdateDTO;
 import com.lawfirm.model.auth.entity.Permission;
 import com.lawfirm.model.auth.vo.PermissionVO;
+import com.lawfirm.model.auth.vo.RouterVO;
 import com.lawfirm.model.base.dto.BaseDTO;
 import com.lawfirm.model.base.service.BaseService;
 
@@ -16,18 +19,18 @@ public interface PermissionService extends BaseService<Permission> {
     /**
      * 创建权限
      *
-     * @param dto 权限DTO
+     * @param createDTO 创建参数
      * @return 权限ID
      */
-    Long createPermission(BaseDTO dto);
+    Long createPermission(PermissionCreateDTO createDTO);
     
     /**
      * 更新权限
      *
-     * @param id 权限ID
-     * @param dto 权限DTO
+     * @param id        权限ID
+     * @param updateDTO 更新参数
      */
-    void updatePermission(Long id, BaseDTO dto);
+    void updatePermission(Long id, PermissionUpdateDTO updateDTO);
     
     /**
      * 删除权限
@@ -37,19 +40,50 @@ public interface PermissionService extends BaseService<Permission> {
     void deletePermission(Long id);
     
     /**
-     * 批量删除权限
-     *
-     * @param ids 权限ID列表
-     */
-    void deletePermissions(List<Long> ids);
-    
-    /**
      * 获取权限详情
      *
      * @param id 权限ID
      * @return 权限视图对象
      */
     PermissionVO getPermissionById(Long id);
+    
+    /**
+     * 获取所有权限列表
+     *
+     * @return 权限列表
+     */
+    List<PermissionVO> listAllPermissions();
+    
+    /**
+     * 获取权限树结构
+     *
+     * @return 权限树列表
+     */
+    List<PermissionVO> getPermissionTree();
+    
+    /**
+     * 根据角色ID获取权限列表
+     *
+     * @param roleId 角色ID
+     * @return 权限列表
+     */
+    List<PermissionVO> listPermissionsByRoleId(Long roleId);
+    
+    /**
+     * 根据用户ID获取权限列表
+     *
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    List<PermissionVO> listPermissionsByUserId(Long userId);
+    
+    /**
+     * 根据用户ID获取权限编码列表
+     *
+     * @param userId 用户ID
+     * @return 权限编码列表
+     */
+    List<String> listPermissionCodesByUserId(Long userId);
     
     /**
      * 分页查询权限
@@ -84,26 +118,18 @@ public interface PermissionService extends BaseService<Permission> {
     void updateStatus(Long id, Integer status);
     
     /**
-     * 获取角色权限列表
-     *
-     * @param roleId 角色ID
-     * @return 权限列表
-     */
-    List<PermissionVO> getRolePermissions(Long roleId);
-    
-    /**
-     * 获取用户权限列表
-     *
-     * @param userId 用户ID
-     * @return 权限列表
-     */
-    List<PermissionVO> getUserPermissions(Long userId);
-    
-    /**
      * 获取用户菜单树
      *
      * @param userId 用户ID
      * @return 菜单树
      */
     List<PermissionVO> getUserMenuTree(Long userId);
+    
+    /**
+     * 获取用户的前端路由配置
+     *
+     * @param userId 用户ID
+     * @return 路由配置列表
+     */
+    List<RouterVO> getUserRouters(Long userId);
 } 

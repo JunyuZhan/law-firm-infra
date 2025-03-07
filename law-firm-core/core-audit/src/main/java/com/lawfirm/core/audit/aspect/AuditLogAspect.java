@@ -40,7 +40,7 @@ public class AuditLogAspect {
         RequiresPermissions permissions = signature.getMethod().getAnnotation(RequiresPermissions.class);
         if (permissions != null) {
             Long userId = SecurityUtils.getUserId();
-            List<PermissionVO> userPerms = permissionService.getUserPermissions(userId);
+            List<PermissionVO> userPerms = permissionService.listPermissionsByUserId(userId);
             if (!checkPermissions(userPerms, permissions.value())) {
                 throw new SecurityException("无权访问");
             }

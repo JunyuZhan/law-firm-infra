@@ -1,7 +1,7 @@
 package com.lawfirm.auth.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.model.Result;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.auth.dto.usergroup.UserGroupCreateDTO;
 import com.lawfirm.model.auth.dto.usergroup.UserGroupQueryDTO;
 import com.lawfirm.model.auth.dto.usergroup.UserGroupUpdateDTO;
@@ -29,9 +29,9 @@ public class UserGroupController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('system:userGroup:add')")
-    public Result<Long> createUserGroup(@RequestBody @Valid UserGroupCreateDTO createDTO) {
+    public CommonResult<Long> createUserGroup(@RequestBody @Valid UserGroupCreateDTO createDTO) {
         Long userGroupId = userGroupService.createUserGroup(createDTO);
-        return Result.ok().data(userGroupId);
+        return CommonResult.success(userGroupId);
     }
 
     /**
@@ -39,9 +39,9 @@ public class UserGroupController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Result<Void> updateUserGroup(@PathVariable Long id, @RequestBody @Valid UserGroupUpdateDTO updateDTO) {
+    public CommonResult<Void> updateUserGroup(@PathVariable Long id, @RequestBody @Valid UserGroupUpdateDTO updateDTO) {
         userGroupService.updateUserGroup(id, updateDTO);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -49,9 +49,9 @@ public class UserGroupController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('system:userGroup:remove')")
-    public Result<Void> deleteUserGroup(@PathVariable Long id) {
+    public CommonResult<Void> deleteUserGroup(@PathVariable Long id) {
         userGroupService.deleteUserGroup(id);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -59,9 +59,9 @@ public class UserGroupController {
      */
     @DeleteMapping("/batch")
     @PreAuthorize("hasAuthority('system:userGroup:remove')")
-    public Result<Void> batchDeleteUserGroups(@RequestBody List<Long> ids) {
+    public CommonResult<Void> batchDeleteUserGroups(@RequestBody List<Long> ids) {
         userGroupService.deleteUserGroups(ids);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -69,9 +69,9 @@ public class UserGroupController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('system:userGroup:list')")
-    public Result<UserGroupVO> getUserGroup(@PathVariable Long id) {
+    public CommonResult<UserGroupVO> getUserGroup(@PathVariable Long id) {
         UserGroupVO userGroupVO = userGroupService.getUserGroupById(id);
-        return Result.ok().data(userGroupVO);
+        return CommonResult.success(userGroupVO);
     }
 
     /**
@@ -79,9 +79,9 @@ public class UserGroupController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('system:userGroup:list')")
-    public Result<Page<UserGroupVO>> pageUserGroups(UserGroupQueryDTO queryDTO) {
+    public CommonResult<Page<UserGroupVO>> pageUserGroups(UserGroupQueryDTO queryDTO) {
         Page<UserGroupVO> page = userGroupService.pageUserGroups(queryDTO);
-        return Result.ok().data(page);
+        return CommonResult.success(page);
     }
 
     /**
@@ -89,9 +89,9 @@ public class UserGroupController {
      */
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('system:userGroup:list')")
-    public Result<List<UserGroupVO>> listAllUserGroups() {
+    public CommonResult<List<UserGroupVO>> listAllUserGroups() {
         List<UserGroupVO> userGroups = userGroupService.listAllUserGroups();
-        return Result.ok().data(userGroups);
+        return CommonResult.success(userGroups);
     }
 
     /**
@@ -99,9 +99,9 @@ public class UserGroupController {
      */
     @GetMapping("/tree")
     @PreAuthorize("hasAuthority('system:userGroup:list')")
-    public Result<List<UserGroupVO>> getUserGroupTree() {
+    public CommonResult<List<UserGroupVO>> getUserGroupTree() {
         List<UserGroupVO> userGroupTree = userGroupService.getUserGroupTree();
-        return Result.ok().data(userGroupTree);
+        return CommonResult.success(userGroupTree);
     }
 
     /**
@@ -109,9 +109,9 @@ public class UserGroupController {
      */
     @PutMapping("/{id}/status")
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Result<Void> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
+    public CommonResult<Void> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
         userGroupService.updateStatus(id, status);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -119,9 +119,9 @@ public class UserGroupController {
      */
     @PutMapping("/{userGroupId}/users/{userId}")
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Result<Void> addUserToGroup(@PathVariable Long userGroupId, @PathVariable Long userId) {
+    public CommonResult<Void> addUserToGroup(@PathVariable Long userGroupId, @PathVariable Long userId) {
         userGroupService.addUserToGroup(userGroupId, userId);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -129,9 +129,9 @@ public class UserGroupController {
      */
     @PutMapping("/{userGroupId}/users/batch")
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Result<Void> addUsersToGroup(@PathVariable Long userGroupId, @RequestBody List<Long> userIds) {
+    public CommonResult<Void> addUsersToGroup(@PathVariable Long userGroupId, @RequestBody List<Long> userIds) {
         userGroupService.addUsersToGroup(userGroupId, userIds);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -139,9 +139,9 @@ public class UserGroupController {
      */
     @DeleteMapping("/{userGroupId}/users/{userId}")
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Result<Void> removeUserFromGroup(@PathVariable Long userGroupId, @PathVariable Long userId) {
+    public CommonResult<Void> removeUserFromGroup(@PathVariable Long userGroupId, @PathVariable Long userId) {
         userGroupService.removeUserFromGroup(userGroupId, userId);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -149,9 +149,9 @@ public class UserGroupController {
      */
     @DeleteMapping("/{userGroupId}/users/batch")
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Result<Void> removeUsersFromGroup(@PathVariable Long userGroupId, @RequestBody List<Long> userIds) {
+    public CommonResult<Void> removeUsersFromGroup(@PathVariable Long userGroupId, @RequestBody List<Long> userIds) {
         userGroupService.removeUsersFromGroup(userGroupId, userIds);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -159,8 +159,8 @@ public class UserGroupController {
      */
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasAuthority('system:userGroup:list')")
-    public Result<List<UserGroupVO>> listUserGroupsByUserId(@PathVariable Long userId) {
+    public CommonResult<List<UserGroupVO>> listUserGroupsByUserId(@PathVariable Long userId) {
         List<UserGroupVO> userGroups = userGroupService.listUserGroupsByUserId(userId);
-        return Result.ok().data(userGroups);
+        return CommonResult.success(userGroups);
     }
 }

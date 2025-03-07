@@ -1,90 +1,130 @@
 package com.lawfirm.cases.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.common.data.entity.BaseEntity;
 import com.lawfirm.model.cases.entity.Case;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * 案件评估实体
+ */
 @Data
-@Entity
-@Table(name = "case_evaluation")
+@TableName("case_evaluation")
 @EqualsAndHashCode(callSuper = true)
 public class CaseEvaluation extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Comment("案件ID")
-    @Column(nullable = false)
+    /**
+     * 案件ID
+     */
+    @TableField("case_id")
     private Long caseId;
 
-    @Comment("评估类型(INITIAL-初步评估/RISK-风险评估/COST-成本评估/BENEFIT-收益评估)")
-    @Column(nullable = false, length = 32)
+    /**
+     * 评估类型(INITIAL-初步评估/RISK-风险评估/COST-成本评估/BENEFIT-收益评估)
+     */
+    @TableField("evaluation_type")
     private String evaluationType;
 
-    @Comment("评估人")
-    @Column(nullable = false, length = 64)
+    /**
+     * 评估人
+     */
+    @TableField("evaluator")
     private String evaluator;
 
-    @Comment("评估时间")
-    @Column(nullable = false)
+    /**
+     * 评估时间
+     */
+    @TableField("evaluation_time")
     private LocalDateTime evaluationTime;
 
-    @Comment("案情复杂度(1-5)")
-    @Column(nullable = false)
+    /**
+     * 案情复杂度(1-5)
+     */
+    @TableField("complexity")
     private Integer complexity;
 
-    @Comment("胜诉可能性(%)")
-    @Column(nullable = false)
+    /**
+     * R胜诉可能性(%)
+     */
+    @TableField("winning_probability")
     private Integer winningProbability;
 
-    @Comment("预计工作量(小时)")
-    @Column(nullable = false, precision = 10, scale = 2)
+    /**
+     * 预计工作量(小时)
+     */
+    @TableField("estimated_workload")
     private BigDecimal estimatedWorkload;
 
-    @Comment("预计收费")
-    @Column(nullable = false, precision = 19, scale = 2)
+    /**
+     * 预计收费
+     */
+    @TableField("estimated_fee")
     private BigDecimal estimatedFee;
 
-    @Comment("预计成本")
-    @Column(nullable = false, precision = 19, scale = 2)
+    /**
+     * 预计成本
+     */
+    @TableField("estimated_cost")
     private BigDecimal estimatedCost;
 
-    @Comment("预计利润")
-    @Column(nullable = false, precision = 19, scale = 2)
+    /**
+     * 预计利润
+     */
+    @TableField("estimated_profit")
     private BigDecimal estimatedProfit;
 
-    @Comment("风险等级(LOW-低风险/MEDIUM-中风险/HIGH-高风险)")
-    @Column(nullable = false, length = 32)
+    /**
+     * 风险等级(LOW-低风险/MEDIUM-中风险/HIGH-高风险)
+     */
+    @TableField("risk_level")
     private String riskLevel;
 
-    @Comment("主要风险点")
-    @Column(length = 512)
+    /**
+     * 主要风险点
+     */
+    @TableField("risk_points")
     private String riskPoints;
 
-    @Comment("风险应对措施")
-    @Column(length = 512)
+    /**
+     * 风险应对措施
+     */
+    @TableField("risk_measures")
     private String riskMeasures;
 
-    @Comment("评估结论")
-    @Column(nullable = false, length = 512)
+    /**
+     * 评估结论
+     */
+    @TableField("conclusion")
     private String conclusion;
 
-    @Comment("评估建议")
-    @Column(length = 512)
+    /**
+     * 评估建议
+     */
+    @TableField("suggestions")
     private String suggestions;
 
-    @Comment("备注")
-    @Column(length = 512)
+    /**
+     * 备注
+     */
+    @TableField("remarks")
     private String remarks;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "case_id", insertable = false, updatable = false)
+    /**
+     * 关联的案件对象
+     */
+    @TableField(exist = false)
     private Case lawCase;
 } 

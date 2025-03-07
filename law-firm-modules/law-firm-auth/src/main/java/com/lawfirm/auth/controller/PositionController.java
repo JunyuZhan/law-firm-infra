@@ -1,7 +1,7 @@
 package com.lawfirm.auth.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.model.Result;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.auth.dto.position.PositionCreateDTO;
 import com.lawfirm.model.auth.dto.position.PositionQueryDTO;
 import com.lawfirm.model.auth.dto.position.PositionUpdateDTO;
@@ -29,9 +29,9 @@ public class PositionController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('system:position:add')")
-    public Result<Long> createPosition(@RequestBody @Valid PositionCreateDTO createDTO) {
+    public CommonResult<Long> createPosition(@RequestBody @Valid PositionCreateDTO createDTO) {
         Long positionId = positionService.createPosition(createDTO);
-        return Result.ok().data(positionId);
+        return CommonResult.success(positionId);
     }
 
     /**
@@ -39,9 +39,9 @@ public class PositionController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('system:position:edit')")
-    public Result<Void> updatePosition(@PathVariable Long id, @RequestBody @Valid PositionUpdateDTO updateDTO) {
+    public CommonResult<Void> updatePosition(@PathVariable Long id, @RequestBody @Valid PositionUpdateDTO updateDTO) {
         positionService.updatePosition(id, updateDTO);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -49,9 +49,9 @@ public class PositionController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('system:position:remove')")
-    public Result<Void> deletePosition(@PathVariable Long id) {
+    public CommonResult<Void> deletePosition(@PathVariable Long id) {
         positionService.deletePosition(id);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -59,9 +59,9 @@ public class PositionController {
      */
     @DeleteMapping("/batch")
     @PreAuthorize("hasAuthority('system:position:remove')")
-    public Result<Void> batchDeletePositions(@RequestBody List<Long> ids) {
+    public CommonResult<Void> batchDeletePositions(@RequestBody List<Long> ids) {
         positionService.deletePositions(ids);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -69,9 +69,9 @@ public class PositionController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('system:position:list')")
-    public Result<PositionVO> getPosition(@PathVariable Long id) {
+    public CommonResult<PositionVO> getPosition(@PathVariable Long id) {
         PositionVO positionVO = positionService.getPositionById(id);
-        return Result.ok().data(positionVO);
+        return CommonResult.success(positionVO);
     }
 
     /**
@@ -79,9 +79,9 @@ public class PositionController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('system:position:list')")
-    public Result<Page<PositionVO>> pagePositions(PositionQueryDTO queryDTO) {
+    public CommonResult<Page<PositionVO>> pagePositions(PositionQueryDTO queryDTO) {
         Page<PositionVO> page = positionService.pagePositions(queryDTO);
-        return Result.ok().data(page);
+        return CommonResult.success(page);
     }
 
     /**
@@ -89,8 +89,8 @@ public class PositionController {
      */
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('system:position:list')")
-    public Result<List<PositionVO>> listAllPositions() {
+    public CommonResult<List<PositionVO>> listAllPositions() {
         List<PositionVO> positions = positionService.listAllPositions();
-        return Result.ok().data(positions);
+        return CommonResult.success(positions);
     }
 }

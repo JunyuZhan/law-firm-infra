@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lawfirm.model.auth.enums.GenderEnum;
 import com.lawfirm.model.auth.enums.UserTypeEnum;
 import com.lawfirm.model.base.entity.TenantEntity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -71,7 +69,6 @@ public class User extends TenantEntity {
     /**
      * 性别
      */
-    @Enumerated(EnumType.STRING)
     @TableField("gender")
     private GenderEnum gender;
     
@@ -90,7 +87,6 @@ public class User extends TenantEntity {
     /**
      * 用户类型
      */
-    @Enumerated(EnumType.STRING)
     @TableField("user_type")
     private UserTypeEnum userType;
     

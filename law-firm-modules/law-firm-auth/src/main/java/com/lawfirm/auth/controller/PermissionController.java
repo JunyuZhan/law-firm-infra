@@ -1,10 +1,12 @@
 package com.lawfirm.auth.controller;
 
-import com.lawfirm.common.model.Result;
+import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.common.security.utils.SecurityUtils;
 import com.lawfirm.model.auth.dto.permission.PermissionCreateDTO;
 import com.lawfirm.model.auth.dto.permission.PermissionUpdateDTO;
 import com.lawfirm.model.auth.service.PermissionService;
 import com.lawfirm.model.auth.vo.PermissionVO;
+import com.lawfirm.model.auth.vo.RouterVO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,9 +29,9 @@ public class PermissionController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('system:permission:add')")
-    public Result<Long> createPermission(@RequestBody @Valid PermissionCreateDTO createDTO) {
+    public CommonResult<Long> createPermission(@RequestBody @Valid PermissionCreateDTO createDTO) {
         Long permissionId = permissionService.createPermission(createDTO);
-        return Result.ok().data(permissionId);
+        return CommonResult.success(permissionId);
     }
 
     /**
@@ -37,9 +39,9 @@ public class PermissionController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('system:permission:edit')")
-    public Result<Void> updatePermission(@PathVariable Long id, @RequestBody @Valid PermissionUpdateDTO updateDTO) {
+    public CommonResult<Void> updatePermission(@PathVariable Long id, @RequestBody @Valid PermissionUpdateDTO updateDTO) {
         permissionService.updatePermission(id, updateDTO);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -47,9 +49,9 @@ public class PermissionController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('system:permission:remove')")
-    public Result<Void> deletePermission(@PathVariable Long id) {
+    public CommonResult<Void> deletePermission(@PathVariable Long id) {
         permissionService.deletePermission(id);
-        return Result.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -57,9 +59,9 @@ public class PermissionController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('system:permission:list')")
-    public Result<PermissionVO> getPermission(@PathVariable Long id) {
+    public CommonResult<PermissionVO> getPermission(@PathVariable Long id) {
         PermissionVO permissionVO = permissionService.getPermissionById(id);
-        return Result.ok().data(permissionVO);
+        return CommonResult.success(permissionVO);
     }
 
     /**
@@ -67,9 +69,9 @@ public class PermissionController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('system:permission:list')")
-    public Result<List<PermissionVO>> listAllPermissions() {
+    public CommonResult<List<PermissionVO>> listAllPermissions() {
         List<PermissionVO> permissions = permissionService.listAllPermissions();
-        return Result.ok().data(permissions);
+        return CommonResult.success(permissions);
     }
 
     /**
@@ -77,9 +79,9 @@ public class PermissionController {
      */
     @GetMapping("/tree")
     @PreAuthorize("hasAuthority('system:permission:list')")
-    public Result<List<PermissionVO>> getPermissionTree() {
+    public CommonResult<List<PermissionVO>> getPermissionTree() {
         List<PermissionVO> permissionTree = permissionService.getPermissionTree();
-        return Result.ok().data(permissionTree);
+        return CommonResult.success(permissionTree);
     }
 
     /**
@@ -87,9 +89,9 @@ public class PermissionController {
      */
     @GetMapping("/role/{roleId}")
     @PreAuthorize("hasAuthority('system:permission:list')")
-    public Result<List<PermissionVO>> listPermissionsByRoleId(@PathVariable Long roleId) {
+    public CommonResult<List<PermissionVO>> listPermissionsByRoleId(@PathVariable Long roleId) {
         List<PermissionVO> permissions = permissionService.listPermissionsByRoleId(roleId);
-        return Result.ok().data(permissions);
+        return CommonResult.success(permissions);
     }
 
     /**
@@ -97,9 +99,9 @@ public class PermissionController {
      */
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasAuthority('system:permission:list')")
-    public Result<List<PermissionVO>> listPermissionsByUserId(@PathVariable Long userId) {
+    public CommonResult<List<PermissionVO>> listPermissionsByUserId(@PathVariable Long userId) {
         List<PermissionVO> permissions = permissionService.listPermissionsByUserId(userId);
-        return Result.ok().data(permissions);
+        return CommonResult.success(permissions);
     }
 
     /**
@@ -107,8 +109,19 @@ public class PermissionController {
      */
     @GetMapping("/codes/user/{userId}")
     @PreAuthorize("hasAuthority('system:permission:list')")
-    public Result<List<String>> listPermissionCodesByUserId(@PathVariable Long userId) {
+    public CommonResult<List<String>> listPermissionCodesByUserId(@PathVariable Long userId) {
         List<String> permissionCodes = permissionService.listPermissionCodesByUserId(userId);
-        return Result.ok().data(permissionCodes);
+        return CommonResult.success(permissionCodes);
+    }
+
+    /**
+     * 获取当前用户的路由配置
+     */
+    @GetMapping("/routes")
+    @PreAuthorize("isAuthenticated()")
+    public CommonResult<List<RouterVO>> getUserRouters() {
+        Long userId = SecurityUtils.getUserId();
+        List<RouterVO> routers = permissionService.getUserRouters(userId);
+        return CommonResult.success(routers);
     }
 }

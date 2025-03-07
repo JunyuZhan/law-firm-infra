@@ -40,8 +40,9 @@
     </properties>
 
     <modules>
-        <module>law-firm-model</module>
+        <module>law-firm-dependencies</module>
         <module>law-firm-common</module>
+        <module>law-firm-model</module>
         <module>law-firm-core</module>
         <module>law-firm-modules</module>
     </modules>
@@ -52,9 +53,8 @@
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>law-firm-dependencies</artifactId>
-                <version>1.0.0</version>
+                <version>${revision}</version>
                 <type>pom</type>
-                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

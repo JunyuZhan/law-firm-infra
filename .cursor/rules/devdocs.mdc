@@ -10,11 +10,101 @@ alwaysApply: false
 ---
 
 # Your rule content
-1.这是律师事务所管理系统的后端开发项目，采用分层架构，项目结构：
-2.从依赖版本统一管理层dependencies-common通用模块层-model数据模型层-core核心功能层-业务模块层modules，最后api层。
-3.第三方依赖管理规则：不能把版本号定义在子模块，应该交给law-firm-dependencies\pom.xml统一第三方依赖管理文件来定义和管理。
-4.创建任何文件前，请先搜索，不要盲目创建。
-5.正在进行项目重构，底层已经完成，现在正在重构law-firm-modules层，需要复用底层的基础设施，数据模型，甚至封装好的core层模块。
+#这是律师事务所管理系统的后端开发项目，采用分层架构，系统架构：
+
+1. 依赖管理层 (law-firm-dependencies)
+- 统一的第三方依赖版本管理
+- Maven BOM支持
+- 构建配置管理
+
+2. 通用模块层 (law-firm-common)
+- common-core: 核心功能
+- common-util: 工具类库
+- common-web: Web支持
+- common-data: 数据访问
+- common-cache: 缓存处理
+- common-security: 安全功能
+- common-log: 日志处理
+- common-message: 消息处理
+- common-test: 测试支持
+
+3. 数据模型层 (law-firm-model)
+- base-model: 基础模型
+- auth-model: 认证授权
+- system-model: 系统管理
+- client-model: 客户管理
+- case-model: 案件管理
+- contract-model: 合同管理
+- document-model: 文档管理
+- finance-model: 财务管理
+- workflow-model: 工作流
+- knowledge-model: 知识库
+- message-model: 消息
+- storage-model: 存储
+- search-model: 搜索
+- ai-model: AI能力
+- log-model: 日志
+- organization-model: 组织架构
+- personnel-model: 人事管理
+
+4. 核心功能层 (law-firm-core)
+- core-ai: AI能力
+- core-audit: 审计日志
+- core-message: 消息处理
+- core-search: 搜索服务
+- core-storage: 存储服务
+- core-workflow: 工作流引擎
+
+5. 业务模块层 (law-firm-modules)
+- law-firm-auth: 认证授权
+- law-firm-system: 系统管理
+- law-firm-client: 客户管理
+- law-firm-case: 案件管理
+- law-firm-contract: 合同管理
+- law-firm-document: 文档管理
+- law-firm-finance: 财务管理
+- law-firm-knowledge: 知识库
+- law-firm-workflow: 工作流
+- law-firm-personnel: 人事管理
+- law-firm-schedule: 日程管理
+- law-firm-task: 任务管理
+- law-firm-supplies: 办公用品
+- law-firm-asset: 资产管理
+- law-firm-seal: 印章管理
+- law-firm-conflict: 利益冲突
+- law-firm-archive: 档案管理
+- law-firm-analysis: 数据分析
+
+#依赖关系：
+依赖版本统一管理层dependencies-common通用模块层-model数据模型层-core核心功能层-业务模块层modules，最后api层。
+
+#第三方依赖管理规则：
+不能把版本号定义在子模块，应该交给law-firm-dependencies\pom.xml统一第三方依赖管理文件来定义和管理。
+1. 依赖管理POM (law-firm-dependencies/pom.xml)
+主要职责：统一管理第三方依赖的版本号
+核心内容：大量的<dependencyManagement>声明
+作用：防止版本冲突、
+2. 根目录POM (law-firm/pom.xml)
+主要职责：
+定义项目整体结构
+配置Maven插件及其版本
+设置构建过程和生命周期管理
+定义全局属性（如<revision>变量）
+
+3. 中间层POM
+主要职责：管理一组功能相关的模块
+核心内容：
+引入依赖管理POM
+声明该层所有子模块共享的依赖
+可能包含一些特定于该层的插件配置
+4. 子模块POM 
+主要职责：定义具体业务模块的依赖和构建配置
+特点：包含实际的应用代码和特定于该模块的依赖
+
+#创建文件规则：
+创建任何文件前，请先搜索，不要盲目创建。
+
+#正在进行项目重构，底层已经完成，现在正在重构law-firm-modules层，需要复用底层的基础设施，数据模型，甚至封装好的core层模块。
 
 [README.md](mdc:README.md)D:\weidi\law-firm-infra\README.md
 核心依赖
