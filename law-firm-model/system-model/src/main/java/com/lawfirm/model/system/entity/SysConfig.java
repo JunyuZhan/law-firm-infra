@@ -47,4 +47,10 @@ public class SysConfig extends ModelBaseEntity {
      */
     @TableField("description")
     private String description;
+
+    /**
+     * 是否系统内置（0-否，1-是）
+     */
+    @TableField("is_system")
+    private Integer isSystem;
 } 

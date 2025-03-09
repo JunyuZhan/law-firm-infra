@@ -4,9 +4,14 @@ import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.log.annotation.Log;
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.common.security.annotation.RequiresPermissions;
-import com.lawfirm.system.service.MonitorService;
-import com.lawfirm.system.vo.monitor.ServerInfoVO;
-import com.lawfirm.system.vo.monitor.SystemInfoVO;
+import com.lawfirm.model.system.service.MonitorService;
+import com.lawfirm.model.system.vo.monitor.ServerInfoVO;
+import com.lawfirm.model.system.vo.monitor.SystemInfoVO;
+import com.lawfirm.model.system.vo.monitor.JvmInfoVO;
+import com.lawfirm.model.system.vo.monitor.MemoryInfoVO;
+import com.lawfirm.model.system.vo.monitor.CpuInfoVO;
+import com.lawfirm.model.system.vo.monitor.DiskInfoVO;
+import com.lawfirm.model.system.vo.monitor.NetworkInfoVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +60,8 @@ public class MonitorController extends BaseController {
     @Operation(summary = "获取JVM信息")
     @GetMapping("/jvm")
     @RequiresPermissions("system:monitor:jvm")
-    public CommonResult<Object> getJvmInfo() {
-        Object jvmInfo = monitorService.getJvmInfo();
+    public CommonResult<JvmInfoVO> getJvmInfo() {
+        JvmInfoVO jvmInfo = monitorService.getJvmInfo();
         return success(jvmInfo);
     }
 
@@ -66,8 +71,8 @@ public class MonitorController extends BaseController {
     @Operation(summary = "获取内存信息")
     @GetMapping("/memory")
     @RequiresPermissions("system:monitor:memory")
-    public CommonResult<Object> getMemoryInfo() {
-        Object memoryInfo = monitorService.getMemoryInfo();
+    public CommonResult<MemoryInfoVO> getMemoryInfo() {
+        MemoryInfoVO memoryInfo = monitorService.getMemoryInfo();
         return success(memoryInfo);
     }
 
@@ -77,8 +82,8 @@ public class MonitorController extends BaseController {
     @Operation(summary = "获取CPU信息")
     @GetMapping("/cpu")
     @RequiresPermissions("system:monitor:cpu")
-    public CommonResult<Object> getCpuInfo() {
-        Object cpuInfo = monitorService.getCpuInfo();
+    public CommonResult<CpuInfoVO> getCpuInfo() {
+        CpuInfoVO cpuInfo = monitorService.getCpuInfo();
         return success(cpuInfo);
     }
 
@@ -88,8 +93,8 @@ public class MonitorController extends BaseController {
     @Operation(summary = "获取磁盘信息")
     @GetMapping("/disk")
     @RequiresPermissions("system:monitor:disk")
-    public CommonResult<Object> getDiskInfo() {
-        Object diskInfo = monitorService.getDiskInfo();
+    public CommonResult<DiskInfoVO> getDiskInfo() {
+        DiskInfoVO diskInfo = monitorService.getDiskInfo();
         return success(diskInfo);
     }
 
@@ -99,8 +104,8 @@ public class MonitorController extends BaseController {
     @Operation(summary = "获取网络信息")
     @GetMapping("/network")
     @RequiresPermissions("system:monitor:network")
-    public CommonResult<Object> getNetworkInfo() {
-        Object networkInfo = monitorService.getNetworkInfo();
+    public CommonResult<NetworkInfoVO> getNetworkInfo() {
+        NetworkInfoVO networkInfo = monitorService.getNetworkInfo();
         return success(networkInfo);
     }
 } 

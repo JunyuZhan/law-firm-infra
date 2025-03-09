@@ -6,6 +6,7 @@ import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import java.io.Serializable;
 
 /**
  * 系统补丁实体类
@@ -14,7 +15,9 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("sys_patch")
-public class Patch extends ModelBaseEntity {
+public class Patch extends ModelBaseEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 所属升级ID

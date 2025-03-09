@@ -28,12 +28,12 @@ public class SystemSecurityConfig {
         String ipWhitelist = securityProperties.getIpWhitelist();
         
         http
-            .authorizeRequests()
+            .authorizeHttpRequests(authorize -> authorize
                 // 系统管理模块的所有请求都需要ADMIN角色
-                .antMatchers("/system/**").hasRole(securityProperties.getAdminRole().replace("ROLE_", ""))
+                .requestMatchers("/system/**").hasRole(securityProperties.getAdminRole().replace("ROLE_", ""))
                 .anyRequest().authenticated()
-            .and()
-                .csrf().disable(); // 禁用CSRF，因为是API接口
+            )
+            .csrf(csrf -> csrf.disable()); // 禁用CSRF，因为是API接口
         
         return http.build();
     }

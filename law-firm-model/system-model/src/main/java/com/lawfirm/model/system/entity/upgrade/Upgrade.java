@@ -6,6 +6,7 @@ import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import java.io.Serializable;
 
 /**
  * 系统升级实体类
@@ -14,7 +15,9 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("sys_upgrade")
-public class Upgrade extends ModelBaseEntity {
+public class Upgrade extends ModelBaseEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 升级版本号

@@ -8,9 +8,10 @@ import com.lawfirm.common.security.annotation.RequiresPermissions;
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.system.dto.dict.DictCreateDTO;
 import com.lawfirm.model.system.dto.dict.DictUpdateDTO;
-import com.lawfirm.model.system.entity.SysDict;
+import com.lawfirm.model.system.entity.dict.SysDict;
 import com.lawfirm.model.system.service.DictService;
-import com.lawfirm.model.system.vo.DictVO;
+import com.lawfirm.model.system.vo.dict.DictVO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

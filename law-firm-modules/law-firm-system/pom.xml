@@ -132,27 +132,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- 添加核心模块依赖 -->
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
-        <!-- 添加审计模块依赖 -->
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-audit</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- 添加缓存模块依赖 -->
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-cache</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

@@ -38,11 +38,20 @@ public abstract class ModelBaseEntity extends DataEntity {
     @TableField("sort")
     private Integer sort = 0;
 
+    /**
+     * 删除标记（0-正常，1-删除）
+     */
+    @TableField("deleted")
+    private Integer deleted = 0;
+
     @Override
     public void preInsert() {
         LocalDateTime now = LocalDateTime.now();
         this.setCreateTime(now);
         this.setUpdateTime(now);
+        if (this.deleted == null) {
+            this.deleted = 0;
+        }
     }
 
     @Override

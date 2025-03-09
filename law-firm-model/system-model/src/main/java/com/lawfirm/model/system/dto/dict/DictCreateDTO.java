@@ -2,6 +2,7 @@ package com.lawfirm.model.system.dto.dict;
 
 import com.lawfirm.model.base.dto.BaseDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,4 +43,10 @@ public class DictCreateDTO extends BaseDTO {
      */
     @Size(max = 500, message = "字典描述长度不能超过500个字符")
     private String description;
+
+    /**
+     * 状态（0-启用，1-禁用）
+     */
+    @NotNull(message = "状态不能为空")
+    private Integer status;
 } 

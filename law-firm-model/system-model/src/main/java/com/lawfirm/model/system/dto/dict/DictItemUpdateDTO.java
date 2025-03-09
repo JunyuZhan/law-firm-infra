@@ -1,6 +1,7 @@
 package com.lawfirm.model.system.dto.dict;
 
 import com.lawfirm.model.base.dto.BaseDTO;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,16 +18,28 @@ public class DictItemUpdateDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @NotNull(message = "ID不能为空")
+    private Long id;
+
+    /**
+     * 字典ID
+     */
+    @NotNull(message = "字典ID不能为空")
+    private Long dictId;
+
+    /**
      * 字典项标签
      */
     @Size(max = 100, message = "字典项标签长度不能超过100个字符")
-    private String label;
+    private String dictLabel;
 
     /**
      * 字典项值
      */
     @Size(max = 100, message = "字典项值长度不能超过100个字符")
-    private String value;
+    private String dictValue;
 
     /**
      * 字典项描述
@@ -52,12 +65,18 @@ public class DictItemUpdateDTO extends BaseDTO {
     private String cssClass;
 
     /**
-     * 排序号
+     * 列表样式
      */
-    private Integer sort;
+    @Size(max = 200, message = "列表样式长度不能超过200个字符")
+    private String listClass;
 
     /**
-     * 状态
+     * 排序号
+     */
+    private Integer dictSort;
+
+    /**
+     * 状态（0-启用，1-禁用）
      */
     private Integer status;
 } 

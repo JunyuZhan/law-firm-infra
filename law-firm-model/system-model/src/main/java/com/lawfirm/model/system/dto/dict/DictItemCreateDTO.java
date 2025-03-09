@@ -29,14 +29,14 @@ public class DictItemCreateDTO extends BaseDTO {
      */
     @NotBlank(message = "字典项标签不能为空")
     @Size(max = 100, message = "字典项标签长度不能超过100个字符")
-    private String label;
+    private String dictLabel;
 
     /**
      * 字典项值
      */
     @NotBlank(message = "字典项值不能为空")
     @Size(max = 100, message = "字典项值长度不能超过100个字符")
-    private String value;
+    private String dictValue;
 
     /**
      * 字典项描述
@@ -62,7 +62,19 @@ public class DictItemCreateDTO extends BaseDTO {
     private String cssClass;
 
     /**
+     * 列表样式
+     */
+    @Size(max = 200, message = "列表样式长度不能超过200个字符")
+    private String listClass;
+
+    /**
      * 排序号
      */
-    private Integer sort;
+    private Integer dictSort;
+
+    /**
+     * 状态（0-启用，1-禁用）
+     */
+    @NotNull(message = "状态不能为空")
+    private Integer status;
 } 

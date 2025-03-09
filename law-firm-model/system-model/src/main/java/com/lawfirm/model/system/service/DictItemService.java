@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.system.dto.dict.DictItemCreateDTO;
 import com.lawfirm.model.system.dto.dict.DictItemUpdateDTO;
-import com.lawfirm.model.system.entity.SysDictItem;
-import com.lawfirm.model.system.vo.DictItemVO;
+import com.lawfirm.model.system.entity.dict.SysDictItem;
+import com.lawfirm.model.system.vo.dict.DictItemVO;
 
 import java.util.List;
 

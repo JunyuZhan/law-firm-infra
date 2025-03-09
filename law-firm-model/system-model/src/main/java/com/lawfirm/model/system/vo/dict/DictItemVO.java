@@ -1,4 +1,4 @@
-package com.lawfirm.model.system.vo;
+package com.lawfirm.model.system.vo.dict;
 
 import com.lawfirm.model.base.dto.BaseDTO;
 import lombok.Data;

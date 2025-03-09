@@ -1,5 +1,6 @@
 package com.lawfirm.model.system.dto.dict;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -15,4 +16,10 @@ public class DictUpdateDTO extends DictCreateDTO {
     // 如果有特殊的更新字段，可以在这里添加
     
     private static final long serialVersionUID = 1L;
+
+    /**
+     * ID
+     */
+    @NotNull(message = "ID不能为空")
+    private Long id;
 } 

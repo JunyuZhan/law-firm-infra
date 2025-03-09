@@ -1,4 +1,4 @@
-package com.lawfirm.model.system.entity;
+package com.lawfirm.model.system.entity.dict;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
