@@ -52,11 +52,47 @@ public class BaseOrganizationEntity extends ModelBaseEntity {
      * 排序号
      */
     @TableField(value = "sort")
-    private Integer sort;
+    private Integer sortOrder;
 
     /**
      * 备注
      */
     @TableField(value = "remark")
     private String remark;
+
+    /**
+     * 父级组织ID
+     */
+    @TableField(value = "parent_id")
+    private Long parentId;
+
+    /**
+     * 组织路径（格式如：/1/2/3/）
+     */
+    @TableField(value = "path")
+    private String path;
+
+    /**
+     * 组织层级深度
+     */
+    @TableField(value = "level")
+    private Integer level;
+
+    /**
+     * 生效日期
+     */
+    @TableField(value = "effective_start_date")
+    private java.time.LocalDate effectiveStartDate;
+
+    /**
+     * 失效日期
+     */
+    @TableField(value = "effective_end_date")
+    private java.time.LocalDate effectiveEndDate;
+
+    /**
+     * 是否临时组织
+     */
+    @TableField(value = "is_temporary")
+    private Boolean isTemporary;
 } 

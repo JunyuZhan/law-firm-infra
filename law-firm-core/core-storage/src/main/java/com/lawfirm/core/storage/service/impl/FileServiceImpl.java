@@ -46,7 +46,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileObjectMapper, FileObjec
     
     public FileServiceImpl(FileObjectMapper baseMapper, FileUploader fileUploader, 
                           FileOperator fileOperator, StorageProperties storageProperties) {
-        super(baseMapper);
+        super();
         this.fileUploader = fileUploader;
         this.fileOperator = fileOperator;
         this.storageProperties = storageProperties;

@@ -41,7 +41,7 @@ public class BucketServiceImpl extends BaseServiceImpl<StorageBucketMapper, Stor
     public BucketServiceImpl(StorageBucketMapper baseMapper, 
                            StorageContext storageContext,
                            StorageProperties storageProperties) {
-        super(baseMapper);
+        super();
         this.storageContext = storageContext;
         this.storageProperties = storageProperties;
     }

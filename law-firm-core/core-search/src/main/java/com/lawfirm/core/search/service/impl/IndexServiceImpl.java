@@ -36,7 +36,7 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     private final IndexHandler indexHandler;
 
     public IndexServiceImpl(SearchIndexMapper baseMapper, IndexHandler indexHandler) {
-        super(baseMapper);
+        super();
         this.indexHandler = indexHandler;
     }
 

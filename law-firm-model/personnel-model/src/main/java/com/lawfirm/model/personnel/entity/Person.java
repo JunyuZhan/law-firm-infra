@@ -3,7 +3,7 @@ package com.lawfirm.model.personnel.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.TenantEntity;
-import com.lawfirm.model.personnel.constant.PersonnelConstant;
+import com.lawfirm.model.personnel.constant.PersonnelConstants;
 import com.lawfirm.model.personnel.enums.PersonTypeEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +22,7 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName(PersonnelConstant.Table.PERSON)
+@TableName(PersonnelConstants.Table.PERSON)
 public class Person extends TenantEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,7 +33,7 @@ public class Person extends TenantEntity implements Serializable {
     @NotBlank(message = "人员编号不能为空")
     @Size(max = 32, message = "人员编号长度不能超过32个字符")
     @Pattern(regexp = "^[A-Za-z0-9]+$", message = "人员编号只能包含字母和数字")
-    @TableField(PersonnelConstant.Field.PERSON_CODE)
+    @TableField(PersonnelConstants.Field.Person.PERSON_CODE)
     private String personCode;
 
     /**
@@ -41,7 +41,7 @@ public class Person extends TenantEntity implements Serializable {
      */
     @NotBlank(message = "姓名不能为空")
     @Size(max = 64, message = "姓名长度不能超过64个字符")
-    @TableField("name")
+    @TableField(PersonnelConstants.Field.Person.NAME)
     private String name;
 
     /**
@@ -49,76 +49,76 @@ public class Person extends TenantEntity implements Serializable {
      */
     @Size(max = 64, message = "英文名长度不能超过64个字符")
     @Pattern(regexp = "^[A-Za-z\\s]*$", message = "英文名只能包含英文字母和空格")
-    @TableField("english_name")
+    @TableField(PersonnelConstants.Field.Person.ENGLISH_NAME)
     private String englishName;
 
     /**
      * 性别（0-未知 1-男 2-女）
      */
-    @TableField("gender")
+    @TableField(PersonnelConstants.Field.Person.GENDER)
     private Integer gender;
 
     /**
      * 出生日期
      */
-    @TableField("birth_date")
+    @TableField(PersonnelConstants.Field.Person.BIRTH_DATE)
     private LocalDate birthDate;
 
     /**
      * 证件类型（1-身份证 2-护照 3-其他）
      */
-    @TableField("id_type")
+    @TableField(PersonnelConstants.Field.Person.ID_TYPE)
     private Integer idType;
 
     /**
      * 证件号码
      */
-    @TableField("id_number")
+    @TableField(PersonnelConstants.Field.Person.ID_NUMBER)
     private String idNumber;
 
     /**
      * 手机号码
      */
     @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号码格式不正确")
-    @TableField("mobile")
+    @TableField(PersonnelConstants.Field.Person.MOBILE)
     private String mobile;
 
     /**
      * 电子邮箱
      */
     @Email(message = "邮箱格式不正确")
-    @TableField("email")
+    @TableField(PersonnelConstants.Field.Person.EMAIL)
     private String email;
 
     /**
      * 人员类型
      */
-    @TableField("type")
+    @TableField(PersonnelConstants.Field.Person.TYPE)
     private PersonTypeEnum type;
 
     /**
      * 所属律所ID
      */
-    @TableField("firm_id")
+    @TableField(PersonnelConstants.Field.Person.FIRM_ID)
     private Long firmId;
 
     /**
      * 紧急联系人
      */
     @Size(max = 32, message = "紧急联系人姓名长度不能超过32个字符")
-    @TableField("emergency_contact")
+    @TableField(PersonnelConstants.Field.Person.EMERGENCY_CONTACT)
     private String emergencyContact;
 
     /**
      * 紧急联系人电话
      */
     @Pattern(regexp = "^1[3-9]\\d{9}$", message = "紧急联系人电话格式不正确")
-    @TableField("emergency_mobile")
+    @TableField(PersonnelConstants.Field.Person.EMERGENCY_MOBILE)
     private String emergencyMobile;
 
     /**
      * 照片URL
      */
-    @TableField("photo_url")
+    @TableField(PersonnelConstants.Field.Person.PHOTO_URL)
     private String photoUrl;
 } 

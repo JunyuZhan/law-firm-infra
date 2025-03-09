@@ -30,7 +30,7 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
     private final SearchHandler searchHandler;
 
     public SearchServiceImpl(SearchDocMapper baseMapper, DocumentHandler documentHandler, SearchHandler searchHandler) {
-        super(baseMapper);
+        super();
         this.documentHandler = documentHandler;
         this.searchHandler = searchHandler;
     }

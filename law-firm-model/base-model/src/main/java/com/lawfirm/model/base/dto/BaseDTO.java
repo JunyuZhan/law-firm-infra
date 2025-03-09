@@ -28,4 +28,29 @@ public class BaseDTO implements Serializable {
      * 备注
      */
     private String remark;
+    
+    /**
+     * 当前页码
+     */
+    private Integer pageNum = 1;
+    
+    /**
+     * 每页记录数
+     */
+    private Integer pageSize = 10;
+    
+    /**
+     * 关键字，用于模糊查询
+     */
+    private String keyword;
+    
+    /**
+     * 排序字段
+     */
+    private String orderField;
+    
+    /**
+     * 排序方向（asc/desc）
+     */
+    private String orderDirection;
 } 

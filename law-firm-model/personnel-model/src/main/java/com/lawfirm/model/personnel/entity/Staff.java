@@ -2,9 +2,9 @@ package com.lawfirm.model.personnel.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.model.personnel.constant.PersonnelConstant;
-import com.lawfirm.model.personnel.enums.CenterTypeEnum;
-import com.lawfirm.model.personnel.enums.FunctionTypeEnum;
+import com.lawfirm.model.organization.enums.CenterTypeEnum;
+import com.lawfirm.model.personnel.constant.PersonnelConstants;
+import com.lawfirm.model.personnel.enums.StaffFunctionEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName(PersonnelConstant.Table.STAFF)
+@TableName(PersonnelConstants.Table.STAFF)
 public class Staff extends Employee {
 
     private static final long serialVersionUID = 1L;
@@ -24,7 +24,7 @@ public class Staff extends Employee {
      * 职能类型
      */
     @TableField("function_type")
-    private FunctionTypeEnum functionType;
+    private StaffFunctionEnum functionType;
 
     /**
      * 职能描述

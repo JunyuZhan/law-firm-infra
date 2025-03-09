@@ -1,13 +1,27 @@
 package com.lawfirm.auth.config;
 
-import com.lawfirm.common.web.config.CorsConfig;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Auth模块 跨域配置
- * 继承自common-web模块的基础配置
+ * 跨域配置类
  */
 @Configuration
-public class AuthCorsConfig extends CorsConfig {
-    // 父类已包含基础配置
+public class CorsConfig implements WebMvcConfigurer {
+    
+    /**
+     * 配置跨域请求
+     * 
+     * @param registry 跨域注册表
+     */
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
 }

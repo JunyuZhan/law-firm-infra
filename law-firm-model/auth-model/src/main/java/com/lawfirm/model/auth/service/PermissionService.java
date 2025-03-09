@@ -36,8 +36,9 @@ public interface PermissionService extends BaseService<Permission> {
      * 删除权限
      *
      * @param id 权限ID
+     * @return 是否删除成功
      */
-    void deletePermission(Long id);
+    boolean deletePermission(Long id);
     
     /**
      * 获取权限详情

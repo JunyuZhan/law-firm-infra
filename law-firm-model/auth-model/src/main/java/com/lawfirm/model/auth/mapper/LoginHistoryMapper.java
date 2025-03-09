@@ -1,5 +1,6 @@
 package com.lawfirm.model.auth.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.LoginHistory;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,15 +12,7 @@ import java.util.List;
  * 
  * @author lawfirm
  */
-public interface LoginHistoryMapper {
-    
-    /**
-     * 根据ID查询登录历史
-     * 
-     * @param id 登录历史ID
-     * @return 登录历史实体
-     */
-    LoginHistory selectById(Long id);
+public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
     
     /**
      * 根据用户ID查询登录历史
@@ -72,30 +65,6 @@ public interface LoginHistoryMapper {
                    @Param("status") Integer status,
                    @Param("startTime") Date startTime,
                    @Param("endTime") Date endTime);
-    
-    /**
-     * 新增登录历史
-     * 
-     * @param loginHistory 登录历史实体
-     * @return 影响行数
-     */
-    int insert(LoginHistory loginHistory);
-    
-    /**
-     * 更新登录历史
-     * 
-     * @param loginHistory 登录历史实体
-     * @return 影响行数
-     */
-    int update(LoginHistory loginHistory);
-    
-    /**
-     * 删除登录历史
-     * 
-     * @param id 登录历史ID
-     * @return 影响行数
-     */
-    int deleteById(Long id);
     
     /**
      * 根据用户ID删除登录历史

@@ -91,6 +91,11 @@
                 <artifactId>law-firm-common</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>personnel-model</artifactId>
+                <version>${revision}</version>
+            </dependency>
             
             <!-- Spring Boot BOM -->
             <dependency>

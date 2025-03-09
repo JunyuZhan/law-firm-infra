@@ -8,11 +8,12 @@ import com.lawfirm.model.auth.entity.User;
 import com.lawfirm.model.auth.vo.UserVO;
 import com.lawfirm.model.auth.vo.UserInfoVO;
 import com.lawfirm.model.base.service.BaseService;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
 /**
- * 用户服务接口
+ * 用户服务接口 - 仅包含认证授权相关的方法
  */
 public interface UserService extends BaseService<User> {
     
@@ -96,22 +97,6 @@ public interface UserService extends BaseService<User> {
     void updateStatus(Long id, Integer status);
     
     /**
-     * 分配角色
-     *
-     * @param id 用户ID
-     * @param roleIds 角色ID列表
-     */
-    void assignRoles(Long id, List<Long> roleIds);
-    
-    /**
-     * 获取用户角色ID列表
-     *
-     * @param id 用户ID
-     * @return 角色ID列表
-     */
-    List<Long> getUserRoleIds(Long id);
-    
-    /**
      * 获取用户权限列表
      *
      * @param id 用户ID
@@ -120,10 +105,57 @@ public interface UserService extends BaseService<User> {
     List<String> getUserPermissions(Long id);
     
     /**
-     * 获取当前登录用户信息
+     * 根据用户名加载用户详情（用于认证）
      *
-     * @param userId 用户ID
-     * @return 用户信息
+     * @param username 用户名
+     * @return 用户详情
+     */
+    UserDetails loadUserByUsername(String username);
+    
+    /**
+     * 根据邮箱加载用户详情（用于认证）
+     *
+     * @param email 邮箱
+     * @return 用户详情
+     */
+    UserDetails loadUserByEmail(String email);
+    
+    /**
+     * 根据手机号加载用户详情（用于认证）
+     *
+     * @param mobile 手机号
+     * @return 用户详情
+     */
+    UserDetails loadUserByMobile(String mobile);
+    
+    /**
+     * 根据邮箱查询用户
+     *
+     * @param email 邮箱
+     * @return 用户实体
+     */
+    User getByEmail(String email);
+    
+    /**
+     * 根据手机号查询用户
+     *
+     * @param mobile 手机号
+     * @return 用户实体
+     */
+    User getByMobile(String mobile);
+    
+    /**
+     * 分配用户角色
+     */
+    void assignRoles(Long userId, List<Long> roleIds);
+    
+    /**
+     * 获取用户角色ID列表
+     */
+    List<Long> getUserRoleIds(Long userId);
+    
+    /**
+     * 获取用户信息
      */
     UserInfoVO getUserInfo(Long userId);
 } 

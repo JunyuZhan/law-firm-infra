@@ -3,7 +3,7 @@ package com.lawfirm.model.personnel.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import com.lawfirm.model.personnel.constant.PersonnelConstant;
+import com.lawfirm.model.personnel.constant.PersonnelConstants;
 import com.lawfirm.model.personnel.enums.ContractTypeEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName(PersonnelConstant.Table.CONTRACT)
+@TableName(PersonnelConstants.Table.CONTRACT)
 public class Contract extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;

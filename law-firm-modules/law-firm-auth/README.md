@@ -1,21 +1,55 @@
 # 认证授权模块 (Law Firm Auth)
 
-## 简介
-认证授权模块是律所管理系统的核心安全模块，提供用户认证、授权、权限管理等功能。
+## 模块概述
+律师事务所管理系统认证授权模块 (Law Firm Auth) 是系统的安全核心，负责实现用户认证、权限验证和安全控制。本模块基于 auth-model 定义的数据模型和接口，提供完整的安全实现。作为系统安全的门户，law-firm-auth 采用严格的松耦合设计，确保职责清晰分离。
 
-## 功能特性
-- 多种认证方式支持（用户名密码、短信验证码、邮箱验证码、LDAP）
-- 基于 JWT 的无状态会话管理
-- 细粒度的权限控制
-- 多租户支持
-- 完整的用户、角色、权限管理
-- 部门和职位管理
-- 登录历史记录
-- 接口限流保护
-- 敏感数据脱敏
+### 与 auth-model 的关系
+law-firm-auth 与 auth-model 的关系是实现与定义的关系：
+- **auth-model**：提供认证授权的核心数据模型、实体定义和服务接口
+- **law-firm-auth**：基于 auth-model 实现具体的认证授权流程和安全控制
+
+本模块严格遵循 auth-model 定义的模型和接口，不扩展额外的数据结构，保持数据层与实现层的清晰分离。
+
+## 核心功能
+
+### 1. 认证体系
+- **用户名密码认证**：传统登录方式，支持多种密码策略
+- **登录安全**：多次失败锁定、验证码防护
+- **会话管理**：基于JWT的无状态会话，支持会话过期策略
+
+### 2. 授权体系
+- **RBAC权限模型**：基于角色的访问控制
+- **数据权限**：支持全部数据、团队数据、个人数据和自定义数据范围
+- **操作权限**：完全权限、只读权限、个人权限、审批权限和申请权限
+- **权限控制**：实现 auth-model 中定义的 PermissionChecker 接口
+
+### 3. 安全特性
+- **防XSS攻击**：对请求参数和响应内容进行XSS过滤
+- **防CSRF攻击**：支持CSRF Token验证
+- **审计日志**：记录安全操作日志
+- **敏感数据脱敏**：手机号、邮箱等敏感信息自动脱敏
+
+## 技术架构
+本模块采用简洁的分层架构：
+```
+┌─────────────────────────────────────────────────────────┐
+│                     控制器层 (Controller)                 │
+│  认证控制器、用户控制器、角色控制器、权限控制器            │
+└───────────────────────────┬─────────────────────────────┘
+                            │
+┌───────────────────────────┼─────────────────────────────┐
+│                     服务层 (Service)                      │
+│   认证服务、用户服务、角色服务、权限服务                  │
+└───────────────────────────┼─────────────────────────────┘
+                            │
+┌───────────────────────────┼─────────────────────────────┐
+│                    安全层 (Security)                      │
+│     安全过滤器、认证处理器、JWT提供者、安全用户详情       │
+└─────────────────────────────────────────────────────────┘
+```
 
 ## 目录结构
-```
+```plaintext
 law-firm-auth/
 ├── src/
 │   └── main/
@@ -23,219 +57,245 @@ law-firm-auth/
 │       │   └── com/
 │       │       └── lawfirm/
 │       │           └── auth/
-│       │               ├── annotation/        # 自定义注解
-│       │               ├── aspect/            # 切面类
-│       │               ├── config/           # 配置类
-│       │               │   ├── AuthAutoConfiguration.java  # 认证自动配置类
-│       │               │   ├── SecurityConfig.java    # 安全配置
-│       │               │   └── RateLimitConfiguration.java  # 限流配置类
-│       │               ├── controller/       # 控制器
-│       │               │   ├── AuthController.java    # 认证相关接口
-│       │               │   ├── UserController.java    # 用户管理接口
-│       │               │   ├── RoleController.java    # 角色管理接口
-│       │               │   ├── PermissionController.java  # 权限管理接口
-│       │               │   ├── DepartmentController.java  # 部门管理接口
-│       │               │   ├── PositionController.java    # 职位管理接口
-│       │               │   └── UserGroupController.java   # 用户组管理接口
-│       │               ├── exception/        # 异常处理
-│       │               │   └── AuthExceptionHandler.java  # 认证异常处理器
-│       │               ├── mapper/          # MyBatis Mapper接口
-│       │               ├── security/        # 安全相关实现
-│       │               │   ├── provider/    # 认证提供者
-│       │               │   │   ├── UsernamePasswordProvider.java
-│       │               │   │   ├── SmsCodeProvider.java
-│       │               │   │   ├── EmailCodeProvider.java
-│       │               │   │   └── LdapProvider.java
-│       │               │   ├── handler/     # 处理器
-│       │               │   │   ├── LoginSuccessHandler.java
-│       │               │   │   ├── LoginFailureHandler.java
-│       │               │   │   ├── LogoutSuccessHandlerImpl.java
-│       │               │   │   ├── AccessDeniedHandlerImpl.java
-│       │               │   │   └── AuthenticationEntryPointImpl.java
-│       │               │   ├── filter/      # 过滤器
-│       │               │   │   ├── JwtAuthenticationFilter.java
-│       │               │   │   ├── CustomLoginFilter.java
-│       │               │   │   └── CaptchaFilter.java
-│       │               │   ├── token/       # Token相关
-│       │               │   │   ├── JwtTokenProvider.java
-│       │               │   │   └── TokenStore.java
-│       │               │   └── details/     # 用户详情
-│       │               │       ├── SecurityUserDetails.java
-│       │               │       └── CustomUserDetailsService.java
-│       │               └── service/         # 服务实现
-│       │                   └── impl/        # 服务实现类
+│       │               ├── config/            # 配置类
+│       │               │   ├── SecurityConfig.java        # 安全配置
+│       │               │   ├── CorsConfig.java            # 跨域配置
+│       │               │   └── RedisConfig.java           # Redis配置
+│       │               ├── controller/        # 控制器
+│       │               │   ├── AuthController.java        # 认证控制器
+│       │               │   ├── UserController.java        # 用户控制器
+│       │               │   ├── RoleController.java        # 角色控制器
+│       │               │   └── PermissionController.java  # 权限控制器
+│       │               ├── exception/         # 异常处理
+│       │               │   ├── GlobalExceptionHandler.java  # 全局异常处理器
+│       │               │   └── AuthException.java           # 认证授权异常
+│       │               ├── security/          # 安全相关
+│       │               │   ├── filter/          # 过滤器
+│       │               │   │   ├── JwtAuthenticationFilter.java   # JWT认证过滤器
+│       │               │   │   └── JsonLoginFilter.java           # JSON登录过滤器
+│       │               │   ├── handler/         # 处理器
+│       │               │   │   ├── LoginSuccessHandler.java       # 登录成功处理器
+│       │               │   │   ├── LoginFailureHandler.java       # 登录失败处理器
+│       │               │   │   └── LogoutHandler.java             # 登出处理器
+│       │               │   ├── provider/        # 提供者
+│       │               │   │   ├── JwtTokenProvider.java          # JWT令牌提供者
+│       │               │   │   └── CustomAuthenticationProvider.java  # 自定义认证提供者
+│       │               │   └── details/         # 用户详情
+│       │               │       └── SecurityUserDetails.java       # 安全用户详情
+│       │               ├── service/           # 服务层
+│       │               │   ├── impl/            # 服务实现
+│       │               │   │   ├── AuthServiceImpl.java         # 认证服务实现
+│       │               │   │   ├── UserServiceImpl.java         # 用户服务实现
+│       │               │   │   ├── RoleServiceImpl.java         # 角色服务实现
+│       │               │   │   ├── PermissionServiceImpl.java   # 权限服务实现
+│       │               │   │   └── UserPersonnelServiceImpl.java # 用户人员关联服务实现
+│       │               │   └── support/         # 支持服务
+│       │               │       └── PermissionCheckerImpl.java   # 权限检查器实现
+│       │               └── utils/             # 工具类
+│       │                   ├── SecurityUtils.java              # 安全工具类
+│       │                   └── PasswordUtils.java              # 密码工具类
 │       └── resources/
-│           ├── mapper/           # MyBatis XML映射文件
-│           │   ├── UserMapper.xml
-│           │   ├── RoleMapper.xml
-│           │   ├── PermissionMapper.xml
-│           │   ├── DepartmentMapper.xml
-│           │   ├── PositionMapper.xml
-│           │   ├── UserRoleMapper.xml
-│           │   ├── RolePermissionMapper.xml
-│           │   ├── UserGroupMapper.xml
-│           │   └── LoginHistoryMapper.xml
-│           └── application.yml   # 应用配置文件
-└── pom.xml                      # 项目依赖管理
+│           └── application.yml     # 应用配置
 ```
 
-## 核心功能说明
+## 关键组件说明
 
-### 1. 认证功能
-- 用户名密码认证
-- 短信验证码认证
-- 邮箱验证码认证
-- LDAP认证
-- JWT token管理
-- 验证码功能
-- 登录历史记录
+### 1. 服务实现
+- **AuthServiceImpl**：实现 auth-model 中定义的 AuthService 接口，处理登录、登出、令牌刷新等功能
+- **UserServiceImpl**：实现 auth-model 中定义的 UserService 接口，处理用户管理功能
+- **RoleServiceImpl**：实现 auth-model 中定义的 RoleService 接口，处理角色管理功能
+- **PermissionServiceImpl**：实现 auth-model 中定义的 PermissionService 接口，处理权限管理功能
+- **UserPersonnelServiceImpl**：实现 auth-model 中定义的 UserPersonnelService 接口，处理用户与人员的关联
 
-### 2. 权限管理
-- RBAC权限模型
-- 角色管理
-- 权限管理
-- 用户-角色关联
-- 角色-权限关联
+### 2. 安全组件
+- **JwtAuthenticationFilter**：JWT认证过滤器，拦截请求并验证JWT令牌
+- **JsonLoginFilter**：处理JSON格式的登录请求
+- **JwtTokenProvider**：JWT令牌提供者，负责令牌的创建、验证和解析
+- **SecurityUserDetails**：安全用户详情，实现 Spring Security 的 UserDetails 接口
 
-### 3. 组织架构
-- 部门管理
-- 职位管理
-- 用户组管理
+### 3. 权限检查
+- **PermissionCheckerImpl**：实现 auth-model 中定义的 PermissionChecker 接口，提供权限检查功能
 
-### 4. 安全特性
-- 密码加密存储
-- 登录失败处理
-- 会话管理
-- 权限拦截
-- XSS防护
-- CSRF防护
-- SQL注入防护
-- 接口限流保护
-- 敏感数据脱敏处理
+## 与其他模块的交互
 
-## 依赖说明
-- Spring Boot
-- Spring Security
-- JWT
-- MyBatis Plus
-- Redis
-- MySQL
-- Redisson
+### 与 auth-model 的交互
+- 直接使用 auth-model 中定义的实体类和接口
+- 实现 AuthService、UserService、RoleService、PermissionService 等接口
+- 通过 AuthConstants 使用统一定义的常量
 
-## 配置说明
-主要配置项在 application.yml 中：
+### 与 personnel-model 的交互
+- 通过实现 UserPersonnelService 接口与人事模块交互
+- 处理用户与员工的绑定关系
+
+### 与 organization-model 的交互
+- 通过组织模块提供的接口获取组织架构信息
+- 处理基于组织结构的数据权限
+
+### 与 common 通用层的交互
+本模块大量复用了 common 通用层提供的功能，避免重复实现，保持系统一致性：
+
+- **common-util**：使用通用工具类处理字符串、日期、加密解密等操作
+  ```java
+  // 示例：使用 StringUtils 处理字符串
+  if (StringUtils.isBlank(username)) {
+      throw new IllegalArgumentException("用户名不能为空");
+  }
+  ```
+
+- **common-core**：使用核心功能如基础异常定义、通用响应对象
+  ```java
+  // 示例：使用通用响应对象
+  return Result.success(userVO);
+  ```
+
+- **common-cache**：使用缓存功能存储令牌、验证码等临时数据
+  ```java
+  // 示例：使用缓存存储验证码
+  cacheService.set(CacheKeys.CAPTCHA_KEY + captchaKey, captcha, Duration.ofMinutes(5));
+  ```
+
+- **common-security**：使用安全相关功能如密码加密、安全工具类
+  ```java
+  // 示例：使用密码编码器加密密码
+  String encodedPassword = passwordEncoder.encode(rawPassword);
+  ```
+
+- **common-web**：使用Web相关功能如请求处理、响应封装
+  ```java
+  // 示例：使用请求上下文获取当前用户
+  Long currentUserId = RequestContext.getCurrentUserId();
+  ```
+
+## 安全配置说明
+
+### JWT配置
 ```yaml
 law:
   firm:
     security:
-      # JWT配置
       jwt:
-        secret: your-secret-key
-        expiration: 86400000  # 24小时
-      # 验证码配置
-      captcha:
-        enabled: true
-        expire: 300  # 5分钟
-      # 登录配置
+        secret: ${JWT_SECRET:HmacSHA256SecretKey}
+        expiration: ${JWT_EXPIRATION:86400000}
+        refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+        issuer: law-firm-auth
+        audience: law-firm-web
+```
+
+### 密码策略配置
+```yaml
+law:
+  firm:
+    security:
+      password:
+        min-length: 8
+        require-digit: true
+        require-lowercase: true
+        require-uppercase: true
+        require-special-char: true
+        max-age-days: 90
+        history-count: 5
+```
+
+### 登录安全配置
+```yaml
+law:
+  firm:
+    security:
       login:
-        retry-limit: 5
-        lock-duration: 30  # 30分钟
-
-# Redisson配置（用于分布式限流）
-redisson:
-  single:
-    address: redis://localhost:6379
-    database: 0
-```
-
-## 使用示例
-
-### 1. 登录认证
-```http
-POST /api/v1/auth/login
-Content-Type: application/json
-
-{
-    "username": "admin",
-    "password": "password",
-    "captcha": "1234",
-    "captchaKey": "xxx"
-}
-```
-
-### 2. 获取用户信息
-```http
-GET /api/v1/users/current
-Authorization: Bearer your-token
-```
-
-### 3. 创建角色
-```http
-POST /api/v1/roles
-Authorization: Bearer your-token
-Content-Type: application/json
-
-{
-    "name": "管理员",
-    "code": "ADMIN",
-    "permissions": [1, 2, 3]
-}
+        max-fail-times: 5
+        lock-minutes: 30
+        captcha-enabled: true
+        captcha-expire-minutes: 5
 ```
 
 ## 开发指南
 
-### 1. 添加新的认证方式
-1. 创建新的认证提供者类，实现 AuthenticationProvider 接口
-2. 在 SecurityConfig 中注册新的认证提供者
-3. 添加相应的认证过滤器（如果需要）
-
-### 2. 添加新的权限
-1. 在数据库中添加权限记录
-2. 更新角色-权限关联
-3. 在代码中使用 @PreAuthorize 注解或其他方式进行权限控制
-
-### 3. 自定义认证逻辑
-1. 继承或修改相应的认证处理器
-2. 在 SecurityConfig 中配置自定义的处理器
-
-### 4. 配置接口限流
-1. 使用 `@RateLimiter` 注解标注需要限流的接口方法
-2. 配置限流参数（如每分钟允许访问次数、限流策略等）
+### 1. 实现认证服务
 ```java
-@RateLimiter(rate = 5, rateInterval = 60, rateIntervalUnit = RateIntervalUnit.SECONDS, message = "登录请求频率超限")
-@PostMapping("/login")
-public Result<LoginVO> login(@RequestBody @Valid LoginDTO loginDTO) {
-    // 方法实现
+@Service
+public class AuthServiceImpl implements AuthService {
+    
+    @Override
+    public LoginVO login(LoginDTO loginDTO) {
+        // 实现登录逻辑
+    }
+    
+    @Override
+    public void logout(String username) {
+        // 实现登出逻辑
+    }
+    
+    @Override
+    public TokenDTO refreshToken(String refreshToken) {
+        // 实现令牌刷新逻辑
+    }
 }
 ```
 
-### 5. 敏感数据脱敏
-认证模块通过 `SensitiveDataService` 对以下敏感数据进行脱敏处理：
-- 日志中的用户名、手机号、邮箱等敏感信息
-- 返回给前端的用户信息中的手机号、邮箱、身份证等
-- 异常信息中可能包含的敏感数据
-
+### 2. 实现权限检查
 ```java
-// 注入敏感数据服务
-private final SensitiveDataService sensitiveDataService;
-
-// 手机号脱敏示例
-String maskedMobile = sensitiveDataService.maskPhoneNumber(mobile);
-
-// 邮箱脱敏示例
-String maskedEmail = sensitiveDataService.maskEmail(email);
+@Service
+public class PermissionCheckerImpl implements PermissionChecker {
+    
+    @Override
+    public boolean hasPermission(Long userId, String moduleCode, OperationTypeEnum operationType) {
+        // 实现权限检查逻辑
+    }
+    
+    @Override
+    public DataScopeEnum getDataScope(Long userId, String moduleCode) {
+        // 实现数据范围获取逻辑
+    }
+}
 ```
 
-## 注意事项
-1. 所有密码必须加密存储
-2. 注意防止SQL注入和XSS攻击
-3. 敏感操作需要进行权限校验
-4. 注意多租户数据隔离
-5. 定期清理过期的登录历史记录
-6. 敏感数据必须进行脱敏处理，特别是在日志和API响应中
-7. 关键接口必须配置合理的限流策略，防止恶意请求
+### 3. 使用权限检查
+```java
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    
+    @Autowired
+    private PermissionChecker permissionChecker;
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<UserVO> getUser(@PathVariable Long id) {
+        // 检查权限
+        if (!permissionChecker.hasPermission(getCurrentUserId(), "user", OperationTypeEnum.READ_ONLY)) {
+            throw new AccessDeniedException("没有查看用户的权限");
+        }
+        
+        // 获取数据范围
+        DataScopeEnum dataScope = permissionChecker.getDataScope(getCurrentUserId(), "user");
+        
+        // 根据数据范围处理业务逻辑
+        // ...
+    }
+}
+```
 
-## 更新日志
-- 2024-03-07: 添加接口限流和敏感数据脱敏功能
-- 2024-03-06: 完善认证授权功能，添加多种认证方式支持
-- 2024-03-05: 初始化项目结构，实现基础认证功能
+### 4. 配置安全过滤器
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeRequests()
+                .antMatchers("/auth/login", "/auth/captcha").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        
+        return http.build();
+    }
+    
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+}
+```

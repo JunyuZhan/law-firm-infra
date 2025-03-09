@@ -1,5 +1,6 @@
 package com.lawfirm.model.auth.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.UserRole;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * 
  * @author lawfirm
  */
-public interface UserRoleMapper {
+public interface UserRoleMapper extends BaseMapper<UserRole> {
     
     /**
      * 通过用户ID查询用户角色关联
@@ -77,4 +78,20 @@ public interface UserRoleMapper {
      * @return 存在返回1，不存在返回0
      */
     int exists(@Param("userId") Long userId, @Param("roleId") Long roleId);
+    
+    /**
+     * 统计角色下的用户数量
+     * 
+     * @param roleId 角色ID
+     * @return 用户数量
+     */
+    Long countUserByRoleId(Long roleId);
+    
+    /**
+     * 查询角色下的所有用户ID
+     * 
+     * @param roleId 角色ID
+     * @return 用户ID列表
+     */
+    List<Long> selectUserIdsByRoleId(Long roleId);
 } 

@@ -1,120 +1,55 @@
+﻿# 应用配置
 server:
   port: 8081
-  servlet:
-    context-path: /api
-  tomcat:
-    threads:
-      max: 200
-    connection-timeout: 5000
 
 spring:
   application:
     name: law-firm-auth
-  profiles:
-    active: dev
-    include: flyway
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: root
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      database: 0
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+
+# 安全配置
+law:
+  firm:
+    security:
+      jwt:
+        secret: 
+        expiration: 
+        refresh-expiration: 
+        issuer: law-firm-auth
+        audience: law-firm-web
       password:
-      timeout: 10s
-      lettuce:
-        pool:
-          min-idle: 0
-          max-idle: 8
-          max-active: 8
-          max-wait: -1ms
-  cache:
-    type: redis
-    redis:
-      time-to-live: 1h
-      cache-null-values: false
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-    default-property-inclusion: NON_NULL
+        min-length: 8
+        require-digit: true
+        require-lowercase: true
+        require-uppercase: true
+        require-special-char: true
+        max-age-days: 90
+        history-count: 5
+      login:
+        max-fail-times: 5
+        lock-minutes: 30
+        captcha-enabled: true
+        captcha-expire-minutes: 5
 
-# Redisson配置
-redisson:
-  single:
-    address: redis://${spring.data.redis.host}:${spring.data.redis.port}
-    password: ${spring.data.redis.password}
-    database: ${spring.data.redis.database}
-    idle-connection-timeout: 10000
-    connect-timeout: 10000
-    timeout: 3000
-    retry-attempts: 3
-    retry-interval: 1500
-    connection-minimum-idle-size: 10
-    connection-pool-size: 64
-
+# MyBatis Plus配置
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath*:/mapper/**/*.xml
   type-aliases-package: com.lawfirm.model.auth.entity
   configuration:
     map-underscore-to-camel-case: true
-    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
+      id-type: AUTO
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-jwt:
-  secret: ${JWT_SECRET:your-secret-key}
-  expiration: ${JWT_EXPIRATION:86400000}
-  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
-
-security:
-  # 不需要认证的URL
-  ignore-urls:
-    - /auth/login
-    - /auth/logout
-    - /auth/captcha
-    - /auth/refresh
-    - /doc.html
-    - /swagger-resources/**
-    - /v3/api-docs/**
-    - /webjars/**
-    - /actuator/**
-  allowed-origins:
-    - http://localhost:3000
-    - http://localhost:8080
-  login:
-    max-fail-times: 5
-    lock-minutes: 30
-  password:
-    min-length: 8
-    require-digit: true
-    require-lowercase: true
-    require-uppercase: true
-    require-special-char: true
-  captcha:
-    enabled: true
-    expire-minutes: 5
-    after-fail-times: 3
-
-logging:
-  level:
-    root: INFO
-    com.lawfirm: DEBUG
-    org.springframework.security: DEBUG
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: when_authorized
- 

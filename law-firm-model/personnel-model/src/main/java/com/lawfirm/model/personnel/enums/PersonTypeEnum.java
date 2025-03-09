@@ -1,7 +1,7 @@
 package com.lawfirm.model.personnel.enums;
 
 import com.lawfirm.model.base.enums.BaseEnum;
-import com.lawfirm.model.personnel.constant.PersonnelConstant;
+import com.lawfirm.model.personnel.constant.PersonnelConstants;
 
 /**
  * 人员类型枚举
@@ -11,12 +11,12 @@ public enum PersonTypeEnum implements BaseEnum<Integer> {
     /**
      * 律师
      */
-    LAWYER(PersonnelConstant.PersonType.LAWYER, "律师"),
+    LAWYER(1, "律师"),
 
     /**
      * 行政人员
      */
-    STAFF(PersonnelConstant.PersonType.STAFF, "行政人员");
+    STAFF(2, "行政人员");
 
     private final Integer value;
     private final String description;

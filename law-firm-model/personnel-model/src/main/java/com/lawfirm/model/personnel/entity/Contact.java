@@ -3,7 +3,7 @@ package com.lawfirm.model.personnel.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import com.lawfirm.model.personnel.constant.PersonnelConstant;
+import com.lawfirm.model.personnel.constant.PersonnelConstants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName(PersonnelConstant.Table.CONTACT)
+@TableName(PersonnelConstants.Table.CONTACT)
 public class Contact extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;

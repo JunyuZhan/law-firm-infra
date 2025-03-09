@@ -27,9 +27,24 @@ public interface DepartmentFieldConstants extends BaseConstants {
         String MANAGEMENT_PREFIX = "MD";
 
         /**
+         * 编码最大长度
+         */
+        int MAX_LENGTH = 30;
+
+        /**
+         * 编码最小长度
+         */
+        int MIN_LENGTH = 2;
+
+        /**
          * 编码字段
          */
         String FIELD = "code";
+
+        /**
+         * 编码正则表达式
+         */
+        String PATTERN = "^[A-Z0-9_-]{2,30}$";
     }
 
     /**
@@ -44,7 +59,7 @@ public interface DepartmentFieldConstants extends BaseConstants {
         /**
          * 最大长度
          */
-        int MAX_LENGTH = 64;
+        int MAX_LENGTH = 50;
 
         /**
          * 名称字段
@@ -84,12 +99,12 @@ public interface DepartmentFieldConstants extends BaseConstants {
         /**
          * 业务领域最大长度
          */
-        int DOMAIN_MAX_LENGTH = 128;
+        int DOMAIN_MAX_LENGTH = 100;
 
         /**
-         * 案件类型最大数量
+         * 案件类型最大长度
          */
-        int MAX_CASE_TYPES = 10;
+        int CASE_TYPE_MAX_LENGTH = 50;
 
         /**
          * 业务领域字段
@@ -109,12 +124,12 @@ public interface DepartmentFieldConstants extends BaseConstants {
         /**
          * 职能类型最大长度
          */
-        int TYPE_MAX_LENGTH = 64;
+        int TYPE_MAX_LENGTH = 50;
 
         /**
          * 服务范围最大长度
          */
-        int SCOPE_MAX_LENGTH = 256;
+        int SCOPE_MAX_LENGTH = 200;
 
         /**
          * 职能类型字段

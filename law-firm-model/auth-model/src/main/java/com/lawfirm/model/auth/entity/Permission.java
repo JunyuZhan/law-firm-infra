@@ -113,4 +113,49 @@ public class Permission extends TenantEntity {
      */
     @TableField("remark")
     private String remark;
+    
+    /**
+     * 获取权限标识（兼容性方法，返回permission或code）
+     */
+    public String getPermissionKey() {
+        return this.permission != null ? this.permission : this.code;
+    }
+    
+    /**
+     * 设置权限标识（兼容性方法，设置permission）
+     */
+    public void setPermissionKey(String permissionKey) {
+        this.permission = permissionKey;
+    }
+    
+    /**
+     * 获取菜单ID（兼容性方法，对于菜单类型返回自身ID）
+     */
+    public Long getMenuId() {
+        // 如果是菜单类型(type=0)，返回自身ID，否则返回父ID
+        return type != null && type == 0 ? this.getId() : this.parentId;
+    }
+    
+    /**
+     * 设置菜单ID（兼容性方法）
+     */
+    public void setMenuId(Long menuId) {
+        if (type != null && type != 0) {
+            this.parentId = menuId;
+        }
+    }
+    
+    /**
+     * 获取权限排序（兼容性方法，返回sort）
+     */
+    public Integer getPermissionSort() {
+        return this.sort;
+    }
+    
+    /**
+     * 设置权限排序（兼容性方法，设置sort）
+     */
+    public void setPermissionSort(Integer permissionSort) {
+        this.sort = permissionSort;
+    }
 } 

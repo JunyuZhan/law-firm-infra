@@ -1,7 +1,11 @@
 package com.lawfirm.model.auth.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.User;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -10,15 +14,7 @@ import java.util.List;
  * 
  * @author lawfirm
  */
-public interface UserMapper {
-    
-    /**
-     * 根据ID查询用户
-     * 
-     * @param id 用户ID
-     * @return 用户实体
-     */
-    User selectById(Long id);
+public interface UserMapper extends BaseMapper<User> {
     
     /**
      * 根据用户名查询用户
@@ -101,38 +97,6 @@ public interface UserMapper {
                    @Param("departmentId") Long departmentId);
     
     /**
-     * 新增用户
-     * 
-     * @param user 用户实体
-     * @return 影响行数
-     */
-    int insert(User user);
-    
-    /**
-     * 更新用户
-     * 
-     * @param user 用户实体
-     * @return 影响行数
-     */
-    int update(User user);
-    
-    /**
-     * 删除用户
-     * 
-     * @param id 用户ID
-     * @return 影响行数
-     */
-    int deleteById(Long id);
-    
-    /**
-     * 批量删除用户
-     * 
-     * @param ids 用户ID数组
-     * @return 影响行数
-     */
-    int deleteBatchByIds(@Param("ids") List<Long> ids);
-    
-    /**
      * 更新用户状态
      * 
      * @param id 用户ID
@@ -191,4 +155,27 @@ public interface UserMapper {
      * @return 权限编码列表
      */
     List<String> selectPermissionsByUserId(Long userId);
+    
+    /**
+     * 删除用户角色关联
+     */
+    @Delete("DELETE FROM auth_user_role WHERE user_id = #{userId}")
+    int deleteUserRoles(@Param("userId") Long userId);
+    
+    /**
+     * 批量插入用户角色关联
+     */
+    @Insert("<script>" +
+            "INSERT INTO auth_user_role (user_id, role_id) VALUES " +
+            "<foreach collection='roleIds' item='roleId' separator=','>" +
+            "(#{userId}, #{roleId})" +
+            "</foreach>" +
+            "</script>")
+    int insertUserRoles(@Param("userId") Long userId, @Param("roleIds") List<Long> roleIds);
+    
+    /**
+     * 查询用户角色ID列表
+     */
+    @Select("SELECT role_id FROM auth_user_role WHERE user_id = #{userId}")
+    List<Long> selectUserRoleIds(@Param("userId") Long userId);
 }

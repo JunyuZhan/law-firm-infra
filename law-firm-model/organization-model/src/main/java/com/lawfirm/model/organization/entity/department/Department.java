@@ -2,7 +2,7 @@ package com.lawfirm.model.organization.entity.department;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.model.base.entity.TreeEntity;
+import com.lawfirm.model.organization.entity.base.BaseOrganizationEntity;
 import com.lawfirm.model.organization.constants.DepartmentFieldConstants;
 import com.lawfirm.model.organization.constants.OrganizationFieldConstants;
 import com.lawfirm.model.organization.enums.DepartmentTypeEnum;
@@ -18,10 +18,9 @@ import lombok.experimental.Accessors;
 @TableName("org_department")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-public class Department extends TreeEntity {
+public class Department extends BaseOrganizationEntity {
 
     private static final long serialVersionUID = 1L;
-
 
     /**
      * 所属律所ID
@@ -67,7 +66,7 @@ public class Department extends TreeEntity {
      */
     @TableField(value = "function_desc")
     @Size(max = 500, message = "职能描述长度不能超过{max}")
-    private String functionDesc;
+    private String functionDescription;
 
     /**
      * 办公地点
@@ -75,4 +74,17 @@ public class Department extends TreeEntity {
     @TableField(value = "office_location")
     @Size(max = 200, message = "办公地点长度不能超过{max}")
     private String officeLocation;
+    
+    /**
+     * 排序号
+     */
+    @TableField(value = "sort")
+    private Integer sortOrder;
+    
+    /**
+     * 备注
+     */
+    @TableField(value = "remark")
+    @Size(max = 500, message = "备注长度不能超过{max}")
+    private String remark;
 } 

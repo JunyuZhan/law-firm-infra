@@ -3,17 +3,13 @@ package com.lawfirm.model.auth.enums;
 import lombok.Getter;
 
 /**
- * 系统角色枚举
+ * 系统角色枚举（通用角色，不包含业务角色）
  */
 @Getter
 public enum RoleEnum {
     
     ADMIN("admin", "系统管理员", "系统最高权限管理者", null, DataScopeEnum.ALL),
-    DIRECTOR("director", "律所主任", "律所业务管理者", ADMIN, DataScopeEnum.ALL),
-    PARTNER("partner", "合伙人律师", "高级律师", DIRECTOR, DataScopeEnum.TEAM),
-    LAWYER("lawyer", "执业律师", "普通执业律师", PARTNER, DataScopeEnum.TEAM),
-    TRAINEE("trainee", "实习律师", "实习期律师", LAWYER, DataScopeEnum.PERSONAL),
-    CLERK_FINANCE("clerk_finance", "行政/财务人员", "负责行政和财务管理", DIRECTOR, DataScopeEnum.TEAM);
+    USER("user", "普通用户", "系统普通用户", ADMIN, DataScopeEnum.PERSONAL);
 
     private final String code;
     private final String name;

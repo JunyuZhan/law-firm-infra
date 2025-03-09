@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 用户信息视图对象
- * 用于前端获取当前用户信息，适配vue-vben-admin
+ * 用户认证信息视图对象
+ * 用于前端获取当前用户认证信息，适配vue-vben-admin
  */
 @Data
 public class UserInfoVO implements Serializable {
@@ -24,21 +24,6 @@ public class UserInfoVO implements Serializable {
      * 用户名
      */
     private String username;
-    
-    /**
-     * 真实姓名
-     */
-    private String realName;
-    
-    /**
-     * 头像
-     */
-    private String avatar;
-    
-    /**
-     * 介绍
-     */
-    private String desc;
     
     /**
      * 同步时间
@@ -66,16 +51,6 @@ public class UserInfoVO implements Serializable {
     private String[] permissionList;
     
     /**
-     * 部门ID
-     */
-    private Long deptId;
-    
-    /**
-     * 部门名称
-     */
-    private String deptName;
-    
-    /**
      * 手机号
      */
     private String mobile;
@@ -84,11 +59,6 @@ public class UserInfoVO implements Serializable {
      * 邮箱
      */
     private String email;
-    
-    /**
-     * 性别（0-男，1-女）
-     */
-    private Integer gender;
     
     /**
      * 用户状态（0-正常，1-禁用）

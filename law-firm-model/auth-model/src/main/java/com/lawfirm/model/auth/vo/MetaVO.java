@@ -107,4 +107,6 @@ public class MetaVO implements Serializable {
      * 菜单类型（目录、菜单、权限）
      */
     private Integer type;
+
+    private boolean noCache;
 } 

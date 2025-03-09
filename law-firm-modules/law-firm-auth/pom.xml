@@ -24,6 +24,18 @@
             <artifactId>base-model</artifactId>
         </dependency>
         
+        <!-- 组织架构模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>organization-model</artifactId>
+        </dependency>
+
+        <!-- 人事模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>personnel-model</artifactId>
+        </dependency>
+        
         <!-- Core模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
@@ -150,6 +162,19 @@
             <artifactId>hutool-all</artifactId>
         </dependency>
 
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Validation API -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
         <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -175,6 +200,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <skip>true</skip>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

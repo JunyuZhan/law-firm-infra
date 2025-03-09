@@ -84,7 +84,7 @@ public class DepartmentDTO extends BaseDTO {
      * 职能描述
      */
     @Size(max = 500, message = "职能描述长度不能超过{max}")
-    private String functionDesc;
+    private String functionDescription;
 
     /**
      * 办公地点
@@ -124,5 +124,5 @@ public class DepartmentDTO extends BaseDTO {
     /**
      * 排序
      */
-    private Integer sort;
+    private Integer sortOrder;
 } 

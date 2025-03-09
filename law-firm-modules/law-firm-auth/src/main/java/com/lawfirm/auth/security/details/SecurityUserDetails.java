@@ -1,25 +1,76 @@
 package com.lawfirm.auth.security.details;
 
 import com.lawfirm.model.auth.entity.User;
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * 扩展的用户详情接口
- * 提供额外的用户信息访问方法
+ * 安全用户详情
  */
-public interface SecurityUserDetails extends UserDetails {
+public class SecurityUserDetails implements UserDetails {
+    
+    private static final long serialVersionUID = 1L;
+    
+    @Getter
+    private final transient User user;
+    
+    private final transient List<String> permissions;
+    
+    public SecurityUserDetails(User user, List<String> permissions) {
+        this.user = user;
+        this.permissions = permissions;
+    }
+    
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return permissions.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
+    
+    @Override
+    public String getUsername() {
+        return user.getUsername();
+    }
+    
+    @Override
+    public boolean isAccountNonExpired() {
+        return user.isAccountNonExpired();
+    }
+    
+    @Override
+    public boolean isAccountNonLocked() {
+        return user.isAccountNonLocked();
+    }
+    
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return user.isCredentialsNonExpired();
+    }
+    
+    @Override
+    public boolean isEnabled() {
+        return user.getEnabled();
+    }
     
     /**
-     * 获取用户实体
-     * @return 用户实体
+     * 获取用户ID
+     * 
+     * @return 用户ID
      */
-    User getUser();
-    
-    /**
-     * 获取用户权限列表
-     * @return 权限列表
-     */
-    List<String> getPermissions();
-} 
+    public Long getUserId() {
+        return user.getId();
+    }
+}
+

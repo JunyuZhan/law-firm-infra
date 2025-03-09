@@ -4,56 +4,88 @@ import lombok.Getter;
 import com.lawfirm.model.base.enums.BaseEnum;
 
 /**
- * 操作类型枚举
+ * 操作类型枚举（通用操作类型，不包含业务特定操作）
  */
 @Getter
-public enum OperationTypeEnum implements BaseEnum<Integer> {
+public enum OperationTypeEnum implements BaseEnum<String> {
     
     /**
-     * 完全权限（增删改查）
+     * 完全操作权限
      */
-    FULL(0, "完全权限"),
+    FULL("full", "完全权限"),
     
     /**
-     * 只读权限（仅查看）
+     * 审批权限
      */
-    READ_ONLY(1, "只读权限"),
+    APPROVE("approve", "审批权限"),
     
     /**
-     * 申请权限（需审批）
+     * 创建权限
      */
-    APPLY(2, "申请权限"),
+    CREATE("create", "创建权限"),
     
     /**
-     * 审批权限（可审批）
+     * 只读权限
      */
-    APPROVE(3, "审批权限"),
+    READ_ONLY("read_only", "只读权限"),
     
     /**
-     * 团队权限（可操作团队数据）
+     * 个人数据权限
      */
-    TEAM(4, "团队权限"),
+    PERSONAL("personal", "个人数据权限"),
     
     /**
-     * 个人权限（仅可操作个人数据）
+     * 申请权限
      */
-    PERSONAL(5, "个人权限");
-
-    private final Integer code;
-    private final String desc;
+    APPLY("apply", "申请权限");
     
-    OperationTypeEnum(Integer code, String desc) {
+    private final String code;
+    private final String name;
+    
+    OperationTypeEnum(String code, String name) {
         this.code = code;
-        this.desc = desc;
+        this.name = name;
     }
-
+    
     @Override
-    public Integer getValue() {
+    public String getValue() {
         return code;
     }
-
+    
     @Override
     public String getDescription() {
-        return desc;
+        return name;
+    }
+    
+    /**
+     * 根据code获取枚举值
+     *
+     * @param code 编码
+     * @return 枚举值
+     */
+    public static OperationTypeEnum getByCode(String code) {
+        for (OperationTypeEnum type : values()) {
+            if (type.getCode().equals(code)) {
+                return type;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 判断当前操作类型是否有权限执行指定的操作类型
+     *
+     * @param requiredType 需要的操作类型
+     * @return 是否有权限
+     */
+    public boolean hasPermission(OperationTypeEnum requiredType) {
+        // 操作类型的权限级别，从高到低
+        // FULL > APPROVE > CREATE > READ_ONLY > PERSONAL > APPLY
+        // 序号越小，权限越高
+        int currentOrdinal = this.ordinal();
+        int requiredOrdinal = requiredType.ordinal();
+        
+        // 当前权限级别小于等于需要的权限级别，则有权限
+        return currentOrdinal <= requiredOrdinal;
     }
 } 

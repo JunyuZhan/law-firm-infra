@@ -29,7 +29,12 @@ public enum DepartmentTypeEnum implements BaseEnum<Integer> {
     /**
      * IT部门
      */
-    IT(5, "IT部门");
+    IT(5, "IT部门"),
+    
+    /**
+     * 主任办公室
+     */
+    DIRECTOR_OFFICE(6, "主任办公室");
 
     private final Integer value;
     private final String description;

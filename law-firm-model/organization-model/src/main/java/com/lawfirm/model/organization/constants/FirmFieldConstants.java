@@ -3,9 +3,36 @@ package com.lawfirm.model.organization.constants;
 import com.lawfirm.model.base.constants.BaseConstants;
 
 /**
- * 律所字段常量
+ * 律师事务所字段常量
  */
-public interface FirmFieldConstants extends BaseConstants {
+public interface FirmFieldConstants {
+
+    /**
+     * 执业许可相关常量
+     */
+    interface License {
+        int NUMBER_MIN_LENGTH = 10;
+        int NUMBER_MAX_LENGTH = 50;
+        String NUMBER_PATTERN = "^[A-Z0-9-]{10,50}$";
+    }
+
+    /**
+     * 商业信息相关常量
+     */
+    interface Business {
+        int CREDIT_CODE_LENGTH = 18;
+        String CREDIT_CODE_PATTERN = "^[A-Z0-9]{18}$";
+        int LEGAL_REPRESENTATIVE_MAX_LENGTH = 50;
+    }
+
+    /**
+     * 规模相关常量
+     */
+    interface Scale {
+        int SMALL = 1;  // 小型律所（<20人）
+        int MEDIUM = 2; // 中型律所（20-100人）
+        int LARGE = 3;  // 大型律所（>100人）
+    }
 
     /**
      * 律所名称长度限制
@@ -28,62 +55,7 @@ public interface FirmFieldConstants extends BaseConstants {
     }
 
     /**
-     * 执业许可证信息
-     */
-    interface License {
-        /**
-         * 许可证号长度
-         */
-        int NUMBER_LENGTH = 18;
-
-        /**
-         * 许可证号格式正则表达式
-         */
-        String NUMBER_PATTERN = "^[A-Z0-9]{18}$";
-
-        /**
-         * 许可证号字段
-         */
-        String NUMBER_FIELD = "license_number";
-
-        /**
-         * 许可证有效期字段
-         */
-        String EXPIRE_DATE_FIELD = "license_expire_date";
-    }
-
-    /**
      * 营业信息限制
-     */
-    interface Business {
-        /**
-         * 统一社会信用代码长度
-         */
-        int CREDIT_CODE_LENGTH = 18;
-
-        /**
-         * 统一社会信用代码格式正则表达式
-         */
-        String CREDIT_CODE_PATTERN = "^[A-Z0-9]{18}$";
-
-        /**
-         * 法定代表人姓名最大长度
-         */
-        int LEGAL_REPRESENTATIVE_MAX_LENGTH = 32;
-
-        /**
-         * 统一社会信用代码字段
-         */
-        String CREDIT_CODE_FIELD = "credit_code";
-
-        /**
-         * 法定代表人字段
-         */
-        String LEGAL_REPRESENTATIVE_FIELD = "legal_representative";
-    }
-
-    /**
-     * 分所信息限制
      */
     interface Branch extends BaseConstants.Field {
         /**
@@ -105,40 +77,5 @@ public interface FirmFieldConstants extends BaseConstants {
          * 是否总所字段
          */
         String IS_HEAD_OFFICE_FIELD = "is_head_office";
-    }
-
-    /**
-     * 办公室信息限制
-     */
-    interface Office extends BaseConstants.Field {
-        /**
-         * 办公室编码前缀
-         */
-        String CODE_PREFIX = "OF";
-
-        /**
-         * 办公室名称最大长度
-         */
-        int NAME_MAX_LENGTH = 64;
-
-        /**
-         * 办公室容量最小值
-         */
-        int MIN_CAPACITY = 1;
-
-        /**
-         * 办公室容量最大值
-         */
-        int MAX_CAPACITY = 1000;
-
-        /**
-         * 容量字段
-         */
-        String CAPACITY_FIELD = "capacity";
-
-        /**
-         * 使用状态字段
-         */
-        String USE_STATUS_FIELD = "use_status";
     }
 } 

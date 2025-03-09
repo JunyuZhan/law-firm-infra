@@ -1,5 +1,6 @@
 package com.lawfirm.model.auth.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.Role;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,15 +11,7 @@ import java.util.List;
  * 
  * @author lawfirm
  */
-public interface RoleMapper {
-    
-    /**
-     * 根据ID查询角色
-     * 
-     * @param id 角色ID
-     * @return 角色实体
-     */
-    Role selectById(Long id);
+public interface RoleMapper extends BaseMapper<Role> {
     
     /**
      * 根据角色编码查询角色
@@ -54,38 +47,6 @@ public interface RoleMapper {
      * @return 角色列表
      */
     List<Role> selectAll();
-    
-    /**
-     * 新增角色
-     * 
-     * @param role 角色实体
-     * @return 影响行数
-     */
-    int insert(Role role);
-    
-    /**
-     * 更新角色
-     * 
-     * @param role 角色实体
-     * @return 影响行数
-     */
-    int update(Role role);
-    
-    /**
-     * 删除角色
-     * 
-     * @param id 角色ID
-     * @return 影响行数
-     */
-    int deleteById(Long id);
-    
-    /**
-     * 批量删除角色
-     * 
-     * @param ids 角色ID数组
-     * @return 影响行数
-     */
-    int deleteBatchByIds(@Param("ids") List<Long> ids);
     
     /**
      * 查询角色所有权限ID

@@ -1,5 +1,6 @@
 package com.lawfirm.model.auth.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.RolePermission;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * 
  * @author lawfirm
  */
-public interface RolePermissionMapper {
+public interface RolePermissionMapper extends BaseMapper<RolePermission> {
     
     /**
      * 通过角色ID查询角色权限关联
@@ -77,4 +78,12 @@ public interface RolePermissionMapper {
      * @return 存在返回1，不存在返回0
      */
     int exists(@Param("roleId") Long roleId, @Param("permissionId") Long permissionId);
+    
+    /**
+     * 获取角色的所有权限ID
+     * 
+     * @param roleId 角色ID
+     * @return 权限ID列表
+     */
+    List<Long> selectPermissionIdsByRoleId(Long roleId);
 } 

@@ -34,8 +34,9 @@ public interface RoleService extends BaseService<Role> {
      * 删除角色
      *
      * @param id 角色ID
+     * @return 是否删除成功
      */
-    void deleteRole(Long id);
+    boolean deleteRole(Long id);
     
     /**
      * 批量删除角色
@@ -106,4 +107,45 @@ public interface RoleService extends BaseService<Role> {
      * @return 用户ID列表
      */
     List<Long> getRoleUserIds(Long id);
+    
+    /**
+     * 分页查询角色
+     *
+     * @param current 当前页
+     * @param size 每页大小
+     * @param roleName 角色名称
+     * @return 分页结果
+     */
+    Page<Role> getRolePage(Long current, Long size, String roleName);
+    
+    /**
+     * 创建角色
+     *
+     * @param role 角色实体
+     * @return 是否创建成功
+     */
+    boolean createRole(Role role);
+    
+    /**
+     * 更新角色
+     *
+     * @param role 角色实体
+     * @return 是否更新成功
+     */
+    boolean updateRole(Role role);
+    
+    /**
+     * 根据用户ID获取角色列表
+     *
+     * @param userId 用户ID
+     * @return 角色列表
+     */
+    List<Role> getRolesByUserId(Long userId);
+    
+    /**
+     * 获取所有角色
+     *
+     * @return 角色列表
+     */
+    List<Role> getAllRoles();
 } 

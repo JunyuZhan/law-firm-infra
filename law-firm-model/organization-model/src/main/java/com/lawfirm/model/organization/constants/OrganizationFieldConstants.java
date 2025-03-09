@@ -3,73 +3,49 @@ package com.lawfirm.model.organization.constants;
 import com.lawfirm.model.base.constants.BaseConstants;
 
 /**
- * 组织架构字段常量
+ * 组织字段常量
  */
-public interface OrganizationFieldConstants extends BaseConstants {
+public interface OrganizationFieldConstants {
 
     /**
-     * 编码长度限制
+     * 编码相关常量
      */
-    interface Code extends BaseConstants.Field {
-        /**
-         * 最小长度
-         */
-        int MIN_LENGTH = 4;
-
-        /**
-         * 最大长度
-         */
-        int MAX_LENGTH = 32;
-
-        /**
-         * 编码格式正则表达式（字母、数字和下划线）
-         */
-        String PATTERN = "^[a-zA-Z0-9_]{4,32}$";
+    interface Code {
+        int MIN_LENGTH = 2;
+        int MAX_LENGTH = 50;
+        String PATTERN = "^[A-Z0-9_-]{2,50}$";
     }
 
     /**
-     * 名称长度限制
+     * 名称相关常量
      */
     interface Name {
-        /**
-         * 最小长度
-         */
         int MIN_LENGTH = 2;
-
-        /**
-         * 最大长度
-         */
-        int MAX_LENGTH = 64;
+        int MAX_LENGTH = 50;
     }
 
     /**
-     * 描述长度限制
+     * 描述相关常量
      */
     interface Description {
-        /**
-         * 最大长度
-         */
-        int MAX_LENGTH = 512;
+        int MAX_LENGTH = 500;
     }
 
     /**
-     * 联系信息长度限制
+     * 联系方式相关常量
      */
     interface Contact {
-        /**
-         * 电话号码最大长度
-         */
         int PHONE_MAX_LENGTH = 20;
+        int EMAIL_MAX_LENGTH = 50;
+        int ADDRESS_MAX_LENGTH = 200;
+    }
 
-        /**
-         * 邮箱最大长度
-         */
-        int EMAIL_MAX_LENGTH = 64;
-
-        /**
-         * 地址最大长度
-         */
-        int ADDRESS_MAX_LENGTH = 256;
+    /**
+     * 状态常量
+     */
+    interface Status {
+        int DISABLED = 0;
+        int ENABLED = 1;
     }
 
     /**

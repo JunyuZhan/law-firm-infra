@@ -112,5 +112,21 @@ public interface EmployeeService extends PersonService {
      * @param workNumber 工号
      * @return 员工信息
      */
-    EmployeeVO getEmployeeByWorkNumber(String workNumber);
+    Employee getEmployeeByWorkNumber(String workNumber);
+
+    /**
+     * 根据邮箱获取员工
+     *
+     * @param email 邮箱
+     * @return 员工信息
+     */
+    Employee getEmployeeByEmail(String email);
+
+    /**
+     * 根据手机号获取员工
+     *
+     * @param mobile 手机号
+     * @return 员工信息
+     */
+    Employee getEmployeeByMobile(String mobile);
 } 

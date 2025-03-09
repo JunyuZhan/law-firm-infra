@@ -69,7 +69,7 @@ public class LawFirm extends BaseOrganizationEntity {
      * 是否总所
      */
     @TableField(value = "is_head_office")
-    private Boolean headOffice = true;
+    private Boolean isHeadOffice = true;
 
     /**
      * 总所ID（如果是分所则关联总所）

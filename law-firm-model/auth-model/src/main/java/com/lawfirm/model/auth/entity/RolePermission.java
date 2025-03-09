@@ -8,7 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * 角色-权限关联实体
+ * 角色权限关联实体 - 建立角色与权限的多对多关系
+ * 仅包含基本的关联关系，不包含业务特定字段
  */
 @Data
 @TableName("auth_role_permission")

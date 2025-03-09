@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * 角色实体
  */
@@ -49,12 +51,6 @@ public class Role extends TenantEntity {
     private Long parentId;
     
     /**
-     * 角色层级（0-系统管理员，1-律所主管，2-合伙人，3-律师，4-实习律师，5-行政人员）
-     */
-    @TableField("level")
-    private Integer level;
-    
-    /**
      * 显示顺序
      */
     @TableField("sort")
@@ -71,4 +67,52 @@ public class Role extends TenantEntity {
      */
     @TableField("remark")
     private String remark;
+    
+    /**
+     * 角色关联的权限列表
+     */
+    @TableField(exist = false)
+    private transient List<Permission> permissions;
+    
+    /**
+     * 获取角色标识（兼容性方法，返回code）
+     */
+    public String getRoleKey() {
+        return this.code;
+    }
+    
+    /**
+     * 设置角色标识（兼容性方法，设置code）
+     */
+    public void setRoleKey(String roleKey) {
+        this.code = roleKey;
+    }
+    
+    /**
+     * 获取角色排序（兼容性方法，返回sort）
+     */
+    public Integer getRoleSort() {
+        return this.sort;
+    }
+    
+    /**
+     * 设置角色排序（兼容性方法，设置sort）
+     */
+    public void setRoleSort(Integer roleSort) {
+        this.sort = roleSort;
+    }
+    
+    /**
+     * 获取角色名称（兼容性方法，返回name）
+     */
+    public String getRoleName() {
+        return this.name;
+    }
+    
+    /**
+     * 设置角色名称（兼容性方法，设置name）
+     */
+    public void setRoleName(String roleName) {
+        this.name = roleName;
+    }
 } 

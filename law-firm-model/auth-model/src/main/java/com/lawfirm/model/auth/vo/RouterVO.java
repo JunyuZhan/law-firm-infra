@@ -62,4 +62,8 @@ public class RouterVO implements Serializable {
      * 组件名称
      */
     private String componentName;
+    
+    private boolean hidden;
+    
+    private boolean alwaysShow;
 } 
