@@ -1,0 +1,106 @@
+package com.lawfirm.system.controller.monitor;
+
+import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.common.log.annotation.Log;
+import com.lawfirm.model.base.controller.BaseController;
+import com.lawfirm.common.security.annotation.RequiresPermissions;
+import com.lawfirm.system.service.MonitorService;
+import com.lawfirm.system.vo.monitor.ServerInfoVO;
+import com.lawfirm.system.vo.monitor.SystemInfoVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * 系统监控控制器
+ */
+@Tag(name = "系统监控管理")
+@RestController
+@RequestMapping("/system/monitor")
+@RequiredArgsConstructor
+@PreAuthorize("hasRole('ROLE_ADMIN')")
+public class MonitorController extends BaseController {
+
+    private final MonitorService monitorService;
+
+    /**
+     * 获取服务器信息
+     */
+    @Operation(summary = "获取服务器信息")
+    @GetMapping("/server")
+    @RequiresPermissions("system:monitor:server")
+    public CommonResult<ServerInfoVO> getServerInfo() {
+        ServerInfoVO serverInfo = monitorService.getServerInfo();
+        return success(serverInfo);
+    }
+
+    /**
+     * 获取系统信息
+     */
+    @Operation(summary = "获取系统信息")
+    @GetMapping("/system")
+    @RequiresPermissions("system:monitor:system")
+    public CommonResult<SystemInfoVO> getSystemInfo() {
+        SystemInfoVO systemInfo = monitorService.getSystemInfo();
+        return success(systemInfo);
+    }
+
+    /**
+     * 获取JVM信息
+     */
+    @Operation(summary = "获取JVM信息")
+    @GetMapping("/jvm")
+    @RequiresPermissions("system:monitor:jvm")
+    public CommonResult<Object> getJvmInfo() {
+        Object jvmInfo = monitorService.getJvmInfo();
+        return success(jvmInfo);
+    }
+
+    /**
+     * 获取内存信息
+     */
+    @Operation(summary = "获取内存信息")
+    @GetMapping("/memory")
+    @RequiresPermissions("system:monitor:memory")
+    public CommonResult<Object> getMemoryInfo() {
+        Object memoryInfo = monitorService.getMemoryInfo();
+        return success(memoryInfo);
+    }
+
+    /**
+     * 获取CPU信息
+     */
+    @Operation(summary = "获取CPU信息")
+    @GetMapping("/cpu")
+    @RequiresPermissions("system:monitor:cpu")
+    public CommonResult<Object> getCpuInfo() {
+        Object cpuInfo = monitorService.getCpuInfo();
+        return success(cpuInfo);
+    }
+
+    /**
+     * 获取磁盘信息
+     */
+    @Operation(summary = "获取磁盘信息")
+    @GetMapping("/disk")
+    @RequiresPermissions("system:monitor:disk")
+    public CommonResult<Object> getDiskInfo() {
+        Object diskInfo = monitorService.getDiskInfo();
+        return success(diskInfo);
+    }
+
+    /**
+     * 获取网络信息
+     */
+    @Operation(summary = "获取网络信息")
+    @GetMapping("/network")
+    @RequiresPermissions("system:monitor:network")
+    public CommonResult<Object> getNetworkInfo() {
+        Object networkInfo = monitorService.getNetworkInfo();
+        return success(networkInfo);
+    }
+} 

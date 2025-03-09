@@ -3,34 +3,47 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.lawfirm</groupId>
         <artifactId>law-firm</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>com.lawfirm</groupId>
     <artifactId>law-firm-modules</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
-    <description>律所业务模块集合</description>
+    <name>Law Firm Modules</name>
+    <description>法律事务管理系统模块</description>
 
     <modules>
-        <module>law-firm-auth</module>
+        <!-- 基础业务模块（最少依赖） -->
         <module>law-firm-system</module>
-        <module>law-firm-client</module>
-        <module>law-firm-contract</module>
-        <module>law-firm-case</module>
-        <module>law-firm-task</module>
+        <module>law-firm-auth</module>
         <module>law-firm-document</module>
-        <module>law-firm-archive</module>
-        <module>law-firm-knowledge</module>
-        <module>law-firm-finance</module>
-        <module>law-firm-asset</module>
+        
+        <!-- 核心业务模块（依赖基础模块） -->
         <module>law-firm-personnel</module>
+        <module>law-firm-client</module>
+        <module>law-firm-case</module>
+        <module>law-firm-contract</module>
+        <module>law-firm-finance</module>
+        
+        <!-- 支撑业务模块（依赖核心模块） -->
+        <module>law-firm-knowledge</module>
+        <module>law-firm-archive</module>
+        
+        <!-- 辅助业务模块（依赖多个其他模块） -->
+        <module>law-firm-task</module>
         <module>law-firm-schedule</module>
         <module>law-firm-supplies</module>
         <module>law-firm-seal</module>
-        <module>law-firm-analysis</module>
+        
+        <!-- 分析类模块（依赖几乎所有模块） -->
         <module>law-firm-conflict</module>
+        <module>law-firm-analysis</module>
     </modules>
 
     <dependencyManagement>

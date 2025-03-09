@@ -1,12 +1,36 @@
+# 系统管理模块配置
 spring:
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
-
-upgrade:
-  package:
-    path: ${user.home}/law-firm/upgrade-packages  # 升级包存储路径
-  backup:
+  application:
+    name: law-firm-system
+  
+  # Flyway配置
+  flyway:
     enabled: true
-    path: ${user.home}/law-firm/backup  # 备份文件存储路径 
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history
+
+# 系统管理模块自定义配置
+system:
+  security:
+    admin-role: ROLE_ADMIN
+    ip-whitelist: 127.0.0.1,192.168.1.1
+  
+  monitor:
+    metrics-interval: 60
+    alert-threshold:
+      cpu: 80
+      memory: 80
+      disk: 90
+  
+  upgrade:
+    backup-path: /data/backup
+    patch-path: /data/patch
+  
+  log:
+    retention-days: 30
+    audit-enabled: true
+    export-path: /data/export/log 
