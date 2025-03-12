@@ -2,6 +2,7 @@ package com.lawfirm.model.document.entity.base;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
+import com.lawfirm.model.document.enums.DocumentFormatEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -42,10 +43,16 @@ public class BaseDocument extends ModelBaseEntity {
     private Long fileSize;
 
     /**
-     * 文件类型
+     * 文件类型（存储层面）
      */
     @TableField("file_type")
     private String fileType;
+
+    /**
+     * 文档格式（业务层面）
+     */
+    @TableField("document_format")
+    private DocumentFormatEnum documentFormat;
 
     /**
      * 存储路径
@@ -106,4 +113,16 @@ public class BaseDocument extends ModelBaseEntity {
      */
     @TableField("view_count")
     private Long viewCount;
+
+    /**
+     * 业务ID
+     */
+    @TableField("business_id")
+    private Long businessId;
+
+    /**
+     * 业务类型
+     */
+    @TableField("business_type")
+    private String businessType;
 } 

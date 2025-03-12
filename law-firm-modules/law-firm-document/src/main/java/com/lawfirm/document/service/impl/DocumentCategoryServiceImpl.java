@@ -1,20 +1,22 @@
-package com.lawfirm.modules.document.service.impl;
+package com.lawfirm.document.service.impl;
 
-import com.lawfirm.modules.document.entity.DocumentCategory;
-import com.lawfirm.model.document.repository.DocumentCategoryRepository;
-import com.lawfirm.model.document.repository.DocumentRepository;
-import com.lawfirm.modules.document.service.DocumentCategoryService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.core.utils.BeanUtils;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.document.dto.category.CategoryCreateDTO;
+import com.lawfirm.model.document.dto.category.CategoryQueryDTO;
+import com.lawfirm.model.document.dto.category.CategoryUpdateDTO;
+import com.lawfirm.model.document.entity.DocumentCategory;
+import com.lawfirm.model.document.mapper.DocumentCategoryMapper;
+import com.lawfirm.model.document.service.DocumentCategoryService;
+import com.lawfirm.model.document.vo.CategoryVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 文档分类服务实现类
@@ -22,186 +24,99 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DocumentCategoryServiceImpl implements DocumentCategoryService {
-
-    private final DocumentCategoryRepository documentCategoryRepository;
-    private final DocumentRepository documentRepository;
+public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategoryMapper, DocumentCategory> implements DocumentCategoryService {
 
     @Override
-    @Transactional
-    public DocumentCategory createCategory(DocumentCategory category) {
-        // 检查编码是否存在
-        if (existsByCode(category.getCode())) {
-            throw new IllegalArgumentException("分类编码已存在");
-        }
+    @Transactional(rollbackFor = Exception.class)
+    public Long createCategory(CategoryCreateDTO createDTO) {
+        // 1. 创建分类
+        DocumentCategory category = BeanUtils.copyProperties(createDTO, DocumentCategory.class);
+        baseMapper.insert(category);
 
-        // 设置初始状态
-        category.setCreateTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now())
-                .setIsDeleted(false);
-
-        // 如果有父分类，设置层级和路径
-        if (category.getParentId() != null) {
-            DocumentCategory parent = getCategory(category.getParentId());
-            if (parent == null) {
-                throw new IllegalArgumentException("父分类不存在");
-            }
-            category.setLevel(parent.getLevel() + 1)
-                    .setPath(parent.getPath() + "/" + parent.getId());
-        } else {
-            category.setLevel(1)
-                    .setPath("");
-        }
-
-        return documentCategoryRepository.save(category);
+        return category.getId();
     }
 
     @Override
-    @Transactional
-    public DocumentCategory updateCategory(DocumentCategory category) {
-        DocumentCategory existingCategory = getCategory(category.getId());
-        if (existingCategory == null) {
-            throw new IllegalArgumentException("分类不存在");
-        }
-
-        // 检查编码是否重复
-        if (!existingCategory.getCode().equals(category.getCode()) && existsByCode(category.getCode())) {
-            throw new IllegalArgumentException("分类编码已存在");
-        }
-
-        // 更新基本信息
-        category.setUpdateTime(LocalDateTime.now());
-        return documentCategoryRepository.save(category);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateCategory(CategoryUpdateDTO updateDTO) {
+        // 1. 更新分类
+        DocumentCategory category = baseMapper.selectById(updateDTO.getId());
+        BeanUtils.copyProperties(updateDTO, category);
+        baseMapper.updateById(category);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteCategory(Long id) {
-        DocumentCategory category = getCategory(id);
+        // 1. 检查是否有子分类
+        if (hasChildren(id)) {
+            throw new IllegalArgumentException("存在子分类，无法删除");
+        }
+
+        // 2. 检查是否有关联文档
+        if (hasDocuments(id)) {
+            throw new IllegalArgumentException("分类下存在文档，无法删除");
+        }
+
+        // 3. 删除分类
+        baseMapper.deleteById(id);
+    }
+
+    @Override
+    public CategoryVO getCategory(Long id) {
+        // 1. 获取分类
+        DocumentCategory category = baseMapper.selectById(id);
         if (category == null) {
-            return;
+            return null;
         }
 
-        // 检查是否有子分类
-        if (documentCategoryRepository.countByParentId(id) > 0) {
-            throw new IllegalStateException("存在子分类，无法删除");
-        }
-
-        // 检查是否有关联文档
-        if (documentRepository.countByCategoryId(id) > 0) {
-            throw new IllegalStateException("分类下存在文档，无法删除");
-        }
-
-        // 逻辑删除
-        category.setIsDeleted(true)
-                .setDeleteTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now());
-        documentCategoryRepository.save(category);
+        // 2. 转换为VO
+        return BeanUtils.copyProperties(category, CategoryVO.class);
     }
 
     @Override
-    public DocumentCategory getCategory(Long id) {
-        return documentCategoryRepository.findById(id)
-                .filter(cat -> !Boolean.TRUE.equals(cat.getIsDeleted()))
-                .orElse(null);
+    public List<CategoryVO> listCategories(CategoryQueryDTO queryDTO) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<DocumentCategory> wrapper = new LambdaQueryWrapper<>();
+        // TODO: 添加查询条件
+
+        // 2. 执行查询
+        List<DocumentCategory> categories = baseMapper.selectList(wrapper);
+
+        // 3. 转换为VO
+        return BeanUtils.copyList(categories, CategoryVO.class);
     }
 
     @Override
-    public List<DocumentCategory> getCategoryTree() {
-        List<DocumentCategory> allCategories = documentCategoryRepository.findAll();
-        return buildCategoryTree(allCategories, null);
+    public Page<CategoryVO> pageCategories(CategoryQueryDTO queryDTO) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<DocumentCategory> wrapper = new LambdaQueryWrapper<>();
+        // TODO: 添加查询条件
+
+        // 2. 执行分页查询
+        Page<DocumentCategory> page = baseMapper.selectPage(
+            new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize()),
+            wrapper
+        );
+
+        // 3. 转换为VO
+        return BeanUtils.copyPage(page, CategoryVO.class);
     }
 
-    @Override
-    public List<DocumentCategory> getChildren(Long parentId) {
-        return documentCategoryRepository.findByParentId(parentId);
+    /**
+     * 检查是否有子分类
+     */
+    private boolean hasChildren(Long id) {
+        LambdaQueryWrapper<DocumentCategory> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(DocumentCategory::getParentId, id);
+        return baseMapper.selectCount(wrapper) > 0;
     }
 
-    @Override
-    @Transactional
-    public void moveCategory(Long categoryId, Long newParentId) {
-        DocumentCategory category = getCategory(categoryId);
-        if (category == null) {
-            throw new IllegalArgumentException("分类不存在");
-        }
-
-        // 检查新父分类
-        DocumentCategory newParent = newParentId != null ? getCategory(newParentId) : null;
-        if (newParentId != null && newParent == null) {
-            throw new IllegalArgumentException("新父分类不存在");
-        }
-
-        // 检查是否形成循环
-        if (newParentId != null && isDescendant(category.getId(), newParentId)) {
-            throw new IllegalArgumentException("不能将分类移动到其子分类下");
-        }
-
-        // 更新分类
-        category.setParentId(newParentId)
-                .setLevel(newParent != null ? newParent.getLevel() + 1 : 1)
-                .setPath(newParent != null ? newParent.getPath() + "/" + newParent.getId() : "")
-                .setUpdateTime(LocalDateTime.now());
-        documentCategoryRepository.save(category);
-
-        // 更新子分类的层级和路径
-        updateChildrenLevelAndPath(category);
-    }
-
-    @Override
-    public Page<DocumentCategory> listCategories(Pageable pageable) {
-        return documentCategoryRepository.findAll(pageable);
-    }
-
-    @Override
-    public DocumentCategory getCategoryByCode(String code) {
-        return documentCategoryRepository.findByCode(code);
-    }
-
-    @Override
-    public List<DocumentCategory> getCategoryPath(Long categoryId) {
-        return documentCategoryRepository.findCategoryPath(categoryId);
-    }
-
-    @Override
-    public boolean existsByCode(String code) {
-        return documentCategoryRepository.existsByCode(code);
-    }
-
-    @Override
-    public long countDocuments(Long categoryId) {
-        return documentRepository.countByCategoryId(categoryId);
-    }
-
-    private List<DocumentCategory> buildCategoryTree(List<DocumentCategory> allCategories, Long parentId) {
-        return allCategories.stream()
-                .filter(cat -> !Boolean.TRUE.equals(cat.getIsDeleted()))
-                .filter(cat -> parentId == null ? cat.getParentId() == null : parentId.equals(cat.getParentId()))
-                .map(cat -> {
-                    cat.setChildren(buildCategoryTree(allCategories, cat.getId()));
-                    return cat;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private boolean isDescendant(Long ancestorId, Long descendantId) {
-        if (ancestorId.equals(descendantId)) {
-            return true;
-        }
-        DocumentCategory descendant = getCategory(descendantId);
-        if (descendant == null || descendant.getParentId() == null) {
-            return false;
-        }
-        return isDescendant(ancestorId, descendant.getParentId());
-    }
-
-    private void updateChildrenLevelAndPath(DocumentCategory parent) {
-        List<DocumentCategory> children = getChildren(parent.getId());
-        for (DocumentCategory child : children) {
-            child.setLevel(parent.getLevel() + 1)
-                    .setPath(parent.getPath() + "/" + parent.getId())
-                    .setUpdateTime(LocalDateTime.now());
-            documentCategoryRepository.save(child);
-            updateChildrenLevelAndPath(child);
-        }
+    /**
+     * 检查是否有关联文档
+     */
+    private boolean hasDocuments(Long id) {
+        // TODO: 实现检查分类下是否有文档
+        return false;
     }
 } 

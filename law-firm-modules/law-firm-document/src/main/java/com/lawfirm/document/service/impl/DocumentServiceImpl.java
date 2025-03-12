@@ -1,24 +1,27 @@
-package com.lawfirm.modules.document.service.impl;
+package com.lawfirm.document.service.impl;
 
-import com.lawfirm.modules.document.entity.Document;
-import com.lawfirm.modules.document.entity.DocumentStorage;
-import com.lawfirm.model.document.repository.DocumentRepository;
-import com.lawfirm.model.document.repository.DocumentStorageRepository;
-import com.lawfirm.modules.document.service.DocumentService;
-import com.lawfirm.modules.document.vo.DocumentVO;
-import com.lawfirm.core.storage.service.StorageService;
-import com.lawfirm.core.storage.model.FileMetadata;
-import com.lawfirm.model.base.StatusEnum;
-import com.lawfirm.model.base.DocumentStatusEnum;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.util.BeanUtils;
+import com.lawfirm.document.manager.storage.DocumentStorageManager;
+import com.lawfirm.document.manager.search.DocumentSearchManager;
+import com.lawfirm.document.manager.security.DocumentSecurityManager;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.document.dto.document.DocumentCreateDTO;
+import com.lawfirm.model.document.dto.document.DocumentQueryDTO;
+import com.lawfirm.model.document.dto.document.DocumentUpdateDTO;
+import com.lawfirm.model.document.entity.base.BaseDocument;
+import com.lawfirm.model.document.mapper.DocumentMapper;
+import com.lawfirm.model.document.service.DocumentService;
+import com.lawfirm.model.document.vo.DocumentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.lawfirm.common.util.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,194 +31,186 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DocumentServiceImpl implements DocumentService {
+public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDocument> implements DocumentService {
 
-    private final DocumentRepository documentRepository;
-    private final DocumentStorageRepository documentStorageRepository;
-    private final StorageService storageService;
+    private final DocumentStorageManager storageManager;
+    private final DocumentSearchManager searchManager;
+    private final DocumentSecurityManager securityManager;
 
     @Override
-    @Transactional
-    public Document createDocument(Document document) {
-        // 设置初始状态
-        document.setCreateTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now())
-                .setIsDeleted(false);
-        
-        return documentRepository.save(document);
+    public Long createDocument(DocumentCreateDTO createDTO, InputStream inputStream) {
+        try {
+            // 1. 创建文档记录
+            BaseDocument document = BeanUtils.copyProperties(createDTO, BaseDocument.class);
+            baseMapper.insert(document);
+
+            // 2. 上传文件内容
+            storageManager.uploadDocument(document.getId(), inputStream);
+
+            return document.getId();
+        } catch (IOException e) {
+            log.error("创建文档失败", e);
+            throw new RuntimeException("创建文档失败", e);
+        }
     }
 
     @Override
-    @Transactional
-    public Document updateDocument(Document document) {
-        Document existingDocument = getDocument(document.getId());
-        if (existingDocument == null) {
-            throw new IllegalArgumentException("文档不存在");
+    public void updateDocument(Long id, DocumentUpdateDTO updateDTO) {
+        // 1. 检查权限
+        BaseDocument document = baseMapper.selectById(id);
+        if (!securityManager.checkAccessPermission(document)) {
+            throw new SecurityException("没有修改权限");
         }
 
-        // 更新基本信息
-        document.setUpdateTime(LocalDateTime.now());
-        return documentRepository.save(document);
+        // 2. 更新文档
+        BeanUtils.copyPropertiesIgnoreNull(updateDTO, document);
+        baseMapper.updateById(document);
     }
 
     @Override
-    @Transactional
+    public void updateDocumentContent(Long id, InputStream inputStream) {
+        try {
+            BaseDocument document = baseMapper.selectById(id);
+            if (document != null) {
+                storageManager.updateDocument(id, inputStream);
+            }
+        } catch (IOException e) {
+            log.error("更新文档内容失败", e);
+            throw new RuntimeException("更新文档内容失败", e);
+        }
+    }
+
+    @Override
     public void deleteDocument(Long id) {
-        Document document = getDocument(id);
-        if (document == null) {
-            return;
+        // 1. 检查权限
+        BaseDocument document = baseMapper.selectById(id);
+        if (!securityManager.checkAccessPermission(document)) {
+            throw new SecurityException("没有删除权限");
         }
 
-        // 逻辑删除
-        document.setIsDeleted(true)
-                .setDeleteTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now());
-        documentRepository.save(document);
+        // 2. 删除文件
+        storageManager.deleteDocument(id);
 
-        // 标记存储记录为已删除
-        List<DocumentStorage> storageList = documentStorageRepository.findByDocumentIdOrderByCreateTimeDesc(id);
-        for (DocumentStorage storage : storageList) {
-            storage.setIsDeleted(true)
-                    .setDeleteTime(LocalDateTime.now())
-                    .setUpdateTime(LocalDateTime.now());
-            documentStorageRepository.save(storage);
+        // 3. 删除文档记录
+        baseMapper.deleteById(id);
+    }
+
+    @Override
+    public void deleteDocuments(List<Long> ids) {
+        for (Long id : ids) {
+            deleteDocument(id);
         }
     }
 
     @Override
-    public Document getDocument(Long id) {
-        return documentRepository.findById(id)
-                .filter(doc -> !Boolean.TRUE.equals(doc.getIsDeleted()))
-                .orElse(null);
-    }
-
-    @Override
-    public Page<Document> listDocuments(Pageable pageable) {
-        return documentRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Document> listByCategory(Long categoryId) {
-        return documentRepository.findByCategoryId(categoryId);
-    }
-
-    @Override
-    public List<Document> listByCase(Long caseId) {
-        return documentRepository.findByCaseId(caseId);
-    }
-
-    @Override
-    public List<Document> listByContract(Long contractId) {
-        return documentRepository.findByContractId(contractId);
-    }
-
-    @Override
-    public List<Document> listByClient(Long clientId) {
-        return documentRepository.findByClientId(clientId);
-    }
-
-    @Override
-    @Transactional
-    public void moveToCategory(Long documentId, Long categoryId) {
-        Document document = getDocument(documentId);
-        if (document == null) {
-            throw new IllegalArgumentException("文档不存在");
-        }
-
-        document.setCategoryId(categoryId)
-                .setUpdateTime(LocalDateTime.now());
-        documentRepository.save(document);
-    }
-
-    @Override
-    @Transactional
-    public Document copyDocument(Long sourceId, String newName) {
-        Document source = getDocument(sourceId);
-        if (source == null) {
-            throw new IllegalArgumentException("源文档不存在");
-        }
-
-        // 复制文档基本信息
-        Document newDocument = new Document();
-        BeanUtils.copyProperties(source, newDocument, "id", "createTime", "updateTime", "documentNumber");
-        newDocument.setDocumentName(newName);
-        
-        // 创建新文档
-        return createDocument(newDocument);
-    }
-
-    @Override
-    @Transactional
-    public void archiveDocument(Long id) {
-        Document document = getDocument(id);
-        if (document == null) {
-            throw new IllegalArgumentException("文档不存在");
-        }
-
-        document.setIsArchived(true)
-                .setArchiveTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now());
-        documentRepository.save(document);
-    }
-
-    @Override
-    @Transactional
-    public void unarchiveDocument(Long id) {
-        Document document = getDocument(id);
-        if (document == null) {
-            throw new IllegalArgumentException("文档不存在");
-        }
-
-        document.setIsArchived(false)
-                .setArchiveTime(null)
-                .setUpdateTime(LocalDateTime.now());
-        documentRepository.save(document);
-    }
-
-    @Override
-    public boolean hasPermission(Long documentId, Long userId, String permission) {
-        // TODO: 调用权限服务检查权限
-        return true;
-    }
-
-    @Override
-    public DocumentVO getDocumentVO(Long id) {
-        Document document = getDocument(id);
+    public DocumentVO getDocumentById(Long id) {
+        // 1. 获取文档
+        BaseDocument document = baseMapper.selectById(id);
         if (document == null) {
             return null;
         }
 
-        DocumentVO vo = new DocumentVO();
-        BeanUtils.copyProperties(document, vo);
-        
-        // 设置存储信息
-        DocumentStorage storage = documentStorageRepository.findFirstByDocumentIdOrderByCreateTimeDesc(id);
-        if (storage != null) {
-            vo.setFileSize(storage.getFileSize())
-                    .setFileType(storage.getFileType())
-                    .setStorageType(storage.getStorageType());
+        // 2. 检查权限
+        if (!securityManager.checkAccessPermission(document)) {
+            throw new SecurityException("没有访问权限");
         }
-        
-        return vo;
+
+        // 3. 转换为VO
+        return BeanUtils.copyProperties(document, DocumentVO.class);
     }
 
     @Override
-    public Page<DocumentVO> listDocumentVOs(Pageable pageable) {
-        return listDocuments(pageable).map(this::convertToVO);
+    public Page<DocumentVO> pageDocuments(Page<BaseDocument> page, DocumentQueryDTO queryDTO) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<BaseDocument> wrapper = new LambdaQueryWrapper<>();
+        // TODO: 添加查询条件
+
+        // 2. 执行分页查询
+        Page<BaseDocument> result = baseMapper.selectPage(page, wrapper);
+
+        // 3. 转换为VO
+        Page<DocumentVO> voPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+        voPage.setRecords(result.getRecords().stream()
+            .map(doc -> BeanUtils.copyProperties(doc, DocumentVO.class))
+            .collect(Collectors.toList()));
+        return voPage;
     }
 
-    private DocumentVO convertToVO(Document document) {
-        DocumentVO vo = new DocumentVO();
-        BeanUtils.copyProperties(document, vo);
-        
-        // 设置存储信息
-        DocumentStorage storage = documentStorageRepository.findFirstByDocumentIdOrderByCreateTimeDesc(document.getId());
-        if (storage != null) {
-            vo.setFileSize(storage.getFileSize())
-                    .setFileType(storage.getFileType())
-                    .setStorageType(storage.getStorageType());
+    @Override
+    public InputStream downloadDocument(Long id) {
+        try {
+            // 1. 检查权限
+            BaseDocument document = baseMapper.selectById(id);
+            if (!securityManager.checkAccessPermission(document)) {
+                throw new SecurityException("没有下载权限");
+            }
+
+            // 2. 下载文件
+            return storageManager.downloadDocument(id);
+        } catch (IOException e) {
+            log.error("下载文档失败", e);
+            throw new RuntimeException("下载文档失败", e);
         }
-        
-        return vo;
     }
-} 
+
+    @Override
+    public String previewDocument(Long id) {
+        BaseDocument document = baseMapper.selectById(id);
+        if (document != null && securityManager.checkAccessPermission(document)) {
+            return storageManager.previewDocument(id);
+        }
+        return null;
+    }
+
+    @Override
+    public String getDocumentUrl(Long id) {
+        BaseDocument document = baseMapper.selectById(id);
+        if (document != null && securityManager.checkAccessPermission(document)) {
+            return storageManager.getDocumentUrl(id);
+        }
+        return null;
+    }
+
+    @Override
+    public String getDocumentUrl(Long id, Long expireTime) {
+        BaseDocument document = baseMapper.selectById(id);
+        if (document != null && securityManager.checkAccessPermission(document)) {
+            return storageManager.getDocumentUrl(id, expireTime);
+        }
+        return null;
+    }
+
+    @Override
+    public void updateStatus(Long id, String status) {
+        BaseDocument document = baseMapper.selectById(id);
+        if (document != null) {
+            document.setDocStatus(status);
+            baseMapper.updateById(document);
+        }
+    }
+
+    @Override
+    public List<DocumentVO> listDocumentsByBusiness(Long businessId, String businessType) {
+        LambdaQueryWrapper<BaseDocument> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(businessId != null, BaseDocument::getBusinessId, businessId)
+               .eq(businessType != null, BaseDocument::getBusinessType, businessType);
+        List<BaseDocument> documents = baseMapper.selectList(wrapper);
+        return documents.stream()
+            .map(doc -> BeanUtils.copyProperties(doc, DocumentVO.class))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DocumentVO> listDocumentsByType(String docType) {
+        LambdaQueryWrapper<BaseDocument> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(BaseDocument::getDocType, docType);
+        return baseMapper.selectList(wrapper).stream()
+            .map(doc -> BeanUtils.copyProperties(doc, DocumentVO.class))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public void refreshCache() {
+        // TODO: 实现缓存刷新逻辑
+    }
+}

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.document.dto.template.TemplateCreateDTO;
 import com.lawfirm.model.document.dto.template.TemplateUpdateDTO;
-import com.lawfirm.model.document.entity.system.TemplateDocument;
+import com.lawfirm.model.document.entity.template.TemplateDocument;
 import com.lawfirm.model.document.vo.TemplateVO;
 
 import java.util.List;

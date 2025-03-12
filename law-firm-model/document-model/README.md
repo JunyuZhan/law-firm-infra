@@ -1,225 +1,154 @@
-# 文档管理模块 (Document Model)
+# 文档管理数据模型模块 (document-model)
 
-## 模块说明
-文档管理模块是律师事务所管理系统的文档数据模型定义模块，负责定义系统中所有文档相关的实体类、数据传输对象、视图对象和服务接口。该模块是系统文档管理的数据基础。
+## 模块概述
 
-## 目录结构
+document-model模块是律师事务所管理系统的文档管理数据模型层，负责定义所有与文档相关的数据结构、传输对象和数据访问接口。该模块作为系统文档管理功能的基础，为上层业务模块提供数据模型支持。
+
+## 功能特性
+
+- 支持多种类型文档的数据模型定义（基础文档、案件文档、合同文档、文章文档等）
+- 提供文档分类、标签和权限管理的数据结构
+- 支持文档模板管理
+- 提供完善的数据传输对象(DTO)和视图对象(VO)
+- 包含文档相关的枚举定义（文档格式、状态、类型等）
+- 基于MyBatis-Plus的数据访问接口
+
+## 模块结构
+
 ```
 document-model/
-├── entity/
-│   ├── base/              # 基础文档
-│   │   ├── BaseDocument.java     # 文档基类
-│   │   └── DocumentInfo.java     # 文档信息
-│   ├── business/          # 业务文档
-│   │   ├── CaseDocument.java     # 案件文档
-│   │   ├── ContractDocument.java # 合同文档
-│   │   └── ArticleDocument.java  # 知识文章
-│   └── system/           # 系统文档
-│       └── TemplateDocument.java # 模板文档
-├── storage/             # 存储管理
-│   ├── StorageConfig.java       # 存储配置
-│   └── StorageProvider.java     # 存储提供者
-├── enums/
-│   ├── DocumentTypeEnum.java  # 文档类型
-│   ├── DocumentStatusEnum.java # 文档状态
-│   └── TemplateTypeEnum.java  # 模板类型
-├── dto/
-│   ├── document/
-│   │   ├── DocumentCreateDTO.java # 文档创建
-│   │   ├── DocumentUpdateDTO.java # 文档更新
-│   │   └── DocumentQueryDTO.java  # 文档查询
-│   └── template/
-│       ├── TemplateCreateDTO.java # 模板创建
-│       └── TemplateUpdateDTO.java # 模板更新
-├── vo/
-│   ├── DocumentVO.java     # 文档视图
-│   └── TemplateVO.java     # 模板视图
-└── service/
-    ├── DocumentService.java # 文档服务
-    └── TemplateService.java # 模板服务
+├── src/main/java/com/lawfirm/model/document/
+│   ├── entity/           # 实体类定义
+│   │   ├── base/         # 基础实体
+│   │   ├── business/     # 业务文档实体
+│   │   └── template/     # 模板实体
+│   ├── dto/              # 数据传输对象
+│   │   ├── document/     # 文档DTO
+│   │   └── template/     # 模板DTO
+│   ├── vo/               # 视图对象
+│   ├── enums/            # 枚举类
+│   ├── mapper/           # 数据访问接口
+│   └── service/          # 服务接口定义
+└── pom.xml               # 模块依赖配置
 ```
 
-## 核心功能
+## 核心实体类
 
-### 1. 基础文档管理
-- 文档基类（BaseDocument）
-  - 文档标题
-  - 文档类型
-  - 文件名
-  - 文件大小
-  - 存储路径
-  - 存储类型
-  - 文档状态
-  - 文档版本
-  - 关键词
-  - 访问权限
-  - 下载/查看次数
+### 基础实体
 
-- 文档信息（DocumentInfo）
-  - 文档ID
-  - 作者
-  - 所有者
-  - 所属部门
-  - 文档分类
-  - 标签
-  - 源文件路径
-  - 语言
-  - 页数/字数
-  - 访问时间
-  - 修改时间
-  - 文档来源
-  - 格式/编码
-  - 文档摘要
-  - 相关文档
-  - 审核信息
+- **BaseDocument**: 所有文档实体的基类，包含文档的基本属性
+  - 文档标题、文件名、文件大小、存储路径等通用属性
+  - 文档格式、访问权限、加密状态等业务属性
+  - 查看次数、下载次数等统计信息
 
-### 2. 业务文档管理
-- 案件文档（CaseDocument）
-  - 案件ID/编号
-  - 文档阶段
-  - 文档分类
-  - 机密等级
-  - 签名状态
-  - 相关方信息
+- **DocumentInfo**: 文档元数据信息
+  - 作者、所有者、所属部门等归属信息
+  - 页数、字数、语言等内容特性
+  - 最后访问时间、最后修改时间等时间属性
 
-- 合同文档（ContractDocument）
-  - 合同ID/编号
-  - 合同类型
-  - 合同状态
-  - 签约方信息
-  - 签约日期
-  - 生效日期
-  - 到期日期
-  - 合同金额
-  - 盖章状态
-  - 审批信息
+- **DocumentCategory**: 文档分类实体
+- **DocumentTag**: 文档标签实体
+- **DocumentPermission**: 文档权限实体
 
-- 知识文章（ArticleDocument）
-  - 文章分类
-  - 文章类型
-  - 作者信息
-  - 来源
-  - 摘要
-  - 封面图片
-  - 阅读统计
-  - 推荐设置
-  - 审核状态
+### 业务文档实体
 
-### 3. 系统文档管理
-- 模板文档（TemplateDocument）
-  - 模板编码
-  - 模板类型
-  - 业务类型
-  - 适用范围
-  - 模板参数
-  - 模板内容
-  - 系统设置
-  - 使用统计
-  - 版本管理
-  - 审核信息
+- **CaseDocument**: 案件文档
+  - 关联案件ID、案件编号
+  - 文档阶段（立案、庭审、结案等）
+  - 文档分类（起诉书、判决书、证据等）
 
-### 4. 存储管理
-- 存储配置（StorageConfig）
-  - 存储类型
-  - 存储区域
-  - 访问密钥
-  - 存储桶
-  - 基础路径
-  - 默认配置
+- **ContractDocument**: 合同文档
+  - 关联合同ID、合同编号
+  - 合同类型、合同状态
+  - 生效日期、到期日期等
 
-- 存储提供者（StorageProvider）
-  - 存储接口定义
-  - 存储实现策略
-  - 文件操作
-  - 权限控制
+- **ArticleDocument**: 文章文档
+  - 文章类型、关键词
+  - 发布状态、发布渠道
 
-## 核心类说明
+### 模板文档
 
-### 1. 实体类
-- BaseDocument：文档基类
-  - 基本属性
-  - 存储属性
-  - 状态管理
-  - 统计信息
+- **TemplateDocument**: 文档模板实体
 
-- DocumentInfo：文档信息
-  - 元数据管理
-  - 分类标签
-  - 统计信息
-  - 审核信息
+## 数据传输对象(DTO)
 
-### 2. 数据传输对象
-- document/：文档相关DTO
-  - DocumentCreateDTO：文档创建
-  - DocumentUpdateDTO：文档更新
-  - DocumentQueryDTO：文档查询
+- **DocumentCreateDTO**: 文档创建数据传输对象
+- **DocumentUpdateDTO**: 文档更新数据传输对象
+- **DocumentQueryDTO**: 文档查询条件对象
 
-- template/：模板相关DTO
-  - TemplateCreateDTO：模板创建
-  - TemplateUpdateDTO：模板更新
+## 视图对象(VO)
 
-### 3. 视图对象
-- DocumentVO：文档视图
-  - 基本信息
-  - 存储信息
-  - 状态信息
-  - 统计信息
+- **DocumentVO**: 文档视图对象，用于前端展示
+- **TemplateVO**: 模板视图对象
 
-- TemplateVO：模板视图
-  - 模板信息
-  - 业务信息
-  - 使用统计
-  - 版本信息
+## 枚举类
 
-### 4. 服务接口
-- DocumentService：文档服务
-  - 文档CRUD
-  - 文档上传下载
-  - 文档预览
-  - 状态管理
-  - 分类查询
-  - 缓存管理
+- **DocumentFormatEnum**: 文档格式枚举（PDF、DOCX、DOC等）
+- **DocumentTypeEnum**: 文档类型枚举
+- **DocumentStatusEnum**: 文档状态枚举（草稿、已发布、已归档等）
+- **DocumentAccessLevelEnum**: 文档访问级别枚举（公开、私有、受限等）
+- **DocumentOperationEnum**: 文档操作类型枚举
+- **StorageTypeEnum**: 存储类型枚举（本地、OSS、S3等）
+- **TemplateTypeEnum**: 模板类型枚举
 
-- TemplateService：模板服务
-  - 模板CRUD
-  - 模板应用
-  - 参数管理
-  - 版本控制
-  - 默认设置
-  - 缓存管理
+## 数据访问接口
+
+所有Mapper接口继承自MyBatis-Plus的BaseMapper，提供基础的CRUD操作：
+
+- **DocumentMapper**: 基础文档数据访问接口
+- **DocumentInfoMapper**: 文档信息数据访问接口
+- **DocumentCategoryMapper**: 文档分类数据访问接口
+- **DocumentTagMapper**: 文档标签数据访问接口
+- **DocumentPermissionMapper**: 文档权限数据访问接口
+- **CaseDocumentMapper**: 案件文档数据访问接口
+- **ContractDocumentMapper**: 合同文档数据访问接口
+- **ArticleDocumentMapper**: 文章文档数据访问接口
+- **TemplateDocumentMapper**: 模板文档数据访问接口
 
 ## 使用示例
 
-### 1. 创建文档
+### 实体类使用
+
 ```java
+// 创建案件文档实体
+CaseDocument document = new CaseDocument()
+    .setTitle("某公司侵权案起诉书")
+    .setDocType("LEGAL_DOCUMENT")
+    .setFileName("起诉书.docx")
+    .setFileSize(1024L)
+    .setFileType("docx")
+    .setDocumentFormat(DocumentFormatEnum.DOCX)
+    .setStorageType(StorageTypeEnum.OSS.getValue())
+    .setDocStatus(DocumentStatusEnum.DRAFT.getValue())
+    .setCaseId(1001L)
+    .setCaseCode("CASE-2023001")
+    .setDocStage("FILING");
+```
+
+### DTO使用
+
+```java
+// 创建文档DTO
 DocumentCreateDTO createDTO = new DocumentCreateDTO()
     .setTitle("合同审查报告")
-    .setDocType(DocumentTypeEnum.CONTRACT.getValue())
-    .setFileName("合同审查报告.docx")
-    .setKeywords("合同,审查,报告")
-    .setDescription("合同审查报告文档");
-
-Long docId = documentService.createDocument(createDTO, inputStream);
+    .setDocType("REPORT")
+    .setFileName("合同审查报告.pdf")
+    .setFileSize(2048L)
+    .setFileType("pdf")
+    .setStorageType("OSS")
+    .setDocStatus("PUBLISHED")
+    .setAccessLevel("RESTRICTED")
+    .setBusinessId(2001L)
+    .setBusinessType("CONTRACT");
 ```
 
-### 2. 创建模板
-```java
-TemplateCreateDTO createDTO = new TemplateCreateDTO()
-    .setTemplateCode("CONTRACT_REVIEW")
-    .setTemplateName("合同审查模板")
-    .setTemplateType("CONTRACT")
-    .setBusinessType("REVIEW")
-    .setContent("模板内容")
-    .setParameters("{\"company\":\"公司名称\",\"date\":\"日期\"}");
+## 依赖关系
 
-Long templateId = templateService.createTemplate(createDTO);
-```
+本模块依赖：
+- base-model：提供基础模型支持
+- common-data：提供数据访问基础设施
 
-## 注意事项
-1. 文档标题和文件名必须规范
-2. 注意文档类型和状态的正确性
-3. 及时更新文档状态和版本
-4. 重要操作需要记录日志
-5. 关注文档安全和权限控制
-6. 模板参数必须符合规范
-7. 注意存储配置的正确性 
+上层模块依赖：
+- law-firm-document：文档管理业务模块
+- law-firm-case：案件管理模块（使用案件文档）
+- law-firm-contract：合同管理模块（使用合同文档）

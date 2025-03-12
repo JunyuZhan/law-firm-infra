@@ -1,20 +1,23 @@
-package com.lawfirm.modules.document.service.impl;
+package com.lawfirm.document.service.impl;
 
-import com.lawfirm.modules.document.entity.DocumentPermission;
-import com.lawfirm.modules.document.enums.DocumentPermissionEnum;
-import com.lawfirm.modules.document.enums.DocumentPermissionTargetEnum;
-import com.lawfirm.modules.document.repository.DocumentPermissionRepository;
-import com.lawfirm.modules.document.service.DocumentPermissionService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.core.utils.BeanUtils;
+import com.lawfirm.document.manager.security.DocumentSecurityManager;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.document.dto.permission.PermissionCreateDTO;
+import com.lawfirm.model.document.dto.permission.PermissionQueryDTO;
+import com.lawfirm.model.document.dto.permission.PermissionUpdateDTO;
+import com.lawfirm.model.document.entity.DocumentPermission;
+import com.lawfirm.model.document.mapper.DocumentPermissionMapper;
+import com.lawfirm.model.document.service.DocumentPermissionService;
+import com.lawfirm.model.document.vo.PermissionVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 文档权限服务实现类
@@ -22,126 +25,95 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DocumentPermissionServiceImpl implements DocumentPermissionService {
+public class DocumentPermissionServiceImpl extends BaseServiceImpl<DocumentPermissionMapper, DocumentPermission> implements DocumentPermissionService {
 
-    private final DocumentPermissionRepository documentPermissionRepository;
+    private final DocumentSecurityManager securityManager;
 
     @Override
-    @Transactional
-    public DocumentPermission grantPermission(Long documentId, DocumentPermissionTargetEnum targetType, 
-            Long targetId, DocumentPermissionEnum permission) {
-        // 检查是否已存在相同权限
-        if (hasPermission(documentId, targetType, targetId, permission)) {
-            throw new IllegalStateException("权限已存在");
+    @Transactional(rollbackFor = Exception.class)
+    public Long createPermission(PermissionCreateDTO createDTO) {
+        // 1. 检查授权权限
+        if (!securityManager.checkAccessPermission(createDTO.getDocumentId())) {
+            throw new SecurityException("没有授权权限");
         }
 
-        // 创建权限记录
-        DocumentPermission documentPermission = new DocumentPermission()
-                .setDocumentId(documentId)
-                .setTargetType(targetType)
-                .setTargetId(targetId)
-                .setPermission(permission)
-                .setCreateTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now())
-                .setIsDeleted(false);
+        // 2. 创建权限记录
+        DocumentPermission permission = BeanUtils.copyProperties(createDTO, DocumentPermission.class);
+        baseMapper.insert(permission);
 
-        return documentPermissionRepository.save(documentPermission);
+        return permission.getId();
     }
 
     @Override
-    @Transactional
-    public void revokePermission(Long permissionId) {
-        DocumentPermission permission = getPermission(permissionId);
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePermission(PermissionUpdateDTO updateDTO) {
+        // 1. 检查授权权限
+        DocumentPermission permission = baseMapper.selectById(updateDTO.getId());
+        if (!securityManager.checkAccessPermission(permission.getDocumentId())) {
+            throw new SecurityException("没有授权权限");
+        }
+
+        // 2. 更新权限
+        BeanUtils.copyProperties(updateDTO, permission);
+        baseMapper.updateById(permission);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePermission(Long id) {
+        // 1. 检查授权权限
+        DocumentPermission permission = baseMapper.selectById(id);
+        if (!securityManager.checkAccessPermission(permission.getDocumentId())) {
+            throw new SecurityException("没有授权权限");
+        }
+
+        // 2. 删除权限记录
+        baseMapper.deleteById(id);
+    }
+
+    @Override
+    public PermissionVO getPermission(Long id) {
+        // 1. 获取权限记录
+        DocumentPermission permission = baseMapper.selectById(id);
         if (permission == null) {
-            return;
+            return null;
         }
 
-        // 逻辑删除
-        permission.setIsDeleted(true)
-                .setDeleteTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now());
-        documentPermissionRepository.save(permission);
-    }
-
-    @Override
-    @Transactional
-    public List<DocumentPermission> grantPermissions(Long documentId, DocumentPermissionTargetEnum targetType, 
-            List<Long> targetIds, DocumentPermissionEnum permission) {
-        return targetIds.stream()
-                .map(targetId -> {
-                    try {
-                        return grantPermission(documentId, targetType, targetId, permission);
-                    } catch (IllegalStateException e) {
-                        log.warn("权限已存在：documentId={}, targetType={}, targetId={}, permission={}", 
-                                documentId, targetType, targetId, permission);
-                        return null;
-                    }
-                })
-                .filter(p -> p != null)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public void revokePermissions(List<Long> permissionIds) {
-        permissionIds.forEach(this::revokePermission);
-    }
-
-    @Override
-    public List<DocumentPermission> getDocumentPermissions(Long documentId) {
-        return documentPermissionRepository.findByDocumentId(documentId).stream()
-                .filter(p -> !Boolean.TRUE.equals(p.getIsDeleted()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<DocumentPermission> getTargetPermissions(DocumentPermissionTargetEnum targetType, Long targetId) {
-        return documentPermissionRepository.findByTargetTypeAndTargetId(targetType, targetId).stream()
-                .filter(p -> !Boolean.TRUE.equals(p.getIsDeleted()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean hasPermission(Long documentId, DocumentPermissionTargetEnum targetType, 
-            Long targetId, DocumentPermissionEnum permission) {
-        return documentPermissionRepository.existsByDocumentIdAndTargetTypeAndTargetIdAndPermission(
-                documentId, targetType, targetId, permission);
-    }
-
-    @Override
-    public DocumentPermission getPermission(Long permissionId) {
-        return documentPermissionRepository.findById(permissionId)
-                .filter(p -> !Boolean.TRUE.equals(p.getIsDeleted()))
-                .orElse(null);
-    }
-
-    @Override
-    public Page<DocumentPermission> listPermissions(Pageable pageable) {
-        return documentPermissionRepository.findAll(pageable);
-    }
-
-    @Override
-    @Transactional
-    public DocumentPermission updatePermission(DocumentPermission permission) {
-        DocumentPermission existingPermission = getPermission(permission.getId());
-        if (existingPermission == null) {
-            throw new IllegalArgumentException("权限不存在");
+        // 2. 检查访问权限
+        if (!securityManager.checkAccessPermission(permission.getDocumentId())) {
+            throw new SecurityException("没有访问权限");
         }
 
-        // 更新基本信息
-        permission.setUpdateTime(LocalDateTime.now());
-        return documentPermissionRepository.save(permission);
+        // 3. 转换为VO
+        return BeanUtils.copyProperties(permission, PermissionVO.class);
     }
 
     @Override
-    @Transactional
-    public void clearDocumentPermissions(Long documentId) {
-        documentPermissionRepository.deleteByDocumentId(documentId);
+    public List<PermissionVO> listPermissions(PermissionQueryDTO queryDTO) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<DocumentPermission> wrapper = new LambdaQueryWrapper<>();
+        // TODO: 添加查询条件
+
+        // 2. 执行查询
+        List<DocumentPermission> permissions = baseMapper.selectList(wrapper);
+
+        // 3. 转换为VO
+        return BeanUtils.copyList(permissions, PermissionVO.class);
     }
 
     @Override
-    @Transactional
-    public void clearTargetPermissions(DocumentPermissionTargetEnum targetType, Long targetId) {
-        documentPermissionRepository.deleteByTargetTypeAndTargetId(targetType, targetId);
+    public Page<PermissionVO> pagePermissions(PermissionQueryDTO queryDTO) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<DocumentPermission> wrapper = new LambdaQueryWrapper<>();
+        // TODO: 添加查询条件
+
+        // 2. 执行分页查询
+        Page<DocumentPermission> page = baseMapper.selectPage(
+            new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize()),
+            wrapper
+        );
+
+        // 3. 转换为VO
+        return BeanUtils.copyPage(page, PermissionVO.class);
     }
 } 

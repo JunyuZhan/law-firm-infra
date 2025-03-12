@@ -1,190 +1,282 @@
-# Law Firm Document Module
+# 文档管理业务模块 (law-firm-document)
 
-文档管理模块，提供律所文档全生命周期管理功能。
+## 模块概述
 
-## 开发环境要求
+law-firm-document是律师事务所管理系统的文档管理业务模块，负责实现文档的全生命周期管理。本模块基于底层核心模块和通用模块提供的基础设施，实现了完整的文档管理解决方案。
 
-- JDK 17+
-- Maven 3.8+
-- MySQL 8.0+
-- Redis 6.0+
-- LibreOffice 7.0+ (文档转换)
-- Tesseract 4.0+ (OCR支持)
+## 核心依赖
 
-## 快速开始
+```xml
+<!-- 数据模型依赖 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>document-model</artifactId>
+</dependency>
 
-### 1. 环境准备
-```bash
-# 创建必要目录
-mkdir -p /data/documents
-mkdir -p /data/documents/temp
+<!-- 核心功能依赖 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-storage</artifactId>  <!-- 文件存储服务 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-search</artifactId>   <!-- 全文检索服务 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-audit</artifactId>    <!-- 审计日志服务 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-workflow</artifactId>  <!-- 工作流服务 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-message</artifactId>   <!-- 消息服务 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>core-ai</artifactId>        <!-- AI服务 -->
+</dependency>
 
-# 设置目录权限
-chmod 755 /data/documents
-chmod 755 /data/documents/temp
+<!-- 通用功能依赖 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-core</artifactId>    <!-- 核心工具 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-web</artifactId>     <!-- Web工具 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-data</artifactId>    <!-- 数据访问 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-cache</artifactId>   <!-- 缓存服务 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-security</artifactId> <!-- 安全工具 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-log</artifactId>     <!-- 日志服务 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-message</artifactId>  <!-- 消息工具 -->
+</dependency>
 
-# 安装LibreOffice（Ubuntu）
-sudo apt-get install -y libreoffice
-
-# 安装Tesseract（Ubuntu）
-sudo apt-get install -y tesseract-ocr
-sudo apt-get install -y tesseract-ocr-chi-sim  # 中文支持
+<!-- 业务模块依赖 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>law-firm-auth</artifactId>   <!-- 认证授权 -->
+</dependency>
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>law-firm-system</artifactId> <!-- 系统管理 -->
+</dependency>
 ```
 
-### 2. 数据库配置
-#### 默认配置 (application.yml)
-```yaml
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
-    hikari:
-      minimum-idle: 5
-      maximum-pool-size: 20
-      idle-timeout: 30000
-      pool-name: DocumentHikariCP
+## 功能特性
+
+### 1. 文档基础管理
+- 文档创建与上传（集成core-storage）
+- 文档预览与下载（集成common-web）
+- 文档编辑与更新
+  - 在线文档编辑（集成common-web）
+  - Office文档编辑集成
+  - PDF文档注释和批注
+  - 多人协同编辑（集成common-cache）
+  - 编辑锁定机制（集成common-cache）
+  - 自动保存（集成common-cache）
+  - 编辑历史记录（集成core-audit）
+- 文档删除与归档
+- 文档分类管理
+- 文档标签管理
+
+### 2. 文档存储管理（core-storage）
+- 多存储介质支持（本地存储、OSS、S3等）
+- 文件自动备份
+- 存储空间管理
+- 文件去重优化
+- 分布式存储支持
+
+### 3. 文档安全管理
+- 文档访问权限控制（集成law-firm-auth）
+- 文档加密存储（集成common-security）
+- 操作日志审计（集成core-audit）
+- 敏感信息识别（集成core-ai）
+- 水印管理
+
+### 4. 文档版本管理
+- 版本历史记录（集成core-audit）
+- 版本差异比较
+- 版本回滚
+- 协同编辑控制（集成common-cache）
+
+### 5. 文档检索功能（core-search）
+- 全文检索
+- 元数据检索
+- 标签检索
+- 相关文档推荐（集成core-ai）
+- 智能搜索建议
+
+### 6. 模板管理
+- 文档模板创建
+- 模板参数配置
+- 模板权限管理（集成law-firm-auth）
+- 基于模板生成文档
+- 智能模板推荐（集成core-ai）
+
+### 7. 工作流集成（core-workflow）
+- 文档审批流程
+- 文档传阅流程
+- 文档归档流程
+- 自定义流程配置
+
+### 8. 消息通知（core-message）
+- 文档更新通知
+- 协作邀请通知
+- 审批提醒
+- 到期提醒
+- 自定义通知配置
+
+### 9. AI增强功能（core-ai）
+- 智能文档分类
+- 文档摘要生成
+- 关键信息提取
+- 相似文档推荐
+- 智能标签推荐
+
+## 模块结构
+
+```
+law-firm-document/
+├── src/main/java/com/lawfirm/document/
+│   ├── controller/        # 控制器层（通用业务控制器）
+│   │   ├── admin/        # 管理接口
+│   │   └── support/      # 支撑接口（文件处理等）
+│   ├── service/          # 服务层
+│   │   ├── impl/        # 服务实现（继承BaseServiceImpl）
+│   │   └── strategy/    # 策略实现
+│   ├── manager/          # 通用业务处理层
+│   │   ├── storage/     # 存储管理
+│   │   ├── search/      # 检索管理
+│   │   ├── security/    # 安全管理
+│   │   └── workflow/    # 工作流管理
+│   ├── convert/          # 对象转换层
+│   ├── event/            # 事件相关
+│   │   ├── publisher/   # 事件发布
+│   │   └── listener/    # 事件监听
+│   ├── schedule/         # 定时任务
+│   ├── config/           # 配置类
+│   │   ├── properties/  # 配置属性
+│   │   └── aspect/      # 切面配置
+│   └── util/            # 工具类
+└── src/main/resources/
+    ├── config/          # 配置文件
+    └── templates/       # 模板文件
 ```
 
-#### 开发环境 (application-dev.yml)
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/law_firm_dev
-    username: root
-    password: root
-  jpa:
-    show-sql: true
+## 关键流程实现
+
+### 1. 文档上传流程
+```
+文件上传(common-web) 
+-> 病毒扫描(core-ai) 
+-> 文件验证(common-security) 
+-> 文件存储(core-storage) 
+-> 元数据提取(core-ai) 
+-> 索引创建(core-search) 
+-> 发送通知(core-message)
 ```
 
-### 3. 数据库初始化
-```bash
-# 创建数据库
-mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS law_firm DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-
-# 执行Flyway迁移脚本
-mvn flyway:migrate -Dflyway.configFiles=src/main/resources/application.yml
+### 2. 文档访问流程
+```
+请求处理(common-web) 
+-> 身份认证(law-firm-auth) 
+-> 权限校验(common-security) 
+-> 数据过滤(common-data) 
+-> 操作审计(core-audit) 
+-> 响应处理(common-web)
 ```
 
-### 4. 构建运行
-```bash
-# 编译
-mvn clean package
-
-# 运行测试
-mvn test
-
-# 开发环境运行
-java -jar target/law-firm-document.jar --spring.profiles.active=dev
-
-# 生产环境运行
-export MYSQL_HOST=prod-db-host
-export MYSQL_USERNAME=prod-user
-export MYSQL_PASSWORD=prod-password
-java -jar target/law-firm-document.jar --spring.profiles.active=prod
+### 3. 文档审批流程
+```
+提交审批(core-workflow) 
+-> 权限检查(law-firm-auth) 
+-> 流程执行(core-workflow) 
+-> 消息通知(core-message) 
+-> 状态更新(common-data)
 ```
 
-## 开发指南
+## 缓存策略（common-cache）
 
-### 项目结构
-```
-src/
-├── main/
-│   ├── java/
-│   │   └── com/lawfirm/document/
-│   │       ├── controller/    # REST接口
-│   │       ├── service/       # 业务逻辑
-│   │       ├── mapper/        # MyBatis映射
-│   │       └── config/        # 配置类
-│   └── resources/
-│       ├── mapper/           # MyBatis XML
-│       ├── db/              # 数据库脚本
-│       └── application.yml  # 配置文件
-└── test/
-    └── java/               # 测试代码
-```
+1. 本地缓存
+   - 文档元数据缓存
+   - 文档权限缓存
+   - 用户操作缓存
 
-### 开发规范
+2. 分布式缓存
+   - 编辑锁定缓存
+   - 会话状态缓存
+   - 临时数据缓存
 
-1. **代码风格**
-   - 遵循阿里巴巴Java开发规范
-   - 使用lombok简化代码
-   - 控制方法行数，建议不超过80行
+## 安全策略（common-security）
 
-2. **异常处理**
-   - 业务异常统一使用`DocumentException`
-   - 必须记录关键操作日志
-   - 敏感操作需要审计日志
+1. 访问控制
+   - 基于角色的访问控制
+   - 基于属性的访问控制
+   - 数据范围控制
 
-3. **测试要求**
-   - 单元测试覆盖率>80%
-   - 必须包含集成测试
-   - 提交前本地测试通过
+2. 数据安全
+   - 传输加密
+   - 存储加密
+   - 敏感信息脱敏
 
-### 常见问题
+## 性能优化
 
-1. **文件上传失败**
-   - 检查存储目录权限
-   - 确认文件大小限制
-   - 验证文件类型是否支持
+1. 查询优化
+   - 多级缓存
+   - 索引优化
+   - 分页查询
 
-2. **转换服务异常**
-   - 检查LibreOffice安装
-   - 确认内存配置充足
-   - 查看转换服务日志
+2. 存储优化
+   - 文件分片
+   - 异步处理
+   - 压缩优化
 
-3. **OCR识别问题**
-   - 确认Tesseract安装正确
-   - 检查训练数据完整性
-   - 调整OCR参数配置
+## 监控告警
 
-## 部署说明
+1. 系统监控
+   - 存储空间监控
+   - 服务性能监控
+   - 接口调用监控
 
-### 系统要求
-- CPU: 4核+
-- 内存: 8GB+
-- 磁盘: 100GB+
-- 操作系统: CentOS 7+/Ubuntu 18.04+
+2. 业务监控
+   - 文档访问监控
+   - 异常操作监控
+   - 容量预警
 
-### 依赖服务
-- MySQL 8.0+
-- Redis 6.0+
-- LibreOffice 7.0+
-- Tesseract 4.0+
+## 开发计划
 
-### 部署步骤
-1. 安装基础环境
-2. 配置数据库
-3. 准备存储目录
-4. 部署应用服务
-5. 配置nginx代理
-6. 启动服务验证
+### 第一阶段：基础功能
+- [x] 文档管理基础功能
+- [x] 存储服务集成
+- [x] 安全框架集成
+- [ ] 检索服务集成
 
-### 监控运维
-- 使用Prometheus采集指标
-- 配置Grafana面板监控
-- 设置关键指标告警
+### 第二阶段：增强功能
+- [ ] 工作流集成
+- [ ] 消息通知集成
+- [ ] AI服务集成
+- [ ] 协同编辑
 
-## 版本历史
-
-- v1.0.0 (2024-01-20)
-  - 基础文档管理功能
-  - 文档转换服务
-  - OCR识别支持
-
-- v1.1.0 (开发中)
-  - 增加全文检索
-  - 优化转换性能
-  - 支持更多格式
-
-## 贡献指南
-
-1. Fork 项目
-2. 创建特性分支
-3. 提交代码
-4. 创建Pull Request
-
-## 许可证
-
-[MIT License](LICENSE) 
+### 第三阶段：高级特性
+- [ ] 智能推荐
+- [ ] 全文分析
+- [ ] 知识图谱
+- [ ] 深度学习集成

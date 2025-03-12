@@ -1,14 +1,25 @@
 package com.lawfirm.document.service.impl;
 
-import com.lawfirm.model.document.repository.DocumentTemplateRepository;
-import com.lawfirm.model.document.entity.DocumentTemplate;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.core.utils.BeanUtils;
+import com.lawfirm.document.manager.storage.DocumentStorageManager;
+import com.lawfirm.document.manager.security.DocumentSecurityManager;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.document.dto.template.TemplateCreateDTO;
+import com.lawfirm.model.document.dto.template.TemplateQueryDTO;
+import com.lawfirm.model.document.dto.template.TemplateUpdateDTO;
+import com.lawfirm.model.document.entity.TemplateDocument;
+import com.lawfirm.model.document.mapper.TemplateDocumentMapper;
 import com.lawfirm.model.document.service.DocumentTemplateService;
+import com.lawfirm.model.document.vo.TemplateVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -17,108 +28,109 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DocumentTemplateServiceImpl implements DocumentTemplateService {
+public class DocumentTemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper, TemplateDocument> implements DocumentTemplateService {
 
-    private final DocumentTemplateRepository documentTemplateRepository;
+    private final DocumentStorageManager storageManager;
+    private final DocumentSecurityManager securityManager;
 
     @Override
-    @Transactional
-    public DocumentTemplate createTemplate(DocumentTemplate template) {
-        // 设置初始状态
-        template.setCreateTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now())
-                .setIsDeleted(false);
-        
-        return documentTemplateRepository.save(template);
+    @Transactional(rollbackFor = Exception.class)
+    public Long createTemplate(TemplateCreateDTO createDTO, MultipartFile file) throws IOException {
+        // 1. 上传模板文件
+        storageManager.uploadDocument(file, createDTO.getBucketName());
+
+        // 2. 创建模板记录
+        TemplateDocument template = BeanUtils.copyProperties(createDTO, TemplateDocument.class);
+        baseMapper.insert(template);
+
+        return template.getId();
     }
 
     @Override
-    @Transactional
-    public DocumentTemplate updateTemplate(DocumentTemplate template) {
-        DocumentTemplate existingTemplate = getTemplate(template.getId());
-        if (existingTemplate == null) {
-            throw new IllegalArgumentException("模板不存在");
+    @Transactional(rollbackFor = Exception.class)
+    public void updateTemplate(TemplateUpdateDTO updateDTO) {
+        // 1. 检查权限
+        TemplateDocument template = baseMapper.selectById(updateDTO.getId());
+        if (!securityManager.checkAccessPermission(template)) {
+            throw new SecurityException("没有修改权限");
         }
 
-        // 更新基本信息
-        template.setUpdateTime(LocalDateTime.now());
-        return documentTemplateRepository.save(template);
+        // 2. 更新模板
+        BeanUtils.copyProperties(updateDTO, template);
+        baseMapper.updateById(template);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteTemplate(Long id) {
-        DocumentTemplate template = getTemplate(id);
+        // 1. 检查权限
+        TemplateDocument template = baseMapper.selectById(id);
+        if (!securityManager.checkAccessPermission(template)) {
+            throw new SecurityException("没有删除权限");
+        }
+
+        // 2. 删除模板文件
+        storageManager.deleteDocument(id);
+
+        // 3. 删除模板记录
+        baseMapper.deleteById(id);
+    }
+
+    @Override
+    public TemplateVO getTemplate(Long id) {
+        // 1. 获取模板
+        TemplateDocument template = baseMapper.selectById(id);
         if (template == null) {
-            return;
+            return null;
         }
 
-        // 逻辑删除
-        template.setIsDeleted(true)
-                .setDeleteTime(LocalDateTime.now())
-                .setUpdateTime(LocalDateTime.now());
-        documentTemplateRepository.save(template);
-    }
-
-    @Override
-    public DocumentTemplate getTemplate(Long id) {
-        return documentTemplateRepository.findById(id)
-                .filter(t -> !Boolean.TRUE.equals(t.getIsDeleted()))
-                .orElse(null);
-    }
-
-    @Override
-    public List<DocumentTemplate> listTemplates(Long categoryId) {
-        return documentTemplateRepository.findByCategoryId(categoryId);
-    }
-
-    @Override
-    public List<DocumentTemplate> listByType(String templateType) {
-        return documentTemplateRepository.findByTemplateType(templateType);
-    }
-
-    @Override
-    @Transactional
-    public void moveToCategory(Long templateId, Long categoryId) {
-        DocumentTemplate template = getTemplate(templateId);
-        if (template == null) {
-            throw new IllegalArgumentException("模板不存在");
+        // 2. 检查权限
+        if (!securityManager.checkAccessPermission(template)) {
+            throw new SecurityException("没有访问权限");
         }
 
-        template.setCategoryId(categoryId)
-                .setUpdateTime(LocalDateTime.now());
-        documentTemplateRepository.save(template);
+        // 3. 转换为VO
+        return BeanUtils.copyProperties(template, TemplateVO.class);
     }
 
     @Override
-    @Transactional
-    public DocumentTemplate copyTemplate(Long sourceId, String newName) {
-        DocumentTemplate source = getTemplate(sourceId);
-        if (source == null) {
-            throw new IllegalArgumentException("源模板不存在");
+    public List<TemplateVO> listTemplates(TemplateQueryDTO queryDTO) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<TemplateDocument> wrapper = new LambdaQueryWrapper<>();
+        // TODO: 添加查询条件
+
+        // 2. 执行查询
+        List<TemplateDocument> templates = baseMapper.selectList(wrapper);
+
+        // 3. 转换为VO
+        return BeanUtils.copyList(templates, TemplateVO.class);
+    }
+
+    @Override
+    public Page<TemplateVO> pageTemplates(TemplateQueryDTO queryDTO) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<TemplateDocument> wrapper = new LambdaQueryWrapper<>();
+        // TODO: 添加查询条件
+
+        // 2. 执行分页查询
+        Page<TemplateDocument> page = baseMapper.selectPage(
+            new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize()),
+            wrapper
+        );
+
+        // 3. 转换为VO
+        return BeanUtils.copyPage(page, TemplateVO.class);
+    }
+
+    @Override
+    public byte[] downloadTemplate(Long id) throws IOException {
+        // 1. 检查权限
+        TemplateDocument template = baseMapper.selectById(id);
+        if (!securityManager.checkAccessPermission(template)) {
+            throw new SecurityException("没有下载权限");
         }
 
-        // 创建新模板
-        DocumentTemplate newTemplate = new DocumentTemplate();
-        newTemplate.setTemplateName(newName)
-                .setTemplateType(source.getTemplateType())
-                .setCategoryId(source.getCategoryId())
-                .setContent(source.getContent())
-                .setDescription(source.getDescription())
-                .setTags(source.getTags())
-                .setStatus(source.getStatus());
-
-        return createTemplate(newTemplate);
-    }
-
-    @Override
-    public boolean hasPermission(Long templateId, Long userId, String permission) {
-        // TODO: 调用权限服务检查权限
-        return true;
-    }
-
-    @Override
-    public long countByCategory(Long categoryId) {
-        return documentTemplateRepository.countByCategoryId(categoryId);
+        // 2. 下载模板文件
+        return storageManager.downloadDocument(id);
     }
 } 
