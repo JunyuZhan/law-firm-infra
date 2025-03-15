@@ -1,219 +1,240 @@
-# 客户管理模块 (Client Model)
+# 客户管理数据模型模块
 
-## 模块说明
-客户管理模块是律师事务所管理系统的客户数据模型定义模块，负责定义系统中所有客户相关的实体类、数据传输对象、视图对象和服务接口。该模块是系统客户管理的数据基础。
+本模块提供律所客户管理相关的数据模型定义，包括实体类、数据传输对象(DTO)、视图对象(VO)和Mapper接口等，是客户管理功能的基础数据层。
 
-## 目录结构
+## 模块结构
+
 ```
-client-model/
-├── entity/       
-│   ├── base/             # 基础定义
-│   │   ├── Client.java          # 客户基类
-│   │   └── ClientRelation.java  # 关系基类
-│   ├── business/         # 业务关系
-│   │   ├── CaseParty.java       # 案件当事人
-│   │   └── ContractParty.java   # 合同当事人
-│   └── common/          # 通用定义
-│       ├── ClientContact.java    # 联系人
-│       ├── ClientAddress.java    # 客户地址
-│       └── ClientCategory.java   # 客户分类
-├── enums/
-│   ├── ClientTypeEnum.java    # 客户类型（个人/企业）
-│   ├── ClientLevelEnum.java   # 客户等级
-│   ├── ClientSourceEnum.java  # 客户来源
-│   └── ContactTypeEnum.java   # 联系人类型
-├── dto/
-│   ├── client/
-│   │   ├── ClientCreateDTO.java  # 客户创建
-│   │   ├── ClientUpdateDTO.java  # 客户更新
-│   │   └── ClientQueryDTO.java   # 客户查询
-│   └── contact/
-│       ├── ContactCreateDTO.java  # 联系人创建
-│       └── ContactQueryDTO.java   # 联系人查询
-├── vo/
-│   ├── ClientVO.java       # 客户视图
-│   └── ContactVO.java      # 联系人视图
-└── service/
-    ├── ClientService.java  # 客户服务
-    └── ContactService.java # 联系人服务
+law-firm-model/client-model/
+├── src/main/java/com/lawfirm/model/client/
+│   ├── dto/                          # 数据传输对象
+│   │   ├── client/                   # 客户相关DTO
+│   │   │   ├── ClientCreateDTO.java  # 客户创建DTO
+│   │   │   ├── ClientQueryDTO.java   # 客户查询DTO
+│   │   │   └── ClientUpdateDTO.java  # 客户更新DTO
+│   │   │
+│   │   └── contact/                  # 联系人相关DTO
+│   │       ├── ContactCreateDTO.java # 联系人创建DTO
+│   │       └── ContactQueryDTO.java  # 联系人查询DTO
+│   │
+│   ├── entity/                       # 实体类
+│   │   ├── base/                     # 基础实体
+│   │   │   ├── Client.java           # 客户基础实体
+│   │   │   └── ClientRelation.java   # 客户关系基础实体
+│   │   │
+│   │   ├── business/                 # 业务实体
+│   │   │   ├── CaseParty.java        # 案件相关方实体
+│   │   │   └── ContractParty.java    # 合同相关方实体
+│   │   │
+│   │   ├── common/                   # 通用实体
+│   │   │   ├── ClientAddress.java    # 客户地址实体
+│   │   │   ├── ClientCategory.java   # 客户分类实体
+│   │   │   ├── ClientContact.java    # 客户联系人实体
+│   │   │   └── ClientTag.java        # 客户标签实体
+│   │   │
+│   │   ├── follow/                   # 跟进相关实体
+│   │   │   └── ClientFollowUp.java   # 客户跟进记录实体
+│   │   │
+│   │   └── relation/                 # 关联关系实体
+│   │       └── ClientTagRelation.java # 客户标签关联实体
+│   │
+│   ├── enums/                        # 枚举类
+│   │   ├── ClientLevelEnum.java      # 客户等级枚举
+│   │   ├── ClientSourceEnum.java     # 客户来源枚举
+│   │   └── ClientTypeEnum.java       # 客户类型枚举
+│   │
+│   ├── mapper/                       # 数据访问接口
+│   │   ├── AddressMapper.java        # 地址Mapper接口
+│   │   ├── CategoryMapper.java       # 分类Mapper接口
+│   │   ├── ClientMapper.java         # 客户Mapper接口
+│   │   ├── ContactMapper.java        # 联系人Mapper接口
+│   │   ├── FollowUpMapper.java       # 跟进记录Mapper接口
+│   │   ├── RelationMapper.java       # 客户关系Mapper接口
+│   │   ├── TagMapper.java            # 标签Mapper接口
+│   │   └── TagRelationMapper.java    # 标签关联Mapper接口
+│   │
+│   ├── service/                      # 服务接口
+│   │   ├── ClientService.java        # 客户服务接口
+│   │   └── ContactService.java       # 联系人服务接口
+│   │
+│   └── vo/                           # 视图对象
+│       ├── ClientVO.java             # 客户视图对象
+│       └── ContactVO.java            # 联系人视图对象
 ```
 
-## 核心功能
+## 主要实体类
 
-### 1. 基础客户管理
-- 客户基类（Client）
-  - 客户编号
-  - 客户名称
-  - 客户类型
-  - 客户等级
-  - 客户来源
-  - 证件信息
-  - 基本信息
-  - 联系方式
-  - 客户状态
-  - 信用等级
+### 基础实体
 
-- 客户关系（ClientRelation）
-  - 关系类型
-  - 关联客户
-  - 关系描述
-  - 生效时间
-  - 失效时间
-  - 关系状态
+#### Client
+客户基本信息实体，包含客户的基本属性如名称、类型、等级、联系方式等。是客户管理模块的核心实体。
 
-### 2. 业务关系管理
-- 案件当事人（CaseParty）
-  - 案件ID
-  - 当事人类型
-  - 当事人角色
-  - 代理类型
-  - 委托时间
-  - 代理权限
-  - 案件状态
+#### ClientRelation
+客户关系基础实体，用于描述客户之间的关系或客户与业务之间的关系。是派生关系实体的基类。
 
-- 合同当事人（ContractParty）
-  - 合同ID
-  - 当事人类型
-  - 签约角色
-  - 签约资格
-  - 签约时间
-  - 履约状态
-  - 合同权利
-  - 合同义务
+### 业务实体
 
-### 3. 通用信息管理
-- 联系人（ClientContact）
-  - 联系人姓名
-  - 联系人类型
-  - 所属部门
-  - 职务职位
-  - 联系方式
-  - 重要程度
-  - 备注说明
+#### CaseParty
+案件相关方实体，继承自ClientRelation，用于描述客户与案件的关系，如原告、被告、第三人等。
 
-- 客户地址（ClientAddress）
-  - 地址类型
-  - 国家地区
-  - 省市区县
-  - 详细地址
-  - 邮政编码
-  - 是否默认
-  - 地址标签
+#### ContractParty
+合同相关方实体，继承自ClientRelation，用于描述客户与合同的关系，如甲方、乙方等。
 
-- 客户分类（ClientCategory）
-  - 分类名称
-  - 分类编码
-  - 分类层级
-  - 上级分类
-  - 分类描述
-  - 排序权重
+### 通用实体
 
-## 核心类说明
+#### ClientAddress
+客户地址实体，存储客户的地址信息，包括地址类型（注册地址、办公地址、通讯地址等）和详细地址。
 
-### 1. 实体类
-- Client：客户基类
-  - 基本信息
-  - 证件信息
-  - 联系信息
-  - 状态管理
+#### ClientCategory
+客户分类实体，用于对客户进行分类管理，支持多级分类结构。
 
-- ClientRelation：关系基类
-  - 关系定义
-  - 关联管理
-  - 状态管理
-  - 时效控制
+#### ClientContact
+客户联系人实体，存储客户的联系人信息，一个客户可以有多个联系人。
 
-### 2. 数据传输对象
-- client/：客户相关DTO
-  - ClientCreateDTO：客户创建
-  - ClientUpdateDTO：客户更新
-  - ClientQueryDTO：客户查询
+#### ClientTag
+客户标签实体，用于对客户进行标签化管理，支持按标签类型区分。
 
-- contact/：联系人相关DTO
-  - ContactCreateDTO：联系人创建
-  - ContactQueryDTO：联系人查询
+### 跟进实体
 
-### 3. 视图对象
-- ClientVO：客户视图
-  - 基本信息
-  - 扩展信息
-  - 统计信息
-  - 关联信息
+#### ClientFollowUp
+客户跟进记录实体，记录与客户的沟通和跟进情况，支持设置提醒和下次跟进计划。
 
-- ContactVO：联系人视图
-  - 基本信息
-  - 联系方式
-  - 关联信息
-  - 状态信息
+### 关联实体
 
-### 4. 服务接口
-- ClientService：客户服务
-  - 客户CRUD
-  - 客户分类
-  - 客户关系
-  - 状态管理
-  - 信息统计
-  - 缓存管理
+#### ClientTagRelation
+客户标签关联实体，用于实现客户与标签的多对多关系。
 
-- ContactService：联系人服务
-  - 联系人CRUD
-  - 联系人分类
-  - 关联管理
-  - 状态管理
-  - 缓存管理
+## Mapper接口
+
+本模块提供以下Mapper接口用于数据访问：
+
+### ClientMapper
+客户数据访问接口，支持基本的增删改查操作。
+
+### ContactMapper
+联系人数据访问接口，支持查询客户的联系人、默认联系人等操作。
+
+### AddressMapper
+地址数据访问接口，支持查询客户的地址、默认地址等操作。
+
+### CategoryMapper
+分类数据访问接口，支持查询子分类等操作。
+
+### RelationMapper
+客户关系数据访问接口，支持查询客户的关联关系、业务相关的客户关系等操作。
+
+### TagMapper
+标签数据访问接口，支持按类型查询标签、查询客户拥有的标签等操作。
+
+### TagRelationMapper
+标签关联数据访问接口，支持管理客户和标签的多对多关系。
+
+### FollowUpMapper
+跟进记录数据访问接口，支持查询客户的跟进记录、提醒等操作。
+
+## 服务接口
+
+本模块定义了以下服务接口：
+
+### ClientService
+客户服务接口，定义了客户管理的核心业务方法，如创建客户、更新客户、删除客户、查询客户等。
+
+### ContactService
+联系人服务接口，定义了联系人管理的业务方法，如创建联系人、更新联系人、设置默认联系人等。
 
 ## 使用示例
 
-### 1. 创建客户
-```java
-ClientCreateDTO createDTO = new ClientCreateDTO()
-    .setClientName("北京某某科技有限公司")
-    .setClientType(ClientTypeEnum.ENTERPRISE.getValue())
-    .setClientLevel(ClientLevelEnum.VIP.getValue())
-    .setClientSource(ClientSourceEnum.RECOMMENDATION.getValue())
-    .setLegalRepresentative("张三")
-    .setContactPhone("13800138000")
-    .setEmail("contact@company.com");
+### 实体类使用
 
-Long clientId = clientService.createClient(createDTO);
-```
-
-### 2. 创建联系人
 ```java
-ContactCreateDTO createDTO = new ContactCreateDTO()
-    .setClientId(clientId)
-    .setContactName("李四")
-    .setContactType(ContactTypeEnum.PRIMARY.getValue())
-    .setDepartment("法务部")
+// 创建一个客户实体
+Client client = new Client()
+    .setClientName("示例客户")
+    .setClientType(ClientTypeEnum.ENTERPRISE.getCode())
+    .setClientLevel(ClientLevelEnum.NORMAL.getCode())
+    .setClientSource(ClientSourceEnum.REFERRAL.getCode())
+    .setPhone("13800138000")
+    .setEmail("example@lawfirm.com");
+
+// 创建一个联系人实体
+ClientContact contact = new ClientContact()
+    .setClientId(client.getId())
+    .setName("张三")
+    .setPhone("13900139000")
     .setPosition("法务总监")
-    .setMobile("13900139000")
-    .setEmail("legal@company.com")
-    .setImportance(1);
-
-Long contactId = contactService.createContact(createDTO);
+    .setIsDefault(1);
 ```
 
-## 注意事项
-1. 客户编号必须全局唯一
-2. 注意客户类型和等级的准确性
-3. 及时更新客户状态和关系
-4. 重要操作需要记录日志
-5. 关注客户信息安全和隐私
-6. 确保联系人信息及时更新
-7. 注意客户分类的合理性 
+### DTO使用
 
-## 迁移记录
+```java
+// 创建客户的DTO
+ClientCreateDTO createDTO = new ClientCreateDTO();
+createDTO.setClientName("示例客户");
+createDTO.setClientType(ClientTypeEnum.ENTERPRISE.getCode());
+createDTO.setPhone("13800138000");
+// ... 设置其他属性
 
-### JPA到MyBatis Plus迁移 (2024-04-28)
-- 添加MyBatis Plus相关注解（@TableName, @TableField）
-- 移除JPA相关注解和导入
-- 修改pom.xml文件，移除JPA相关依赖，添加MyBatis Plus依赖
-- 更新实体类继承关系，使用ModelBaseEntity
-- 迁移的实体类包括：
-  - Client.java
-  - ClientRelation.java
-  - CaseParty.java
-  - ContractParty.java
-  - ClientAddress.java
-  - ClientCategory.java
-  - ClientContact.java 
+// 查询客户的DTO
+ClientQueryDTO queryDTO = new ClientQueryDTO();
+queryDTO.setClientName("示例");
+queryDTO.setClientLevel(ClientLevelEnum.VIP.getCode());
+```
+
+### 服务接口使用
+
+```java
+@Resource
+private ClientService clientService;
+
+@Resource
+private ContactService contactService;
+
+// 创建客户
+Long clientId = clientService.createClient(createDTO);
+
+// 获取客户详情
+ClientVO client = clientService.getClient(clientId);
+
+// 获取客户的联系人
+List<ContactVO> contacts = contactService.listClientContacts(clientId);
+```
+
+## 数据库表结构参考
+
+本模块对应的数据库表结构如下：
+
+### 客户表(client_info)
+| 字段名 | 类型 | 描述 |
+|--------|------|------|
+| id | BIGINT | 主键ID |
+| client_no | VARCHAR(30) | 客户编号 |
+| client_name | VARCHAR(100) | 客户名称 |
+| client_type | INT | 客户类型(1-个人,2-企业) |
+| client_level | INT | 客户等级(1-普通,2-VIP,3-核心) |
+| client_source | INT | 客户来源 |
+| industry | VARCHAR(50) | 所属行业 |
+| scale | VARCHAR(50) | 企业规模 |
+| phone | VARCHAR(20) | 联系电话 |
+| email | VARCHAR(100) | 电子邮箱 |
+| manager_id | BIGINT | 客户负责人ID |
+| status | INT | 状态(0-正常,1-禁用) |
+| id_type | VARCHAR(20) | 证件类型 |
+| id_number | VARCHAR(50) | 证件号码 |
+| credit_level | VARCHAR(10) | 信用等级 |
+| legal_representative | VARCHAR(50) | 法定代表人 |
+| unified_social_credit_code | VARCHAR(50) | 统一社会信用代码 |
+| create_by | BIGINT | 创建人 |
+| create_time | DATETIME | 创建时间 |
+| update_by | BIGINT | 更新人 |
+| update_time | DATETIME | 更新时间 |
+| is_deleted | TINYINT | 是否删除 |
+
+### 其他主要表
+- client_contact：客户联系人表
+- client_address：客户地址表
+- client_category：客户分类表
+- client_tag：客户标签表
+- client_tag_relation：客户标签关联表
+- client_follow_up：客户跟进记录表
+- client_relation：客户关系表 

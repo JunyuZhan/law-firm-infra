@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 /**
  * 联系人视图对象
  */
@@ -66,7 +68,7 @@ public class ContactVO extends BaseVO {
     private String email;
 
     /**
-     * 重要程度
+     * 重要程度 1-普通 2-重要 3-非常重要
      */
     private Integer importance;
 
@@ -76,7 +78,32 @@ public class ContactVO extends BaseVO {
     private String importanceName;
 
     /**
-     * 是否默认联系人
+     * 是否默认联系人 0-否 1-是
      */
     private Integer isDefault;
+
+    /**
+     * 是否默认联系人名称
+     */
+    private String isDefaultName;
+
+    /**
+     * 联系人状态 0-无效 1-有效
+     */
+    private Integer status;
+
+    /**
+     * 联系人状态名称
+     */
+    private String statusName;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 } 

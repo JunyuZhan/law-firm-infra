@@ -74,4 +74,9 @@ public class ContactQueryDTO extends BaseDTO {
      * 创建时间止
      */
     private String createTimeEnd;
+
+    /**
+     * 搜索关键字
+     */
+    private String keyword;
 } 
