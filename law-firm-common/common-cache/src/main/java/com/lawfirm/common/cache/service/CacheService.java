@@ -263,7 +263,7 @@ public interface CacheService {
      * @param values 值集合
      * @return 添加成功的数量
      */
-    <T> long sAdd(String key, T... values);
+    <T> long sAdd(String key, Collection<T> values);
     
     /**
      * 移除Set成员
@@ -272,7 +272,7 @@ public interface CacheService {
      * @param values 值集合
      * @return 移除成功的数量
      */
-    <T> long sRemove(String key, T... values);
+    <T> long sRemove(String key, Collection<T> values);
     
     /**
      * 判断是否是Set的成员

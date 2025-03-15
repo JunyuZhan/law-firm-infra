@@ -6,6 +6,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
@@ -129,5 +130,27 @@ public class BeanUtils {
         } catch (Exception e) {
             throw new BeansException("无法实例化目标类: " + targetClass.getName(), e) {};
         }
+    }
+
+    /**
+     * 复制分页对象，将源分页对象中的记录复制为目标类型
+     *
+     * @param page 源分页对象
+     * @param targetClass 目标类型
+     * @param <T> 目标类型泛型
+     * @param <S> 源类型泛型
+     * @return 新的分页对象，包含转换后的记录
+     */
+    public static <T, S> Page<T> copyPage(Page<S> page, Class<T> targetClass) {
+        if (page == null) {
+            return null;
+        }
+        Page<T> result = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+            
+        List<S> records = page.getRecords();
+        List<T> targetRecords = copyList(records, targetClass);
+        result.setRecords(targetRecords);
+        
+        return result;
     }
 } 

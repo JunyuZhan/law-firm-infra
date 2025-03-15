@@ -26,6 +26,9 @@
         <poi.version>5.2.3</poi.version>
         <caffeine.version>3.1.8</caffeine.version>
         
+        <!-- 新增版本变量 -->
+        <easy-captcha.version>1.6.2</easy-captcha.version>
+        
         <!-- 通用层依赖版本 -->
         <commons-lang3.version>3.14.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
@@ -66,11 +69,12 @@
         <aliyun-tea-openapi.version>0.2.8</aliyun-tea-openapi.version>
         <swagger-annotations.version>1.6.11</swagger-annotations.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <batik-awt-util.version>1.14</batik-awt-util.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- 内部依赖 -->
+            <!-- 内部依赖统一使用revision变量 -->
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>common-util</artifactId>
@@ -180,6 +184,33 @@
                 <version>${swagger-annotations.version}</version>
             </dependency>
             
+            <!-- 新增作用域声明 -->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            
+            <!-- 修正后的验证码依赖 -->
+            <dependency>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>${easy-captcha.version}</version>
+            </dependency>
+            
+            <!-- 统一内部模块版本引用 -->
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>common-web</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>common-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            
             <!-- 数据库迁移 -->
             <dependency>
                 <groupId>org.flywaydb</groupId>
@@ -214,11 +245,6 @@
                 <artifactId>pdfbox</artifactId>
                 <version>${pdfbox.version}</version>
             </dependency>
-            <dependency>
-                <groupId>fr.opensagres.xdocreport</groupId>
-                <artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
-                <version>${xdocreport.version}</version>
-            </dependency>
             
             <!-- Office文档处理 -->
             <dependency>
@@ -248,11 +274,6 @@
             </dependency>
             
             <!-- 缓存 -->
-            <dependency>
-                <groupId>com.github.ben-manes.caffeine</groupId>
-                <artifactId>caffeine</artifactId>
-                <version>${caffeine.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
@@ -442,43 +463,33 @@
             <!-- Common模块 -->
             <dependency>
                 <groupId>com.lawfirm</groupId>
-                <artifactId>common-web</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lawfirm</groupId>
-                <artifactId>common-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lawfirm</groupId>
                 <artifactId>common-data</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>common-test</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>common-cache</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>common-security</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>common-log</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>common-message</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             
             <!-- Model模块 -->
@@ -497,103 +508,103 @@
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>core-audit</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>core-storage</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>core-search</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>core-ai</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>core-message</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>core-workflow</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>case-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>client-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>contract-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>document-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>finance-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>organization-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>system-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>workflow-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>log-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>message-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>knowledge-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>ai-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>search-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>storage-model</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             
             <!-- JSON处理工具 -->
@@ -636,18 +647,18 @@
                 <version>${pdf2dom.version}</version>
             </dependency>
             
+            <!-- Word转PDF工具 -->
+            <dependency>
+                <groupId>fr.opensagres.xdocreport</groupId>
+                <artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
+                <version>${xdocreport.version}</version>
+            </dependency>
+            
             <!-- Javassist -->
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>${javassist.version}</version>
-            </dependency>
-            
-            <!-- Office转PDF -->
-            <dependency>
-                <groupId>fr.opensagres.xdocreport</groupId>
-                <artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
-                <version>${xdocreport.version}</version>
             </dependency>
             
             <!-- Jakarta EE API -->
@@ -720,6 +731,13 @@
                 <version>${tika.version}</version>
             </dependency>
 
+            <!-- Batik SVG 工具 -->
+            <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-awt-util</artifactId>
+                <version>${batik-awt-util.version}</version>
+            </dependency>
+
             <!-- Validation -->
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
@@ -732,13 +750,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-ldap</artifactId>
                 <version>${spring-boot.version}</version>
-            </dependency>
-
-            <!-- 验证码 -->
-            <dependency>
-                <groupId>com.github.whvcse</groupId>
-                <artifactId>easy-captcha</artifactId>
-                <version>1.6.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

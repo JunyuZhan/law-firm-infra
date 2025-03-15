@@ -5,7 +5,7 @@ import com.lawfirm.model.document.entity.base.DocumentTagRel;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 文档标签关联数据访问层
+ * 文档标签关联Mapper接口
  */
 @Mapper
 public interface DocumentTagRelMapper extends BaseMapper<DocumentTagRel> {
