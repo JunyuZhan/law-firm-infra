@@ -19,15 +19,27 @@
 
 ## 核心实体
 
-- **Person**：人员基本信息
-- **Employee**：员工信息，扩展Person
-- **Lawyer**：律师信息，扩展Employee
-- **Staff**：行政人员信息，扩展Employee
+- **Person**：人员基本信息（姓名、性别、证件号码等）
+- **Employee**：员工信息，扩展Person，包含不同员工类型的所有属性
 - **Contact**：联系信息
 - **Contract**：合同信息
 - **WorkExperience**：工作经历
 - **EducationExperience**：教育经历
 - **EmployeePositionHistory**：员工职位变更历史
+
+## 实体设计说明
+
+为了简化实体结构，我们采用了扁平化的设计：
+
+1. **Employee实体**包含了所有类型员工的属性（律师、行政人员等）
+2. 通过`employeeType`枚举字段区分不同类型的员工
+3. 特定类型员工的属性仅在对应的类型下有效
+
+这种设计的优势：
+- 简化了实体继承层次
+- 降低了代码复杂度
+- 保持了与auth-model的兼容性
+- 易于扩展支持新的员工类型
 
 ## 模块关联设计
 
@@ -49,62 +61,105 @@
 
 ## 与其他模块的关系
 
-- **organization-model**：通过EmployeeOrganizationService接口关联组织架构
-- **auth-model**：通过EmployeeAuthBridge接口关联认证系统
-- **base-model**：继承其基础实体和枚举
+### 1. 与auth-model的关系
+- auth-model通过`User.employeeId`关联到本模块的Employee实体
+- 本模块通过`Employee.userId`关联到auth-model的User实体
+- 两者之间采用ID引用方式保持松耦合
 
-## 设计原则
+### 2. 与organization-model的关系
+- 本模块通过`Employee.departmentId`等字段关联organization-model的组织架构
+- 组织架构相关信息不在本模块中定义
 
-1. 保持高内聚低耦合
-2. 专注于人事管理核心功能
-3. 保持模块独立性，通过桥接接口与其他模块交互
-4. 使用统一的常量类管理所有常量定义
+## 数据模型设计
+
+### 1. Person 人员基本信息
+- 包含基础的个人信息，如姓名、性别、证件信息等
+- 作为Employee的父类
+
+### 2. Employee 员工信息
+- 扩展Person实体，包含所有员工通用信息
+- 包含employeeType字段区分不同类型员工
+- 包含律师特有属性（执业证号、执业年限等）
+- 包含行政人员特有属性（职能类型、工作职责等）
+- 与User实体通过userId字段关联
+
+### 3. Contact 联系信息
+- 包含通讯录相关信息
+- 可以与Person关联
+
+### 4. Contract 合同信息
+- 员工合同信息
+- 与Employee关联
+
+## 目录结构
+
+```
+personnel-model/
+├── src/main/java/com/lawfirm/model/personnel/
+│   ├── entity/                # 实体类
+│   │   ├── Person.java        # 人员基本信息
+│   │   ├── Employee.java      # 员工信息（包含律师、行政人员属性）
+│   │   ├── Contact.java       # 联系信息
+│   │   ├── Contract.java      # 合同信息
+│   │   ├── relation/          # 关联实体
+│   │   ├── history/           # 历史记录实体
+│   │   └── resume/            # 简历相关实体
+│   ├── dto/                   # 数据传输对象
+│   ├── vo/                    # 视图对象
+│   ├── enums/                 # 枚举定义
+│   │   ├── PersonTypeEnum.java       # 人员类型枚举
+│   │   ├── EmployeeTypeEnum.java     # 员工类型枚举
+│   │   ├── EmployeeStatusEnum.java   # 员工状态枚举
+│   │   ├── LawyerLevelEnum.java      # 律师级别枚举
+│   │   └── StaffFunctionEnum.java    # 行政职能枚举
+│   ├── constant/              # 常量定义
+│   ├── mapper/                # 映射接口
+│   └── service/               # 服务接口
+└── pom.xml                    # 项目依赖
+```
 
 ## 使用示例
 
-### 角色权限检查
+### 获取员工信息
 ```java
-// 获取用户的人员角色
-PersonRoleEnum role = personPermissionChecker.getPersonRole(userId);
+// 获取律师信息
+Employee lawyer = employeeService.getById(lawyerId);
+if (lawyer.getEmployeeType() == EmployeeTypeEnum.LAWYER) {
+    String licenseNumber = lawyer.getLicenseNumber();
+    LawyerLevelEnum level = lawyer.getLawyerLevel();
+    // 处理律师特有属性
+}
 
-// 检查用户是否有案件管理模块的权限
-boolean canAccessCase = personPermissionChecker.hasModulePermission(
-    userId, PersonnelConstants.ModuleCode.CASE, PersonnelConstants.OperationType.FULL);
-
-// 获取用户对文档模块的数据范围
-String dataScope = personPermissionChecker.getModuleDataScope(
-    userId, PersonnelConstants.ModuleCode.DOCUMENT);
-
-// 检查用户是否是律所主任
-boolean isDirector = personPermissionChecker.hasPersonRole(
-    userId, PersonnelConstants.RoleType.FIRM_DIRECTOR);
+// 获取行政人员信息
+Employee staff = employeeService.getById(staffId);
+if (staff.getEmployeeType() == EmployeeTypeEnum.STAFF) {
+    StaffFunctionEnum function = staff.getFunctionType();
+    String jobDuties = staff.getJobDuties();
+    // 处理行政人员特有属性
+}
 ```
 
-### 员工与组织关系管理
+### 创建新员工
 ```java
-// 获取员工所属的主要组织
-Long primaryOrgId = employeeOrganizationService.getPrimaryOrganizationId(employeeId);
+Employee employee = new Employee();
+// 设置基本信息
+employee.setName("张三");
+employee.setGender(1);
+employee.setMobile("13800138000");
 
-// 将员工分配到组织
-boolean success = employeeOrganizationService.assignEmployeeToOrganization(
-    employeeId, organizationId, positionId, true, LocalDate.now(), null);
+// 设置员工通用信息
+employee.setWorkNumber("EMP20230001");
+employee.setDepartmentId(1L);
+employee.setEntryDate(LocalDate.now());
 
-// 更新员工职位
-boolean updated = employeeOrganizationService.updateEmployeePosition(
-    employeeId, organizationId, newPositionId, "业务调整");
-```
+// 设置为律师
+employee.setEmployeeType(EmployeeTypeEnum.LAWYER);
+employee.setLicenseNumber("L20230001");
+employee.setLawyerLevel(LawyerLevelEnum.JUNIOR);
+employee.setPracticeYears(3);
 
-### 员工与认证系统交互
-```java
-// 创建用户账户
-Long userId = employeeAuthBridge.createUserFromEmployee(employeeId, "初始密码");
-
-// 检查员工权限
-boolean hasPermission = employeeAuthBridge.hasPermission(
-    employeeId, "document:upload");
-
-// 获取员工的所有角色
-List<String> roles = employeeAuthBridge.getEmployeeRoleCodes(employeeId);
+// 保存
+employeeService.save(employee);
 ```
 
 ## 注意事项
@@ -113,61 +168,6 @@ List<String> roles = employeeAuthBridge.getEmployeeRoleCodes(employeeId);
 2. 系统角色负责基础的认证和授权
 3. 业务角色负责特定业务场景的权限控制
 4. PersonPermissionChecker的实现类需要在具体的应用服务中提供
-
-## 目录结构
-```
-personnel/
-├── constant/               # 常量定义
-│   └── PersonnelConstants.java  # 统一常量定义接口
-│
-├── entity/                 # 实体类
-│   ├── Person.java         # 人员基础信息
-│   ├── Employee.java       # 员工信息
-│   ├── Lawyer.java         # 律师信息
-│   ├── Staff.java          # 行政人员信息
-│   ├── Contact.java        # 联系方式
-│   ├── Contract.java       # 合同信息
-│   │
-│   ├── history/            # 历史记录相关实体
-│   │   └── EmployeePositionHistory.java # 员工职位变更历史
-│   │
-│   ├── relation/           # 关系实体
-│   │   └── EmployeeOrganizationRelation.java # 员工与组织关系
-│   │
-│   └── resume/             # 简历相关实体
-│       ├── EducationExperience.java  # 教育经历
-│       └── WorkExperience.java       # 工作经历
-│
-├── service/               # 服务接口
-│   ├── PersonService.java       # 人员服务接口
-│   ├── EmployeeService.java     # 员工服务接口
-│   ├── LawyerService.java       # 律师服务接口
-│   ├── StaffService.java        # 行政人员服务接口
-│   ├── EmployeeAuthBridge.java  # 员工认证桥接接口
-│   ├── EmployeeOrganizationService.java # 员工组织关系服务
-│   └── PersonPermissionChecker.java     # 人员权限检查接口
-│
-├── dto/                   # 数据传输对象
-│   ├── person/            # 人员相关DTO
-│   ├── employee/          # 员工相关DTO
-│   ├── lawyer/            # 律师相关DTO
-│   └── staff/             # 行政人员相关DTO
-│
-├── vo/                    # 视图对象
-│   ├── PersonVO.java      # 人员视图对象
-│   ├── EmployeeVO.java    # 员工视图对象
-│   ├── LawyerVO.java      # 律师视图对象
-│   └── StaffVO.java       # 行政人员视图对象
-│
-└── enums/                 # 枚举类型
-    ├── PersonTypeEnum.java     # 人员类型
-    ├── PersonRoleEnum.java     # 人员角色
-    ├── EmployeeStatusEnum.java # 员工状态
-    ├── EmployeeTypeEnum.java   # 员工类型
-    ├── LawyerLevelEnum.java    # 律师职级
-    ├── ContractTypeEnum.java   # 合同类型
-    └── StaffFunctionEnum.java  # 行政人员职能
-```
 
 ## 依赖关系
 - 依赖 organization-model：复用组织架构中的部门、职位等信息

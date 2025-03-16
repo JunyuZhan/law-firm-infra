@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎加入我们的团队</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .header {
+            background-color: #0056b3;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>欢迎加入我们的团队</h1>
+        </div>
+        <div class="content">
+            <p>尊敬的 <strong th:text="${employee.name}">员工姓名</strong>：</p>
+            
+            <p>欢迎您加入我们的律师事务所！</p>
+            
+            <p>您的入职信息如下：</p>
+            <ul>
+                <li>工号: <span th:text="${employee.workNumber}">EMP12345</span></li>
+                <li>部门: <span th:text="${employee.departmentName}">法律顾问部</span></li>
+                <li>职位: <span th:text="${employee.positionName}">律师助理</span></li>
+                <li>入职日期: <span th:text="${#dates.format(employee.joinDate, 'yyyy-MM-dd')}">2023-01-01</span></li>
+            </ul>
+            
+            <p>我们非常期待与您共同成长，请随时联系您的上级或人事部门，他们将帮助您熟悉工作环境和职责。</p>
+            
+            <p>祝您工作顺利！</p>
+            
+            <p>此致</p>
+            <p>敬礼</p>
+            <p>人事部</p>
+        </div>
+        <div class="footer">
+            <p>此邮件由系统自动发送，请勿直接回复</p>
+            <p>&copy; 2023 法律事务所管理系统</p>
+        </div>
+    </div>
+</body>
+</html> 

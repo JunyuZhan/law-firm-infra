@@ -1,122 +1,157 @@
 package com.lawfirm.contract.constant;
 
 /**
- * 合同模块常量
+ * 合同模块常量定义
  */
 public interface ContractConstant {
-
-    /**
-     * 合同类型
-     */
-    interface ContractType {
-        /**
-         * 常规合同
-         */
-        int REGULAR = 1;
-
-        /**
-         * 委托合同
-         */
-        int ENTRUSTED = 2;
-
-        /**
-         * 顾问合同
-         */
-        int CONSULTANT = 3;
-    }
-
+    
     /**
      * 合同状态
      */
-    interface ContractStatus {
+    interface Status {
         /**
          * 草稿
          */
         int DRAFT = 0;
-
+        
         /**
          * 审批中
          */
-        int APPROVING = 1;
-
+        int REVIEWING = 1;
+        
         /**
          * 已生效
          */
         int EFFECTIVE = 2;
-
+        
         /**
-         * 已到期
+         * 履行中
          */
-        int EXPIRED = 3;
-
+        int PERFORMING = 3;
+        
+        /**
+         * 已完成
+         */
+        int COMPLETED = 4;
+        
         /**
          * 已终止
          */
-        int TERMINATED = 4;
+        int TERMINATED = 5;
+        
+        /**
+         * 已作废
+         */
+        int INVALID = 6;
     }
-
+    
     /**
-     * 合同条款类型
+     * 合同类型
      */
-    interface ClauseType {
+    interface Type {
         /**
-         * 基本条款
+         * 采购合同
          */
-        int BASIC = 1;
-
+        String PURCHASE = "purchase";
+        
         /**
-         * 特殊条款
+         * 销售合同
          */
-        int SPECIAL = 2;
-
+        String SALES = "sales";
+        
         /**
-         * 其他条款
+         * 劳务合同
          */
-        int OTHER = 3;
+        String LABOR = "labor";
+        
+        /**
+         * 租赁合同
+         */
+        String LEASE = "lease";
+        
+        /**
+         * 技术服务合同
+         */
+        String TECH_SERVICE = "tech_service";
+        
+        /**
+         * 法律服务合同
+         */
+        String LEGAL_SERVICE = "legal_service";
+        
+        /**
+         * 咨询服务合同
+         */
+        String CONSULTING = "consulting";
     }
-
-    /**
-     * 审批节点
-     */
-    interface ApprovalNode {
-        /**
-         * 部门负责人
-         */
-        int DEPARTMENT_MANAGER = 1;
-
-        /**
-         * 分支机构负责人
-         */
-        int BRANCH_MANAGER = 2;
-
-        /**
-         * 法务审核
-         */
-        int LEGAL_REVIEW = 3;
-
-        /**
-         * 财务审核
-         */
-        int FINANCE_REVIEW = 4;
-    }
-
+    
     /**
      * 审批状态
      */
-    interface ApprovalStatus {
+    interface ReviewStatus {
         /**
          * 待审批
          */
         int PENDING = 0;
-
+        
         /**
          * 已通过
          */
         int APPROVED = 1;
-
+        
         /**
          * 已拒绝
          */
         int REJECTED = 2;
+        
+        /**
+         * 已撤回
+         */
+        int WITHDRAWN = 3;
+    }
+    
+    /**
+     * 缓存相关常量
+     */
+    interface Cache {
+        /**
+         * 合同缓存名称
+         */
+        String CONTRACT = "contract";
+        
+        /**
+         * 合同模板缓存
+         */
+        String CONTRACT_TEMPLATE = "contract_template";
+    }
+    
+    /**
+     * 合同模板状态
+     */
+    interface TemplateStatus {
+        /**
+         * 启用
+         */
+        int ENABLED = 1;
+        
+        /**
+         * 禁用
+         */
+        int DISABLED = 0;
+    }
+    
+    /**
+     * 条款类型
+     */
+    interface ClauseType {
+        /**
+         * 标准条款
+         */
+        int STANDARD = 1;
+        
+        /**
+         * 自定义条款
+         */
+        int CUSTOM = 2;
     }
 } 

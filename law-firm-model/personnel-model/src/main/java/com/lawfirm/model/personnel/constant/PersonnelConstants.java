@@ -14,8 +14,14 @@ public interface PersonnelConstants extends BaseConstants {
     interface Table {
         String PERSON = "per_person";
         String EMPLOYEE = "per_employee";
+        
+        /**
+         * 以下表名保留用于兼容性和数据库映射
+         * 注意：在模型重构后，Lawyer和Staff实体已合并到Employee实体中
+         */
         String LAWYER = "per_lawyer";
         String STAFF = "per_staff";
+        
         String CONTACT = "per_contact";
         String CONTRACT = "per_contract";
         String EMPLOYEE_ORGANIZATION = "per_employee_organization";
@@ -53,6 +59,7 @@ public interface PersonnelConstants extends BaseConstants {
          * 员工字段
          */
         interface Employee {
+            String ID = "id";
             String WORK_NUMBER = "work_number";
             String USER_ID = "user_id";
             String DEPARTMENT_ID = "department_id";
@@ -72,12 +79,42 @@ public interface PersonnelConstants extends BaseConstants {
             String EMPLOYEE_TYPE = "employee_type";
             String CONTRACT_STATUS = "contract_status";
             String CURRENT_CONTRACT_ID = "current_contract_id";
+            
+            /**
+             * 以下字段已添加到Employee表中，用于存储律师和行政人员特有属性
+             */
+            String LICENSE_NUMBER = "license_number";
+            String LICENSE_ISSUE_DATE = "license_issue_date";
+            String LICENSE_EXPIRE_DATE = "license_expire_date";
+            String PRACTICE_YEARS = "practice_years";
+            String LAWYER_LEVEL = "lawyer_level";
+            String PRACTICE_AREAS = "practice_areas";
+            String EXPERTISE = "expertise";
+            String PROFILE = "profile";
+            String ACHIEVEMENTS = "achievements";
+            String TEAM_ID = "team_id";
+            String MENTOR_ID = "mentor_id";
+            String IS_PARTNER = "is_partner";
+            String PARTNER_DATE = "partner_date";
+            String EQUITY_RATIO = "equity_ratio";
+            String PRACTICE_STATUS = "practice_status";
+            
+            String FUNCTION_TYPE = "function_type";
+            String FUNCTION_DESC = "function_desc";
+            String JOB_DUTIES = "job_duties";
+            String SERVICE_SCOPE = "service_scope";
+            String SKILL_CERTIFICATES = "skill_certificates";
+            String CENTER_TYPE = "center_type";
+            String HAS_OTHER_FUNCTIONS = "has_other_functions";
+            String OTHER_FUNCTIONS = "other_functions";
         }
         
         /**
-         * 律师字段
+         * 律师字段（已合并到Employee）
+         * 仅保留用于兼容性和数据库映射
          */
         interface Lawyer {
+            String ID = "id";
             String LICENSE_NUMBER = "license_number";
             String LICENSE_ISSUE_DATE = "license_issue_date";
             String LICENSE_EXPIRE_DATE = "license_expire_date";
@@ -93,7 +130,23 @@ public interface PersonnelConstants extends BaseConstants {
             String PARTNER_DATE = "partner_date";
             String EQUITY_RATIO = "equity_ratio";
         }
-
+        
+        /**
+         * 行政人员字段（已合并到Employee）
+         * 仅保留用于兼容性和数据库映射
+         */
+        interface Staff {
+            String ID = "id";
+            String FUNCTION_TYPE = "function_type";
+            String FUNCTION_DESC = "function_desc";
+            String JOB_DUTIES = "job_duties";
+            String SERVICE_SCOPE = "service_scope";
+            String SKILL_CERTIFICATES = "skill_certificates";
+            String CENTER_TYPE = "center_type";
+            String HAS_OTHER_FUNCTIONS = "has_other_functions";
+            String OTHER_FUNCTIONS = "other_functions";
+        }
+        
         /**
          * 教育经历字段
          */

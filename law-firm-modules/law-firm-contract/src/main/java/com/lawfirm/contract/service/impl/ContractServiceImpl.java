@@ -2,20 +2,22 @@ package com.lawfirm.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.contract.constant.ContractConstant.ContractStatus;
-import com.lawfirm.contract.entity.Contract;
-import com.lawfirm.contract.exception.ContractException;
-import com.lawfirm.contract.mapper.ContractMapper;
-import com.lawfirm.contract.service.ContractApprovalService;
-import com.lawfirm.contract.service.ContractService;
-import com.lawfirm.contract.util.ContractNoGenerator;
+import com.lawfirm.contract.util.ContractConverter;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.contract.dto.ContractCreateDTO;
+import com.lawfirm.model.contract.dto.ContractQueryDTO;
+import com.lawfirm.model.contract.dto.ContractUpdateDTO;
+import com.lawfirm.model.contract.entity.Contract;
+import com.lawfirm.model.contract.mapper.ContractMapper;
+import com.lawfirm.model.contract.service.ContractService;
+import com.lawfirm.model.contract.vo.ContractVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 合同服务实现类
@@ -23,155 +25,107 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract> implements ContractService {
+public class ContractServiceImpl extends BaseServiceImpl<ContractMapper, Contract> implements ContractService {
 
-    private final ContractNoGenerator contractNoGenerator;
-    private final ContractApprovalService contractApprovalService;
-
+    private final ContractMapper contractMapper;
+    
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long createContract(Contract contract) {
-        // 生成合同编号
-        String contractType = getContractTypeCode(contract.getType());
-        contract.setContractNo(contractNoGenerator.generate(contractType));
+    public Long createContract(ContractCreateDTO createDTO) {
+        log.info("创建合同: {}", createDTO.getContractName());
         
-        // 设置初始状态
-        contract.setStatus(ContractStatus.DRAFT);
+        // 转换DTO为实体
+        Contract contract = ContractConverter.toEntity(createDTO);
         
-        // 保存合同信息
+        // 保存合同
         save(contract);
+        
         return contract.getId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateContract(Contract contract) {
-        // 校验合同状态
-        Contract oldContract = getById(contract.getId());
-        if (oldContract == null) {
-            throw new ContractException("合同不存在");
-        }
-        if (oldContract.getStatus() != ContractStatus.DRAFT) {
-            throw new ContractException("只能修改草稿状态的合同");
+    public boolean updateContract(ContractUpdateDTO updateDTO) {
+        log.info("更新合同: {}", updateDTO.getId());
+        
+        // 获取合同
+        Contract contract = getById(updateDTO.getId());
+        if (contract == null) {
+            log.error("合同不存在: {}", updateDTO.getId());
+            return false;
         }
         
         // 更新合同信息
-        updateById(contract);
+        ContractConverter.updateEntity(contract, updateDTO);
+        
+        // 保存更新
+        return updateById(contract);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteContract(Long id) {
-        // 校验合同状态
-        Contract contract = getById(id);
-        if (contract == null) {
-            throw new ContractException("合同不存在");
-        }
-        if (contract.getStatus() != ContractStatus.DRAFT) {
-            throw new ContractException("只能删除草稿状态的合同");
-        }
+    public List<ContractVO> listContracts(ContractQueryDTO queryDTO) {
+        log.info("查询合同列表");
         
-        // 删除合同
-        removeById(id);
+        // 构建查询条件
+        LambdaQueryWrapper<Contract> wrapper = buildQueryWrapper(queryDTO);
+        
+        // 查询合同列表
+        List<Contract> contracts = list(wrapper);
+        
+        // 转换为VO
+        return contracts.stream()
+                .map(ContractConverter::toVO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Contract getContractDetail(Long id) {
-        return getById(id);
-    }
-
-    @Override
-    public IPage<Contract> pageContracts(int page, int size, Integer type, Integer status, String keyword) {
-        LambdaQueryWrapper<Contract> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(type != null, Contract::getType, type)
-                .eq(status != null, Contract::getStatus, status)
-                .and(StringUtils.isNotBlank(keyword), w -> w
-                        .like(Contract::getContractNo, keyword)
-                        .or()
-                        .like(Contract::getName, keyword)
-                        .or()
-                        .like(Contract::getClientName, keyword)
-                        .or()
-                        .like(Contract::getLawyerName, keyword))
-                .orderByDesc(Contract::getCreateTime);
+    public IPage<ContractVO> pageContracts(IPage<ContractVO> page, ContractQueryDTO queryDTO) {
+        log.info("分页查询合同列表: 页码={}, 页大小={}", page.getCurrent(), page.getSize());
         
-        return page(new Page<>(page, size), wrapper);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void submitApproval(Long id) {
-        // 校验合同状态
-        Contract contract = getById(id);
-        if (contract == null) {
-            throw new ContractException("合同不存在");
-        }
-        if (contract.getStatus() != ContractStatus.DRAFT) {
-            throw new ContractException("只能提交草稿状态的合同");
-        }
+        // 构建查询条件
+        LambdaQueryWrapper<Contract> wrapper = buildQueryWrapper(queryDTO);
         
-        // 更新合同状态
-        Contract updateContract = new Contract();
-        updateContract.setId(id);
-        updateContract.setStatus(ContractStatus.APPROVING);
-        updateById(updateContract);
+        // 分页查询
+        IPage<Contract> contractPage = page(page.convert(c -> new Contract()), wrapper);
         
-        // 创建审批记录
-        contractApprovalService.createApproval(id, 1, contract.getDepartmentId(), "部门负责人");
+        // 转换为VO
+        return contractPage.convert(ContractConverter::toVO);
     }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void withdrawApproval(Long id) {
-        // 校验合同状态
-        Contract contract = getById(id);
-        if (contract == null) {
-            throw new ContractException("合同不存在");
-        }
-        if (contract.getStatus() != ContractStatus.APPROVING) {
-            throw new ContractException("只能撤回审核中的合同");
-        }
-        
-        // 更新合同状态
-        Contract updateContract = new Contract();
-        updateContract.setId(id);
-        updateContract.setStatus(ContractStatus.DRAFT);
-        updateById(updateContract);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void terminateContract(Long id, String reason) {
-        // 校验合同状态
-        Contract contract = getById(id);
-        if (contract == null) {
-            throw new ContractException("合同不存在");
-        }
-        if (contract.getStatus() != ContractStatus.EFFECTIVE) {
-            throw new ContractException("只能终止已生效的合同");
-        }
-        
-        // 更新合同状态
-        Contract updateContract = new Contract();
-        updateContract.setId(id);
-        updateContract.setStatus(ContractStatus.TERMINATED);
-        updateContract.setRemark(reason);
-        updateById(updateContract);
-    }
-
+    
     /**
-     * 获取合同类型编码
+     * 构建查询条件
      */
-    private String getContractTypeCode(Integer type) {
-        switch (type) {
-            case 1:
-                return "CT"; // 常规合同
-            case 2:
-                return "ET"; // 委托合同
-            case 3:
-                return "CS"; // 顾问合同
-            default:
-                throw new ContractException("无效的合同类型");
+    private LambdaQueryWrapper<Contract> buildQueryWrapper(ContractQueryDTO queryDTO) {
+        LambdaQueryWrapper<Contract> wrapper = new LambdaQueryWrapper<>();
+        
+        // 合同编号
+        if (queryDTO.getContractNo() != null) {
+            wrapper.like(Contract::getContractNo, queryDTO.getContractNo());
         }
+        
+        // 合同名称
+        if (queryDTO.getContractName() != null) {
+            wrapper.like(Contract::getContractName, queryDTO.getContractName());
+        }
+        
+        // 合同类型
+        if (queryDTO.getContractType() != null) {
+            wrapper.eq(Contract::getContractType, queryDTO.getContractType());
+        }
+        
+        // 合同状态
+        if (queryDTO.getStatus() != null) {
+            wrapper.eq(Contract::getStatus, queryDTO.getStatus());
+        }
+        
+        // 客户ID
+        if (queryDTO.getClientId() != null) {
+            wrapper.eq(Contract::getClientId, queryDTO.getClientId());
+        }
+        
+        // 排序
+        wrapper.orderByDesc(Contract::getUpdateTime);
+        
+        return wrapper;
     }
 } 

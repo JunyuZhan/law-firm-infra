@@ -1,169 +1,181 @@
-# 合同管理模块 (Contract Module)
+# 律所合同管理模块设计
 
-## 模块说明
-合同管理模块是律师事务所管理系统的合同管理和处理模块，负责管理律所所有类型的合同，包括法律服务合同、咨询合同、代理合同等。该模块提供了完整的合同生命周期管理，支持合同的创建、审批、执行、变更、终止等全流程管理。
+## 一、模块概述
 
-## 核心功能
+律所合同管理模块（law-firm-contract）是法律事务管理系统中的核心业务模块，主要负责律所内外部合同的全生命周期管理，包括合同起草、审批、执行跟踪、变更、归档等完整流程。模块集成了工作流引擎，支持灵活的合同审批流程配置。
 
-### 1. 合同管理
-- 合同起草拟定
-- 合同模板管理
-- 合同类型管理
-- 合同状态管理
-- 合同变更管理
+## 二、核心功能
 
-### 2. 审批流程
-- 合同审批流程
-- 会签流程管理
-- 审批权限控制
-- 审批记录追踪
-- 电子签章集成
+### 1. 合同基础管理
+- 合同创建与信息维护
+- 合同详情查看与列表查询
+- 合同状态管理（草稿、审批中、生效、终止、作废等）
+- 合同分类与标签管理
 
-### 3. 执行管理
-- 合同执行跟踪
-- 履约监控管理
-- 付款计划管理
-- 收款管理
-- 违约管理
+### 2. 合同模板管理
+- 合同模板维护（新增、修改、禁用）
+- 模板变量管理
+- 基于模板生成合同文档
+- 模板使用权限控制
 
-### 4. 分析统计
-- 合同统计分析
-- 收入预测分析
-- 风险评估分析
-- 履约评估分析
-- 客户分析
+### 3. 审批流程管理
+- 自定义审批流程配置
+- 审批节点与审批人设置
+- 审批过程跟踪与催办
+- 审批意见与修改记录
 
-## 核心组件
+### 4. 合同条款管理
+- 标准条款库维护
+- 特殊条款管理
+- 条款风险评估
+- 条款变更对比
 
-### 1. 合同服务
-- ContractService：合同服务接口
-- ContractManager：合同管理器
-- ContractHandler：合同处理器
-- ContractValidator：合同验证器
-- ContractConverter：合同转换器
+### 5. 合同执行跟踪
+- 合同履行状态监控
+- 合同里程碑管理
+- 履约提醒与预警
+- 违约情况记录
 
-### 2. 审批服务
-- ApprovalService：审批服务
-- SignatureService：签章服务
-- WorkflowService：工作流服务
-- AuthorizationService：授权服务
-- NotificationService：通知服务
+### 6. 收付款管理
+- 合同收付款计划管理
+- 收付款执行记录
+- 款项逾期提醒
+- 收付款状态统计
 
-### 3. 执行服务
-- ExecutionService：执行服务
-- PaymentPlanService：付款计划服务
-- ComplianceService：履约服务
-- BreachService：违约服务
-- ReminderService：提醒服务
+### 7. 变更与补充协议
+- 合同变更申请与审批
+- 补充协议管理
+- 变更历史记录
+- 版本比对功能
 
-### 4. 分析服务
-- ContractAnalysisService：分析服务
-- RevenueAnalysisService：收入分析
-- RiskAssessmentService：风险评估
-- PerformanceAnalysisService：履约分析
-- ReportingService：报表服务
+### 8. 律师函管理
+- 律师函模板管理
+- 律师函生成与发送
+- 律师函回复记录
+- 律师函关联案件
 
-## 使用示例
+## 三、技术架构
 
-### 1. 创建合同
-```java
-@Autowired
-private ContractService contractService;
-
-public ContractDTO createContract(ContractCreateRequest request) {
-    // 创建合同
-    Contract contract = new Contract()
-        .setName(request.getName())
-        .setType(ContractTypeEnum.LEGAL_SERVICE)
-        .setClient(request.getClientId())
-        .setAmount(request.getAmount())
-        .setStartDate(request.getStartDate())
-        .setEndDate(request.getEndDate());
-    
-    // 保存合同
-    return contractService.createContract(contract);
-}
+### 1. 模块结构
+```
+law-firm-contract/
+├── controller/             # 控制器层
+│   ├── ContractController.java
+│   ├── ContractTemplateController.java
+│   ├── ContractReviewController.java
+│   ├── ContractClauseController.java
+│   └── ...
+├── service/                # 服务层
+│   ├── impl/               # 服务实现
+│   │   ├── ContractServiceImpl.java
+│   │   ├── ContractTemplateServiceImpl.java
+│   │   └── ...
+│   └── strategy/           # 策略模式实现
+│       ├── template/       # 模板策略
+│       └── workflow/       # 工作流策略
+├── util/                   # 工具类
+│   ├── ContractConverter.java
+│   ├── TemplateParser.java
+│   └── ContractNumberGenerator.java
+├── config/                 # 配置类
+│   ├── ContractConfig.java
+│   └── WorkflowConfig.java
+└── constant/               # 常量定义
+    └── ContractConstant.java
 ```
 
-### 2. 提交审批
-```java
-@Autowired
-private ApprovalService approvalService;
+### 2. 与其他模块的关系
+- 依赖于client模块：获取客户信息
+- 依赖于document模块：文档管理与存储
+- 依赖于finance模块：处理合同收付款
+- 集成core-workflow组件：实现合同审批流程
+- 依赖于personnel模块：获取律师与员工信息
 
-public void submitApproval(Long contractId, ApprovalRequest request) {
-    // 创建审批流程
-    ApprovalProcess process = new ApprovalProcess()
-        .setContractId(contractId)
-        .setType(request.getType())
-        .setApprovers(request.getApprovers())
-        .setUrgency(request.getUrgency())
-        .setDescription(request.getDescription());
-    
-    // 提交审批
-    approvalService.submit(process);
-}
-```
+## 四、数据模型
 
-### 3. 执行跟踪
-```java
-@Autowired
-private ExecutionService executionService;
+### 1. 核心实体
+- `Contract`: 合同基本信息
+- `ContractTemplate`: 合同模板
+- `ContractClause`: 合同条款
+- `ContractReview`: 合同审批记录
+- `ContractChange`: 合同变更记录
+- `ContractPayment`: 合同收付款计划
+- `ContractAttachment`: 合同附件
+- `ContractReminder`: 合同提醒事项
+- `LawyerLetter`: 律师函信息
 
-public void trackExecution(Long contractId, ExecutionRequest request) {
-    // 创建执行记录
-    ExecutionRecord record = new ExecutionRecord()
-        .setContractId(contractId)
-        .setStage(request.getStage())
-        .setProgress(request.getProgress())
-        .setComments(request.getComments())
-        .setNextActions(request.getNextActions());
-    
-    // 更新执行状态
-    executionService.updateExecution(record);
-}
-```
+### 2. 主要关系
+- 一个合同可以有多个条款
+- 一个合同可以有多个审批记录
+- 一个合同可以有多个变更记录
+- 一个合同可以有多个附件
+- 一个合同可以有多个收付款计划
+- 一个合同可以关联多个律师函
 
-## 配置说明
+## 五、主要流程
 
-### 1. 合同配置
-```yaml
-contract:
-  # 合同编号规则
-  number:
-    prefix: CTR
-    date-format: yyyyMMdd
-    sequence-length: 4
-    
-  # 审批配置
-  approval:
-    enable-auto-approval: false
-    max-approval-level: 3
-    timeout-hours: 48
-    
-  # 模板配置
-  template:
-    base-path: /contracts/templates
-    version-control: true
-```
+### 1. 合同创建流程
+1. 选择合同类型与模板
+2. 填写合同基本信息
+3. 选择/修改合同条款
+4. 上传合同附件
+5. 设置合同收付款计划
+6. 选择审批流程
+7. 提交审批
 
-### 2. 执行配置
-```yaml
-execution:
-  # 付款配置
-  payment:
-    reminder-days: 7
-    overdue-alert: true
-    
-  # 履约配置
-  compliance:
-    auto-check: true
-    check-interval: 7d
-    alert-threshold: 0.8
-```
+### 2. 合同审批流程
+1. 发起审批
+2. 审批流程流转（多级审批）
+3. 审批意见反馈与修改
+4. 审批结果记录
+5. 审批通过后合同生效
 
-## 注意事项
-1. 合同文本规范
-2. 审批流程管理
-3. 付款计划跟踪
-4. 履约风险防控
-5. 文档安全管理 
+### 3. 合同变更流程
+1. 提交变更申请
+2. 修改合同信息/条款
+3. 变更审批
+4. 变更记录保存
+5. 新版本合同生效
+
+## 六、接口设计
+
+### 1. 对外API
+- 合同基础CRUD接口
+- 合同模板管理接口
+- 合同审批流程接口
+- 合同条款管理接口
+- 合同变更与版本管理接口
+- 律师函管理接口
+
+### 2. 重要业务接口
+- 合同生成服务
+- 模板解析服务
+- 审批流程服务
+- 合同编号生成服务
+- 合同到期提醒服务
+
+## 七、安全与权限
+
+### 1. 权限控制
+- 基于角色的权限控制（律师、律所负责人、合同管理员等）
+- 数据级权限控制（部门隔离、客户隔离）
+- 操作级权限控制（查看、创建、编辑、删除、审批等）
+
+### 2. 数据安全
+- 合同数据加密存储
+- 敏感条款标记与特殊权限控制
+- 合同操作全流程日志
+- 文档水印与下载控制
+
+## 八、扩展性设计
+
+### 1. 插件机制
+- 支持自定义合同类型与模板
+- 支持自定义审批流程
+- 支持自定义风险评估规则
+
+### 2. 集成能力
+- 提供对外接口，支持与第三方系统集成
+- 支持电子签章集成
+- 支持OCR合同导入
+- 支持第三方合同库查询

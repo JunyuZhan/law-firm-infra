@@ -1,7 +1,6 @@
 package com.lawfirm.model.personnel.enums;
 
 import com.lawfirm.model.base.enums.BaseEnum;
-import com.lawfirm.model.personnel.constant.PersonnelConstants;
 
 /**
  * 员工类型枚举
@@ -9,24 +8,29 @@ import com.lawfirm.model.personnel.constant.PersonnelConstants;
 public enum EmployeeTypeEnum implements BaseEnum<Integer> {
     
     /**
-     * 全职
+     * 律师
      */
-    FULL_TIME(PersonnelConstants.EmployeeType.FULL_TIME, "全职"),
+    LAWYER(1, "律师"),
 
     /**
-     * 兼职
+     * 行政人员
      */
-    PART_TIME(PersonnelConstants.EmployeeType.PART_TIME, "兼职"),
-
+    STAFF(2, "行政人员"),
+    
     /**
-     * 实习
+     * 实习生
      */
-    INTERN(PersonnelConstants.EmployeeType.INTERN, "实习"),
-
+    INTERN(3, "实习生"),
+    
     /**
-     * 外包
+     * 顾问
      */
-    OUTSOURCED(PersonnelConstants.EmployeeType.OUTSOURCED, "外包");
+    CONSULTANT(4, "顾问"),
+    
+    /**
+     * 其他
+     */
+    OTHER(99, "其他");
 
     private final Integer value;
     private final String description;
