@@ -6,6 +6,7 @@ import com.lawfirm.model.contract.dto.ContractCreateDTO;
 import com.lawfirm.model.contract.dto.ContractUpdateDTO;
 import com.lawfirm.model.contract.dto.ContractQueryDTO;
 import com.lawfirm.model.contract.vo.ContractVO;
+import com.lawfirm.model.contract.vo.ContractDetailVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import java.util.List;
 
@@ -42,4 +43,11 @@ public interface ContractService extends BaseService<Contract> {
      * @return 分页结果
      */
     IPage<ContractVO> pageContracts(IPage<ContractVO> page, ContractQueryDTO queryDTO);
+    
+    /**
+     * 获取合同详情
+     * @param id 合同ID
+     * @return 合同详情
+     */
+    ContractDetailVO getContractDetail(Long id);
 } 

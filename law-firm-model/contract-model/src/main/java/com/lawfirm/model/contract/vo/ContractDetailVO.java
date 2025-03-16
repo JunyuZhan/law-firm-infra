@@ -65,28 +65,31 @@ public class ContractDetailVO extends BaseVO {
     private Double remainingAmount; // 剩余应收金额
     
     // 审批记录
-    private List<ContractReviewVO> reviewRecords; // 审批记录
+    private transient List<ContractReviewVO> reviewRecords; // 审批记录
     
     // 变更记录
-    private List<ContractChangeVO> changeRecords; // 变更记录
+    private transient List<ContractChangeVO> changeRecords; // 变更记录
     
     // 团队成员
-    private List<ContractTeamMemberVO> teamMembers; // 团队成员
+    private transient List<ContractTeamMemberVO> teamMembers; // 团队成员
     
     // 收费项目
-    private List<ContractFeeVO> feeItems; // 收费项目
+    private transient List<ContractFeeVO> feeItems; // 收费项目
     
     // 里程碑
-    private List<ContractMilestoneVO> milestones; // 里程碑
+    private transient List<ContractMilestoneVO> milestones; // 里程碑
     
     // 附件
-    private List<ContractAttachmentVO> attachments; // 附件列表
+    private transient List<ContractAttachmentVO> attachments; // 附件列表
     
     /**
      * 合同团队成员VO
      */
     @Data
+    @EqualsAndHashCode(callSuper=false)
     public static class ContractTeamMemberVO extends BaseVO {
+        private static final long serialVersionUID = 1L;
+        
         private Long attorneyId;        // 律师ID
         private String attorneyName;    // 律师姓名
         private String roleType;        // 角色类型
@@ -101,7 +104,10 @@ public class ContractDetailVO extends BaseVO {
      * 合同收费项VO
      */
     @Data
+    @EqualsAndHashCode(callSuper=false)
     public static class ContractFeeVO extends BaseVO {
+        private static final long serialVersionUID = 1L;
+        
         private String feeType;         // 收费类型
         private String feeName;         // 费用名称
         private Double feeAmount;       // 费用金额
@@ -121,7 +127,10 @@ public class ContractDetailVO extends BaseVO {
      * 合同里程碑VO
      */
     @Data
+    @EqualsAndHashCode(callSuper=false)
     public static class ContractMilestoneVO extends BaseVO {
+        private static final long serialVersionUID = 1L;
+        
         private String milestoneName;   // 里程碑名称
         private String description;     // 描述
         private Date planDate;          // 计划日期
@@ -138,7 +147,10 @@ public class ContractDetailVO extends BaseVO {
      * 合同附件VO
      */
     @Data
+    @EqualsAndHashCode(callSuper=false)
     public static class ContractAttachmentVO extends BaseVO {
+        private static final long serialVersionUID = 1L;
+        
         private String fileName;        // 文件名
         private String fileType;        // 文件类型
         private Long fileSize;          // 文件大小

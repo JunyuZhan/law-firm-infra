@@ -2,7 +2,7 @@
 
 ## 一、模块概述
 
-律所合同管理模块（law-firm-contract）是法律事务管理系统中的核心业务模块，主要负责律所内外部合同的全生命周期管理，包括合同起草、审批、执行跟踪、变更、归档等完整流程。模块集成了工作流引擎，支持灵活的合同审批流程配置。
+律所合同管理模块（law-firm-contract）是法律事务管理系统中的核心业务模块，主要负责律所内外部合同的全生命周期管理，包括合同起草、审批、执行跟踪、变更、归档等完整流程。模块集成了系统的core-workflow工作流引擎，支持灵活的合同审批流程配置。
 
 ## 二、核心功能
 
@@ -71,25 +71,38 @@ law-firm-contract/
 │   │   ├── ContractTemplateServiceImpl.java
 │   │   └── ...
 │   └── strategy/           # 策略模式实现
-│       ├── template/       # 模板策略
-│       └── workflow/       # 工作流策略
+│       └──template/       # 模板策略
+├── event/                  # 事件机制
+│   ├── publisher/          # 事件发布者
+│   │   └── ContractEventPublisher.java
+│   └── listener/           # 事件监听者
+│       └── ContractEventListener.java
 ├── util/                   # 工具类
 │   ├── ContractConverter.java
 │   ├── TemplateParser.java
 │   └── ContractNumberGenerator.java
 ├── config/                 # 配置类
 │   ├── ContractConfig.java
-│   └── WorkflowConfig.java
-└── constant/               # 常量定义
-    └── ContractConstant.java
+│   ├── WorkflowConfig.java
+│   └── CacheConfig.java
+├── constant/               # 常量定义
+│   └── ContractConstant.java
+└── resources/              # 资源文件
+    ├── application.yml     # 应用配置
+    └── db/                 # 数据库相关
+        ├── migration/      # 迁移脚本
+        │   ├── V1.0.0__create_contract_tables.sql
+        │   └── V1.0.1__add_contract_indexes.sql
+        └── init/           # 初始化数据
+            └── contract_templates_init.sql
 ```
 
 ### 2. 与其他模块的关系
-- 依赖于client模块：获取客户信息
-- 依赖于document模块：文档管理与存储
-- 依赖于finance模块：处理合同收付款
-- 集成core-workflow组件：实现合同审批流程
-- 依赖于personnel模块：获取律师与员工信息
+- 使用client模块：获取客户信息
+- 使用document模块：文档管理与存储
+- 被finance模块依赖：为财务模块提供合同收付款计划数据
+- 集成core-workflow组件：使用系统统一工作流引擎实现合同审批流程
+- 使用personnel模块：获取律师与员工信息
 
 ## 四、数据模型
 
@@ -124,7 +137,7 @@ law-firm-contract/
 7. 提交审批
 
 ### 2. 合同审批流程
-1. 发起审批
+1. 发起审批（集成core-workflow组件）
 2. 审批流程流转（多级审批）
 3. 审批意见反馈与修改
 4. 审批结果记录
@@ -179,3 +192,113 @@ law-firm-contract/
 - 支持电子签章集成
 - 支持OCR合同导入
 - 支持第三方合同库查询
+
+## 九、事件驱动设计
+
+### 1. 合同事件
+- `ContractCreatedEvent`: 合同创建事件
+- `ContractReviewedEvent`: 合同审批事件
+- `ContractApprovedEvent`: 合同审批通过事件
+- `ContractRejectedEvent`: 合同审批拒绝事件
+- `ContractEffectiveEvent`: 合同生效事件
+- `ContractTerminatedEvent`: 合同终止事件
+- `ContractExpiredEvent`: 合同到期事件
+- `ContractChangedEvent`: 合同变更事件
+
+### 2. 事件处理
+- 合同创建事件：触发审批流程、通知相关人员
+- 合同审批事件：记录审批历史、通知合同创建人
+- `ContractApprovedEvent`: 合同审批通过事件
+- `ContractRejectedEvent`: 合同审批拒绝事件
+- `ContractEffectiveEvent`: 合同生效事件
+- `ContractTerminatedEvent`: 合同终止事件
+- `ContractExpiredEvent`: 合同到期事件
+- `ContractChangedEvent`: 合同变更事件
+
+### 3. 实现方式
+- 使用Spring Event机制实现事件发布和订阅
+- 定义专门的事件发布器和监听器
+- 支持异步事件处理，提高系统响应速度
+- 事件持久化，支持事件重放和审计
+
+## 十、缓存策略
+
+### 1. 缓存对象
+- 合同模板缓存
+- 标准条款缓存
+- 热门合同基本信息缓存
+- 审批流程定义缓存
+
+### 2. 缓存实现
+- 使用Redis作为分布式缓存
+- 制定合理的缓存过期策略
+- 实现缓存预热和更新机制
+- 防止缓存穿透和缓存雪崩
+
+## 十一、模块集成
+
+### 1. 与客户模块集成
+- 通过客户ID获取客户详细信息
+- 合同创建时选择已有客户
+- 提供合同相关客户信息查询接口
+
+### 2. 与文档模块集成
+- 合同文档生成和存储
+- 合同附件上传和管理
+- 合同文档版本控制
+
+### 3. 与财务模块集成
+- 向财务模块推送合同收付款计划
+- 接收财务模块的收付款执行状态
+- 合同收付款统计报表
+
+### 4. 与工作流模块集成
+- 使用core-workflow定义合同审批流程
+- 触发工作流实例执行
+- 监听工作流状态变化
+
+### 5. 与人事模块集成
+- 获取律师和员工信息
+- 查询律师工作量和案件分配
+- 合同承办团队管理
+
+## 十二、开发计划
+
+根据模块复杂度和依赖关系，合同管理模块开发计划如下：
+
+### 1. 基础框架与配置（优先级：高）
+- 完善pom.xml依赖配置
+- 完善应用配置文件
+- 验证数据库连接配置
+
+### 2. 核心功能开发（优先级：高）
+- 实现ContractController基础CRUD功能
+- 实现合同模板管理功能
+- 实现合同事件发布和监听机制
+- 集成core-workflow实现合同审批流程
+
+### 3. 扩展功能开发（优先级：中）
+- 实现合同条款管理
+- 实现合同收付款计划管理
+- 实现合同变更与版本管理
+- 实现合同执行跟踪
+
+### 4. 高级功能开发（优先级：低）
+- 实现律师函管理
+- 实现风险评估功能
+- 实现合同智能分析
+- 实现合同统计与报表
+
+### 5. 集成与优化（优先级：中）
+- 与客户模块集成
+- 与财务模块集成
+- 与文档模块集成
+- 性能优化与缓存实现
+
+### 6. 测试与部署（优先级：高）
+- 单元测试
+- 集成测试
+- 性能测试
+- 部署与环境配置
+
+按照以上顺序进行开发，确保基础功能先实现，然后逐步添加扩展功能，最后进行集成与优化。

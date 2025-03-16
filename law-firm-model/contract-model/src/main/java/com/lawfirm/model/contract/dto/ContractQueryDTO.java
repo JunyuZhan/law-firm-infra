@@ -29,9 +29,9 @@ public class ContractQueryDTO extends BaseDTO {
     private Date startDate;        // 开始日期
     private Date endDate;          // 结束日期
     private String keyword;        // 关键字(用于搜索合同名称、编号等)
-    private List<Integer> statusList;  // 状态列表
-    private List<Long> clientIds;  // 客户ID列表
-    private List<String> contractTypes; // 合同类型列表
+    private transient List<Integer> statusList;  // 状态列表
+    private transient List<Long> clientIds;  // 客户ID列表
+    private transient List<String> contractTypes; // 合同类型列表
     private Double minAmount;      // 最小金额
     private Double maxAmount;      // 最大金额
     private Boolean isExpiring;    // 是否即将到期的合同

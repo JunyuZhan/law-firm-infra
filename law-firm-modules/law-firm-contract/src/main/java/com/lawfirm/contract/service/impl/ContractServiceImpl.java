@@ -10,6 +10,7 @@ import com.lawfirm.model.contract.dto.ContractUpdateDTO;
 import com.lawfirm.model.contract.entity.Contract;
 import com.lawfirm.model.contract.mapper.ContractMapper;
 import com.lawfirm.model.contract.service.ContractService;
+import com.lawfirm.model.contract.vo.ContractDetailVO;
 import com.lawfirm.model.contract.vo.ContractVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +91,32 @@ public class ContractServiceImpl extends BaseServiceImpl<ContractMapper, Contrac
         
         // 转换为VO
         return contractPage.convert(ContractConverter::toVO);
+    }
+    
+    @Override
+    public ContractDetailVO getContractDetail(Long id) {
+        log.info("获取合同详情: {}", id);
+        
+        // 获取合同基本信息
+        Contract contract = getById(id);
+        if (contract == null) {
+            log.error("合同不存在: {}", id);
+            return null;
+        }
+        
+        // 转换为详情VO
+        ContractDetailVO detailVO = ContractConverter.toDetailVO(contract);
+        
+        // TODO: 查询关联数据
+        // 1. 查询合同条款
+        // 2. 查询合同团队成员
+        // 3. 查询合同收费项目
+        // 4. 查询合同里程碑
+        // 5. 查询合同附件
+        // 6. 查询审批记录
+        // 7. 查询变更记录
+        
+        return detailVO;
     }
     
     /**

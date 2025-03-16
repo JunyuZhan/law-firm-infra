@@ -39,19 +39,22 @@ public class ContractCreateDTO extends BaseDTO {
     private Long templateId;        // 合同模板ID
     
     // 团队成员列表
-    private List<ContractTeamMemberDTO> teamMembers;
+    private transient List<ContractTeamMemberDTO> teamMembers;
     
     // 收费结构列表
-    private List<ContractFeeItemDTO> feeItems;
+    private transient List<ContractFeeItemDTO> feeItems;
     
     // 里程碑列表
-    private List<ContractMilestoneDTO> milestones;
+    private transient List<ContractMilestoneDTO> milestones;
     
     /**
      * 合同团队成员DTO
      */
     @Data
-    public static class ContractTeamMemberDTO {
+    @EqualsAndHashCode(callSuper=false)
+    public static class ContractTeamMemberDTO implements java.io.Serializable {
+        private static final long serialVersionUID = 1L;
+        
         private Long attorneyId;        // 律师ID
         private String roleType;        // 角色类型
         private String responsibility;  // 负责内容
@@ -63,7 +66,10 @@ public class ContractCreateDTO extends BaseDTO {
      * 合同收费项DTO
      */
     @Data
-    public static class ContractFeeItemDTO {
+    @EqualsAndHashCode(callSuper=false)
+    public static class ContractFeeItemDTO implements java.io.Serializable {
+        private static final long serialVersionUID = 1L;
+        
         private String feeType;         // 收费类型
         private String feeName;         // 费用名称
         private Double feeAmount;       // 费用金额
@@ -80,7 +86,10 @@ public class ContractCreateDTO extends BaseDTO {
      * 合同里程碑DTO
      */
     @Data
-    public static class ContractMilestoneDTO {
+    @EqualsAndHashCode(callSuper=false)
+    public static class ContractMilestoneDTO implements java.io.Serializable {
+        private static final long serialVersionUID = 1L;
+        
         private String milestoneName;   // 里程碑名称
         private String description;     // 描述
         private Date planDate;          // 计划日期
