@@ -1,0 +1,43 @@
+# 案件模块配置
+law-firm:
+  case:
+    # 模块是否启用
+    enabled: true
+    # 案件编号生成规则配置
+    case-number:
+      prefix: CASE
+      date-format: yyyyMMdd
+      sequence-length: 4
+    # 案件文档配置
+    document:
+      allowed-extensions: .pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.png
+      max-size: 50MB
+      storage-path: /case/documents
+    # 案件状态流转配置
+    status-flow:
+      enabled: true
+      require-approval: true
+      notify-owner: true
+
+# MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+      logic-delete-field: deleted
+      logic-delete-value: true
+      logic-not-delete-value: false
+  type-aliases-package: com.lawfirm.model.cases.entity
+  mapper-locations: classpath*:/mapper/**/*.xml
+
+# 数据库迁移配置
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    out-of-order: true 

@@ -220,6 +220,36 @@ public class CaseTask extends ModelBaseEntity {
     private String remarks;
 
     /**
+     * 工作流任务ID
+     */
+    @TableField("workflow_task_id")
+    private String workflowTaskId;
+    
+    /**
+     * 暂停原因
+     */
+    @TableField("pause_reason")
+    private String pauseReason;
+    
+    /**
+     * 取消原因
+     */
+    @TableField("cancel_reason")
+    private String cancelReason;
+    
+    /**
+     * 完成备注
+     */
+    @TableField("completion_note")
+    private String completionNote;
+    
+    /**
+     * 进度备注
+     */
+    @TableField("progress_note")
+    private String progressNote;
+
+    /**
      * 获取任务类型枚举
      */
     public TaskTypeEnum getTaskTypeEnum() {
@@ -523,6 +553,78 @@ public class CaseTask extends ModelBaseEntity {
         
         tags = newTags.toString();
         
+        return this;
+    }
+
+    /**
+     * 设置暂停原因
+     */
+    public CaseTask setPauseReason(String pauseReason) {
+        this.pauseReason = pauseReason;
+        return this;
+    }
+    
+    /**
+     * 设置取消原因
+     */
+    public CaseTask setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+        return this;
+    }
+    
+    /**
+     * 设置完成备注
+     */
+    public CaseTask setCompletionNote(String completionNote) {
+        this.completionNote = completionNote;
+        return this;
+    }
+    
+    /**
+     * 设置进度备注
+     */
+    public CaseTask setProgressNote(String progressNote) {
+        this.progressNote = progressNote;
+        return this;
+    }
+    
+    /**
+     * 获取工作流任务ID
+     */
+    public String getWorkflowTaskId() {
+        return this.workflowTaskId;
+    }
+    
+    /**
+     * 设置进度信息
+     */
+    public CaseTask setProgress(Integer progressPercentage, String progressNote) {
+        this.progressPercentage = progressPercentage;
+        this.progressNote = progressNote;
+        return this;
+    }
+
+    /**
+     * 设置完成时间
+     */
+    public CaseTask setCompleteTime(LocalDateTime completionTime) {
+        this.completionTime = completionTime;
+        return this;
+    }
+
+    /**
+     * 设置进度
+     */
+    public CaseTask setProgress(Integer progressPercentage) {
+        this.progressPercentage = progressPercentage;
+        return this;
+    }
+    
+    /**
+     * 设置优先级
+     */
+    public CaseTask setPriority(Integer priority) {
+        this.taskPriority = priority;
         return this;
     }
 } 

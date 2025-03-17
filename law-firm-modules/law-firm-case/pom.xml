@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lawfirm</groupId>
         <artifactId>law-firm-modules</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>law-firm-case</artifactId>
@@ -33,6 +33,68 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-log</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- 案件模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>case-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- 认证模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>auth-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- 客户模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>client-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- 文档模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>document-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- 人事模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>personnel-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 核心模块依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-workflow</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-audit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-storage</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-search</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -74,29 +136,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project> 

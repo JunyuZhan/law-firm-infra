@@ -18,6 +18,10 @@
     <name>Law Firm Modules</name>
     <description>法律事务管理系统模块</description>
 
+    <properties>
+        <revision>1.0.0</revision>
+    </properties>
+
     <modules>
         <!-- 基础业务模块（最少依赖） -->
         <module>law-firm-system</module>
@@ -51,7 +55,7 @@
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>law-firm-dependencies</artifactId>
-                <version>1.0.0</version>
+                <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

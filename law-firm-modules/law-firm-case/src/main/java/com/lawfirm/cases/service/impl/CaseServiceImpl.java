@@ -1,451 +1,478 @@
 package com.lawfirm.cases.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.cases.mapper.CaseMapper;
-import com.lawfirm.model.cases.dto.CaseCreateDTO;
-import com.lawfirm.model.cases.dto.CaseUpdateDTO;
-import com.lawfirm.model.cases.dto.CaseQueryDTO;
-import com.lawfirm.model.cases.entity.Case;
-import com.lawfirm.model.cases.enums.*;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.core.enums.StatusEnum;
-import com.lawfirm.model.cases.vo.CaseDetailVO;
-import com.lawfirm.cases.service.CaseService;
-import com.lawfirm.common.core.exception.BusinessException;
-import com.lawfirm.common.core.exception.ResourceNotFoundException;
-import com.lawfirm.model.cases.vo.CaseStatusVO;
+import com.lawfirm.cases.core.audit.CaseAuditProvider;
+import com.lawfirm.cases.core.message.CaseMessageManager;
+import com.lawfirm.cases.core.search.CaseSearchManager;
+import com.lawfirm.cases.core.workflow.CaseWorkflowManager;
+import com.lawfirm.model.cases.mapper.base.CaseMapper;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.cases.dto.base.CaseBaseDTO;
+import com.lawfirm.model.cases.dto.base.CaseCreateDTO;
+import com.lawfirm.model.cases.dto.base.CaseQueryDTO;
+import com.lawfirm.model.cases.dto.base.CaseUpdateDTO;
+import com.lawfirm.model.cases.entity.base.Case;
+import com.lawfirm.model.cases.service.base.CaseService;
+import com.lawfirm.model.cases.vo.base.CaseDetailVO;
+import com.lawfirm.model.cases.vo.base.CaseQueryVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.core.context.SecurityContextHolder;
-import com.lawfirm.cases.service.statistics.CaseStatisticsService;
-import com.lawfirm.mapper.CaseConverter;
-import com.lawfirm.common.security.utils.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
+/**
+ * 案件服务实现类
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CaseServiceImpl extends ServiceImpl<CaseMapper, Case> implements CaseService {
+public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implements CaseService {
 
-    private final CaseConverter caseConverter;
-    private final CaseMapper caseMapper;
-    private final CaseStatisticsService caseStatisticsService;
-
-    @Override
-    @Transactional
-    public CaseDetailVO createCase(CaseCreateDTO dto) {
-        Case entity = caseConverter.toEntity(dto);
-        save(entity);
-        return caseConverter.toDetailVO(entity);
-    }
+    private final CaseWorkflowManager workflowManager;
+    private final CaseAuditProvider auditProvider;
+    private final CaseSearchManager searchManager;
+    private final CaseMessageManager messageManager;
 
     @Override
-    @Transactional
-    public CaseDetailVO updateCase(Long id, CaseUpdateDTO dto) {
-        Case entity = getById(id);
-        if (entity == null) {
-            throw new ResourceNotFoundException("案件不存在");
+    @Transactional(rollbackFor = Exception.class)
+    public Long createCase(CaseCreateDTO createDTO) {
+        log.info("创建案件: {}", createDTO.getCaseName());
+
+        // 1. 生成案件编号
+        if (createDTO.getCaseNumber() == null || createDTO.getCaseNumber().isEmpty()) {
+            createDTO.setCaseNumber(generateCaseNumber(createDTO.getCaseType().getValue()));
+        } else if (checkCaseNumberExists(createDTO.getCaseNumber())) {
+            throw new RuntimeException("案件编号已存在: " + createDTO.getCaseNumber());
         }
-        caseConverter.updateEntity(dto, entity);
-        updateById(entity);
-        return caseConverter.toDetailVO(entity);
-    }
 
-    @Override
-    @Transactional
-    public void deleteCase(Long id) {
-        removeById(id);
-    }
+        // 2. 创建案件实体
+        Case caseEntity = new Case();
+        BeanUtils.copyProperties(createDTO, caseEntity);
+        caseEntity.setCreateTime(LocalDateTime.now());
+        caseEntity.setUpdateTime(LocalDateTime.now());
+        caseEntity.setCreateBy(createDTO.getCreatorId().toString());
+        caseEntity.setCaseStatus(createDTO.getCaseStatus() != null ? createDTO.getCaseStatus().getValue() : 1); // 初始状态：待处理
 
-    @Override
-    public CaseDetailVO getCaseById(Long id) {
-        Case entity = getById(id);
-        if (entity == null) {
-            throw new ResourceNotFoundException("案件不存在");
-        }
-        return caseConverter.toDetailVO(entity);
-    }
+        // 3. 保存案件
+        save(caseEntity);
+        Long caseId = caseEntity.getId();
 
-    @Override
-    public CaseDetailVO getCaseByCaseNumber(String caseNumber) {
-        Case entity = lambdaQuery()
-            .eq(Case::getCaseNumber, caseNumber)
-            .one();
-        if (entity == null) {
-            throw new ResourceNotFoundException("案件不存在");
-        }
-        return caseConverter.toDetailVO(entity);
-    }
+        // 4. 启动工作流
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("caseId", caseId);
+        variables.put("caseType", createDTO.getCaseType().getValue());
+        variables.put("creatorId", createDTO.getCreatorId());
+        String processInstanceId = workflowManager.startCaseWorkflow(caseId, variables);
 
-    @Override
-    public void validateCase(Long id) {
-        Case caseEntity = getById(id);
-        if (caseEntity == null) {
-            throw new ResourceNotFoundException("案件不存在");
-        }
-        // 执行验证逻辑
-    }
-
-    @Override
-    public Map<CaseStatusEnum, Long> countByStatus() {
-        return caseStatisticsService.countByStatus();
-    }
-
-    @Override
-    public CaseDetailVO updateProgress(Long id, CaseProgressEnum progress, String remark) {
-        Case entity = getById(id);
-        entity.setCaseProgress(progress);
-        entity.setRemark(remark);
-        updateById(entity);
-        return caseConverter.toDetailVO(entity);
-    }
-
-    @Override
-    public CaseProgressEnum getCurrentProgress(Long id) {
-        return getById(id).getCaseProgress();
-    }
-
-    @Override
-    public CaseDetailVO updateImportance(Long id, CaseImportanceEnum importance, String remark) {
-        Case entity = getById(id);
-        entity.setCaseImportance(importance);
-        entity.setRemark(remark);
-        updateById(entity);
-        return caseConverter.toDetailVO(entity);
-    }
-
-    @Override
-    public CaseDetailVO updateSource(Long id, CaseSourceEnum source, String remark) {
-        Case entity = getById(id);
-        entity.setCaseSource(source);
-        entity.setRemark(remark);
-        updateById(entity);
-        return caseConverter.toDetailVO(entity);
-    }
-
-    @Override
-    public List<CaseDetailVO> findByClient(Long clientId, CaseQueryDTO queryDTO) {
-        List<Case> cases = lambdaQuery()
-            .eq(Case::getClientId, clientId)
-            .eq(queryDTO.getCaseStatus() != null, Case::getCaseStatus, queryDTO.getCaseStatus())
-            .eq(queryDTO.getCaseType() != null, Case::getCaseType, queryDTO.getCaseType())
-            .eq(queryDTO.getCaseProgress() != null, Case::getCaseProgress, queryDTO.getCaseProgress())
-            .eq(queryDTO.getCaseHandleType() != null, Case::getCaseHandleType, queryDTO.getCaseHandleType())
-            .eq(queryDTO.getCaseDifficulty() != null, Case::getCaseDifficulty, queryDTO.getCaseDifficulty())
-            .eq(queryDTO.getCaseImportance() != null, Case::getCaseImportance, queryDTO.getCaseImportance())
-            .eq(queryDTO.getCasePriority() != null, Case::getCasePriority, queryDTO.getCasePriority())
-            .eq(queryDTO.getCaseFeeType() != null, Case::getCaseFeeType, queryDTO.getCaseFeeType())
-            .eq(queryDTO.getCaseSource() != null, Case::getCaseSource, queryDTO.getCaseSource())
-            .eq(queryDTO.getLawyer() != null, Case::getLawyer, queryDTO.getLawyer())
-            .list();
-        return cases.stream()
-            .map(caseConverter::toDetailVO)
-            .toList();
-    }
-
-    @Override
-    public List<CaseDetailVO> findByCurrentLawyer() {
-        String currentLawyer = SecurityUtils.getUsername();
-        List<Case> cases = lambdaQuery()
-            .eq(Case::getLawyer, currentLawyer)
-            .list();
-        return cases.stream()
-            .map(caseConverter::toDetailVO)
-            .toList();
-    }
-
-    @Override
-    public CaseStatusEnum getCurrentStatus(Long id) {
-        return caseConverter.toStatusEnum(getById(id).getStatus());
-    }
-
-    @Override
-    public Map<CaseImportanceEnum, Long> getImportanceStatistics() {
-        return caseStatisticsService.getImportanceStatistics();
-    }
-
-    @Override
-    public org.springframework.data.domain.Page<CaseDetailVO> findCases(CaseQueryDTO queryDTO, Pageable pageable) {
-        com.baomidou.mybatisplus.extension.plugins.pagination.Page<Case> page = lambdaQuery()
-            .eq(queryDTO.getCaseStatus() != null, Case::getCaseStatus, queryDTO.getCaseStatus())
-            .eq(queryDTO.getCaseType() != null, Case::getCaseType, queryDTO.getCaseType())
-            .eq(queryDTO.getCaseProgress() != null, Case::getCaseProgress, queryDTO.getCaseProgress())
-            .eq(queryDTO.getCaseHandleType() != null, Case::getCaseHandleType, queryDTO.getCaseHandleType())
-            .eq(queryDTO.getCaseDifficulty() != null, Case::getCaseDifficulty, queryDTO.getCaseDifficulty())
-            .eq(queryDTO.getCaseImportance() != null, Case::getCaseImportance, queryDTO.getCaseImportance())
-            .eq(queryDTO.getCasePriority() != null, Case::getCasePriority, queryDTO.getCasePriority())
-            .eq(queryDTO.getCaseFeeType() != null, Case::getCaseFeeType, queryDTO.getCaseFeeType())
-            .eq(queryDTO.getCaseSource() != null, Case::getCaseSource, queryDTO.getCaseSource())
-            .eq(queryDTO.getLawyer() != null, Case::getLawyer, queryDTO.getLawyer())
-            .eq(queryDTO.getClientId() != null, Case::getClientId, queryDTO.getClientId())
-            .page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageable.getPageNumber() + 1, pageable.getPageSize()));
-
-        List<CaseDetailVO> records = page.getRecords().stream()
-            .map(caseConverter::toDetailVO)
-            .collect(Collectors.toList());
-
-        return new PageImpl<>(records, pageable, page.getTotal());
-    }
-
-    @Override
-    public Map<CaseStatusEnum, Long> getCaseStatistics() {
-        return caseStatisticsService.countByStatus();
-    }
-
-    @Override
-    public List<CaseDetailVO> findByQuery(CaseQueryDTO queryDTO) {
-        List<Case> cases = lambdaQuery()
-            .eq(queryDTO.getCaseStatus() != null, Case::getCaseStatus, queryDTO.getCaseStatus())
-            .eq(queryDTO.getCaseType() != null, Case::getCaseType, queryDTO.getCaseType())
-            .eq(queryDTO.getCaseProgress() != null, Case::getCaseProgress, queryDTO.getCaseProgress())
-            .eq(queryDTO.getCaseHandleType() != null, Case::getCaseHandleType, queryDTO.getCaseHandleType())
-            .eq(queryDTO.getCaseDifficulty() != null, Case::getCaseDifficulty, queryDTO.getCaseDifficulty())
-            .eq(queryDTO.getCaseImportance() != null, Case::getCaseImportance, queryDTO.getCaseImportance())
-            .eq(queryDTO.getCasePriority() != null, Case::getCasePriority, queryDTO.getCasePriority())
-            .eq(queryDTO.getCaseFeeType() != null, Case::getCaseFeeType, queryDTO.getCaseFeeType())
-            .eq(queryDTO.getCaseSource() != null, Case::getCaseSource, queryDTO.getCaseSource())
-            .eq(queryDTO.getLawyer() != null, Case::getLawyer, queryDTO.getLawyer())
-            .eq(queryDTO.getClientId() != null, Case::getClientId, queryDTO.getClientId())
-            .list();
-        return cases.stream()
-            .map(caseConverter::toDetailVO)
-            .toList();
-    }
-
-    @Override
-    public org.springframework.data.domain.Page<CaseDetailVO> findByQuery(CaseQueryDTO queryDTO, Pageable pageable) {
-        return findCases(queryDTO, pageable);
-    }
-
-    @Override
-    public List<CaseDetailVO> findRelatedCases(Long caseId) {
-        Case currentCase = getById(caseId);
-        if (currentCase == null) {
-            throw new ResourceNotFoundException("案件不存在");
-        }
-        List<Case> cases = lambdaQuery()
-            .eq(Case::getClientId, currentCase.getClientId())
-            .ne(Case::getId, caseId)
-            .list();
-        return cases.stream()
-            .map(caseConverter::toDetailVO)
-            .toList();
-    }
-
-    @Override
-    public List<CaseStatusVO> getStatusHistory(Long caseId) {
-        Case caseEntity = getById(caseId);
-        if (caseEntity == null) {
-            throw new ResourceNotFoundException("案件不存在");
-        }
-        // TODO: 从状态历史表中查询
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<CaseStatusEnum> getAvailableStatus(Long caseId) {
-        Case caseEntity = getById(caseId);
-        if (caseEntity == null) {
-            throw new ResourceNotFoundException("案件不存在");
-        }
-        CaseStatusEnum currentStatus = CaseStatusEnum.valueOf(caseEntity.getStatus().name());
-        // TODO: 根据当前状态返回可用的下一个状态列表
-        return Arrays.asList(CaseStatusEnum.values());
-    }
-
-    @Override
-    public void updateStatus(Long caseId, String status, String reason, String remark) {
-        Case caseEntity = getById(caseId);
-        if (caseEntity == null) {
-            throw new ResourceNotFoundException("案件不存在");
-        }
-        
-        CaseStatusEnum newStatus = CaseStatusEnum.valueOf(status);
-        caseEntity.setStatus(StatusEnum.valueOf(newStatus.name()));
+        // 5. 更新流程实例ID
+        caseEntity.setCaseNumber(processInstanceId);  // 临时使用caseNumber保存processInstanceId
         updateById(caseEntity);
-        
-        // TODO: 记录状态变更历史
+
+        // 6. 记录审计
+        auditProvider.auditCaseCreation(caseId, createDTO.getCreatorId(), createDTO);
+
+        // 7. 索引案件数据
+        Map<String, Object> caseData = new HashMap<>();
+        BeanUtils.copyProperties(caseEntity, caseData);
+        searchManager.indexCaseData(caseId, caseData);
+
+        // 8. 发送案件创建消息
+        messageManager.sendCaseStatusChangeMessage(
+                caseId,
+                null,
+                "1", // 初始状态：待处理
+                createDTO.getCreatorId(),
+                "案件创建"
+        );
+
+        log.info("案件创建成功, ID: {}", caseId);
+        return caseId;
     }
 
     @Override
-    public List<CaseProgressEnum> getAvailableProgress(Long caseId) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateCase(CaseUpdateDTO updateDTO) {
+        log.info("更新案件: {}", updateDTO.getId());
+
+        // 1. 获取原案件数据
+        Case oldCase = getById(updateDTO.getId());
+        if (oldCase == null) {
+            throw new RuntimeException("案件不存在: " + updateDTO.getId());
+        }
+
+        // 2. 更新案件
+        Case caseEntity = new Case();
+        BeanUtils.copyProperties(updateDTO, caseEntity);
+        caseEntity.setUpdateTime(LocalDateTime.now());
+        caseEntity.setUpdateBy(updateDTO.getUpdaterId().toString());
+
+        boolean result = updateById(caseEntity);
+
+        // 3. 记录审计
+        Map<String, Object> changedFields = new HashMap<>();
+        // 在实际实现中，应比较oldCase和updateDTO，提取变更字段
+        auditProvider.auditCaseUpdate(
+                updateDTO.getId(),
+                updateDTO.getUpdaterId(),
+                oldCase,
+                caseEntity,
+                changedFields
+        );
+
+        // 4. 更新索引
+        Map<String, Object> updateData = new HashMap<>();
+        BeanUtils.copyProperties(caseEntity, updateData);
+        searchManager.updateCaseIndex(updateDTO.getId(), updateData);
+
+        log.info("案件更新成功, ID: {}", updateDTO.getId());
+        return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteCase(Long caseId) {
+        log.info("删除案件: {}", caseId);
+
+        // 在实际应用中，通常不会物理删除案件，而是逻辑删除
         Case caseEntity = getById(caseId);
         if (caseEntity == null) {
-            throw new ResourceNotFoundException("案件不存在");
+            throw new RuntimeException("案件不存在: " + caseId);
         }
-        // TODO: 根据当前进展返回可用的下一个进展列表
-        return Arrays.asList(CaseProgressEnum.values());
+
+        caseEntity.setDeleted(1); // 逻辑删除
+        caseEntity.setUpdateTime(LocalDateTime.now());
+        boolean result = updateById(caseEntity);
+
+        // 删除索引
+        searchManager.deleteCaseIndex(caseId);
+
+        log.info("案件删除成功, ID: {}", caseId);
+        return result;
     }
 
     @Override
-    public CaseDetailVO updateHandleType(Long id, CaseHandleTypeEnum handleType, String remark) {
-        Case entity = getById(id);
-        entity.setCaseHandleType(handleType);
-        entity.setRemark(remark);
-        updateById(entity);
-        return caseConverter.toDetailVO(entity);
-    }
+    public CaseDetailVO getCaseDetail(Long caseId) {
+        log.info("获取案件详情: {}", caseId);
 
-    @Override
-    public CaseDetailVO updateDifficulty(Long id, CaseDifficultyEnum difficulty, String remark) {
-        Case entity = getById(id);
-        entity.setCaseDifficulty(difficulty);
-        entity.setRemark(remark);
-        updateById(entity);
-        return caseConverter.toDetailVO(entity);
-    }
-
-    @Override
-    public CaseDetailVO updateFeeType(Long id, CaseFeeTypeEnum feeType, String remark) {
-        Case entity = getById(id);
-        entity.setCaseFeeType(feeType);
-        entity.setRemark(remark);
-        updateById(entity);
-        return caseConverter.toDetailVO(entity);
-    }
-
-    @Override
-    public CaseDetailVO updatePriority(Long id, CasePriorityEnum priority, String remark) {
-        Case entity = getById(id);
-        entity.setCasePriority(priority);
-        entity.setRemark(remark);
-        updateById(entity);
-        return caseConverter.toDetailVO(entity);
-    }
-
-    @Override
-    public List<CaseDetailVO> findCasesByProgress(CaseProgressEnum progress) {
-        return lambdaQuery()
-                .eq(Case::getCaseProgress, progress)
-                .list()
-                .stream()
-                .map(caseConverter::toDetailVO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CaseDetailVO> findCasesByHandleType(CaseHandleTypeEnum handleType) {
-        return lambdaQuery()
-                .eq(Case::getCaseHandleType, handleType)
-                .list()
-                .stream()
-                .map(caseConverter::toDetailVO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CaseDetailVO> findCasesByImportance(CaseImportanceEnum importance) {
-        return lambdaQuery()
-                .eq(Case::getCaseImportance, importance)
-                .list()
-                .stream()
-                .map(caseConverter::toDetailVO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CaseDetailVO> findCasesByDifficulty(CaseDifficultyEnum difficulty) {
-        return lambdaQuery()
-                .eq(Case::getCaseDifficulty, difficulty)
-                .list()
-                .stream()
-                .map(caseConverter::toDetailVO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Map<CaseTypeEnum, Long> countByType() {
-        List<Case> cases = caseMapper.selectList(null);
-        return cases.stream()
-                .collect(Collectors.groupingBy(Case::getCaseType, Collectors.counting()));
-    }
-
-    @Override
-    public Map<String, Long> countByLawyer() {
-        return baseMapper.selectList(null).stream()
-                .collect(Collectors.groupingBy(Case::getLawyer, Collectors.counting()));
-    }
-
-    @Override
-    public Map<String, Long> countByClient() {
-        return baseMapper.selectList(null).stream()
-                .collect(Collectors.groupingBy(c -> String.valueOf(c.getClientId()), Collectors.counting()));
-    }
-
-    @Override
-    public Map<CaseProgressEnum, Long> countByProgress() {
-        List<Case> cases = caseMapper.selectList(null);
-        return cases.stream()
-                .collect(Collectors.groupingBy(Case::getCaseProgress, Collectors.counting()));
-    }
-
-    @Override
-    public Map<CaseHandleTypeEnum, Long> countByHandleType() {
-        List<Case> cases = caseMapper.selectList(null);
-        return cases.stream()
-                .collect(Collectors.groupingBy(Case::getCaseHandleType, Collectors.counting()));
-    }
-
-    @Override
-    public Map<CaseImportanceEnum, Long> countByImportance() {
-        List<Case> cases = caseMapper.selectList(null);
-        return cases.stream()
-                .collect(Collectors.groupingBy(Case::getCaseImportance, Collectors.counting()));
-    }
-
-    @Override
-    public Map<CaseProgressEnum, Long> getProgressStatistics() {
-        return baseMapper.selectList(null).stream()
-                .collect(Collectors.groupingBy(Case::getCaseProgress, Collectors.counting()));
-    }
-
-    @Override
-    public Map<CaseHandleTypeEnum, Long> getHandleTypeStatistics() {
-        return baseMapper.selectList(null).stream()
-                .collect(Collectors.groupingBy(Case::getCaseHandleType, Collectors.counting()));
-    }
-
-    @Override
-    public Map<CaseDifficultyEnum, Long> getDifficultyStatistics() {
-        return baseMapper.selectList(null).stream()
-                .collect(Collectors.groupingBy(Case::getCaseDifficulty, Collectors.counting()));
-    }
-
-    @Override
-    public Map<CasePriorityEnum, Long> getPriorityStatistics() {
-        return caseStatisticsService.getPriorityStatistics();
-    }
-
-    @Override
-    public Map<CaseFeeTypeEnum, Long> getFeeTypeStatistics() {
-        return caseStatisticsService.getFeeTypeStatistics();
-    }
-
-    @Override
-    public Map<CaseSourceEnum, Long> getSourceStatistics() {
-        return caseStatisticsService.getSourceStatistics();
-    }
-
-    private Case getById(Long id) {
-        Case entity = caseMapper.selectById(id);
-        if (entity == null) {
-            throw new BusinessException("案件不存在");
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
         }
-        return entity;
+
+        CaseDetailVO detailVO = new CaseDetailVO();
+        BeanUtils.copyProperties(caseEntity, detailVO);
+
+        // 获取工作流状态
+        if (caseEntity.getCaseNumber() != null) {  // 临时使用caseNumber作为processInstanceId
+            detailVO.setProcessStatus(
+                    workflowManager.getProcessStatus(caseEntity.getCaseNumber())
+            );
+        }
+
+        return detailVO;
+    }
+
+    @Override
+    public IPage<CaseQueryVO> pageCases(CaseQueryDTO queryDTO) {
+        log.info("分页查询案件: page={}, size={}", queryDTO.getPageNum(), queryDTO.getPageSize());
+
+        Page<Case> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
+        LambdaQueryWrapper<Case> wrapper = new LambdaQueryWrapper<>();
+
+        // 构建查询条件
+        if (queryDTO.getCaseName() != null && !queryDTO.getCaseName().isEmpty()) {
+            wrapper.like(Case::getCaseName, queryDTO.getCaseName());
+        }
+        if (queryDTO.getCaseNumber() != null && !queryDTO.getCaseNumber().isEmpty()) {
+            wrapper.eq(Case::getCaseNumber, queryDTO.getCaseNumber());
+        }
+        if (queryDTO.getCaseStatus() != null) {
+            wrapper.eq(Case::getCaseStatus, queryDTO.getCaseStatus().getValue());
+        }
+        if (queryDTO.getCaseType() != null) {
+            wrapper.eq(Case::getCaseType, queryDTO.getCaseType().getValue());
+        }
+        if (queryDTO.getFilingTimeStart() != null) {
+            wrapper.ge(Case::getCreateTime, queryDTO.getFilingTimeStart());
+        }
+        if (queryDTO.getFilingTimeEnd() != null) {
+            wrapper.le(Case::getCreateTime, queryDTO.getFilingTimeEnd());
+        }
+        
+        // 只查询未删除的记录
+        wrapper.eq(Case::getDeleted, 0);
+        
+        // 排序
+        wrapper.orderByDesc(Case::getUpdateTime);
+
+        // 执行查询
+        IPage<Case> resultPage = page(page, wrapper);
+
+        // 转换为VO
+        return resultPage.convert(entity -> {
+            CaseQueryVO vo = new CaseQueryVO();
+            BeanUtils.copyProperties(entity, vo);
+            return vo;
+        });
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean changeStatus(Long caseId, Integer targetStatus, String reason) {
+        log.info("变更案件状态: caseId={}, targetStatus={}", caseId, targetStatus);
+
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
+        }
+
+        Integer oldStatus = caseEntity.getCaseStatus();
+        
+        // 更新状态
+        caseEntity.setCaseStatus(targetStatus);
+        caseEntity.setUpdateTime(LocalDateTime.now());
+        boolean result = updateById(caseEntity);
+
+        // 更新工作流状态
+        if (caseEntity.getCaseNumber() != null) {  // 临时使用caseNumber作为processInstanceId
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("status", targetStatus);
+            variables.put("reason", reason);
+            workflowManager.updateCaseStatus(
+                    caseId,
+                    caseEntity.getCaseNumber(),
+                    targetStatus.toString(),
+                    variables
+            );
+        }
+
+        // 记录审计
+        auditProvider.auditCaseStatusChange(
+                caseId,
+                Long.parseLong(caseEntity.getUpdateBy()),
+                oldStatus.toString(),
+                targetStatus.toString(),
+                reason
+        );
+
+        // 更新索引
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("status", targetStatus);
+        searchManager.updateCaseIndex(caseId, updateData);
+
+        // 发送状态变更消息
+        messageManager.sendCaseStatusChangeMessage(
+                caseId,
+                oldStatus.toString(),
+                targetStatus.toString(),
+                Long.parseLong(caseEntity.getUpdateBy()),
+                reason
+        );
+
+        log.info("案件状态变更成功, ID: {}", caseId);
+        return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean approveStatusChange(Long caseId, boolean approved, String opinion) {
+        log.info("审批案件状态变更: caseId={}, approved={}", caseId, approved);
+
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
+        }
+
+        // 根据审批结果更新状态
+        // 此处逻辑应根据具体业务需求实现
+        
+        // 记录审计
+        // 发送消息
+
+        log.info("案件状态变更审批完成, ID: {}", caseId);
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean archiveCase(Long caseId) {
+        log.info("归档案件: {}", caseId);
+
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
+        }
+
+        // 更新状态为归档
+        Integer oldStatus = caseEntity.getCaseStatus();
+        caseEntity.setCaseStatus(9); // 归档状态
+        caseEntity.setClosingTime(LocalDateTime.now().toLocalDate()); // 使用closingTime替代archiveTime
+        caseEntity.setUpdateTime(LocalDateTime.now());
+        boolean result = updateById(caseEntity);
+
+        // 终止工作流
+        if (caseEntity.getCaseNumber() != null) {  // 临时使用caseNumber作为processInstanceId
+            workflowManager.terminateCaseProcess(
+                    caseEntity.getCaseNumber(),
+                    "案件归档"
+            );
+        }
+
+        // 记录审计
+        auditProvider.auditCaseStatusChange(
+                caseId,
+                Long.parseLong(caseEntity.getUpdateBy()),
+                oldStatus.toString(),
+                "9", // 归档状态
+                "案件归档"
+        );
+
+        // 更新索引
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("status", 9);
+        updateData.put("closingTime", caseEntity.getClosingTime());
+        searchManager.updateCaseIndex(caseId, updateData);
+
+        // 发送状态变更消息
+        messageManager.sendCaseStatusChangeMessage(
+                caseId,
+                oldStatus.toString(),
+                "9", // 归档状态
+                Long.parseLong(caseEntity.getUpdateBy()),
+                "案件归档"
+        );
+
+        log.info("案件归档成功, ID: {}", caseId);
+        return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean reactivateCase(Long caseId, String reason) {
+        log.info("重新激活案件: {}", caseId);
+
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
+        }
+
+        // 检查是否归档状态
+        if (caseEntity.getCaseStatus() != 9) {
+            throw new RuntimeException("只有归档状态的案件才能重新激活");
+        }
+
+        // 更新状态为进行中
+        Integer oldStatus = caseEntity.getCaseStatus();
+        caseEntity.setCaseStatus(2); // 进行中状态
+        caseEntity.setClosingTime(null); // 清除归档时间
+        caseEntity.setUpdateTime(LocalDateTime.now());
+        boolean result = updateById(caseEntity);
+
+        // 恢复工作流
+        if (caseEntity.getCaseNumber() != null) {  // 临时使用caseNumber作为processInstanceId
+            workflowManager.resumeCaseProcess(caseEntity.getCaseNumber());
+        }
+
+        // 记录审计
+        auditProvider.auditCaseStatusChange(
+                caseId,
+                Long.parseLong(caseEntity.getUpdateBy()),
+                oldStatus.toString(),
+                "2", // 进行中状态
+                reason
+        );
+
+        // 更新索引
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("status", 2);
+        updateData.put("closingTime", null);
+        searchManager.updateCaseIndex(caseId, updateData);
+
+        // 发送状态变更消息
+        messageManager.sendCaseStatusChangeMessage(
+                caseId,
+                oldStatus.toString(),
+                "2", // 进行中状态
+                Long.parseLong(caseEntity.getUpdateBy()),
+                reason
+        );
+
+        log.info("案件重新激活成功, ID: {}", caseId);
+        return result;
+    }
+
+    @Override
+    public boolean checkCaseNumberExists(String caseNumber) {
+        log.info("检查案件编号是否存在: {}", caseNumber);
+
+        LambdaQueryWrapper<Case> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Case::getCaseNumber, caseNumber);
+        wrapper.eq(Case::getDeleted, 0);
+        return count(wrapper) > 0;
+    }
+
+    @Override
+    public String generateCaseNumber(Integer caseType) {
+        log.info("生成案件编号, 类型: {}", caseType);
+
+        // 案件编号生成规则: 年月+类型+4位序号
+        // 实际应用中可能需要更复杂的生成规则和序号管理
+        LocalDateTime now = LocalDateTime.now();
+        String yearMonth = String.format("%d%02d", now.getYear(), now.getMonthValue());
+        String typeCode = String.format("%02d", caseType);
+        String randomPart = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+
+        return "C" + yearMonth + typeCode + randomPart;
+    }
+
+    @Override
+    public boolean checkConflict(CaseBaseDTO baseDTO) {
+        log.info("检查利益冲突: {}", baseDTO.getCaseName());
+        
+        // 在实际应用中，需要调用冲突检查服务进行检查
+        // 此处仅为示例，返回无冲突
+        
+        return false;
+    }
+
+    @Override
+    public long countCases(CaseQueryDTO queryDTO) {
+        log.info("统计案件数量");
+
+        LambdaQueryWrapper<Case> wrapper = new LambdaQueryWrapper<>();
+
+        // 构建查询条件
+        if (queryDTO.getCaseName() != null && !queryDTO.getCaseName().isEmpty()) {
+            wrapper.like(Case::getCaseName, queryDTO.getCaseName());
+        }
+        if (queryDTO.getCaseNumber() != null && !queryDTO.getCaseNumber().isEmpty()) {
+            wrapper.eq(Case::getCaseNumber, queryDTO.getCaseNumber());
+        }
+        if (queryDTO.getCaseStatus() != null) {
+            wrapper.eq(Case::getCaseStatus, queryDTO.getCaseStatus().getValue());
+        }
+        if (queryDTO.getCaseType() != null) {
+            wrapper.eq(Case::getCaseType, queryDTO.getCaseType().getValue());
+        }
+        if (queryDTO.getFilingTimeStart() != null) {
+            wrapper.ge(Case::getCreateTime, queryDTO.getFilingTimeStart());
+        }
+        if (queryDTO.getFilingTimeEnd() != null) {
+            wrapper.le(Case::getCreateTime, queryDTO.getFilingTimeEnd());
+        }
+        
+        // 只统计未删除的记录
+        wrapper.eq(Case::getDeleted, 0);
+
+        return count(wrapper);
     }
 }

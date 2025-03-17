@@ -81,6 +81,31 @@ public class CaseTaskDTO extends BaseDTO {
     private Double actualHours;
 
     /**
+     * 创建人ID
+     */
+    private Long creatorId;
+
+    /**
+     * 创建人姓名
+     */
+    private String creatorName;
+
+    /**
+     * 操作人ID
+     */
+    private Long operatorId;
+
+    /**
+     * 操作人姓名
+     */
+    private String operatorName;
+
+    /**
+     * 任务名称（用于工作流）
+     */
+    private String taskName;
+
+    /**
      * 负责人ID
      */
     private Long assigneeId;
@@ -159,4 +184,29 @@ public class CaseTaskDTO extends BaseDTO {
      * 备注
      */
     private String remarks;
+
+    /**
+     * 工作流任务ID
+     */
+    private String workflowTaskId;
+
+    /**
+     * 暂停原因
+     */
+    private String pauseReason;
+
+    /**
+     * 取消原因
+     */
+    private String cancelReason;
+
+    /**
+     * 完成备注
+     */
+    private String completionNote;
+
+    /**
+     * 进度备注
+     */
+    private String progressNote;
 } 

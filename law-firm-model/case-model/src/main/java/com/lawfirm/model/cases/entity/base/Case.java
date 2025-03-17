@@ -255,6 +255,12 @@ public class Case extends TenantEntity {
     private String lastOperatorName;
 
     /**
+     * 工作流实例ID
+     */
+    @TableField("process_instance_id")
+    private String processInstanceId;
+
+    /**
      * 获取案件类型枚举
      */
     public CaseTypeEnum getCaseTypeEnum() {

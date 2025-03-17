@@ -202,6 +202,11 @@ public class CaseDetailVO extends BaseVO {
     private String remarks;
 
     /**
+     * 工作流处理状态
+     */
+    private String processStatus;
+
+    /**
      * 最后操作时间
      */
     private transient LocalDateTime lastOperationTime;
