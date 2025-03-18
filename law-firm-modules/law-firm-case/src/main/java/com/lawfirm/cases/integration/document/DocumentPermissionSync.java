@@ -1,10 +1,11 @@
 package com.lawfirm.cases.integration.document;
 
-import com.lawfirm.cases.service.TeamService;
-import com.lawfirm.model.case_.entity.CaseTeamMember;
+import com.lawfirm.model.cases.service.team.CaseTeamService;
 import com.lawfirm.model.document.service.DocumentPermissionService;
+import com.lawfirm.model.cases.entity.team.CaseTeamMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +18,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
+@Lazy
 @RequiredArgsConstructor
 public class DocumentPermissionSync {
 
     private final DocumentPermissionService documentPermissionService;
-    private final TeamService teamService;
+    private final CaseTeamService caseTeamService;
 
     /**
      * 同步案件团队成员权限到文档系统
@@ -40,7 +42,7 @@ public class DocumentPermissionSync {
             log.info("开始同步案件团队权限到文档系统，caseId={}", caseId);
             
             // 获取案件团队成员
-            List<CaseTeamMember> teamMembers = teamService.getCaseTeamMembers(caseId);
+            List<CaseTeamMember> teamMembers = caseTeamService.getCaseTeamMembers(caseId);
             if (teamMembers.isEmpty()) {
                 log.info("案件没有团队成员，不需要同步权限，caseId={}", caseId);
                 return;

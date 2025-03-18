@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 public class CaseConvert {
 
     /**
-     * 将案件实体转换为案件基础DTO
+     * 将案件实体转换为基础DTO
      *
      * @param entity 案件实体
      * @return 案件基础DTO
@@ -35,38 +36,55 @@ public class CaseConvert {
         }
         
         CaseBaseDTO dto = new CaseBaseDTO();
-        BeanUtils.copyProperties(entity, dto);
+        
+        // 复制基本属性
+        dto.setId(entity.getId());
+        dto.setCaseNumber(entity.getCaseNumber());
+        dto.setCaseName(entity.getCaseName());
+        dto.setCaseDescription(entity.getCaseDescription());
         
         // 转换枚举类型
         if (entity.getCaseType() != null) {
-            dto.setCaseType(CaseTypeEnum.valueOf(entity.getCaseType()));
+            dto.setCaseType(CaseTypeEnum.valueOf(entity.getCaseType().toString()));
         }
         if (entity.getCaseStatus() != null) {
-            dto.setCaseStatus(CaseStatusEnum.valueOf(entity.getCaseStatus()));
+            dto.setCaseStatus(CaseStatusEnum.valueOf(entity.getCaseStatus().toString()));
         }
         if (entity.getCaseProgress() != null) {
-            dto.setCaseProgress(CaseProgressEnum.valueOf(entity.getCaseProgress()));
+            dto.setCaseProgress(CaseProgressEnum.valueOf(entity.getCaseProgress().toString()));
         }
         if (entity.getCaseStage() != null) {
-            dto.setCaseStage(CaseStageEnum.valueOf(entity.getCaseStage()));
+            dto.setCaseStage(CaseStageEnum.valueOf(entity.getCaseStage().toString()));
         }
         if (entity.getCaseDifficulty() != null) {
-            dto.setCaseDifficulty(CaseDifficultyEnum.valueOf(entity.getCaseDifficulty()));
+            dto.setCaseDifficulty(CaseDifficultyEnum.valueOf(entity.getCaseDifficulty().toString()));
         }
         if (entity.getCaseImportance() != null) {
-            dto.setCaseImportance(CaseImportanceEnum.valueOf(entity.getCaseImportance()));
+            dto.setCaseImportance(CaseImportanceEnum.valueOf(entity.getCaseImportance().toString()));
         }
         if (entity.getCasePriority() != null) {
-            dto.setCasePriority(CasePriorityEnum.valueOf(entity.getCasePriority()));
+            dto.setCasePriority(CasePriorityEnum.valueOf(entity.getCasePriority().toString()));
         }
         if (entity.getCaseSource() != null) {
-            dto.setCaseSource(CaseSourceEnum.valueOf(entity.getCaseSource()));
+            dto.setCaseSource(CaseSourceEnum.valueOf(entity.getCaseSource().toString()));
         }
         if (entity.getHandleType() != null) {
-            dto.setHandleType(CaseHandleTypeEnum.valueOf(entity.getHandleType()));
+            dto.setHandleType(CaseHandleTypeEnum.valueOf(entity.getHandleType().toString()));
         }
         if (entity.getFeeType() != null) {
-            dto.setFeeType(CaseFeeTypeEnum.valueOf(entity.getFeeType()));
+            dto.setFeeType(CaseFeeTypeEnum.valueOf(entity.getFeeType().toString()));
+        }
+        
+        // 复制其他属性
+        dto.setClientId(entity.getClientId());
+        dto.setClientName(entity.getClientName());
+        dto.setLawyerId(entity.getLawyerId());
+        dto.setLawyerName(entity.getLawyerName());
+        dto.setRemark(entity.getRemarks());
+        
+        // 处理标签
+        if (entity.getCaseTags() != null && !entity.getCaseTags().isEmpty()) {
+            dto.setCaseTags(entity.getCaseTags());
         }
         
         return dto;
@@ -122,7 +140,7 @@ public class CaseConvert {
     }
     
     /**
-     * 将案件实体转换为案件详情VO
+     * 将案件实体转换为详情VO
      *
      * @param entity 案件实体
      * @return 案件详情VO
@@ -133,42 +151,56 @@ public class CaseConvert {
         }
         
         CaseDetailVO vo = new CaseDetailVO();
-        BeanUtils.copyProperties(entity, vo);
+        
+        // 复制基本属性
+        vo.setId(entity.getId());
+        vo.setCaseNumber(entity.getCaseNumber());
+        vo.setCaseName(entity.getCaseName());
+        vo.setDescription(entity.getCaseDescription());
         
         // 转换枚举类型
         if (entity.getCaseType() != null) {
-            vo.setCaseType(CaseTypeEnum.valueOf(entity.getCaseType()));
+            vo.setCaseType(CaseTypeEnum.valueOf(entity.getCaseType().toString()));
         }
         if (entity.getCaseStatus() != null) {
-            vo.setCaseStatus(CaseStatusEnum.valueOf(entity.getCaseStatus()));
+            vo.setCaseStatus(CaseStatusEnum.valueOf(entity.getCaseStatus().toString()));
         }
         if (entity.getCaseProgress() != null) {
-            vo.setCaseProgress(CaseProgressEnum.valueOf(entity.getCaseProgress()));
+            vo.setCaseProgress(CaseProgressEnum.valueOf(entity.getCaseProgress().toString()));
         }
         if (entity.getCaseStage() != null) {
-            vo.setCaseStage(CaseStageEnum.valueOf(entity.getCaseStage()));
+            vo.setCaseStage(CaseStageEnum.valueOf(entity.getCaseStage().toString()));
         }
         if (entity.getCaseDifficulty() != null) {
-            vo.setCaseDifficulty(CaseDifficultyEnum.valueOf(entity.getCaseDifficulty()));
+            vo.setCaseDifficulty(CaseDifficultyEnum.valueOf(entity.getCaseDifficulty().toString()));
         }
         if (entity.getCaseImportance() != null) {
-            vo.setCaseImportance(CaseImportanceEnum.valueOf(entity.getCaseImportance()));
+            vo.setCaseImportance(CaseImportanceEnum.valueOf(entity.getCaseImportance().toString()));
         }
         if (entity.getCasePriority() != null) {
-            vo.setCasePriority(CasePriorityEnum.valueOf(entity.getCasePriority()));
+            vo.setCasePriority(CasePriorityEnum.valueOf(entity.getCasePriority().toString()));
         }
         if (entity.getCaseSource() != null) {
-            vo.setCaseSource(CaseSourceEnum.valueOf(entity.getCaseSource()));
+            vo.setCaseSource(CaseSourceEnum.valueOf(entity.getCaseSource().toString()));
         }
         if (entity.getHandleType() != null) {
-            vo.setHandleType(CaseHandleTypeEnum.valueOf(entity.getHandleType()));
+            vo.setHandleType(CaseHandleTypeEnum.valueOf(entity.getHandleType().toString()));
         }
         if (entity.getFeeType() != null) {
-            vo.setFeeType(CaseFeeTypeEnum.valueOf(entity.getFeeType()));
+            vo.setFeeType(CaseFeeTypeEnum.valueOf(entity.getFeeType().toString()));
         }
         
-        // 处理标签 - 直接复制标签字符串
-        vo.setCaseTags(entity.getCaseTags());
+        // 复制其他属性
+        vo.setClientId(entity.getClientId());
+        vo.setClientName(entity.getClientName());
+        vo.setLeaderId(entity.getLawyerId());
+        vo.setLeaderName(entity.getLawyerName());
+        vo.setRemark(entity.getRemarks());
+        
+        // 处理标签
+        if (entity.getCaseTags() != null && !entity.getCaseTags().isEmpty()) {
+            vo.setTags(Arrays.asList(entity.getCaseTags().split(",")));
+        }
         
         return vo;
     }
@@ -205,7 +237,8 @@ public class CaseConvert {
             return null;
         }
         
-        Case entity = baseDTOToEntity(dto);
+        CaseBaseDTO baseDTO = dto.toBaseDTO();
+        Case entity = baseDTOToEntity(baseDTO);
         
         // 设置更新时间
         entity.setUpdateTime(LocalDateTime.now());

@@ -21,6 +21,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- 依赖common-data模块 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-data</artifactId>
+        </dependency>
+
         <!-- MyBatis Plus -->
         <dependency>
             <groupId>com.baomidou</groupId>

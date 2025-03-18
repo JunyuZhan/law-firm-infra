@@ -2,10 +2,15 @@ package com.lawfirm.model.cases.dto.base;
 
 import com.lawfirm.model.cases.dto.team.CaseParticipantDTO;
 import com.lawfirm.model.cases.dto.team.CaseTeamDTO;
+import com.lawfirm.model.cases.enums.base.CaseTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -16,7 +21,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class CaseCreateDTO extends CaseBaseDTO {
+@Schema(description = "案件创建DTO")
+public class CaseCreateDTO extends CaseBaseDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -89,4 +95,34 @@ public class CaseCreateDTO extends CaseBaseDTO {
      * 创建人姓名
      */
     private String creatorName;
+
+    @NotBlank(message = "案件名称不能为空")
+    @Schema(description = "案件名称")
+    private String name;
+
+    @NotNull(message = "客户ID不能为空")
+    @Schema(description = "客户ID")
+    private Long clientId;
+
+    @NotNull(message = "主办律师ID不能为空")
+    @Schema(description = "主办律师ID")
+    private Long leaderId;
+
+    @Schema(description = "案件类型")
+    private CaseTypeEnum caseType;
+
+    @Schema(description = "案件描述")
+    private String description;
+
+    @Schema(description = "案件标签")
+    private transient List<String> tags;
+
+    @Schema(description = "团队成员ID列表")
+    private transient List<Long> teamMemberIds;
+
+    @Schema(description = "对方当事人")
+    private transient List<String> oppositeParties;
+
+    @Schema(description = "备注")
+    private String remark;
 } 

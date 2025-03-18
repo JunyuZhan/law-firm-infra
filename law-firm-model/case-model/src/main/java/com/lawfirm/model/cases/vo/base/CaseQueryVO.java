@@ -5,10 +5,12 @@ import com.lawfirm.model.cases.enums.base.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 案件查询视图对象
@@ -18,10 +20,56 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@Schema(description = "案件查询结果VO")
 public class CaseQueryVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
     
+    @Schema(description = "案件ID")
+    private Long id;
+
+    @Schema(description = "案件编号")
+    private String caseNo;
+
+    @Schema(description = "案件名称")
+    private String name;
+
+    @Schema(description = "案件类型")
+    private CaseTypeEnum caseType;
+
+    @Schema(description = "案件状态")
+    private Integer status;
+
+    @Schema(description = "案件描述")
+    private String description;
+
+    @Schema(description = "客户ID")
+    private Long clientId;
+
+    @Schema(description = "客户名称")
+    private String clientName;
+
+    @Schema(description = "主办律师ID")
+    private Long leaderId;
+
+    @Schema(description = "主办律师姓名")
+    private String leaderName;
+
+    @Schema(description = "案件标签")
+    private transient List<String> tags;
+
+    @Schema(description = "对方当事人")
+    private transient List<String> oppositeParties;
+
+    @Schema(description = "是否归档")
+    private Boolean archived;
+
+    @Schema(description = "创建时间")
+    private LocalDateTime createTime;
+
+    @Schema(description = "更新时间")
+    private LocalDateTime updateTime;
+
     /**
      * 案件编号
      */
@@ -35,7 +83,7 @@ public class CaseQueryVO extends BaseVO {
     /**
      * 案件类型
      */
-    private CaseTypeEnum caseType;
+    private CaseTypeEnum caseTypeEnum;
 
     /**
      * 案件状态
@@ -78,19 +126,9 @@ public class CaseQueryVO extends BaseVO {
     private BigDecimal actualAmount;
 
     /**
-     * 委托人名称
-     */
-    private String clientName;
-
-    /**
      * 对方当事人
      */
     private String opposingParty;
-
-    /**
-     * 主办律师姓名
-     */
-    private String lawyerName;
 
     /**
      * 部门名称

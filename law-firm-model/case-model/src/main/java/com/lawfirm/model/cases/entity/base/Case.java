@@ -261,6 +261,30 @@ public class Case extends TenantEntity {
     private String processInstanceId;
 
     /**
+     * 主办律师ID
+     */
+    @TableField("leader_id")
+    private Long leaderId;
+
+    /**
+     * 客户状态
+     */
+    @TableField("client_status")
+    private String clientStatus;
+
+    /**
+     * 风险状态（0-正常 1-风险）
+     */
+    @TableField("risk_status")
+    private Integer riskStatus;
+
+    /**
+     * 风险原因
+     */
+    @TableField("risk_reason")
+    private String riskReason;
+
+    /**
      * 获取案件类型枚举
      */
     public CaseTypeEnum getCaseTypeEnum() {

@@ -22,6 +22,11 @@ public class CaseTeamDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    private Long id;
+
+    /**
      * 案件ID
      */
     private Long caseId;
@@ -37,19 +42,54 @@ public class CaseTeamDTO extends BaseDTO {
     private String caseName;
 
     /**
-     * 团队成员ID（律师ID）
+     * 成员ID
      */
     private Long memberId;
+
+    /**
+     * 成员类型（1-主办律师 2-协办律师 3-助理）
+     */
+    private Integer memberType;
+
+    /**
+     * 成员角色
+     */
+    private String memberRole;
+
+    /**
+     * 加入时间
+     */
+    private LocalDateTime joinTime;
+
+    /**
+     * 状态（0-正常 1-已退出）
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
+
+    /**
+     * 创建人
+     */
+    private Long createBy;
+
+    /**
+     * 更新人
+     */
+    private Long updateBy;
 
     /**
      * 团队成员姓名
      */
     private String memberName;
-
-    /**
-     * 团队成员角色
-     */
-    private TeamMemberRoleEnum memberRole;
 
     /**
      * 部门ID
@@ -75,11 +115,6 @@ public class CaseTeamDTO extends BaseDTO {
      * 收益分配比例（百分比）
      */
     private BigDecimal profitPercentage;
-
-    /**
-     * 加入时间
-     */
-    private transient LocalDateTime joinTime;
 
     /**
      * 退出时间
@@ -181,7 +216,7 @@ public class CaseTeamDTO extends BaseDTO {
      */
     public boolean isLeadLawyer() {
         return this.memberRole != null && 
-               this.memberRole == TeamMemberRoleEnum.LEAD_LAWYER;
+               this.memberRole.equals(TeamMemberRoleEnum.LEAD_LAWYER.name());
     }
 
     /**
@@ -189,7 +224,7 @@ public class CaseTeamDTO extends BaseDTO {
      */
     public boolean isAssistantLawyer() {
         return this.memberRole != null && 
-               this.memberRole == TeamMemberRoleEnum.ASSOCIATE_LAWYER;
+               this.memberRole.equals(TeamMemberRoleEnum.ASSOCIATE_LAWYER.name());
     }
 
     /**
@@ -197,7 +232,7 @@ public class CaseTeamDTO extends BaseDTO {
      */
     public boolean isIntern() {
         return this.memberRole != null && 
-               this.memberRole == TeamMemberRoleEnum.TRAINEE_LAWYER;
+               this.memberRole.equals(TeamMemberRoleEnum.TRAINEE_LAWYER.name());
     }
 
     /**
@@ -205,7 +240,7 @@ public class CaseTeamDTO extends BaseDTO {
      */
     public boolean isConsultant() {
         return this.memberRole != null && 
-               this.memberRole == TeamMemberRoleEnum.EXPERT_CONSULTANT;
+               this.memberRole.equals(TeamMemberRoleEnum.EXPERT_CONSULTANT.name());
     }
 
     /**
@@ -213,7 +248,7 @@ public class CaseTeamDTO extends BaseDTO {
      */
     public boolean isPartner() {
         return this.memberRole != null && 
-               this.memberRole == TeamMemberRoleEnum.SUPERVISING_PARTNER;
+               this.memberRole.equals(TeamMemberRoleEnum.SUPERVISING_PARTNER.name());
     }
 
     /**

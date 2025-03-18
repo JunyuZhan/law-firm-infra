@@ -35,7 +35,10 @@ public class TeamConvert {
         
         // 转换枚举类型
         if (entity.getMemberRole() != null) {
-            dto.setMemberRole(TeamMemberRoleEnum.valueOf(entity.getMemberRole()));
+            TeamMemberRoleEnum roleEnum = TeamMemberRoleEnum.valueOf(entity.getMemberRole());
+            if (roleEnum != null) {
+                dto.setMemberRole(roleEnum.name());
+            }
         }
         
         return dto;
@@ -57,7 +60,10 @@ public class TeamConvert {
         
         // 转换枚举类型
         if (dto.getMemberRole() != null) {
-            entity.setMemberRole(dto.getMemberRole().getValue());
+            TeamMemberRoleEnum roleEnum = TeamMemberRoleEnum.valueOf(dto.getMemberRole());
+            if (roleEnum != null) {
+                entity.setMemberRole(roleEnum.getValue());
+            }
         }
         
         // 设置时间

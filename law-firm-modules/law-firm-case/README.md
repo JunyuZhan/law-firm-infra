@@ -146,7 +146,7 @@ src
 │   │       │       ├── LawyerComponent.java
 │   │       │       └── WorkloadReporter.java
 │   │       │
-│   │       ├── 6️⃣ 接口层
+│   │       ├── 6️⃣ 控制层
 │   │       ├── controller                  # 控制器（实现case-model中定义的API接口）
 │   │       │   ├── CaseControllerImpl.java # 案件基本控制器实现
 │   │       │   ├── TeamControllerImpl.java # 团队管理控制器实现

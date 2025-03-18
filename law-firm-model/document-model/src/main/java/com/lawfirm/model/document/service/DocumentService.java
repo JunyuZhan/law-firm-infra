@@ -7,6 +7,9 @@ import com.lawfirm.model.document.dto.document.DocumentQueryDTO;
 import com.lawfirm.model.document.dto.document.DocumentUpdateDTO;
 import com.lawfirm.model.document.entity.base.BaseDocument;
 import com.lawfirm.model.document.vo.DocumentVO;
+import com.lawfirm.model.document.dto.DocumentDTO;
+import com.lawfirm.model.document.dto.DocumentUploadDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.List;
@@ -40,13 +43,6 @@ public interface DocumentService extends BaseService<BaseDocument> {
      * @param inputStream 文件输入流
      */
     void updateDocumentContent(Long id, InputStream inputStream);
-
-    /**
-     * 删除文档
-     *
-     * @param id 文档ID
-     */
-    void deleteDocument(Long id);
 
     /**
      * 批量删除文档
@@ -134,4 +130,47 @@ public interface DocumentService extends BaseService<BaseDocument> {
      * 刷新文档缓存
      */
     void refreshCache();
+
+    /**
+     * 上传文档
+     *
+     * @param file 文件
+     * @param uploadDTO 上传参数
+     * @return 文档ID
+     */
+    Long uploadDocument(MultipartFile file, DocumentUploadDTO uploadDTO);
+
+    /**
+     * 获取业务相关文档列表
+     *
+     * @param businessType 业务类型
+     * @param businessId 业务ID
+     * @return 文档列表
+     */
+    List<DocumentDTO> getBusinessDocuments(String businessType, Long businessId);
+
+    /**
+     * 获取文档详情
+     *
+     * @param documentId 文档ID
+     * @return 文档详情
+     */
+    DocumentDTO getDocumentDetail(Long documentId);
+
+    /**
+     * 删除文档
+     *
+     * @param documentId 文档ID
+     * @return 是否成功
+     */
+    boolean deleteDocument(Long documentId);
+
+    /**
+     * 设置文档标签
+     *
+     * @param documentId 文档ID
+     * @param tags 标签列表
+     * @return 是否成功
+     */
+    boolean setDocumentTags(Long documentId, List<String> tags);
 } 

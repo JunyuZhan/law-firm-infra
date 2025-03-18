@@ -6,9 +6,9 @@ import com.lawfirm.model.organization.vo.team.TeamVO;
 import java.util.List;
 
 /**
- * 团队服务接口
+ * 组织团队服务接口
  */
-public interface TeamService {
+public interface OrganizationTeamService {
     
     /**
      * 创建团队

@@ -1,6 +1,6 @@
 package com.lawfirm.cases.integration.client;
 
-import com.lawfirm.cases.service.CaseService;
+import com.lawfirm.model.cases.service.base.CaseService;
 import com.lawfirm.model.client.event.ClientChangeEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

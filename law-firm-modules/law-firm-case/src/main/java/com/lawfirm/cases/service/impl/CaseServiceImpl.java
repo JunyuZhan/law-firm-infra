@@ -8,6 +8,7 @@ import com.lawfirm.cases.core.audit.CaseAuditProvider;
 import com.lawfirm.cases.core.message.CaseMessageManager;
 import com.lawfirm.cases.core.search.CaseSearchManager;
 import com.lawfirm.cases.core.workflow.CaseWorkflowManager;
+import com.lawfirm.cases.integration.client.ClientComponent;
 import com.lawfirm.model.cases.mapper.base.CaseMapper;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.cases.dto.base.CaseBaseDTO;
@@ -18,6 +19,7 @@ import com.lawfirm.model.cases.entity.base.Case;
 import com.lawfirm.model.cases.service.base.CaseService;
 import com.lawfirm.model.cases.vo.base.CaseDetailVO;
 import com.lawfirm.model.cases.vo.base.CaseQueryVO;
+import com.lawfirm.model.client.dto.ClientDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,6 +44,7 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
     private final CaseAuditProvider auditProvider;
     private final CaseSearchManager searchManager;
     private final CaseMessageManager messageManager;
+    private final ClientComponent clientComponent;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -474,5 +478,118 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
         wrapper.eq(Case::getDeleted, 0);
 
         return count(wrapper);
+    }
+
+    /**
+     * 更新案件中的客户状态
+     *
+     * @param clientId 客户ID
+     * @param newStatus 新状态
+     */
+    @Override
+    public void updateClientStatusInCases(Long clientId, String newStatus) {
+        log.info("更新客户{}的案件状态为{}", clientId, newStatus);
+        
+        // 查询该客户相关的所有案件
+        List<Case> cases = lambdaQuery()
+                .eq(Case::getClientId, clientId)
+                .list();
+                
+        if (cases.isEmpty()) {
+            return;
+        }
+        
+        // 更新案件中的客户状态
+        cases.forEach(caseInfo -> {
+            caseInfo.setClientStatus(newStatus);
+            updateById(caseInfo);
+            
+            // 记录状态变更
+            log.info("案件{}的客户状态已更新为{}", caseInfo.getId(), newStatus);
+        });
+    }
+
+    /**
+     * 同步客户信息到相关案件
+     *
+     * @param clientId 客户ID
+     */
+    @Override
+    public void syncClientInfo(Long clientId) {
+        log.info("同步客户{}的信息到相关案件", clientId);
+        
+        // 获取客户信息
+        ClientDTO client = clientComponent.getClientDetail(clientId);
+        if (client == null) {
+            log.warn("客户{}不存在", clientId);
+            return;
+        }
+        
+        // 查询该客户相关的所有案件
+        List<Case> cases = lambdaQuery()
+                .eq(Case::getClientId, clientId)
+                .list();
+                
+        if (cases.isEmpty()) {
+            return;
+        }
+        
+        // 更新案件中的客户信息
+        cases.forEach(caseInfo -> {
+            caseInfo.setClientName(client.getClientName());
+            updateById(caseInfo);
+            
+            // 记录信息同步
+            log.info("案件{}的客户信息已同步", caseInfo.getId());
+        });
+    }
+
+    /**
+     * 标记客户相关案件为风险状态
+     *
+     * @param clientId 客户ID
+     * @param reason 风险原因
+     */
+    @Override
+    public void markCasesWithRisk(Long clientId, String reason) {
+        log.info("标记客户{}的案件为风险状态，原因：{}", clientId, reason);
+        
+        // 查询该客户相关的所有案件
+        List<Case> cases = lambdaQuery()
+                .eq(Case::getClientId, clientId)
+                .list();
+                
+        if (cases.isEmpty()) {
+            return;
+        }
+        
+        // 更新案件状态为风险状态
+        cases.forEach(caseInfo -> {
+            caseInfo.setRiskStatus(1);
+            caseInfo.setRiskReason(reason);
+            updateById(caseInfo);
+            
+            // 记录状态变更
+            log.info("案件{}已标记为风险状态", caseInfo.getId());
+        });
+    }
+
+    /**
+     * 获取用户相关的案件列表
+     *
+     * @param userId 用户ID
+     * @return 案件列表
+     */
+    @Override
+    public List<Case> getUserCases(Long userId) {
+        log.info("获取用户{}相关的案件列表", userId);
+        
+        // 查询用户参与的所有案件
+        return lambdaQuery()
+                .eq(Case::getLeaderId, userId)
+                .or()
+                .inSql(Case::getId, 
+                    "SELECT case_id FROM case_team_member WHERE member_id = " + userId)
+                .list();
     }
 }

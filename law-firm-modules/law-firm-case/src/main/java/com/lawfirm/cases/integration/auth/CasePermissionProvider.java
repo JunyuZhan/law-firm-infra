@@ -1,10 +1,10 @@
 package com.lawfirm.cases.integration.auth;
 
-import com.lawfirm.cases.service.CaseService;
-import com.lawfirm.cases.service.TeamService;
-import com.lawfirm.model.case_.constant.CaseConstants;
-import com.lawfirm.model.case_.entity.Case;
-import com.lawfirm.model.case_.entity.CaseTeamMember;
+import com.lawfirm.model.cases.service.base.CaseService;
+import com.lawfirm.model.cases.service.team.CaseTeamService;
+import com.lawfirm.model.cases.constants.CaseConstants;
+import com.lawfirm.model.cases.entity.base.Case;
+import com.lawfirm.model.cases.entity.team.CaseTeamMember;
 import com.lawfirm.model.auth.enums.OperationTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class CasePermissionProvider {
 
     private final CaseService caseService;
-    private final TeamService teamService;
+    private final CaseTeamService caseTeamService;
 
     /**
      * 检查用户是否拥有对特定案件的操作权限
@@ -50,7 +50,7 @@ public class CasePermissionProvider {
         }
 
         // 获取用户在案件中的角色
-        List<CaseTeamMember> memberList = teamService.getCaseTeamMembers(caseId);
+        List<CaseTeamMember> memberList = caseTeamService.getCaseTeamMembers(caseId);
         
         // 检查用户是否在团队成员中
         List<CaseTeamMember> userMembers = memberList.stream()

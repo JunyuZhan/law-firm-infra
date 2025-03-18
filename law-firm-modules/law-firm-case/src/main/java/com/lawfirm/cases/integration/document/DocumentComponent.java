@@ -5,6 +5,7 @@ import com.lawfirm.model.document.dto.DocumentUploadDTO;
 import com.lawfirm.model.document.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Component
+@Lazy
 @RequiredArgsConstructor
 public class DocumentComponent {
 
@@ -45,10 +47,10 @@ public class DocumentComponent {
             DocumentUploadDTO uploadDTO = DocumentUploadDTO.builder()
                     .businessType("CASE")
                     .businessId(caseId)
-                    .documentType(documentType)
-                    .name(name)
+                    .fileType(documentType)
+                    .fileName(name)
                     .description(description)
-                    .createUserId(userId)
+                    .uploaderId(userId)
                     .build();
 
             Long documentId = documentService.uploadDocument(file, uploadDTO);
@@ -101,16 +103,15 @@ public class DocumentComponent {
      * 删除案件文档
      *
      * @param documentId 文档ID
-     * @param userId 操作用户ID
      * @return 是否删除成功
      */
-    public boolean deleteDocument(Long documentId, Long userId) {
+    public boolean deleteDocument(Long documentId) {
         if (documentId == null) {
             return false;
         }
 
         try {
-            return documentService.deleteDocument(documentId, userId);
+            return documentService.deleteDocument(documentId);
         } catch (Exception e) {
             log.error("删除文档异常，documentId={}", documentId, e);
             return false;

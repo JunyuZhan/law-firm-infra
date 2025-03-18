@@ -13,8 +13,10 @@ import com.lawfirm.model.cases.dto.team.CaseAssignmentDTO;
 import com.lawfirm.model.cases.dto.team.CaseParticipantDTO;
 import com.lawfirm.model.cases.entity.team.CaseAssignment;
 import com.lawfirm.model.cases.entity.team.CaseParticipant;
+import com.lawfirm.model.cases.entity.team.CaseTeamMember;
 import com.lawfirm.model.cases.service.team.CaseAssignmentService;
 import com.lawfirm.model.cases.service.team.CaseParticipantService;
+import com.lawfirm.model.cases.service.team.CaseTeamService;
 import com.lawfirm.model.cases.vo.team.CaseAssignmentVO;
 import com.lawfirm.model.cases.vo.team.CaseParticipantVO;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +36,32 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TeamServiceImpl implements CaseParticipantService, CaseAssignmentService {
+public class TeamServiceImpl implements CaseTeamService {
 
     private final CaseParticipantMapper participantMapper;
     private final CaseAssignmentMapper assignmentMapper;
     private final CaseAuditProvider auditProvider;
     private final CaseMessageManager messageManager;
     private final CaseTaskAssigner taskAssigner;
+
+    /**
+     * 获取案件团队成员列表
+     *
+     * @param caseId 案件ID
+     * @return 团队成员列表
+     */
+    @Override
+    public List<CaseTeamMember> getCaseTeamMembers(Long caseId) {
+        if (caseId == null) {
+            log.warn("获取团队成员时案件ID为空");
+            return Collections.emptyList();
+        }
+        
+        log.info("获取案件团队成员, caseId={}", caseId);
+        // 从数据库获取团队成员信息并转换为CaseTeamMember对象
+        // 这里简化为直接返回空列表，实际实现需要查询数据库
+        return Collections.emptyList();
+    }
 
     //=========================== 案件参与方服务实现 ===========================
 

@@ -10,6 +10,8 @@ import com.lawfirm.model.cases.vo.base.CaseQueryVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.model.base.service.BaseService;
 
+import java.util.List;
+
 /**
  * 案件基础服务接口
  */
@@ -123,4 +125,35 @@ public interface CaseService extends BaseService<Case> {
      * @return 数量
      */
     long countCases(CaseQueryDTO queryDTO);
+
+    /**
+     * 同步客户信息到相关案件
+     *
+     * @param clientId 客户ID
+     */
+    void syncClientInfo(Long clientId);
+
+    /**
+     * 标记客户相关案件为风险状态
+     *
+     * @param clientId 客户ID
+     * @param reason 风险原因
+     */
+    void markCasesWithRisk(Long clientId, String reason);
+
+    /**
+     * 更新案件中的客户状态
+     *
+     * @param clientId 客户ID
+     * @param newStatus 新状态
+     */
+    void updateClientStatusInCases(Long clientId, String newStatus);
+
+    /**
+     * 获取用户相关的案件列表
+     *
+     * @param userId 用户ID
+     * @return 案件列表
+     */
+    List<Case> getUserCases(Long userId);
 } 

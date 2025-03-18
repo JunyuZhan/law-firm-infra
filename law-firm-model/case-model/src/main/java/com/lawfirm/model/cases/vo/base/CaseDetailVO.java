@@ -5,6 +5,7 @@ import com.lawfirm.model.cases.enums.base.*;
 import com.lawfirm.model.cases.vo.business.*;
 import com.lawfirm.model.cases.vo.team.CaseParticipantVO;
 import com.lawfirm.model.cases.vo.team.CaseTeamVO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -22,34 +23,79 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@Schema(description = "案件详情VO")
 public class CaseDetailVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 案件编号
-     */
+    @Schema(description = "案件ID")
+    private Long id;
+
+    @Schema(description = "案件编号")
     private String caseNumber;
 
-    /**
-     * 案件名称
-     */
+    @Schema(description = "案件名称")
     private String caseName;
 
-    /**
-     * 案件描述
-     */
-    private String caseDescription;
-
-    /**
-     * 案件类型
-     */
+    @Schema(description = "案件类型")
     private CaseTypeEnum caseType;
 
-    /**
-     * 案件状态
-     */
+    @Schema(description = "案件状态")
+    private Integer status;
+
+    @Schema(description = "案件状态枚举")
     private CaseStatusEnum caseStatus;
+
+    @Schema(description = "案件描述")
+    private String description;
+
+    @Schema(description = "客户ID")
+    private Long clientId;
+
+    @Schema(description = "客户名称")
+    private String clientName;
+
+    @Schema(description = "主办律师ID")
+    private Long leaderId;
+
+    @Schema(description = "主办律师姓名")
+    private String leaderName;
+
+    @Schema(description = "案件标签")
+    private transient List<String> tags;
+
+    @Schema(description = "团队成员ID列表")
+    private transient List<Long> teamMemberIds;
+
+    @Schema(description = "团队成员姓名列表")
+    private transient List<String> teamMemberNames;
+
+    @Schema(description = "对方当事人")
+    private transient List<String> oppositeParties;
+
+    @Schema(description = "是否归档")
+    private Boolean archived;
+
+    @Schema(description = "备注")
+    private String remark;
+
+    @Schema(description = "创建人ID")
+    private Long creatorId;
+
+    @Schema(description = "创建人姓名")
+    private String creatorName;
+
+    @Schema(description = "创建时间")
+    private LocalDateTime createTime;
+
+    @Schema(description = "更新人ID")
+    private Long updaterId;
+
+    @Schema(description = "更新人姓名")
+    private String updaterName;
+
+    @Schema(description = "更新时间")
+    private LocalDateTime updateTime;
 
     /**
      * 案件进展
@@ -102,31 +148,6 @@ public class CaseDetailVO extends BaseVO {
     private BigDecimal actualAmount;
 
     /**
-     * 委托人ID
-     */
-    private Long clientId;
-
-    /**
-     * 委托人名称
-     */
-    private String clientName;
-
-    /**
-     * 对方当事人
-     */
-    private String opposingParty;
-
-    /**
-     * 主办律师ID
-     */
-    private Long lawyerId;
-
-    /**
-     * 主办律师姓名
-     */
-    private String lawyerName;
-
-    /**
      * 部门ID
      */
     private Long departmentId;
@@ -172,11 +193,6 @@ public class CaseDetailVO extends BaseVO {
     private CaseResultEnum caseResult;
 
     /**
-     * 案件标签，多个标签以逗号分隔
-     */
-    private String caseTags;
-
-    /**
      * 是否有利益冲突
      */
     private Boolean hasConflict;
@@ -195,11 +211,6 @@ public class CaseDetailVO extends BaseVO {
      * 保密级别
      */
     private Integer confidentialLevel;
-
-    /**
-     * 备注
-     */
-    private String remarks;
 
     /**
      * 工作流处理状态
@@ -255,18 +266,17 @@ public class CaseDetailVO extends BaseVO {
      * 获取标签数组
      */
     public String[] getTagArray() {
-        if (this.caseTags == null || this.caseTags.isEmpty()) {
+        if (this.tags == null || this.tags.isEmpty()) {
             return new String[0];
         }
-        return this.caseTags.split(",");
+        return this.tags.toArray(new String[0]);
     }
 
     /**
      * 判断案件是否已结案
      */
     public boolean isClosed() {
-        return this.caseStatus != null && 
-               this.caseStatus == CaseStatusEnum.CLOSED;
+        return getCaseStatus() == CaseStatusEnum.CLOSED;
     }
 
     /**
@@ -301,5 +311,21 @@ public class CaseDetailVO extends BaseVO {
                          (this.getCreateTime() != null ? this.getCreateTime().toLocalDate() : LocalDate.now());
         LocalDate end = this.closingTime != null ? this.closingTime : LocalDate.now();
         return java.time.temporal.ChronoUnit.DAYS.between(start, end);
+    }
+
+    // 设置案件状态
+    public void setCaseStatus(CaseStatusEnum caseStatus) {
+        this.caseStatus = caseStatus;
+        if (caseStatus != null) {
+            this.setStatus(caseStatus.getValue());
+        }
+    }
+
+    // 获取案件状态
+    public CaseStatusEnum getCaseStatus() {
+        if (this.caseStatus == null && this.getStatus() != null) {
+            this.caseStatus = CaseStatusEnum.fromValue(this.getStatus());
+        }
+        return this.caseStatus;
     }
 }

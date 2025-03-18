@@ -4,7 +4,6 @@ import com.lawfirm.model.client.dto.ClientDTO;
 import com.lawfirm.model.client.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -17,88 +16,56 @@ import java.util.Optional;
  */
 @Slf4j
 @Component
-@Lazy
 @RequiredArgsConstructor
 public class ClientComponent {
 
     private final ClientService clientService;
 
     /**
-     * 获取客户详细信息
+     * 获取客户详情
      *
      * @param clientId 客户ID
      * @return 客户详情
      */
-    public Optional<ClientDTO> getClientDetail(Long clientId) {
-        if (clientId == null) {
-            return Optional.empty();
-        }
-
-        try {
-            return Optional.ofNullable(clientService.getClientDetail(clientId));
-        } catch (Exception e) {
-            log.error("获取客户详情异常，clientId={}", clientId, e);
-            return Optional.empty();
-        }
+    public ClientDTO getClientDetail(Long clientId) {
+        log.debug("获取客户详情: {}", clientId);
+        return clientService.getClientDetail(clientId);
     }
 
     /**
-     * 根据名称模糊搜索客户列表
+     * 搜索客户
      *
-     * @param keyword 关键词
+     * @param name 客户名称
      * @param limit 限制数量
      * @return 客户列表
      */
-    public List<ClientDTO> searchClientsByName(String keyword, int limit) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        try {
-            return clientService.searchClientsByName(keyword, limit);
-        } catch (Exception e) {
-            log.error("搜索客户异常，keyword={}", keyword, e);
-            return Collections.emptyList();
-        }
+    public List<ClientDTO> searchClientsByName(String name, int limit) {
+        log.debug("搜索客户: name={}, limit={}", name, limit);
+        return clientService.searchClientsByName(name, limit);
     }
 
     /**
-     * 检查客户是否存在冲突
+     * 检查客户利益冲突
      *
      * @param clientId 客户ID
-     * @param opposingClientIds 对方当事人客户ID列表
+     * @param oppositeClientIds 对方当事人ID列表
      * @return 是否存在冲突
      */
-    public boolean checkClientConflict(Long clientId, List<Long> opposingClientIds) {
-        if (clientId == null || opposingClientIds == null || opposingClientIds.isEmpty()) {
-            return false;
-        }
-
-        try {
-            return clientService.checkClientConflict(clientId, opposingClientIds);
-        } catch (Exception e) {
-            log.error("检查客户冲突异常，clientId={}, opposingClientIds={}", clientId, opposingClientIds, e);
-            // 发生异常时返回true表示可能存在冲突，需要人工审核
-            return true;
-        }
+    public boolean checkClientConflict(Long clientId, List<Long> oppositeClientIds) {
+        log.debug("检查客户利益冲突: clientId={}, oppositeClientIds={}", clientId, oppositeClientIds);
+        return clientService.checkClientConflict(clientId, oppositeClientIds);
     }
 
     /**
-     * 更新客户案件统计信息
+     * 更新客户案件统计
      *
      * @param clientId 客户ID
-     * @param caseCount 案件总数
-     * @param activeCaseCount 活跃案件数
+     * @param totalCases 总案件数
+     * @param activeCases 活跃案件数
      */
-    public void updateClientCaseStats(Long clientId, int caseCount, int activeCaseCount) {
-        if (clientId == null) {
-            return;
-        }
-
-        try {
-            clientService.updateClientCaseStats(clientId, caseCount, activeCaseCount);
-        } catch (Exception e) {
-            log.error("更新客户案件统计信息异常，clientId={}", clientId, e);
-        }
+    public void updateClientCaseStats(Long clientId, int totalCases, int activeCases) {
+        log.debug("更新客户案件统计: clientId={}, totalCases={}, activeCases={}", 
+                clientId, totalCases, activeCases);
+        clientService.updateClientCaseStats(clientId, totalCases, activeCases);
     }
 } 

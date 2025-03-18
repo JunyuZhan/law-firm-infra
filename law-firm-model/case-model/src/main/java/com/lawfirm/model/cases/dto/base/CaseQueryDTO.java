@@ -1,289 +1,88 @@
 package com.lawfirm.model.cases.dto.base;
 
-import com.lawfirm.model.base.dto.PageDTO;
-import com.lawfirm.model.cases.enums.base.*;
+import com.lawfirm.common.data.query.PageQuery;
+import com.lawfirm.model.cases.enums.base.CaseStatusEnum;
+import com.lawfirm.model.cases.enums.base.CaseTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
-/**
- * 案件查询数据传输对象
- * 
- * 继承自PageDTO，包含查询案件时需要的条件，如案件编号、名称、类型、状态等
- */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
-public class CaseQueryDTO extends PageDTO<CaseQueryDTO> {
+@Schema(description = "案件查询DTO")
+public class CaseQueryDTO extends PageQuery {
 
-    private static final long serialVersionUID = 1L;
-    
-    /**
-     * 案件编号
-     */
-    private String caseNumber;
+    @Schema(description = "页码", defaultValue = "1")
+    private Integer pageNum = 1;
 
-    /**
-     * 案件名称（模糊匹配）
-     */
-    private String caseName;
+    @Schema(description = "每页大小", defaultValue = "10")
+    private Integer pageSize = 10;
 
-    /**
-     * 案件描述（模糊匹配）
-     */
-    private String caseDescription;
+    @Schema(description = "案件名称")
+    private String name;
 
-    /**
-     * 案件类型
-     */
-    private CaseTypeEnum caseType;
+    @Schema(description = "案件编号")
+    private String caseNo;
 
-    /**
-     * 案件类型列表
-     */
-    private List<CaseTypeEnum> caseTypes;
-
-    /**
-     * 案件状态
-     */
-    private CaseStatusEnum caseStatus;
-
-    /**
-     * 案件状态列表
-     */
-    private List<CaseStatusEnum> caseStatuses;
-
-    /**
-     * 案件进展
-     */
-    private CaseProgressEnum caseProgress;
-
-    /**
-     * 案件进展列表
-     */
-    private List<CaseProgressEnum> caseProgresses;
-
-    /**
-     * 案件阶段
-     */
-    private CaseStageEnum caseStage;
-
-    /**
-     * 案件阶段列表
-     */
-    private List<CaseStageEnum> caseStages;
-
-    /**
-     * 案件难度
-     */
-    private CaseDifficultyEnum caseDifficulty;
-
-    /**
-     * 案件难度列表
-     */
-    private List<CaseDifficultyEnum> caseDifficulties;
-
-    /**
-     * 案件重要性
-     */
-    private CaseImportanceEnum caseImportance;
-
-    /**
-     * 案件重要性列表
-     */
-    private List<CaseImportanceEnum> caseImportances;
-
-    /**
-     * 案件优先级
-     */
-    private CasePriorityEnum casePriority;
-
-    /**
-     * 案件优先级列表
-     */
-    private List<CasePriorityEnum> casePriorities;
-
-    /**
-     * 案件来源
-     */
-    private CaseSourceEnum caseSource;
-
-    /**
-     * 案件来源列表
-     */
-    private List<CaseSourceEnum> caseSources;
-
-    /**
-     * 办理方式
-     */
-    private CaseHandleTypeEnum handleType;
-
-    /**
-     * 办理方式列表
-     */
-    private List<CaseHandleTypeEnum> handleTypes;
-
-    /**
-     * 收费类型
-     */
-    private CaseFeeTypeEnum feeType;
-
-    /**
-     * 收费类型列表
-     */
-    private List<CaseFeeTypeEnum> feeTypes;
-
-    /**
-     * 预估金额最小值
-     */
-    private BigDecimal estimatedAmountMin;
-
-    /**
-     * 预估金额最大值
-     */
-    private BigDecimal estimatedAmountMax;
-
-    /**
-     * 实际金额最小值
-     */
-    private BigDecimal actualAmountMin;
-
-    /**
-     * 实际金额最大值
-     */
-    private BigDecimal actualAmountMax;
-
-    /**
-     * 委托人ID
-     */
+    @Schema(description = "客户ID")
     private Long clientId;
 
-    /**
-     * 委托人名称（模糊匹配）
-     */
-    private String clientName;
+    @Schema(description = "主办律师ID")
+    private Long leaderId;
 
-    /**
-     * 对方当事人（模糊匹配）
-     */
-    private String opposingParty;
+    @Schema(description = "案件类型")
+    private CaseTypeEnum caseType;
 
-    /**
-     * 主办律师ID
-     */
-    private Long lawyerId;
+    @Schema(description = "案件状态")
+    private CaseStatusEnum status;
 
-    /**
-     * 主办律师姓名（模糊匹配）
-     */
-    private String lawyerName;
+    @Schema(description = "是否归档")
+    private Boolean archived;
 
-    /**
-     * 部门ID
-     */
-    private Long departmentId;
+    @Schema(description = "标签")
+    private String tag;
 
-    /**
-     * 部门名称（模糊匹配）
-     */
-    private String departmentName;
-
-    /**
-     * 法院/仲裁机构（模糊匹配）
-     */
-    private String courtName;
-
-    /**
-     * 法官/仲裁员（模糊匹配）
-     */
-    private String judgeName;
-
-    /**
-     * 案号（模糊匹配）
-     */
-    private String courtCaseNumber;
-
-    /**
-     * 立案时间开始
-     */
+    @Schema(description = "立案时间起始")
     private LocalDate filingTimeStart;
 
-    /**
-     * 立案时间结束
-     */
+    @Schema(description = "立案时间结束")
     private LocalDate filingTimeEnd;
 
-    /**
-     * 结案时间开始
-     */
-    private LocalDate closingTimeStart;
+    @Schema(description = "创建时间起始")
+    private String createTimeStart;
 
-    /**
-     * 结案时间结束
-     */
-    private LocalDate closingTimeEnd;
+    @Schema(description = "创建时间结束")
+    private String createTimeEnd;
 
-    /**
-     * 预计结案时间开始
-     */
-    private LocalDate expectedClosingTimeStart;
+    // 兼容旧的方法名
+    public String getCaseName() {
+        return name;
+    }
 
-    /**
-     * 预计结案时间结束
-     */
-    private LocalDate expectedClosingTimeEnd;
+    public String getCaseNumber() {
+        return caseNo;
+    }
 
-    /**
-     * 案件结果
-     */
-    private CaseResultEnum caseResult;
+    public CaseStatusEnum getCaseStatus() {
+        return status;
+    }
 
-    /**
-     * 案件结果列表
-     */
-    private List<CaseResultEnum> caseResults;
+    public LocalDate getFilingTimeStart() {
+        return filingTimeStart;
+    }
 
-    /**
-     * 案件标签（模糊匹配）
-     */
-    private String caseTag;
+    public LocalDate getFilingTimeEnd() {
+        return filingTimeEnd;
+    }
 
-    /**
-     * 案件标签列表
-     */
-    private List<String> caseTags;
+    // 分页相关方法
+    public Integer getPageNum() {
+        return pageNum;
+    }
 
-    /**
-     * 是否已归档
-     */
-    private Boolean isArchived;
-
-    /**
-     * 是否已删除
-     */
-    private Boolean isDeleted;
-
-    /**
-     * 创建人ID
-     */
-    private Long creatorId;
-
-    /**
-     * 创建人姓名（模糊匹配）
-     */
-    private String creatorName;
-
-    /**
-     * 更新人ID
-     */
-    private Long updaterId;
-
-    /**
-     * 更新人姓名（模糊匹配）
-     */
-    private String updaterName;
+    public Integer getPageSize() {
+        return pageSize;
+    }
 } 
