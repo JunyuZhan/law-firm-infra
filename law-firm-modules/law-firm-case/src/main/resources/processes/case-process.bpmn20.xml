@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://www.flowable.org/processdef">
+
+    <process id="caseProcess" name="案件流程" isExecutable="true">
+        <!-- 开始节点 -->
+        <startEvent id="startEvent" name="开始"/>
+
+        <!-- 立案阶段 -->
+        <userTask id="caseRegistration" name="立案登记"
+                  flowable:assignee="${caseManager}">
+            <documentation>进行案件基本信息登记和材料收集</documentation>
+        </userTask>
+
+        <!-- 分配团队 -->
+        <userTask id="teamAssignment" name="团队分配"
+                  flowable:candidateGroups="ROLE_MANAGER">
+            <documentation>为案件分配负责团队和人员</documentation>
+        </userTask>
+
+        <!-- 案件评估 -->
+        <userTask id="caseAssessment" name="案件评估"
+                  flowable:assignee="${caseLeader}">
+            <documentation>评估案件难度、风险和所需资源</documentation>
+        </userTask>
+
+        <!-- 制定方案 -->
+        <userTask id="planFormulation" name="方案制定"
+                  flowable:assignee="${caseLeader}">
+            <documentation>制定案件处理方案和时间计划</documentation>
+        </userTask>
+
+        <!-- 方案审批 -->
+        <userTask id="planApproval" name="方案审批"
+                  flowable:candidateGroups="ROLE_MANAGER">
+            <documentation>审批案件处理方案</documentation>
+        </userTask>
+
+        <!-- 案件执行 -->
+        <subProcess id="caseExecution" name="案件执行">
+            <startEvent id="executionStart"/>
+            
+            <parallelGateway id="executionGateway"/>
+            
+            <!-- 证据收集 -->
+            <userTask id="evidenceCollection" name="证据收集"
+                      flowable:assignee="${caseHandler}">
+                <documentation>收集和整理案件相关证据</documentation>
+            </userTask>
+            
+            <!-- 法律研究 -->
+            <userTask id="legalResearch" name="法律研究"
+                      flowable:assignee="${legalResearcher}">
+                <documentation>进行相关法律研究和分析</documentation>
+            </userTask>
+            
+            <!-- 文书准备 -->
+            <userTask id="documentPreparation" name="文书准备"
+                      flowable:assignee="${documentHandler}">
+                <documentation>准备相关法律文书</documentation>
+            </userTask>
+            
+            <parallelGateway id="executionJoin"/>
+            
+            <endEvent id="executionEnd"/>
+            
+            <sequenceFlow sourceRef="executionStart" targetRef="executionGateway"/>
+            <sequenceFlow sourceRef="executionGateway" targetRef="evidenceCollection"/>
+            <sequenceFlow sourceRef="executionGateway" targetRef="legalResearch"/>
+            <sequenceFlow sourceRef="executionGateway" targetRef="documentPreparation"/>
+            <sequenceFlow sourceRef="evidenceCollection" targetRef="executionJoin"/>
+            <sequenceFlow sourceRef="legalResearch" targetRef="executionJoin"/>
+            <sequenceFlow sourceRef="documentPreparation" targetRef="executionJoin"/>
+            <sequenceFlow sourceRef="executionJoin" targetRef="executionEnd"/>
+        </subProcess>
+
+        <!-- 结案审核 -->
+        <userTask id="caseReview" name="结案审核"
+                  flowable:candidateGroups="ROLE_MANAGER">
+            <documentation>审核案件处理结果</documentation>
+        </userTask>
+
+        <!-- 归档 -->
+        <userTask id="caseArchive" name="案件归档"
+                  flowable:assignee="${caseManager}">
+            <documentation>整理归档案件材料</documentation>
+        </userTask>
+
+        <!-- 结束节点 -->
+        <endEvent id="endEvent" name="结束"/>
+
+        <!-- 流程连线 -->
+        <sequenceFlow sourceRef="startEvent" targetRef="caseRegistration"/>
+        <sequenceFlow sourceRef="caseRegistration" targetRef="teamAssignment"/>
+        <sequenceFlow sourceRef="teamAssignment" targetRef="caseAssessment"/>
+        <sequenceFlow sourceRef="caseAssessment" targetRef="planFormulation"/>
+        <sequenceFlow sourceRef="planFormulation" targetRef="planApproval"/>
+        <sequenceFlow sourceRef="planApproval" targetRef="caseExecution"/>
+        <sequenceFlow sourceRef="caseExecution" targetRef="caseReview"/>
+        <sequenceFlow sourceRef="caseReview" targetRef="caseArchive"/>
+        <sequenceFlow sourceRef="caseArchive" targetRef="endEvent"/>
+    </process>
+</definitions> 
