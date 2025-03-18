@@ -174,6 +174,12 @@ public class FinancialReport extends ModelBaseEntity {
     private Long departmentId;
 
     /**
+     * 关联成本中心ID
+     */
+    @TableField("cost_center_id")
+    private Long costCenterId;
+
+    /**
      * 租户ID
      */
     @TableField("tenant_id")
@@ -189,4 +195,4 @@ public class FinancialReport extends ModelBaseEntity {
             this.reportStatus = 0;
         }
     }
-} 
+}

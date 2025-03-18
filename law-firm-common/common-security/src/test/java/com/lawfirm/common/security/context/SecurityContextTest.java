@@ -33,6 +33,18 @@ public class SecurityContextTest {
         public Authorization getAuthorization() {
             return authorization;
         }
+
+        @Override
+        public Long getCurrentUserId() {
+            if (authentication == null) {
+                return null;
+            }
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof Long) {
+                return (Long) principal;
+            }
+            return null;
+        }
     }
 
     @Test
@@ -81,5 +93,36 @@ public class SecurityContextTest {
 
         // 验证结果
         assertNull(context.getAuthorization());
+    }
+
+    @Test
+    void testGetCurrentUserIdWithValidAuth() {
+        // 准备测试数据
+        Authentication auth = new MockAuthentication(1L, "testPass", true);
+        SecurityContext context = new MockSecurityContext(auth, null);
+
+        // 验证结果
+        Long userId = context.getCurrentUserId();
+        assertNotNull(userId);
+        assertEquals(1L, userId);
+    }
+
+    @Test
+    void testGetCurrentUserIdWithNoAuth() {
+        // 准备测试数据
+        SecurityContext context = new MockSecurityContext(null, null);
+
+        // 验证结果
+        assertNull(context.getCurrentUserId());
+    }
+
+    @Test
+    void testGetCurrentUserIdWithInvalidPrincipal() {
+        // 准备测试数据
+        Authentication auth = new MockAuthentication("testUser", "testPass", true);
+        SecurityContext context = new MockSecurityContext(auth, null);
+
+        // 验证结果
+        assertNull(context.getCurrentUserId());
     }
 } 

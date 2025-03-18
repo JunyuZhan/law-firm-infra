@@ -1,30 +1,45 @@
 package com.lawfirm.model.finance.enums;
 
-import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
  * 账单状态枚举
  */
 @Getter
-public enum BillingStatusEnum implements BaseEnum<String> {
+public enum BillingStatusEnum {
     
-    DRAFT("DRAFT", "草稿"),
-    PENDING("PENDING", "待付款"),
-    PAID("PAID", "已付款"),
-    OVERDUE("OVERDUE", "已逾期"),
-    CANCELLED("CANCELLED", "已取消");
+    DRAFT(0, "草稿"),
+    PENDING(1, "待付款"),
+    CONFIRMED(2, "已确认"),
+    PAID(3, "已付款"),
+    OVERDUE(4, "已逾期"),
+    CANCELLED(5, "已取消");
 
-    private final String value;
-    private final String description;
+    private final Integer code;
+    private final String desc;
 
-    BillingStatusEnum(String value, String description) {
-        this.value = value;
-        this.description = description;
+    BillingStatusEnum(Integer code, String desc) {
+        this.code = code;
+        this.desc = desc;
     }
 
-    @Override
-    public String getDescription() {
-        return this.description;
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public static BillingStatusEnum getByCode(Integer code) {
+        if (code == null) {
+            return null;
+        }
+        for (BillingStatusEnum status : values()) {
+            if (status.getCode().equals(code)) {
+                return status;
+            }
+        }
+        return null;
     }
 } 

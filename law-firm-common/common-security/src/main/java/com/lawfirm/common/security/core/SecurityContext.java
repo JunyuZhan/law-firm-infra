@@ -34,4 +34,15 @@ public class SecurityContext implements Serializable {
     public void setToken(String token) {
         this.token = token;
     }
+
+    /**
+     * 获取当前用户ID
+     * @return 当前用户ID，未认证时可能返回null
+     */
+    public Long getCurrentUserId() {
+        if (userDetails == null) {
+            return null;
+        }
+        return userDetails.getUserId();
+    }
 } 

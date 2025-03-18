@@ -56,4 +56,12 @@ public class SecurityContextHolder {
         }
         return userDetails.getPermissions().contains(permission);
     }
+
+    /**
+     * 获取当前用户ID
+     * @return 当前用户ID，未认证时可能返回null
+     */
+    public static Long getCurrentUserId() {
+        return getContext().getCurrentUserId();
+    }
 } 

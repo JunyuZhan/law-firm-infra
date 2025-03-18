@@ -31,7 +31,7 @@ public class BillingUpdateDTO extends BaseDTO {
     /**
      * 账单状态
      */
-    private BillingStatusEnum billingStatus;
+    private Integer billingStatus;
 
     /**
      * 账单金额
@@ -51,7 +51,7 @@ public class BillingUpdateDTO extends BaseDTO {
     /**
      * 币种
      */
-    private CurrencyEnum currency;
+    private String currency;
 
     /**
      * 账单日期

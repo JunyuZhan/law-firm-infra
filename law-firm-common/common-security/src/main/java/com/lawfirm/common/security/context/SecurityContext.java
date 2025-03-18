@@ -20,4 +20,10 @@ public interface SecurityContext {
      * @return 授权信息对象，未授权时可能返回null
      */
     Authorization getAuthorization();
+
+    /**
+     * 获取当前用户ID
+     * @return 当前用户ID，未认证时返回null
+     */
+    Long getCurrentUserId();
 } 

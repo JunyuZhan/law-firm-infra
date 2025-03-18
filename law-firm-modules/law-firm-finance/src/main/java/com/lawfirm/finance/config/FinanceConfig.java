@@ -1,15 +1,32 @@
 package com.lawfirm.finance.config;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import lombok.Data;
 
-/**
- * 财务模块配置类
- */
+@Data
 @Configuration
-@EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "com.lawfirm.finance.repository")
+@ConfigurationProperties(prefix = "finance")
 public class FinanceConfig {
-    // 配置项可以根据需要添加
+    private CacheConfig cache;
+    private EventConfig event;
+    private BusinessConfig business;
+
+    @Data
+    public static class CacheConfig {
+        private boolean enabled;
+        private long expireTime;
+    }
+
+    @Data
+    public static class EventConfig {
+        private boolean async;
+        private int retryTimes;
+    }
+
+    @Data
+    public static class BusinessConfig {
+        private int maxPageSize;
+        private int exportLimit;
+    }
 } 

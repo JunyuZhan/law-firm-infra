@@ -4,50 +4,55 @@ import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 交易类型枚举
+ * 报表类型枚举
  */
 @Getter
-public enum TransactionTypeEnum implements BaseEnum<Integer> {
+public enum ReportTypeEnum implements BaseEnum<Integer> {
     
     /**
-     * 收入
+     * 利润表
      */
-    INCOME(1, "收入"),
+    INCOME_STATEMENT(1, "利润表"),
     
     /**
-     * 支出
+     * 资产负债表
      */
-    EXPENSE(2, "支出"),
+    BALANCE_SHEET(2, "资产负债表"),
     
     /**
-     * 退款
+     * 现金流量表
      */
-    REFUND(3, "退款"),
+    CASH_FLOW(3, "现金流量表"),
     
     /**
-     * 转账
+     * 预算执行表
      */
-    TRANSFER(4, "转账"),
+    BUDGET_EXECUTION(4, "预算执行表"),
     
     /**
-     * 押金
+     * 成本分析表
      */
-    DEPOSIT(5, "押金"),
+    COST_ANALYSIS(5, "成本分析表"),
     
     /**
-     * 预付款
+     * 部门业绩表
      */
-    ADVANCE(6, "预付款"),
+    DEPARTMENT_PERFORMANCE(6, "部门业绩表"),
     
     /**
-     * 其他
+     * 客户分析表
      */
-    OTHER(99, "其他");
+    CLIENT_ANALYSIS(7, "客户分析表"),
+    
+    /**
+     * 案件分析表
+     */
+    CASE_ANALYSIS(8, "案件分析表");
 
     private final Integer value;
     private final String description;
 
-    TransactionTypeEnum(Integer value, String description) {
+    ReportTypeEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
@@ -65,11 +70,11 @@ public enum TransactionTypeEnum implements BaseEnum<Integer> {
     /**
      * 根据值获取枚举
      */
-    public static TransactionTypeEnum valueOf(Integer value) {
+    public static ReportTypeEnum valueOf(Integer value) {
         if (value == null) {
             return null;
         }
-        for (TransactionTypeEnum type : values()) {
+        for (ReportTypeEnum type : values()) {
             if (type.value.equals(value)) {
                 return type;
             }

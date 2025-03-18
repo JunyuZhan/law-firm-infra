@@ -3,21 +3,21 @@ package com.lawfirm.model.finance.enums;
 import lombok.Getter;
 
 /**
- * 预算状态枚举
+ * 应收款状态枚举
  */
 @Getter
-public enum BudgetStatusEnum {
+public enum ReceivableStatusEnum {
     
-    DRAFT(0, "草稿"),
-    PENDING(1, "待审批"),
-    APPROVED(2, "已审批"),
-    REJECTED(3, "已驳回"),
+    PENDING(0, "待收款"),
+    PARTIAL(1, "部分收款"),
+    COMPLETED(2, "已收款"),
+    OVERDUE(3, "已逾期"),
     CANCELLED(4, "已取消");
 
     private final Integer code;
     private final String desc;
 
-    BudgetStatusEnum(Integer code, String desc) {
+    ReceivableStatusEnum(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -30,11 +30,11 @@ public enum BudgetStatusEnum {
         return desc;
     }
 
-    public static BudgetStatusEnum getByCode(Integer code) {
+    public static ReceivableStatusEnum getByCode(Integer code) {
         if (code == null) {
             return null;
         }
-        for (BudgetStatusEnum status : values()) {
+        for (ReceivableStatusEnum status : values()) {
             if (status.getCode().equals(code)) {
                 return status;
             }

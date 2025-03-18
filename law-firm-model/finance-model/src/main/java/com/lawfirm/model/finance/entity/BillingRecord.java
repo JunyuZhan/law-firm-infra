@@ -39,7 +39,7 @@ public class BillingRecord extends ModelBaseEntity {
      */
     @NotNull(message = "账单状态不能为空")
     @TableField("billing_status")
-    private BillingStatusEnum billingStatus;
+    private Integer billingStatus;
 
     /**
      * 账单金额
@@ -65,7 +65,7 @@ public class BillingRecord extends ModelBaseEntity {
      */
     @NotNull(message = "币种不能为空")
     @TableField("currency")
-    private CurrencyEnum currency;
+    private String currency;
 
     /**
      * 账单日期
@@ -156,6 +156,19 @@ public class BillingRecord extends ModelBaseEntity {
     @TableField("tenant_id")
     private Long tenantId;
 
+    /**
+     * 操作人ID
+     */
+    @TableField("operator_id")
+    private Long operatorId;
+
+    /**
+     * 备注
+     */
+    @Size(max = 500, message = "备注长度不能超过500个字符")
+    @TableField("remark")
+    private String remark;
+
     @Override
     public void preInsert() {
         super.preInsert();
@@ -170,6 +183,9 @@ public class BillingRecord extends ModelBaseEntity {
         }
         if (this.invoiceStatus == null) {
             this.invoiceStatus = 0;
+        }
+        if (this.billingStatus == null) {
+            this.billingStatus = BillingStatusEnum.DRAFT.getCode();
         }
     }
 } 
