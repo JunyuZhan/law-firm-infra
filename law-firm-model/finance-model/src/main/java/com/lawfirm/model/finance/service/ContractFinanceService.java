@@ -4,8 +4,10 @@ import com.lawfirm.model.finance.entity.Income;
 import com.lawfirm.model.finance.entity.Invoice;
 import com.lawfirm.model.finance.entity.PaymentPlan;
 import com.lawfirm.model.finance.entity.Receivable;
+import com.lawfirm.model.finance.vo.contract.ContractFinanceVO;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -13,6 +15,77 @@ import java.util.List;
  * 处理合同与财务模块的交互
  */
 public interface ContractFinanceService {
+
+    /**
+     * 获取合同财务信息
+     *
+     * @param contractId 合同ID
+     * @return 合同财务信息
+     */
+    ContractFinanceVO getContractFinanceInfo(Long contractId);
+
+    /**
+     * 更新合同实际金额
+     *
+     * @param contractId   合同ID
+     * @param actualAmount 实际金额
+     * @param remark       备注
+     * @return 是否更新成功
+     */
+    boolean updateContractAmount(Long contractId, BigDecimal actualAmount, String remark);
+
+    /**
+     * 更新合同税率
+     *
+     * @param contractId 合同ID
+     * @param taxRate    税率
+     * @param remark     备注
+     * @return 是否更新成功
+     */
+    boolean updateContractTaxRate(Long contractId, BigDecimal taxRate, String remark);
+
+    /**
+     * 获取合同收款计划
+     *
+     * @param contractId 合同ID
+     * @return 收款计划
+     */
+    Object getContractPaymentPlan(Long contractId);
+
+    /**
+     * 更新合同收款计划
+     *
+     * @param contractId 合同ID
+     * @param planData   计划数据
+     * @return 是否更新成功
+     */
+    boolean updateContractPaymentPlan(Long contractId, Object planData);
+
+    /**
+     * 获取合同发票列表（对象格式）
+     *
+     * @param contractId 合同ID
+     * @return 发票列表
+     */
+    List<Invoice> getContractInvoiceObjects(Long contractId);
+
+    /**
+     * 获取合同财务审计记录
+     *
+     * @param contractId   合同ID
+     * @param startDateTime 开始时间
+     * @param endDateTime   结束时间
+     * @return 审计记录列表
+     */
+    List<Object> getContractFinanceAuditLogs(Long contractId, LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    /**
+     * 导出合同财务报表
+     *
+     * @param contractId 合同ID
+     * @return 导出文件URL
+     */
+    String exportContractFinanceReport(Long contractId);
 
     /**
      * 根据合同创建应收账款

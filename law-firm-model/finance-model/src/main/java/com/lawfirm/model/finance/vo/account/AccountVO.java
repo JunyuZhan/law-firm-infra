@@ -10,15 +10,14 @@ import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
- * 账户详情视图对象
+ * 账户视图对象
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class AccountDetailVO extends BaseVO {
+public class AccountVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
@@ -93,11 +92,6 @@ public class AccountDetailVO extends BaseVO {
     private String departmentName;
 
     /**
-     * 开户日期
-     */
-    private LocalDateTime openDate;
-
-    /**
      * 可用余额
      */
     private BigDecimal availableBalance;
@@ -106,21 +100,6 @@ public class AccountDetailVO extends BaseVO {
      * 冻结余额
      */
     private BigDecimal frozenBalance;
-
-    /**
-     * 信用额度
-     */
-    private BigDecimal creditLimit;
-
-    /**
-     * 联系人
-     */
-    private String contactPerson;
-
-    /**
-     * 联系电话
-     */
-    private String contactPhone;
 
     /**
      * 备注
@@ -138,17 +117,7 @@ public class AccountDetailVO extends BaseVO {
     private String createBy;
 
     /**
-     * 更新时间
+     * 最近交易时间
      */
-    private LocalDateTime updateTime;
-
-    /**
-     * 更新人
-     */
-    private String updateBy;
-    
-    /**
-     * 最近交易列表
-     */
-    private transient List<?> recentTransactions;
+    private LocalDateTime lastTransactionTime;
 } 

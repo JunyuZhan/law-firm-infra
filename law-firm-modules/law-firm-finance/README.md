@@ -157,8 +157,6 @@ law-firm-finance/
 │   │   │
 │   │   └── resources/
 │   │       ├── application.yml      # 应用配置
-│   │       └── application-dev.yml  # 开发环境配置
-│   │
 │   └── test/                        # 测试代码
 │       └── java/
 │           └── service/             # 服务测试

@@ -1,6 +1,7 @@
 package com.lawfirm.model.finance.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.model.finance.dto.ContractIncomeStat;
 import com.lawfirm.model.finance.entity.Income;
 
 import java.math.BigDecimal;

@@ -16,10 +16,24 @@
     <description>律所财务管理模块</description>
 
     <dependencies>
+        <!-- 基础模型层依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>base-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        
         <!-- 数据模型层依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>finance-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        
+        <!-- 添加合同模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>contract-model</artifactId>
             <version>${revision}</version>
         </dependency>
         

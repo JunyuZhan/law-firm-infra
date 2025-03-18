@@ -6,10 +6,18 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 
+/**
+ * 财务事件配置类
+ * 配置事件处理相关的线程池和异步执行器
+ */
 @Configuration
 @EnableAsync
 public class EventConfig {
     
+    /**
+     * 财务事件处理线程池
+     * 用于异步处理财务相关事件
+     */
     @Bean(name = "financeEventExecutor")
     public Executor financeEventExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

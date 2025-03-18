@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.common.security.context.SecurityContext;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.finance.dto.ContractIncomeStat;
 import com.lawfirm.model.finance.entity.Income;
 import com.lawfirm.model.finance.mapper.IncomeMapper;
-import com.lawfirm.model.finance.service.ContractIncomeStat;
 import com.lawfirm.model.finance.service.IncomeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -262,22 +262,43 @@ public class IncomeServiceImpl extends BaseServiceImpl<IncomeMapper, Income> imp
     @Cacheable(value = "income", key = "'group_by_contract'")
     public List<ContractIncomeStat> statisticIncomeByContract() {
         log.info("按合同统计收入");
+        List<Income> allIncomes = list();
+        Map<Long, List<Income>> groupedIncomes = allIncomes.stream()
+                .filter(income -> income.getCaseId() != null)
+                .collect(Collectors.groupingBy(Income::getCaseId));
         
-        // 由于Income实体中没有contractId字段，我们使用caseId代替
-        // 此处假设查询逻辑修改为按caseId分组统计
-        List<Map<String, Object>> stats = baseMapper.statisticIncomeByCase();
-        if (stats == null || stats.isEmpty()) {
-            return new ArrayList<>();
-        }
+        List<ContractIncomeStat> stats = new ArrayList<>();
+        groupedIncomes.forEach((caseId, incomes) -> {
+            stats.add(new ContractIncomeStat() {
+                @Override
+                public Long getContractId() {
+                    return caseId;
+                }
+                
+                @Override
+                public String getContractNumber() {
+                    return "CASE-" + caseId; // 临时使用caseId作为合同编号
+                }
+                
+                @Override
+                public String getContractName() {
+                    return "案件" + caseId; // 临时使用caseId作为合同名称
+                }
+                
+                @Override
+                public BigDecimal getAmount() {
+                    return incomes.stream()
+                            .map(Income::getAmount)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                }
+                
+                @Override
+                public Integer getCount() {
+                    return incomes.size();
+                }
+            });
+        });
         
-        return stats.stream()
-                .map(map -> {
-                    ContractIncomeStat stat = new ContractIncomeStat();
-                    stat.setCaseId((Long) map.get("case_id"));
-                    stat.setAmount((BigDecimal) map.get("amount"));
-                    stat.setCount((Integer) map.get("count"));
-                    return stat;
-                })
-                .collect(Collectors.toList());
+        return stats;
     }
 }
