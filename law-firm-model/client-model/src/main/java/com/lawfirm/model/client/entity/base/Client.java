@@ -114,4 +114,16 @@ public class Client extends ModelBaseEntity {
      * 统一社会信用代码（企业客户）
      */
     private String unifiedSocialCreditCode;
+
+    /**
+     * 案件总数
+     */
+    @TableField("case_count")
+    private Integer caseCount;
+
+    /**
+     * 活跃案件数
+     */
+    @TableField("active_case_count")
+    private Integer activeCaseCount;
 } 

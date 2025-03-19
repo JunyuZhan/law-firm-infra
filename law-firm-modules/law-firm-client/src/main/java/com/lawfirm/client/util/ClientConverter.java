@@ -4,6 +4,7 @@ import com.lawfirm.model.client.entity.base.Client;
 import com.lawfirm.model.client.dto.client.ClientCreateDTO;
 import com.lawfirm.model.client.dto.client.ClientUpdateDTO;
 import com.lawfirm.model.client.vo.ClientVO;
+import com.lawfirm.model.client.dto.ClientDTO;
 
 /**
  * 客户对象转换工具类
@@ -37,5 +38,39 @@ public class ClientConverter {
     public static ClientVO toVO(Client entity) {
         // TODO: 实现转换逻辑
         return new ClientVO();
+    }
+
+    /**
+     * 将实体转换为DTO对象
+     * @param entity 实体
+     * @return DTO对象
+     */
+    public static ClientDTO toDTO(Client entity) {
+        if (entity == null) {
+            return null;
+        }
+        
+        ClientDTO dto = new ClientDTO();
+        dto.setId(entity.getId());
+        dto.setClientNo(entity.getClientNo());
+        dto.setClientName(entity.getClientName());
+        dto.setClientType(entity.getClientType());
+        dto.setClientLevel(entity.getClientLevel());
+        dto.setClientSource(entity.getClientSource());
+        dto.setIndustry(entity.getIndustry());
+        dto.setScale(entity.getScale());
+        dto.setPhone(entity.getPhone());
+        dto.setEmail(entity.getEmail());
+        dto.setManagerId(entity.getManagerId());
+        dto.setStatus(entity.getStatus());
+        dto.setIdType(entity.getIdType());
+        dto.setIdNumber(entity.getIdNumber());
+        dto.setCreditLevel(entity.getCreditLevel());
+        dto.setLegalRepresentative(entity.getLegalRepresentative());
+        dto.setUnifiedSocialCreditCode(entity.getUnifiedSocialCreditCode());
+        dto.setCaseCount(entity.getCaseCount());
+        dto.setActiveCaseCount(entity.getActiveCaseCount());
+        
+        return dto;
     }
 }

@@ -2,7 +2,7 @@ package com.lawfirm.api.controller;
 
 import com.lawfirm.api.adaptor.system.MenuAdaptor;
 import com.lawfirm.api.common.ResponseResult;
-import com.lawfirm.system.model.vo.MenuVO;
+import com.lawfirm.model.system.vo.MenuVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

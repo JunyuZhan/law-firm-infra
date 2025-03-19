@@ -1,16 +1,21 @@
 package com.lawfirm.api.adaptor.finance;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.api.adaptor.BaseAdaptor;
 import com.lawfirm.model.finance.dto.receivable.ReceivableCreateDTO;
 import com.lawfirm.model.finance.dto.receivable.ReceivableUpdateDTO;
-import com.lawfirm.model.finance.entity.Receivable;
+import com.lawfirm.model.finance.dto.receivable.ReceivableQueryDTO;
 import com.lawfirm.model.finance.service.ReceivableService;
-import com.lawfirm.model.finance.vo.receivable.ReceivableVO;
+import com.lawfirm.model.finance.vo.receivable.ReceivableDetailVO;
 import com.lawfirm.model.finance.enums.ReceivableStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -25,92 +30,106 @@ public class ReceivableAdaptor extends BaseAdaptor {
     /**
      * 创建应收账款
      */
-    public ReceivableVO createReceivable(ReceivableCreateDTO dto) {
-        Receivable receivable = receivableService.createReceivable(dto);
-        return convert(receivable, ReceivableVO.class);
+    public Long createReceivable(ReceivableCreateDTO createDTO) {
+        return receivableService.createReceivable(createDTO);
     }
 
     /**
      * 更新应收账款
      */
-    public ReceivableVO updateReceivable(Long id, ReceivableUpdateDTO dto) {
-        Receivable receivable = receivableService.updateReceivable(id, dto);
-        return convert(receivable, ReceivableVO.class);
+    public Boolean updateReceivable(ReceivableUpdateDTO updateDTO) {
+        return receivableService.updateReceivable(updateDTO);
     }
 
     /**
      * 获取应收账款详情
      */
-    public ReceivableVO getReceivable(Long id) {
-        Receivable receivable = receivableService.getReceivable(id);
-        return convert(receivable, ReceivableVO.class);
+    public ReceivableDetailVO getReceivable(Long id) {
+        return receivableService.getReceivable(id);
     }
 
     /**
      * 删除应收账款
      */
-    public void deleteReceivable(Long id) {
-        receivableService.deleteReceivable(id);
-    }
-
-    /**
-     * 获取所有应收账款
-     */
-    public List<ReceivableVO> listReceivables() {
-        List<Receivable> receivables = receivableService.listReceivables();
-        return receivables.stream()
-                .map(receivable -> convert(receivable, ReceivableVO.class))
-                .collect(Collectors.toList());
+    public Boolean deleteReceivable(Long id) {
+        return receivableService.deleteReceivable(id);
     }
 
     /**
      * 更新应收账款状态
      */
-    public void updateReceivableStatus(Long id, ReceivableStatusEnum status) {
-        receivableService.updateReceivableStatus(id, status);
+    public Boolean updateReceivableStatus(Long id, ReceivableStatusEnum status, String remark) {
+        return receivableService.updateReceivableStatus(id, status, remark);
     }
 
     /**
-     * 根据客户ID查询应收账款
+     * 记录收款
      */
-    public List<ReceivableVO> getReceivablesByClientId(Long clientId) {
-        List<Receivable> receivables = receivableService.getReceivablesByClientId(clientId);
-        return receivables.stream()
-                .map(receivable -> convert(receivable, ReceivableVO.class))
-                .collect(Collectors.toList());
+    public Long recordReceipt(Long id, BigDecimal amount, Long accountId, 
+                            LocalDateTime receiveDate, String remark) {
+        return receivableService.recordReceipt(id, amount, accountId, receiveDate, remark);
     }
 
     /**
-     * 根据合同ID查询应收账款
+     * 查询应收账款列表
      */
-    public List<ReceivableVO> getReceivablesByContractId(Long contractId) {
-        List<Receivable> receivables = receivableService.getReceivablesByContractId(contractId);
-        return receivables.stream()
-                .map(receivable -> convert(receivable, ReceivableVO.class))
-                .collect(Collectors.toList());
+    public List<ReceivableDetailVO> listReceivables(ReceivableQueryDTO queryDTO) {
+        return receivableService.listReceivables(queryDTO);
     }
 
     /**
-     * 根据部门ID查询应收账款
+     * 分页查询应收账款
      */
-    public List<ReceivableVO> getReceivablesByDepartmentId(Long departmentId) {
-        List<Receivable> receivables = receivableService.getReceivablesByDepartmentId(departmentId);
-        return receivables.stream()
-                .map(receivable -> convert(receivable, ReceivableVO.class))
-                .collect(Collectors.toList());
+    public IPage<ReceivableDetailVO> pageReceivables(Page<ReceivableDetailVO> page, ReceivableQueryDTO queryDTO) {
+        return receivableService.pageReceivables(page, queryDTO);
     }
 
     /**
-     * 检查应收账款是否存在
+     * 按合同查询应收账款
      */
-    public boolean existsReceivable(Long id) {
-        return receivableService.existsReceivable(id);
+    public List<ReceivableDetailVO> listReceivablesByContract(Long contractId) {
+        return receivableService.listReceivablesByContract(contractId);
     }
 
     /**
-     * 获取应收账款数量
+     * 按客户查询应收账款
      */
-    public long countReceivables() {
-        return receivableService.countReceivables();
+    public List<ReceivableDetailVO> listReceivablesByClient(Long clientId) {
+        return receivableService.listReceivablesByClient(clientId);
+    }
+
+    /**
+     * 统计应收账款总额
+     */
+    public BigDecimal sumReceivableAmount(ReceivableQueryDTO queryDTO) {
+        return receivableService.sumReceivableAmount(queryDTO);
+    }
+
+    /**
+     * 统计已收款总额
+     */
+    public BigDecimal sumReceivedAmount(ReceivableQueryDTO queryDTO) {
+        return receivableService.sumReceivedAmount(queryDTO);
+    }
+
+    /**
+     * 统计未收款总额
+     */
+    public BigDecimal sumUnreceivedAmount(ReceivableQueryDTO queryDTO) {
+        return receivableService.sumUnreceivedAmount(queryDTO);
+    }
+
+    /**
+     * 账龄分析
+     */
+    public Map<String, BigDecimal> agingAnalysis(Long clientId) {
+        return receivableService.agingAnalysis(clientId);
+    }
+
+    /**
+     * 更新应收账款逾期状态
+     */
+    public Integer updateOverdueStatus() {
+        return receivableService.updateOverdueStatus();
     }
 } 

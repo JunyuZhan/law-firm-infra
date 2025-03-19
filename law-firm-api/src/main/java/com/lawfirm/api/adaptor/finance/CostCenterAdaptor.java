@@ -1,11 +1,8 @@
 package com.lawfirm.api.adaptor.finance;
 
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.model.finance.dto.costcenter.CostCenterCreateDTO;
-import com.lawfirm.model.finance.dto.costcenter.CostCenterUpdateDTO;
 import com.lawfirm.model.finance.entity.CostCenter;
 import com.lawfirm.model.finance.service.CostCenterService;
-import com.lawfirm.model.finance.vo.costcenter.CostCenterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,61 +21,54 @@ public class CostCenterAdaptor extends BaseAdaptor {
     /**
      * 创建成本中心
      */
-    public CostCenterVO createCostCenter(CostCenterCreateDTO dto) {
-        CostCenter costCenter = costCenterService.createCostCenter(dto);
-        return convert(costCenter, CostCenterVO.class);
+    public CostCenter createCostCenter(CostCenter costCenter) {
+        Long id = costCenterService.createCostCenter(costCenter);
+        return costCenterService.getCostCenterById(id);
     }
 
     /**
      * 更新成本中心
      */
-    public CostCenterVO updateCostCenter(Long id, CostCenterUpdateDTO dto) {
-        CostCenter costCenter = costCenterService.updateCostCenter(id, dto);
-        return convert(costCenter, CostCenterVO.class);
+    public CostCenter updateCostCenter(CostCenter costCenter) {
+        costCenterService.updateCostCenter(costCenter);
+        return costCenterService.getCostCenterById(costCenter.getId());
     }
 
     /**
      * 获取成本中心详情
      */
-    public CostCenterVO getCostCenter(Long id) {
-        CostCenter costCenter = costCenterService.getCostCenter(id);
-        return convert(costCenter, CostCenterVO.class);
+    public CostCenter getCostCenter(Long id) {
+        return costCenterService.getCostCenterById(id);
     }
 
     /**
      * 删除成本中心
      */
-    public void deleteCostCenter(Long id) {
-        costCenterService.deleteCostCenter(id);
+    public boolean deleteCostCenter(Long id) {
+        return costCenterService.deleteCostCenter(id);
     }
 
     /**
      * 获取所有成本中心
      */
-    public List<CostCenterVO> listCostCenters() {
-        List<CostCenter> costCenters = costCenterService.listCostCenters();
-        return costCenters.stream()
-                .map(costCenter -> convert(costCenter, CostCenterVO.class))
-                .collect(Collectors.toList());
+    public List<CostCenter> listCostCenters() {
+        return costCenterService.listCostCenters(null);
     }
 
     /**
      * 根据部门ID查询成本中心
      */
-    public List<CostCenterVO> getCostCentersByDepartmentId(Long departmentId) {
-        List<CostCenter> costCenters = costCenterService.getCostCentersByDepartmentId(departmentId);
-        return costCenters.stream()
-                .map(costCenter -> convert(costCenter, CostCenterVO.class))
-                .collect(Collectors.toList());
+    public List<CostCenter> getCostCentersByDepartmentId(Long departmentId) {
+        return costCenterService.listCostCentersByDepartment(departmentId);
     }
 
     /**
      * 根据父级ID查询成本中心
      */
-    public List<CostCenterVO> getCostCentersByParentId(Long parentId) {
-        List<CostCenter> costCenters = costCenterService.getCostCentersByParentId(parentId);
-        return costCenters.stream()
-                .map(costCenter -> convert(costCenter, CostCenterVO.class))
+    public List<CostCenter> getCostCentersByParentId(Long parentId) {
+        // 父级ID查询不是CostCenterService的标准功能，需要自行实现或修改此方法
+        return costCenterService.listCostCenters(null).stream()
+                .filter(costCenter -> parentId.equals(costCenter.getParentId()))
                 .collect(Collectors.toList());
     }
 
@@ -86,13 +76,13 @@ public class CostCenterAdaptor extends BaseAdaptor {
      * 检查成本中心是否存在
      */
     public boolean existsCostCenter(Long id) {
-        return costCenterService.existsCostCenter(id);
+        return costCenterService.getCostCenterById(id) != null;
     }
 
     /**
      * 获取成本中心数量
      */
     public long countCostCenters() {
-        return costCenterService.countCostCenters();
+        return costCenterService.listCostCenters(null).size();
     }
 } 

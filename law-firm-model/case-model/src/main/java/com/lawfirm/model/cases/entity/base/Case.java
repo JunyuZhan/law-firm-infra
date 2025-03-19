@@ -295,7 +295,7 @@ public class Case extends TenantEntity {
      * 获取案件状态枚举
      */
     public CaseStatusEnum getCaseStatusEnum() {
-        return CaseStatusEnum.valueOf(this.caseStatus);
+        return CaseStatusEnum.fromValue(this.caseStatus);
     }
 
     /**

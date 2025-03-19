@@ -8,7 +8,9 @@ import com.lawfirm.model.finance.entity.Receivable;
 import com.lawfirm.model.finance.enums.ReceivableStatusEnum;
 import com.lawfirm.model.finance.mapper.ReceivableMapper;
 import com.lawfirm.model.finance.service.ReceivableService;
+import com.lawfirm.model.finance.vo.receivable.ReceivableDetailVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +20,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReceivableServiceImpl implements ReceivableService {
@@ -29,6 +33,7 @@ public class ReceivableServiceImpl implements ReceivableService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createReceivable(Receivable receivable) {
+        log.info("创建应收账款: {}", receivable);
         receivable.setStatusEnum(ReceivableStatusEnum.PENDING);
         receivable.setCreateBy(String.valueOf(securityContext.getCurrentUserId()));
         receivable.setUpdateBy(String.valueOf(securityContext.getCurrentUserId()));
@@ -38,26 +43,31 @@ public class ReceivableServiceImpl implements ReceivableService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateReceivable(Receivable receivable) {
+    public Boolean updateReceivable(Receivable receivable) {
+        log.info("更新应收账款: {}", receivable);
         receivable.setUpdateBy(String.valueOf(securityContext.getCurrentUserId()));
         return receivableMapper.updateById(receivable) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean deleteReceivable(Long receivableId) {
-        return receivableMapper.deleteById(receivableId) > 0;
+    public Boolean deleteReceivable(Long id) {
+        log.info("删除应收账款: {}", id);
+        return receivableMapper.deleteById(id) > 0;
     }
 
     @Override
-    public Receivable getReceivableById(Long receivableId) {
-        return receivableMapper.selectById(receivableId);
+    public ReceivableDetailVO getReceivable(Long id) {
+        log.info("获取应收账款详情: {}", id);
+        Receivable receivable = receivableMapper.selectById(id);
+        return convertToDetailVO(receivable);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateReceivableStatus(Long receivableId, ReceivableStatusEnum status, String remark) {
-        Receivable receivable = receivableMapper.selectById(receivableId);
+    public Boolean updateReceivableStatus(Long id, ReceivableStatusEnum status, String remark) {
+        log.info("更新应收账款状态: id={}, status={}, remark={}", id, status, remark);
+        Receivable receivable = receivableMapper.selectById(id);
         if (receivable == null) {
             throw new IllegalArgumentException("应收账款不存在");
         }
@@ -69,9 +79,11 @@ public class ReceivableServiceImpl implements ReceivableService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long recordReceipt(Long receivableId, BigDecimal amount, Long accountId, 
+    public Long recordReceipt(Long id, BigDecimal amount, Long accountId, 
                             LocalDateTime receiveDate, String remark) {
-        Receivable receivable = receivableMapper.selectById(receivableId);
+        log.info("记录收款: id={}, amount={}, accountId={}, receiveDate={}, remark={}", 
+                id, amount, accountId, receiveDate, remark);
+        Receivable receivable = receivableMapper.selectById(id);
         if (receivable == null) {
             throw new IllegalArgumentException("应收账款不存在");
         }
@@ -93,51 +105,65 @@ public class ReceivableServiceImpl implements ReceivableService {
         receivable.setUpdateBy(String.valueOf(securityContext.getCurrentUserId()));
         receivableMapper.updateById(receivable);
         
-        return receivableId;
+        return id;
     }
 
     @Override
-    public List<Receivable> listReceivables(Long contractId, Long clientId, 
-                                          ReceivableStatusEnum status, Integer overdueDays) {
+    public List<ReceivableDetailVO> listReceivables(Long contractId, Long clientId, 
+                                                   ReceivableStatusEnum status, Integer overdueDays) {
+        log.info("查询应收账款列表: contractId={}, clientId={}, status={}, overdueDays={}", 
+                contractId, clientId, status, overdueDays);
         LambdaQueryWrapper<Receivable> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(contractId != null, Receivable::getContractId, contractId)
                 .eq(clientId != null, Receivable::getClientId, clientId)
                 .eq(status != null, Receivable::getStatusCode, status.getCode())
                 .ge(overdueDays != null, Receivable::getOverdueDays, overdueDays)
                 .orderByDesc(Receivable::getCreateTime);
-        return receivableMapper.selectList(wrapper);
+        return receivableMapper.selectList(wrapper).stream()
+                .map(this::convertToDetailVO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public IPage<Receivable> pageReceivables(IPage<Receivable> page, Long contractId, Long clientId, 
-                                           ReceivableStatusEnum status, Integer overdueDays) {
+    public IPage<ReceivableDetailVO> pageReceivables(Page<Receivable> page, Long contractId, Long clientId, 
+                                                    ReceivableStatusEnum status, Integer overdueDays) {
+        log.info("分页查询应收账款: page={}, contractId={}, clientId={}, status={}, overdueDays={}", 
+                page, contractId, clientId, status, overdueDays);
         LambdaQueryWrapper<Receivable> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(contractId != null, Receivable::getContractId, contractId)
                 .eq(clientId != null, Receivable::getClientId, clientId)
                 .eq(status != null, Receivable::getStatusCode, status.getCode())
                 .ge(overdueDays != null, Receivable::getOverdueDays, overdueDays)
                 .orderByDesc(Receivable::getCreateTime);
-        return receivableMapper.selectPage(page, wrapper);
+        IPage<Receivable> receivablePage = receivableMapper.selectPage(page, wrapper);
+        return receivablePage.convert(this::convertToDetailVO);
     }
 
     @Override
-    public List<Receivable> listReceivablesByContract(Long contractId) {
+    public List<ReceivableDetailVO> listReceivablesByContract(Long contractId) {
+        log.info("按合同查询应收账款: contractId={}", contractId);
         LambdaQueryWrapper<Receivable> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Receivable::getContractId, contractId)
                 .orderByDesc(Receivable::getCreateTime);
-        return receivableMapper.selectList(wrapper);
+        return receivableMapper.selectList(wrapper).stream()
+                .map(this::convertToDetailVO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Receivable> listReceivablesByClient(Long clientId) {
+    public List<ReceivableDetailVO> listReceivablesByClient(Long clientId) {
+        log.info("按客户查询应收账款: clientId={}", clientId);
         LambdaQueryWrapper<Receivable> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Receivable::getClientId, clientId)
                 .orderByDesc(Receivable::getCreateTime);
-        return receivableMapper.selectList(wrapper);
+        return receivableMapper.selectList(wrapper).stream()
+                .map(this::convertToDetailVO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public BigDecimal sumReceivableAmount(Long contractId, Long clientId, ReceivableStatusEnum status) {
+        log.info("统计应收账款总额: contractId={}, clientId={}, status={}", contractId, clientId, status);
         LambdaQueryWrapper<Receivable> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(contractId != null, Receivable::getContractId, contractId)
                 .eq(clientId != null, Receivable::getClientId, clientId)
@@ -150,16 +176,19 @@ public class ReceivableServiceImpl implements ReceivableService {
 
     @Override
     public BigDecimal sumReceivedAmount(Long contractId, Long clientId) {
+        log.info("统计已收款总额: contractId={}, clientId={}", contractId, clientId);
         return sumReceivableAmount(contractId, clientId, ReceivableStatusEnum.COMPLETED);
     }
 
     @Override
     public BigDecimal sumUnreceivedAmount(Long contractId, Long clientId) {
+        log.info("统计未收款总额: contractId={}, clientId={}", contractId, clientId);
         return sumReceivableAmount(contractId, clientId, ReceivableStatusEnum.PENDING);
     }
 
     @Override
     public Map<String, BigDecimal> agingAnalysis(Long clientId) {
+        log.info("账龄分析: clientId={}", clientId);
         Map<String, BigDecimal> result = new HashMap<>();
         result.put("0-30天", BigDecimal.ZERO);
         result.put("31-60天", BigDecimal.ZERO);
@@ -190,7 +219,8 @@ public class ReceivableServiceImpl implements ReceivableService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateOverdueStatus() {
+    public Integer updateOverdueStatus() {
+        log.info("更新应收账款逾期状态");
         LocalDateTime now = LocalDateTime.now();
         LambdaQueryWrapper<Receivable> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Receivable::getStatusCode, ReceivableStatusEnum.PENDING.getCode())
@@ -209,5 +239,14 @@ public class ReceivableServiceImpl implements ReceivableService {
         }
         
         return count;
+    }
+
+    private ReceivableDetailVO convertToDetailVO(Receivable receivable) {
+        if (receivable == null) {
+            return null;
+        }
+        ReceivableDetailVO vo = new ReceivableDetailVO();
+        // TODO: 实现 Receivable 到 ReceivableDetailVO 的转换逻辑
+        return vo;
     }
 }

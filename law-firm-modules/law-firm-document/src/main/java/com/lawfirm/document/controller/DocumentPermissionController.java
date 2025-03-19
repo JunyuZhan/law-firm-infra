@@ -1,8 +1,7 @@
 package com.lawfirm.document.controller;
 
-import com.lawfirm.api.adaptor.document.DocumentPermissionAdaptor;
 import com.lawfirm.model.document.service.DocumentPermissionService;
-import com.lawfirm.model.common.vo.ResponseResult;
+import com.lawfirm.common.core.response.ResponseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +21,7 @@ import java.util.List;
 @Validated
 public class DocumentPermissionController {
 
-    private final DocumentPermissionAdaptor documentPermissionAdaptor;
+    private final DocumentPermissionService documentPermissionService;
 
     @Operation(summary = "同步业务系统文档权限")
     @PostMapping("/sync")
@@ -30,7 +29,7 @@ public class DocumentPermissionController {
             @Parameter(description = "业务类型") @RequestParam String businessType,
             @Parameter(description = "业务ID") @RequestParam Long businessId,
             @Parameter(description = "用户权限列表") @RequestBody List<DocumentPermissionService.UserPermission> userPermissions) {
-        documentPermissionAdaptor.syncBusinessDocumentsPermission(businessType, businessId, userPermissions);
+        documentPermissionService.syncBusinessDocumentsPermission(businessType, businessId, userPermissions);
         return ResponseResult.success();
     }
 
@@ -41,7 +40,7 @@ public class DocumentPermissionController {
             @Parameter(description = "业务ID") @RequestParam Long businessId,
             @Parameter(description = "用户ID") @RequestParam Long userId,
             @Parameter(description = "权限类型") @RequestParam String permission) {
-        documentPermissionAdaptor.addUserPermission(businessType, businessId, userId, permission);
+        documentPermissionService.addUserPermission(businessType, businessId, userId, permission);
         return ResponseResult.success();
     }
 
@@ -51,7 +50,7 @@ public class DocumentPermissionController {
             @Parameter(description = "业务类型") @RequestParam String businessType,
             @Parameter(description = "业务ID") @RequestParam Long businessId,
             @Parameter(description = "用户ID") @RequestParam Long userId) {
-        documentPermissionAdaptor.removeUserPermission(businessType, businessId, userId);
+        documentPermissionService.removeUserPermission(businessType, businessId, userId);
         return ResponseResult.success();
     }
 } 

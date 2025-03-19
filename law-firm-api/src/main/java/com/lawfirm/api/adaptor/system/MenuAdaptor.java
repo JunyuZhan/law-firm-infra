@@ -1,8 +1,8 @@
 package com.lawfirm.api.adaptor.system;
 
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.system.model.vo.MenuVO;
-import com.lawfirm.system.service.MenuService;
+import com.lawfirm.model.system.vo.MenuVO;
+import com.lawfirm.model.system.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

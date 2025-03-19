@@ -2,8 +2,8 @@ package com.lawfirm.api.controller;
 
 import com.lawfirm.api.adaptor.auth.AuthAdaptor;
 import com.lawfirm.api.common.ResponseResult;
-import com.lawfirm.auth.model.dto.LoginDTO;
-import com.lawfirm.auth.model.vo.LoginVO;
+import com.lawfirm.model.auth.dto.auth.LoginDTO;
+import com.lawfirm.model.auth.vo.LoginVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

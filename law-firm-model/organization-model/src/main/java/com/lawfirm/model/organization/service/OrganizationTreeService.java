@@ -1,5 +1,7 @@
 package com.lawfirm.model.organization.service;
 
+import com.lawfirm.model.organization.vo.OrganizationTreeVO;
+
 import java.util.List;
 
 /**
@@ -11,53 +13,146 @@ public interface OrganizationTreeService {
     /**
      * 获取组织树
      *
-     * @param rootOrgId 根组织ID，为null时获取全部组织树
-     * @return 组织树数据
+     * @param rootId 根组织ID
+     * @return 组织树
      */
-    Object getOrganizationTree(Long rootOrgId);
-    
+    OrganizationTreeVO getTree(Long rootId);
+
     /**
-     * 获取所有子组织ID
+     * 获取组织路径
      *
-     * @param organizationId 组织ID
-     * @param recursive 是否递归获取所有层级的子组织
+     * @param id 组织ID
+     * @return 组织路径
+     */
+    String getPath(Long id);
+
+    /**
+     * 获取组织层级
+     *
+     * @param id 组织ID
+     * @return 组织层级
+     */
+    int getLevel(Long id);
+
+    /**
+     * 获取子组织列表
+     *
+     * @param parentId 父组织ID
+     * @return 子组织列表
+     */
+    List<OrganizationTreeVO> getChildren(Long parentId);
+
+    /**
+     * 获取父组织
+     *
+     * @param id 组织ID
+     * @return 父组织
+     */
+    OrganizationTreeVO getParent(Long id);
+
+    /**
+     * 获取所有父组织
+     *
+     * @param id 组织ID
+     * @return 父组织列表
+     */
+    List<OrganizationTreeVO> getAllParents(Long id);
+
+    /**
+     * 移动组织
+     *
+     * @param id 组织ID
+     * @param targetParentId 目标父组织ID
+     */
+    void move(Long id, Long targetParentId);
+
+    /**
+     * 检查是否是子组织
+     *
+     * @param parentId 父组织ID
+     * @param childId 子组织ID
+     * @return 是否是子组织
+     */
+    boolean isChild(Long parentId, Long childId);
+
+    /**
+     * 检查是否是父组织
+     *
+     * @param childId 子组织ID
+     * @param parentId 父组织ID
+     * @return 是否是父组织
+     */
+    boolean isParent(Long childId, Long parentId);
+
+    /**
+     * 获取组织的所有子组织ID
+     *
+     * @param parentId 父组织ID
      * @return 子组织ID列表
      */
-    List<Long> getSubOrganizationIds(Long organizationId, boolean recursive);
-    
+    List<Long> getAllChildIds(Long parentId);
+
     /**
-     * 获取所有父组织ID
+     * 获取组织的所有父组织ID
      *
-     * @param organizationId 组织ID
-     * @return 父组织ID列表，从直接父级到顶级
+     * @param childId 子组织ID
+     * @return 父组织ID列表
      */
-    List<Long> getParentOrganizationIds(Long organizationId);
-    
+    List<Long> getAllParentIds(Long childId);
+
     /**
-     * 检查两个组织是否有父子关系
+     * 获取组织的根组织
      *
-     * @param parentId 可能的父组织ID
-     * @param childId 可能的子组织ID
-     * @param recursive 是否递归检查（检查所有层级）
-     * @return 是否存在父子关系
+     * @param id 组织ID
+     * @return 根组织
      */
-    boolean hasParentChildRelation(Long parentId, Long childId, boolean recursive);
-    
+    OrganizationTreeVO getRoot(Long id);
+
     /**
-     * 移动组织节点
+     * 获取组织的根组织ID
      *
-     * @param organizationId 要移动的组织ID
-     * @param newParentId 新的父组织ID
-     * @return 是否移动成功
+     * @param id 组织ID
+     * @return 根组织ID
      */
-    boolean moveOrganization(Long organizationId, Long newParentId);
-    
+    Long getRootId(Long id);
+
     /**
-     * 获取组织的完整路径名称
-     * 例如：总公司/上海分公司/法务部
+     * 检查组织树是否有环
      *
-     * @param organizationId 组织ID
-     * @return 完整路径名称
+     * @param id 组织ID
+     * @return 是否有环
      */
-    String getOrganizationFullPath(Long organizationId);
+    boolean hasCycle(Long id);
+
+    /**
+     * 获取组织树的深度
+     *
+     * @param rootId 根组织ID
+     * @return 树的深度
+     */
+    int getDepth(Long rootId);
+
+    /**
+     * 获取组织的兄弟组织
+     *
+     * @param id 组织ID
+     * @return 兄弟组织列表
+     */
+    List<OrganizationTreeVO> getSiblings(Long id);
+
+    /**
+     * 获取组织的叶子节点
+     *
+     * @param rootId 根组织ID
+     * @return 叶子节点列表
+     */
+    List<OrganizationTreeVO> getLeaves(Long rootId);
+
+    /**
+     * 检查是否是叶子节点
+     *
+     * @param id 组织ID
+     * @return 是否是叶子节点
+     */
+    boolean isLeaf(Long id);
 } 

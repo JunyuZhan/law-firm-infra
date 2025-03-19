@@ -1,9 +1,9 @@
 package com.lawfirm.api.adaptor.auth;
 
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.auth.model.dto.LoginDTO;
-import com.lawfirm.auth.model.vo.LoginVO;
-import com.lawfirm.auth.service.AuthService;
+import com.lawfirm.model.auth.dto.auth.LoginDTO;
+import com.lawfirm.model.auth.vo.LoginVO;
+import com.lawfirm.model.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

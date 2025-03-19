@@ -5,6 +5,7 @@ import com.lawfirm.model.finance.entity.Invoice;
 import com.lawfirm.model.finance.entity.PaymentPlan;
 import com.lawfirm.model.finance.entity.Receivable;
 import com.lawfirm.model.finance.vo.contract.ContractFinanceVO;
+import com.lawfirm.model.finance.vo.receivable.ReceivableDetailVO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -147,12 +148,12 @@ public interface ContractFinanceService {
     Long processContractInvoice(Long contractId, String contractNo, BigDecimal amount, String description);
 
     /**
-     * 获取合同应收账款
+     * 获取合同应收账款列表
      *
      * @param contractId 合同ID
      * @return 应收账款列表
      */
-    List<Receivable> getContractReceivables(Long contractId);
+    List<ReceivableDetailVO> getContractReceivables(Long contractId);
 
     /**
      * 获取合同收款记录

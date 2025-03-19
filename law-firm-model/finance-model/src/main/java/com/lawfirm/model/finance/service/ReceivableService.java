@@ -1,8 +1,10 @@
 package com.lawfirm.model.finance.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.model.finance.entity.Receivable;
 import com.lawfirm.model.finance.enums.ReceivableStatusEnum;
+import com.lawfirm.model.finance.vo.receivable.ReceivableDetailVO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,45 +30,45 @@ public interface ReceivableService {
      * @param receivable 应收账款信息
      * @return 是否更新成功
      */
-    boolean updateReceivable(Receivable receivable);
+    Boolean updateReceivable(Receivable receivable);
 
     /**
      * 删除应收账款
      *
-     * @param receivableId 应收账款ID
+     * @param id 应收账款ID
      * @return 是否删除成功
      */
-    boolean deleteReceivable(Long receivableId);
+    Boolean deleteReceivable(Long id);
 
     /**
      * 获取应收账款详情
      *
-     * @param receivableId 应收账款ID
+     * @param id 应收账款ID
      * @return 应收账款信息
      */
-    Receivable getReceivableById(Long receivableId);
+    ReceivableDetailVO getReceivable(Long id);
 
     /**
      * 更新应收账款状态
      *
-     * @param receivableId 应收账款ID
+     * @param id 应收账款ID
      * @param status 状态
      * @param remark 备注
      * @return 是否更新成功
      */
-    boolean updateReceivableStatus(Long receivableId, ReceivableStatusEnum status, String remark);
+    Boolean updateReceivableStatus(Long id, ReceivableStatusEnum status, String remark);
 
     /**
      * 记录收款
      *
-     * @param receivableId 应收账款ID
+     * @param id 应收账款ID
      * @param amount 收款金额
      * @param accountId 收款账户ID
      * @param receiveDate 收款日期
      * @param remark 备注
      * @return 收款记录ID
      */
-    Long recordReceipt(Long receivableId, BigDecimal amount, Long accountId, 
+    Long recordReceipt(Long id, BigDecimal amount, Long accountId, 
                      LocalDateTime receiveDate, String remark);
 
     /**
@@ -78,7 +80,7 @@ public interface ReceivableService {
      * @param overdueDays 逾期天数，大于该天数，可为null
      * @return 应收账款列表
      */
-    List<Receivable> listReceivables(Long contractId, Long clientId, 
+    List<ReceivableDetailVO> listReceivables(Long contractId, Long clientId, 
                                     ReceivableStatusEnum status, Integer overdueDays);
 
     /**
@@ -91,7 +93,7 @@ public interface ReceivableService {
      * @param overdueDays 逾期天数，大于该天数，可为null
      * @return 分页应收账款信息
      */
-    IPage<Receivable> pageReceivables(IPage<Receivable> page, Long contractId, Long clientId, 
+    IPage<ReceivableDetailVO> pageReceivables(Page<Receivable> page, Long contractId, Long clientId, 
                                     ReceivableStatusEnum status, Integer overdueDays);
 
     /**
@@ -100,7 +102,7 @@ public interface ReceivableService {
      * @param contractId 合同ID
      * @return 应收账款列表
      */
-    List<Receivable> listReceivablesByContract(Long contractId);
+    List<ReceivableDetailVO> listReceivablesByContract(Long contractId);
 
     /**
      * 按客户查询应收账款
@@ -108,7 +110,7 @@ public interface ReceivableService {
      * @param clientId 客户ID
      * @return 应收账款列表
      */
-    List<Receivable> listReceivablesByClient(Long clientId);
+    List<ReceivableDetailVO> listReceivablesByClient(Long clientId);
 
     /**
      * 统计应收账款总额
@@ -152,5 +154,5 @@ public interface ReceivableService {
      *
      * @return 更新的应收账款数量
      */
-    int updateOverdueStatus();
+    Integer updateOverdueStatus();
 } 

@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.security.context.SecurityContext;
 import com.lawfirm.model.contract.entity.Contract;
 import com.lawfirm.model.contract.mapper.ContractMapper;
+import com.lawfirm.model.finance.dto.business.ContractFinanceDTO;
+import com.lawfirm.model.finance.dto.business.ContractFinanceQueryDTO;
+import com.lawfirm.model.finance.dto.business.ContractFinanceUpdateDTO;
 import com.lawfirm.model.finance.entity.Income;
 import com.lawfirm.model.finance.entity.Invoice;
 import com.lawfirm.model.finance.entity.PaymentPlan;
@@ -17,6 +20,7 @@ import com.lawfirm.model.finance.service.PaymentPlanService;
 import com.lawfirm.model.finance.service.ReceivableService;
 import com.lawfirm.model.finance.service.PaymentService;
 import com.lawfirm.model.finance.vo.contract.ContractFinanceVO;
+import com.lawfirm.model.finance.vo.receivable.ReceivableDetailVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -154,11 +158,13 @@ public class ContractFinanceServiceImpl implements ContractFinanceService {
     public boolean updateContractReceivable(Long contractId, String contractNo, BigDecimal updateAmount) {
         logger.info("更新合同应收账款: contractId={}, contractNo={}, updateAmount={}", 
                 contractId, contractNo, updateAmount);
-        List<Receivable> receivables = receivableService.listReceivablesByContract(contractId);
+        List<ReceivableDetailVO> receivables = receivableService.listReceivablesByContract(contractId);
         if (receivables.isEmpty()) {
             return false;
         }
-        Receivable receivable = receivables.get(0);
+        Receivable receivable = new Receivable();
+        ReceivableDetailVO vo = receivables.get(0);
+        receivable.setId(vo.getId());
         receivable.setTotalAmount(updateAmount);
         receivable.setUpdateBy(String.valueOf(securityContext.getCurrentUserId()));
         receivable.setUpdateTime(LocalDateTime.now());
@@ -237,7 +243,7 @@ public class ContractFinanceServiceImpl implements ContractFinanceService {
     @Override
     @PreAuthorize("hasPermission('contract_finance', 'view')")
     @Cacheable(value = "contract_finance", key = "'receivables:' + #contractId")
-    public List<Receivable> getContractReceivables(Long contractId) {
+    public List<ReceivableDetailVO> getContractReceivables(Long contractId) {
         logger.info("获取合同应收账款: contractId={}", contractId);
         return receivableService.listReceivablesByContract(contractId);
     }
@@ -271,12 +277,12 @@ public class ContractFinanceServiceImpl implements ContractFinanceService {
     @Cacheable(value = "contract_finance", key = "'summary:' + #contractId")
     public ContractFinanceSummary getContractFinanceSummary(Long contractId) {
         logger.info("统计合同财务状况: contractId={}", contractId);
-        List<Receivable> receivables = getContractReceivables(contractId);
+        List<ReceivableDetailVO> receivables = getContractReceivables(contractId);
         List<Income> incomes = getContractIncomes(contractId);
         List<Invoice> invoices = getContractInvoices(contractId);
 
         BigDecimal totalAmount = receivables.stream()
-                .map(Receivable::getTotalAmount)
+                .map(ReceivableDetailVO::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal receivedAmount = incomes.stream()

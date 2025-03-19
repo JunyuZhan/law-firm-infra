@@ -262,41 +262,43 @@ public class IncomeServiceImpl extends BaseServiceImpl<IncomeMapper, Income> imp
     @Cacheable(value = "income", key = "'group_by_contract'")
     public List<ContractIncomeStat> statisticIncomeByContract() {
         log.info("按合同统计收入");
-        List<Income> allIncomes = list();
-        Map<Long, List<Income>> groupedIncomes = allIncomes.stream()
-                .filter(income -> income.getCaseId() != null)
+        List<Income> incomes = listIncomes(null, null, null, null);
+        Map<Long, List<Income>> groupedIncomes = incomes.stream()
                 .collect(Collectors.groupingBy(Income::getCaseId));
         
         List<ContractIncomeStat> stats = new ArrayList<>();
-        groupedIncomes.forEach((caseId, incomes) -> {
-            stats.add(new ContractIncomeStat() {
+        groupedIncomes.forEach((contractId, contractIncomes) -> {
+            ContractIncomeStat stat = new ContractIncomeStat() {
                 @Override
                 public Long getContractId() {
-                    return caseId;
+                    return contractId;
                 }
                 
                 @Override
                 public String getContractNumber() {
-                    return "CASE-" + caseId; // 临时使用caseId作为合同编号
+                    // 这里需要从合同服务获取合同编号
+                    return null;
                 }
                 
                 @Override
                 public String getContractName() {
-                    return "案件" + caseId; // 临时使用caseId作为合同名称
+                    // 这里需要从合同服务获取合同名称
+                    return null;
                 }
                 
                 @Override
                 public BigDecimal getAmount() {
-                    return incomes.stream()
+                    return contractIncomes.stream()
                             .map(Income::getAmount)
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                 }
                 
                 @Override
                 public Integer getCount() {
-                    return incomes.size();
+                    return contractIncomes.size();
                 }
-            });
+            };
+            stats.add(stat);
         });
         
         return stats;

@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.HtmlUtils;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +42,7 @@ public class XssFilter extends OncePerRequestFilter {
     /**
      * XSS请求包装器
      */
-    private static class XssHttpServletRequestWrapper extends javax.servlet.http.HttpServletRequestWrapper {
+    private static class XssHttpServletRequestWrapper extends jakarta.servlet.http.HttpServletRequestWrapper {
         
         public XssHttpServletRequestWrapper(HttpServletRequest request) {
             super(request);

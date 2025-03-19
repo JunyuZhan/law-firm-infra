@@ -1,15 +1,16 @@
 package com.lawfirm.api.adaptor.finance;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.model.finance.dto.expense.ExpenseCreateDTO;
-import com.lawfirm.model.finance.dto.expense.ExpenseUpdateDTO;
 import com.lawfirm.model.finance.entity.Expense;
 import com.lawfirm.model.finance.service.ExpenseService;
-import com.lawfirm.model.finance.vo.expense.ExpenseVO;
-import com.lawfirm.model.finance.enums.ExpenseTypeEnum;
+import com.lawfirm.model.finance.vo.expense.ExpenseDetailVO;
+import com.lawfirm.model.finance.service.ExpenseService.ExpenseStat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,97 +24,113 @@ public class ExpenseAdaptor extends BaseAdaptor {
     private ExpenseService expenseService;
 
     /**
-     * 创建支出
+     * 记录支出
      */
-    public ExpenseVO createExpense(ExpenseCreateDTO dto) {
-        Expense expense = expenseService.createExpense(dto);
-        return convert(expense, ExpenseVO.class);
+    public Long recordExpense(Expense expense) {
+        return expenseService.recordExpense(expense);
     }
 
     /**
-     * 更新支出
+     * 更新支出信息
      */
-    public ExpenseVO updateExpense(Long id, ExpenseUpdateDTO dto) {
-        Expense expense = expenseService.updateExpense(id, dto);
-        return convert(expense, ExpenseVO.class);
+    public boolean updateExpense(Expense expense) {
+        return expenseService.updateExpense(expense);
     }
 
     /**
      * 获取支出详情
      */
-    public ExpenseVO getExpense(Long id) {
-        Expense expense = expenseService.getExpense(id);
-        return convert(expense, ExpenseVO.class);
+    public ExpenseDetailVO getExpense(Long id) {
+        Expense expense = expenseService.getExpenseById(id);
+        return convert(expense, ExpenseDetailVO.class);
     }
 
     /**
-     * 删除支出
+     * 删除支出记录
      */
-    public void deleteExpense(Long id) {
-        expenseService.deleteExpense(id);
+    public boolean deleteExpense(Long id) {
+        return expenseService.deleteExpense(id);
     }
 
     /**
-     * 获取所有支出
+     * 审批支出
      */
-    public List<ExpenseVO> listExpenses() {
-        List<Expense> expenses = expenseService.listExpenses();
+    public boolean approveExpense(Long expenseId, Long approverId, boolean approved, String remark) {
+        return expenseService.approveExpense(expenseId, approverId, approved, remark);
+    }
+
+    /**
+     * 支付支出
+     */
+    public boolean payExpense(Long expenseId, Long accountId, LocalDateTime paymentTime, String remark) {
+        return expenseService.payExpense(expenseId, accountId, paymentTime, remark);
+    }
+
+    /**
+     * 取消支出
+     */
+    public boolean cancelExpense(Long expenseId, String reason) {
+        return expenseService.cancelExpense(expenseId, reason);
+    }
+
+    /**
+     * 查询支出列表
+     */
+    public List<ExpenseDetailVO> listExpenses(Integer expenseType, Integer status,
+                                            LocalDateTime startTime, LocalDateTime endTime) {
+        List<Expense> expenses = expenseService.listExpenses(expenseType, status, startTime, endTime);
         return expenses.stream()
-                .map(expense -> convert(expense, ExpenseVO.class))
+                .map(expense -> convert(expense, ExpenseDetailVO.class))
                 .collect(Collectors.toList());
     }
 
     /**
-     * 根据支出类型查询支出
+     * 分页查询支出
      */
-    public List<ExpenseVO> getExpensesByType(ExpenseTypeEnum type) {
-        List<Expense> expenses = expenseService.getExpensesByType(type);
+    public IPage<ExpenseDetailVO> pageExpenses(IPage<Expense> page, Integer expenseType, Integer status,
+                                             LocalDateTime startTime, LocalDateTime endTime) {
+        IPage<Expense> expensePage = expenseService.pageExpenses(page, expenseType, status, startTime, endTime);
+        return expensePage.convert(expense -> convert(expense, ExpenseDetailVO.class));
+    }
+
+    /**
+     * 按部门查询支出
+     */
+    public List<ExpenseDetailVO> listExpensesByDepartment(Long departmentId, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Expense> expenses = expenseService.listExpensesByDepartment(departmentId, startTime, endTime);
         return expenses.stream()
-                .map(expense -> convert(expense, ExpenseVO.class))
+                .map(expense -> convert(expense, ExpenseDetailVO.class))
                 .collect(Collectors.toList());
     }
 
     /**
-     * 根据部门ID查询支出
+     * 按成本中心查询支出
      */
-    public List<ExpenseVO> getExpensesByDepartmentId(Long departmentId) {
-        List<Expense> expenses = expenseService.getExpensesByDepartmentId(departmentId);
+    public List<ExpenseDetailVO> listExpensesByCostCenter(Long costCenterId, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Expense> expenses = expenseService.listExpensesByCostCenter(costCenterId, startTime, endTime);
         return expenses.stream()
-                .map(expense -> convert(expense, ExpenseVO.class))
+                .map(expense -> convert(expense, ExpenseDetailVO.class))
                 .collect(Collectors.toList());
     }
 
     /**
-     * 根据成本中心ID查询支出
+     * 统计支出总额
      */
-    public List<ExpenseVO> getExpensesByCostCenterId(Long costCenterId) {
-        List<Expense> expenses = expenseService.getExpensesByCostCenterId(costCenterId);
-        return expenses.stream()
-                .map(expense -> convert(expense, ExpenseVO.class))
-                .collect(Collectors.toList());
+    public BigDecimal sumExpenseAmount(Integer expenseType, LocalDateTime startTime, LocalDateTime endTime) {
+        return expenseService.sumExpenseAmount(expenseType, startTime, endTime);
     }
 
     /**
-     * 根据预算ID查询支出
+     * 按月统计支出
      */
-    public List<ExpenseVO> getExpensesByBudgetId(Long budgetId) {
-        List<Expense> expenses = expenseService.getExpensesByBudgetId(budgetId);
-        return expenses.stream()
-                .map(expense -> convert(expense, ExpenseVO.class))
-                .collect(Collectors.toList());
+    public List<ExpenseStat> statisticExpenseByMonth(Integer year, Integer month) {
+        return expenseService.statisticExpenseByMonth(year, month);
     }
 
     /**
-     * 检查支出是否存在
+     * 按类型统计支出
      */
-    public boolean existsExpense(Long id) {
-        return expenseService.existsExpense(id);
+    public List<ExpenseStat> statisticExpenseByType(LocalDateTime startTime, LocalDateTime endTime) {
+        return expenseService.statisticExpenseByType(startTime, endTime);
     }
-
-    /**
-     * 获取支出数量
-     */
-    public long countExpenses() {
-        return expenseService.countExpenses();
-    }
-} 
+}

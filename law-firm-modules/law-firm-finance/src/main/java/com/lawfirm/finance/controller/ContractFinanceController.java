@@ -7,6 +7,7 @@ import com.lawfirm.model.finance.entity.PaymentPlan;
 import com.lawfirm.model.finance.entity.Receivable;
 import com.lawfirm.model.finance.service.ContractFinanceService;
 import com.lawfirm.model.finance.vo.contract.ContractFinanceVO;
+import com.lawfirm.model.finance.vo.receivable.ReceivableDetailVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -144,7 +145,7 @@ public class ContractFinanceController {
 
     @GetMapping("/{contractId}/receivables")
     @Operation(summary = "获取合同应收账款")
-    public ResponseResult<List<Receivable>> getContractReceivables(@PathVariable("contractId") Long contractId) {
+    public ResponseResult<List<ReceivableDetailVO>> getContractReceivables(@PathVariable("contractId") Long contractId) {
         return ResponseResult.success(contractFinanceService.getContractReceivables(contractId));
     }
 

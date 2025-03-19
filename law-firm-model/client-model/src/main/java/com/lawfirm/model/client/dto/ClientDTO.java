@@ -104,4 +104,34 @@ public class ClientDTO implements Serializable {
      * 统一社会信用代码（企业客户）
      */
     private String unifiedSocialCreditCode;
+
+    /**
+     * 案件总数
+     */
+    private Integer caseCount;
+
+    /**
+     * 活跃案件数
+     */
+    private Integer activeCaseCount;
+
+    public void setUnifiedSocialCreditCode(String unifiedSocialCreditCode) {
+        this.unifiedSocialCreditCode = unifiedSocialCreditCode;
+    }
+
+    public Integer getCaseCount() {
+        return caseCount;
+    }
+
+    public void setCaseCount(Integer caseCount) {
+        this.caseCount = caseCount;
+    }
+
+    public Integer getActiveCaseCount() {
+        return activeCaseCount;
+    }
+
+    public void setActiveCaseCount(Integer activeCaseCount) {
+        this.activeCaseCount = activeCaseCount;
+    }
 } 

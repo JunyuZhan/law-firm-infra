@@ -5,11 +5,12 @@ import com.lawfirm.model.finance.dto.transaction.TransactionCreateDTO;
 import com.lawfirm.model.finance.dto.transaction.TransactionUpdateDTO;
 import com.lawfirm.model.finance.entity.Transaction;
 import com.lawfirm.model.finance.service.TransactionService;
-import com.lawfirm.model.finance.vo.transaction.TransactionVO;
+import com.lawfirm.model.finance.vo.transaction.TransactionDetailVO;
 import com.lawfirm.model.finance.enums.TransactionTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,25 +26,28 @@ public class TransactionAdaptor extends BaseAdaptor {
     /**
      * 创建交易
      */
-    public TransactionVO createTransaction(TransactionCreateDTO dto) {
-        Transaction transaction = transactionService.createTransaction(dto);
-        return convert(transaction, TransactionVO.class);
+    public TransactionDetailVO createTransaction(TransactionCreateDTO dto) {
+        Transaction transaction = convert(dto, Transaction.class);
+        Long id = transactionService.createTransaction(transaction);
+        return getTransaction(id);
     }
 
     /**
      * 更新交易
      */
-    public TransactionVO updateTransaction(Long id, TransactionUpdateDTO dto) {
-        Transaction transaction = transactionService.updateTransaction(id, dto);
-        return convert(transaction, TransactionVO.class);
+    public TransactionDetailVO updateTransaction(Long id, TransactionUpdateDTO dto) {
+        Transaction transaction = convert(dto, Transaction.class);
+        transaction.setId(id);
+        transactionService.updateTransaction(transaction);
+        return getTransaction(id);
     }
 
     /**
      * 获取交易详情
      */
-    public TransactionVO getTransaction(Long id) {
-        Transaction transaction = transactionService.getTransaction(id);
-        return convert(transaction, TransactionVO.class);
+    public TransactionDetailVO getTransaction(Long id) {
+        Transaction transaction = transactionService.getTransactionById(id);
+        return convert(transaction, TransactionDetailVO.class);
     }
 
     /**
@@ -56,30 +60,30 @@ public class TransactionAdaptor extends BaseAdaptor {
     /**
      * 获取所有交易
      */
-    public List<TransactionVO> listTransactions() {
-        List<Transaction> transactions = transactionService.listTransactions();
+    public List<TransactionDetailVO> listTransactions() {
+        List<Transaction> transactions = transactionService.listTransactions(null, null, null, null);
         return transactions.stream()
-                .map(transaction -> convert(transaction, TransactionVO.class))
+                .map(transaction -> convert(transaction, TransactionDetailVO.class))
                 .collect(Collectors.toList());
     }
 
     /**
      * 根据交易类型查询交易
      */
-    public List<TransactionVO> getTransactionsByType(TransactionTypeEnum type) {
-        List<Transaction> transactions = transactionService.getTransactionsByType(type);
+    public List<TransactionDetailVO> getTransactionsByType(TransactionTypeEnum type) {
+        List<Transaction> transactions = transactionService.listTransactions(type, null, null, null);
         return transactions.stream()
-                .map(transaction -> convert(transaction, TransactionVO.class))
+                .map(transaction -> convert(transaction, TransactionDetailVO.class))
                 .collect(Collectors.toList());
     }
 
     /**
      * 根据账户ID查询交易
      */
-    public List<TransactionVO> getTransactionsByAccountId(Long accountId) {
-        List<Transaction> transactions = transactionService.getTransactionsByAccountId(accountId);
+    public List<TransactionDetailVO> getTransactionsByAccountId(Long accountId) {
+        List<Transaction> transactions = transactionService.listTransactionsByAccount(accountId, null, null);
         return transactions.stream()
-                .map(transaction -> convert(transaction, TransactionVO.class))
+                .map(transaction -> convert(transaction, TransactionDetailVO.class))
                 .collect(Collectors.toList());
     }
 
@@ -87,13 +91,15 @@ public class TransactionAdaptor extends BaseAdaptor {
      * 检查交易是否存在
      */
     public boolean existsTransaction(Long id) {
-        return transactionService.existsTransaction(id);
+        Transaction transaction = transactionService.getTransactionById(id);
+        return transaction != null;
     }
 
     /**
      * 获取交易数量
      */
     public long countTransactions() {
-        return transactionService.countTransactions();
+        List<Transaction> transactions = transactionService.listTransactions(null, null, null, null);
+        return transactions.size();
     }
 } 

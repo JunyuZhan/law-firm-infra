@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.client.util.ClientConverter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.client.dto.ClientDTO;
 import com.lawfirm.model.client.dto.client.ClientCreateDTO;
 import com.lawfirm.model.client.dto.client.ClientQueryDTO;
 import com.lawfirm.model.client.dto.client.ClientUpdateDTO;
@@ -160,5 +161,69 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
      */
     private void handleRelatedData(Long clientId, ClientCreateDTO dto) {
         // TODO: 实现关联数据处理
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateClientCaseStats(Long clientId, int totalCases, int activeCases) {
+        // 检查客户是否存在
+        Client client = getById(clientId);
+        if (client == null) {
+            throw new IllegalArgumentException("客户不存在");
+        }
+        
+        // 更新案件统计信息
+        client.setCaseCount(totalCases);
+        client.setActiveCaseCount(activeCases);
+        
+        // 保存更新
+        updateById(client);
+    }
+
+    @Override
+    public ClientDTO getClientDetail(Long clientId) {
+        // 获取客户基本信息
+        Client client = getById(clientId);
+        if (client == null) {
+            return null;
+        }
+        
+        // TODO: 获取客户的详细信息，包括联系人、地址、案件等
+        
+        // 转换为DTO
+        return ClientConverter.toDTO(client);
+    }
+
+    @Override
+    public List<ClientDTO> searchClientsByName(String name, int limit) {
+        // 构建查询条件
+        LambdaQueryWrapper<Client> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(Client::getClientName, name)
+              .orderByDesc(Client::getUpdateTime)
+              .last("LIMIT " + limit);
+        
+        // 查询客户列表
+        List<Client> clients = list(wrapper);
+        
+        // 转换为DTO列表
+        return clients.stream()
+                .map(ClientConverter::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean checkClientConflict(Long clientId, List<Long> oppositeClientIds) {
+        // 获取当前客户
+        Client client = getById(clientId);
+        if (client == null) {
+            throw new IllegalArgumentException("客户不存在");
+        }
+        
+        // TODO: 实现利益冲突检查逻辑
+        // 1. 检查是否存在关联案件
+        // 2. 检查是否存在利益冲突标记
+        // 3. 检查其他冲突条件
+        
+        return false; // 暂时返回false，需要根据实际业务逻辑实现
     }
 }
