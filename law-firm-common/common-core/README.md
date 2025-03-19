@@ -1,7 +1,236 @@
-# Common Core 核心基础设施模块
+# 核心模块 (Common Core)
 
 ## 模块说明
-核心基础设施模块，提供最基础的框架支持，不包含具体的业务模型定义。作为其他模块的基础依赖，提供统一的异常处理、响应格式、上下文管理等基础功能。
+核心模块提供了一系列基础功能支持，包括统一响应处理、统一异常处理、基础配置支持、基础实体支持、上下文管理和常量定义等。
+
+## 功能特性
+
+### 1. 统一响应处理
+```java
+// 成功响应
+CommonResult.success(data);
+
+// 失败响应
+CommonResult.error(message);
+
+// 自定义响应
+CommonResult.build(code, message, data);
+```
+
+### 2. 统一异常处理
+```java
+// 业务异常
+throw new BusinessException(message);
+
+// 验证异常
+throw new ValidationException(message);
+
+// 框架异常
+throw new FrameworkException(message);
+```
+
+### 3. 基础配置支持
+```java
+@Configuration
+public class CustomConfig extends BaseConfig {
+    // 自定义配置
+}
+```
+
+### 4. 基础实体支持
+```java
+public class CustomEntity extends BaseEntity {
+    // 自定义字段
+}
+```
+
+### 5. 上下文管理
+```java
+// 设置上下文
+BaseContextHandler.setContext(key, value);
+
+// 获取上下文
+BaseContextHandler.getContext(key);
+
+// 清除上下文
+BaseContextHandler.clear();
+```
+
+### 6. 常量定义
+```java
+// 使用常量
+CommonConstants.SUCCESS_CODE;
+CommonConstants.ERROR_CODE;
+```
+
+## 使用示例
+
+### 1. 统一响应示例
+```java
+@RestController
+@RequestMapping("/api")
+public class DemoController {
+    
+    @GetMapping("/data")
+    public CommonResult getData() {
+        try {
+            // 业务处理
+            return CommonResult.success(data);
+        } catch (Exception e) {
+            return CommonResult.error(e.getMessage());
+        }
+    }
+}
+```
+
+### 2. 统一异常示例
+```java
+@Service
+public class DemoService {
+    
+    public void process() {
+        // 业务验证
+        if (!valid) {
+            throw new ValidationException("数据验证失败");
+        }
+        
+        // 业务处理
+        if (error) {
+            throw new BusinessException("业务处理失败");
+        }
+    }
+}
+```
+
+### 3. 基础实体示例
+```java
+@Entity
+@Table(name = "demo")
+public class DemoEntity extends BaseEntity {
+    
+    @Column(name = "name")
+    private String name;
+    
+    @Column(name = "code")
+    private String code;
+    
+    // getter and setter
+}
+```
+
+### 4. 上下文管理示例
+```java
+@Service
+public class DemoService {
+    
+    public void process() {
+        // 设置上下文
+        BaseContextHandler.setContext("userId", "123");
+        
+        try {
+            // 业务处理
+            doProcess();
+        } finally {
+            // 清除上下文
+            BaseContextHandler.clear();
+        }
+    }
+}
+```
+
+## 配置说明
+
+### 1. 自动配置
+```yaml
+# application.yml
+law-firm:
+  common:
+    core:
+      enabled: true
+      response:
+        enabled: true
+      exception:
+        enabled: true
+      context:
+        enabled: true
+```
+
+### 2. 自定义配置
+```java
+@Configuration
+public class CustomCoreConfig extends CoreAutoConfiguration {
+    
+    @Bean
+    public CustomBean customBean() {
+        return new CustomBean();
+    }
+}
+```
+
+## 最佳实践
+
+### 1. 响应处理
+- 使用统一的响应格式
+- 合理使用响应码
+- 规范响应消息
+
+### 2. 异常处理
+- 使用统一的异常类型
+- 合理使用异常层级
+- 规范异常消息
+
+### 3. 实体设计
+- 继承基础实体类
+- 规范字段命名
+- 添加字段注释
+
+### 4. 上下文使用
+- 及时清理上下文
+- 避免上下文泄露
+- 合理使用上下文
+
+## 注意事项
+
+### 1. 响应处理
+- 不要直接返回原始数据
+- 不要使用自定义响应格式
+- 不要忽略异常处理
+
+### 2. 异常处理
+- 不要吞掉异常
+- 不要使用自定义异常
+- 不要忽略异常堆栈
+
+### 3. 实体设计
+- 不要修改基础字段
+- 不要忽略字段验证
+- 不要忽略字段注释
+
+### 4. 上下文使用
+- 不要存储敏感数据
+- 不要存储大量数据
+- 不要忽略上下文清理
+
+## 常见问题
+
+### 1. 响应问题
+Q: 如何自定义响应格式？
+A: 继承CommonResult类，重写相关方法。
+
+### 2. 异常问题
+Q: 如何处理自定义异常？
+A: 继承BaseException类，实现自定义异常。
+
+### 3. 实体问题
+Q: 如何添加自定义字段？
+A: 继承BaseEntity类，添加自定义字段。
+
+### 4. 上下文问题
+Q: 如何处理上下文并发？
+A: 使用ThreadLocal存储上下文数据。
+
+## 更新日志
+- 2024-03-18: 初始版本发布
 
 ## 核心类说明
 

@@ -1,436 +1,855 @@
-# API服务层设计
+# Law Firm API 层设计文档
 
-## 一、目录结构
+## 1. 设计目标
+
+API 层作为系统的统一入口，主要承担以下职责：
+- 统一接口规范
+- 统一响应格式
+- 统一异常处理
+- 统一安全控制
+- 统一接口文档
+- 支持 vue-vben-admin 前端框架
+
+## 2. 技术架构
+
+### 2.1 核心组件
+- Spring Boot Web：提供 RESTful API 支持
+- SpringDoc OpenAPI：API 文档生成
+- Spring Validation：参数校验
+- Lombok：简化代码
+- MyBatis Plus：ORM框架
+- Redis：缓存支持
+- JWT：认证支持
+
+### 2.2 依赖关系
+- 依赖所有业务模块（law-firm-modules）
+- 依赖通用组件（law-firm-common）
+  - common-core：核心工具类、常量、异常等
+  - common-web：Web相关通用组件
+  - common-security：安全相关通用组件
+  - common-data：数据处理相关通用组件
+- 不依赖基础设施层
+- 不依赖持久层
+
+### 2.3 代码复用策略
+
+API 层应尽量复用底层通用组件，避免重复实现。主要复用以下内容：
+
+1. **通用工具类**：
+   - 日期处理
+   - 字符串处理
+   - 加密解密
+   - JSON 转换等
+
+2. **公共常量定义**：
+   - 错误码
+   - 业务状态码
+   - 系统参数等
+
+3. **基础数据模型**：
+   - 实体类定义
+   - DTO/VO 对象
+   - 枚举类型等
+
+4. **公共异常类**：
+   - 业务异常
+   - 系统异常
+   - 安全异常等
+
+5. **公共组件**：
+   - 分页组件
+   - 缓存组件
+   - 日志组件等
+
+## 3. 包结构设计
+
 ```
-law-firm-api/
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/lawfirm/
-│       │       ├── config/                    # 配置类
-│       │       │   ├── mybatis/               # MyBatis配置
-│       │       │   ├── redis/                 # Redis配置
-│       │       │   ├── security/              # 安全配置
-│       │       │   ├── swagger/               # 接口文档配置
-│       │       │   └── web/                   # Web配置
-│       │       │
-│       │       ├── controller/                # 控制器
-│       │       │   ├── system/                # 系统管理
-│       │       │   │   ├── auth/             # 认证相关
-│       │       │   │   │   ├── LoginController.java
-│       │       │   │   │   └── CaptchaController.java
-│       │       │   │   ├── user/             # 用户管理
-│       │       │   │   ├── role/             # 角色管理
-│       │       │   │   ├── menu/             # 菜单管理
-│       │       │   │   ├── dept/             # 部门管理
-│       │       │   │   ├── dict/             # 字典管理
-│       │       │   │   ├── log/              # 日志管理
-│       │       │   │   └── notice/           # 通知公告
-│       │       │   │
-│       │       │   ├── dashboard/            # 仪表盘
-│       │       │   │   ├── WorkbenchController.java
-│       │       │   │   ├── AnalysisController.java
-│       │       │   │   └── MonitorController.java
-│       │       │   │
-│       │       │   ├── case/                 # 案件管理
-│       │       │   │   ├── CaseController.java      # 案件管理
-│       │       │   │   ├── CaseTypeController.java  # 案件类型
-│       │       │   │   ├── CaseFlowController.java  # 案件流程
-│       │       │   │   ├── CaseDocController.java   # 案件文档
-│       │       │   │   ├── CasePartyController.java # 当事人管理
-│       │       │   │   ├── CaseScheduleController.java # 案件日程
-│       │       │   │   ├── CaseEvidenceController.java # 证据管理
-│       │       │   │   └── CaseArchiveController.java # 归档管理
-│       │       │   │
-│       │       │   ├── client/              # 客户管理
-│       │       │   │   ├── ClientController.java    # 客户管理
-│       │       │   │   ├── ContactController.java   # 联系人管理
-│       │       │   │   ├── ClientFollowController.java # 客户跟进
-│       │       │   │   ├── ClientGroupController.java  # 客户分组
-│       │       │   │   └── ClientAnalysisController.java # 客户分析
-│       │       │   │
-│       │       │   ├── contract/            # 合同管理
-│       │       │   │   ├── ContractController.java  # 合同管理
-│       │       │   │   ├── ContractTypeController.java # 合同类型
-│       │       │   │   ├── ContractTemplateController.java # 合同模板
-│       │       │   │   ├── ContractReviewController.java # 合同审批
-│       │       │   │   └── ContractArchiveController.java # 归档管理
-│       │       │   │
-│       │       │   ├── document/            # 文档管理
-│       │       │   │   ├── DocController.java       # 文档管理
-│       │       │   │   ├── DocCategoryController.java # 文档分类
-│       │       │   │   ├── DocTemplateController.java # 文档模板
-│       │       │   │   ├── DocVersionController.java  # 版本管理
-│       │       │   │   └── DocShareController.java    # 文档共享
-│       │       │   │
-│       │       │   ├── finance/             # 财务管理
-│       │       │   │   ├── BillingController.java   # 账单管理
-│       │       │   │   ├── InvoiceController.java   # 发票管理
-│       │       │   │   ├── ExpenseController.java   # 费用管理
-│       │       │   │   ├── PaymentController.java   # 收付款管理
-│       │       │   │   └── StatementController.java # 财务报表
-│       │       │   │
-│       │       │   ├── personnel/             # 人事管理
-│       │       │   │   ├── PersonnelController.java    # 人事基础信息
-│       │       │   │   ├── LawyerController.java       # 律师管理
-│       │       │   │   ├── EmployeeController.java     # 员工管理
-│       │       │   │   ├── AttendanceController.java   # 考勤管理
-│       │       │   │   ├── LeaveController.java        # 请假管理
-│       │       │   │   ├── PerformanceController.java  # 绩效管理
-│       │       │   │   ├── SalaryController.java       # 薪资管理
-│       │       │   │   ├── TrainingController.java     # 培训管理
-│       │       │   │   ├── RecruitController.java      # 招聘管理
-│       │       │   │   └── ContractController.java     # 劳动合同管理
-│       │       │   │
-│       │       │   ├── knowledge/          # 知识管理
-│       │       │   │   ├── ArticleController.java   # 文章管理
-│       │       │   │   ├── CategoryController.java  # 分类管理
-│       │       │   │   ├── TagController.java       # 标签管理
-│       │       │   │   └── SearchController.java    # 知识检索
-│       │       │   │
-│       │       │   ├── workflow/           # 工作流管理
-│       │       │   │   ├── ProcessController.java   # 流程管理
-│       │       │   │   ├── TaskController.java      # 任务管理
-│       │       │   │   ├── FormController.java      # 表单管理
-│       │       │   │   └── HistoryController.java   # 历史记录
-│       │       │   │
-│       │       │   ├── message/            # 消息管理
-│       │       │   │   ├── MessageController.java   # 消息管理
-│       │       │   │   ├── NotifyController.java    # 通知管理
-│       │       │   │   └── EmailController.java     # 邮件管理
-│       │       │   │
-│       │       │   ├── schedule/           # 日程管理
-│       │       │   │   ├── ScheduleController.java  # 日程管理
-│       │       │   │   ├── CalendarController.java  # 日历管理
-│       │       │   │   └── MeetingController.java   # 会议管理
-│       │       │   │
-│       │       │   ├── conflict/           # 利益冲突管理
-│       │       │   │   ├── ConflictController.java  # 冲突管理
-│       │       │   │   └── CheckController.java     # 冲突检查
-│       │       │   │
-│       │       │   ├── seal/              # 印章管理
-│       │       │   │   ├── SealController.java      # 印章管理
-│       │       │   │   ├── ApplyController.java     # 用印申请
-│       │       │   │   └── RecordController.java    # 用印记录
-│       │       │   │
-│       │       │   ├── asset/             # 资产管理
-│       │       │   │   ├── AssetController.java     # 资产管理
-│       │       │   │   ├── PurchaseController.java  # 采购管理
-│       │       │   │   └── MaintenanceController.java # 维护管理
-│       │       │   │
-│       │       │   ├── archive/           # 档案管理
-│       │       │   │   ├── ArchiveController.java   # 档案管理
-│       │       │   │   ├── BorrowController.java    # 借阅管理
-│       │       │   │   └── DestroyController.java   # 销毁管理
-│       │       │   │
-│       │       │   └── common/            # 通用功能
-│       │       │       ├── UploadController.java    # 文件上传
-│       │       │       └── DictDataController.java  # 字典数据
-│       │       │
-│       │       ├── model/                   # 数据模型
-│       │       │   ├── entity/             # 实体类
-│       │       │   ├── dto/                # 数据传输对象
-│       │       │   │   ├── request/        # 请求对象
-│       │       │   │   └── response/       # 响应对象
-│       │       │   └── vo/                 # 视图对象
-│       │       │
-│       │       ├── service/                # 服务层
-│       │       │   ├── system/            # 系统服务
-│       │       │   │   ├── auth/
-│       │       │   │   ├── user/
-│       │       │   │   ├── role/
-│       │       │   │   └── menu/
-│       │       │   │
-│       │       │   ├── case/              # 案件服务
-│       │       │   └── client/            # 客户服务
-│       │       │
-│       │       ├── common/                # 公共组件
-│       │       │   ├── annotation/        # 自定义注解
-│       │       │   ├── aspect/           # 切面类
-│       │       │   ├── constant/         # 常量定义
-│       │       │   ├── exception/        # 异常处理
-│       │       │   ├── utils/            # 工具类
-│       │       │   └── response/         # 响应封装
-│       │       │
-│       │       └── framework/            # 框架功能
-│       │           ├── security/         # 安全框架
-│       │           ├── mybatis/          # MyBatis功能
-│       │           └── redis/            # Redis功能
-│       │
-│       └── resources/
-│           ├── mapper/                   # MyBatis映射文件
-│           ├── application.yml           # 应用配置
-│           ├── application-dev.yml       # 开发环境配置
-│           └── application-prod.yml      # 生产环境配置
-│
-└── pom.xml                              # 项目依赖管理
+com.lawfirm.api
+├── advice                    // 通知组件
+│   └── ResponseAdvice.java   // 响应格式转换通知
+├── adaptor                   // 适配器层，用于适配业务模块和前端
+│   ├── auth/                 // 认证授权适配
+│   │   ├── AuthAdaptor.java
+│   │   └── UserAdaptor.java
+│   ├── system/               // 系统模块适配
+│   │   ├── MenuAdaptor.java
+│   │   └── DictAdaptor.java
+│   ├── client/               // 客户模块适配
+│   ├── case/                 // 案件模块适配
+│   ├── contract/             // 合同模块适配
+│   ├── finance/              // 财务模块适配
+│   ├── document/             // 文档模块适配
+│   └── personnel/            // 人事模块适配
+├── config                    // 配置类
+│   ├── SecurityConfig.java   // 安全配置
+│   ├── WebMvcConfig.java     // MVC配置
+│   ├── CorsConfig.java       // 跨域配置
+│   ├── RedisConfig.java      // Redis配置
+│   └── SwaggerConfig.java    // API文档配置
+├── controller                // 特定控制器
+│   ├── LoginController.java  // 登录适配控制器
+│   └── MenuController.java   // 菜单转换控制器
+├── filter                    // 过滤器
+│   ├── JwtAuthenticationFilter.java // JWT认证过滤器
+│   └── XssFilter.java        // XSS防护过滤器
+├── handler                   // 处理器
+│   └── GlobalExceptionHandler.java // 全局异常处理器
+├── interceptor               // 拦截器
+│   ├── ResponseWrapperInterceptor.java // 响应包装拦截器
+│   └── SecurityInterceptor.java        // 安全拦截器
+└── LawFirmApiApplication.java
 ```
 
-## 二、关键实现
+### 3.1 复用与扩展
+- **复用组件**：直接使用 common 层提供的工具类、异常类和常量定义
+- **扩展组件**：当 common 层不满足需求时，在 API 层进行扩展
+- **适配组件**：主要在 adaptor 层实现，将业务模块的数据转换为前端所需的格式
 
-### 1. 统一响应格式（对接vben）
+## 4. 接口规范
+
+### 4.1 URL 规范
+- 使用 RESTful 风格
+- 使用小写字母
+- 使用连字符（-）分隔单词
+- 版本号放在 URL 中：/api/v1/...
+- 支持 vue-vben-admin 的接口规范
+
+### 4.2 请求规范
+- GET：查询操作
+- POST：创建操作
+- PUT：更新操作
+- DELETE：删除操作
+- PATCH：部分更新操作
+- 支持 vue-vben-admin 的请求格式
+
+### 4.3 响应规范
+```json
+{
+    "code": 200,           // 状态码
+    "message": "success",  // 消息
+    "data": {},           // 数据
+    "success": true,      // 兼容 vue-vben-admin
+    "result": {}          // 兼容 vue-vben-admin
+}
+```
+
+### 4.4 状态码规范
+- 200：成功
+- 400：请求参数错误
+- 401：未授权
+- 403：禁止访问
+- 404：资源不存在
+- 500：服务器错误
+
+## 5. 安全设计
+
+### 5.1 认证
+- 基于 JWT 的认证机制
+- Token 过期机制
+- 刷新 Token 机制
+- 支持 vue-vben-admin 的认证流程
+
+### 5.2 授权
+- 基于 RBAC 的权限控制
+- 接口级别的权限控制
+- 数据级别的权限控制
+- 支持 vue-vben-admin 的权限管理
+
+### 5.3 安全防护
+- XSS 防护
+- CSRF 防护
+- SQL 注入防护
+- 请求限流
+
+## 6. 接口文档
+
+### 6.1 文档生成
+- 使用 SpringDoc OpenAPI 自动生成
+- 支持在线调试
+- 支持导出离线文档
+- 支持 vue-vben-admin 的接口文档格式
+
+### 6.2 文档内容
+- 接口描述
+- 请求参数
+- 响应结果
+- 错误码说明
+- 调用示例
+
+## 7. 开发规范
+
+### 7.1 代码规范
+- 遵循阿里巴巴 Java 开发规范
+- 使用统一的代码格式化模板
+- 必要的注释和文档
+- 完整的单元测试
+
+### 7.2 接口规范
+- 统一的命名规范
+- 统一的参数校验
+- 统一的异常处理
+- 统一的日志记录
+- 兼容 vue-vben-admin 的开发规范
+
+## 8. 部署说明
+
+### 8.1 环境要求
+- JDK 17+
+- Maven 3.8+
+- Spring Boot 3.2+
+- Redis 7.0+
+- MySQL 8.0+
+
+### 8.2 配置说明
+- 应用配置
+- 数据库配置
+- 缓存配置
+- 消息队列配置
+- 跨域配置（支持 vue-vben-admin）
+
+### 8.3 部署步骤
+1. 编译打包
+2. 配置文件修改
+3. 服务启动
+4. 健康检查
+
+## 9. API 对接模式设计
+
+API 层作为系统的统一入口，需要对接业务模块和前端。以下设计了几种对接模式：
+
+### 9.1 API 网关模式
+
+由于控制器已在业务模块中实现，API 层作为网关，主要职责是：
+
+1. **请求转发和路由**：将请求转发到对应的业务模块
+2. **统一响应格式**：包装业务模块的响应，适配前端需求
+3. **统一异常处理**：捕获并处理业务模块的异常
+4. **统一安全控制**：提供统一的认证和授权机制
+5. **跨域处理**：处理跨域请求
+6. **API 文档**：提供统一的 API 文档
+
+#### 9.1.1 请求转发和路由设计
+
 ```java
-@Data
-public class Result<T> {
-    private Integer code;      // 状态码
-    private String message;    // 提示信息
-    private T data;           // 数据
-    private Boolean success;   // 成功标志
-    
-    public static <T> Result<T> ok(T data) {
-        Result<T> result = new Result<>();
-        result.setCode(ResultEnum.SUCCESS.getCode());
-        result.setMessage(ResultEnum.SUCCESS.getMessage());
-        result.setData(data);
-        result.setSuccess(true);
-        return result;
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 添加响应包装拦截器
+        registry.addInterceptor(new ResponseWrapperInterceptor())
+                .addPathPatterns("/api/**");
+        
+        // 添加安全拦截器
+        registry.addInterceptor(new SecurityInterceptor())
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/auth/login", "/api/auth/logout");
     }
 }
 ```
 
-### 2. 认证授权接口（对接vben）
-```java
-@RestController
-@RequestMapping("/api")
-public class AuthController {
-    // 登录接口
-    @PostMapping("/login")
-    public Result<LoginVO> login(@RequestBody LoginDTO loginDTO) {
-        // 返回token和用户基本信息
-    }
-    
-    // 获取用户信息
-    @GetMapping("/getUserInfo")
-    public Result<UserInfo> getUserInfo() {
-        // 返回用户详细信息，包含角色等
-    }
-    
-    // 获取权限编码
-    @GetMapping("/getPermCode")
-    public Result<List<String>> getPermCode() {
-        // 返回权限编码列表
-    }
-    
-    // 获取菜单
-    @GetMapping("/getMenuList")
-    public Result<List<Menu>> getMenuList() {
-        // 返回菜单树形结构
-    }
-}
-```
+#### 9.1.2 统一响应格式设计
 
-### 3. 统一分页查询
-```java
-@Data
-public class PageQuery {
-    @Min(1)
-    private Integer pageNum = 1;     // 当前页码
-    @Min(1)
-    private Integer pageSize = 10;   // 每页条数
-    private String keyword;          // 关键字搜索
-    private String sortField;        // 排序字段
-    private String sortOrder;        // 排序方式
-}
-
-@Data
-public class PageResult<T> {
-    private List<T> list;           // 数据列表
-    private Long total;             // 总记录数
-    private Integer pageNum;        // 当前页码
-    private Integer pageSize;       // 每页条数
-}
-```
-
-### 4. 权限注解
-```java
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RequiresPermissions {
-    String[] value();    // 权限编码
-    Logical logical() default Logical.AND;
-}
-```
-
-### 5. 异常处理
 ```java
 @RestControllerAdvice
-public class GlobalExceptionHandler {
-    @ExceptionHandler(BusinessException.class)
-    public Result<Void> handleBusinessException(BusinessException e) {
-        return Result.error(e.getCode(), e.getMessage());
+public class ResponseAdvice implements ResponseBodyAdvice<Object> {
+    @Override
+    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return true;
+    }
+
+    @Override
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
+                                 Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                 ServerHttpRequest request, ServerHttpResponse response) {
+        // 如果已经是 ApiResponse 类型，直接返回
+        if (body instanceof ApiResponse) {
+            return body;
+        }
+        
+        // 包装为 vue-vben-admin 支持的格式
+        return ApiResponse.success(body);
     }
 }
 ```
 
-### 6. Core层功能实现
+### 9.2 服务组合模式
 
-#### 6.1 消息处理 (core-message)
-```java
-@Service
-public class MessageService {
-    // 同步消息发送
-    public void sendMessage(Message message) {
-        // 处理同步消息
-    }
-    
-    // 异步消息发送
-    @Async
-    public void sendAsyncMessage(Message message) {
-        // 处理异步消息
-    }
-    
-    // 延时消息发送
-    public void sendDelayMessage(Message message, long delay) {
-        // 处理延时消息
-    }
-}
-```
+API 层作为一个独立的应用，将各业务模块作为依赖引入：
 
-#### 6.2 存储管理 (core-storage)
-```java
-@Service
-public class StorageService {
-    // 文件上传
-    public FileInfo upload(MultipartFile file, String path) {
-        // 处理文件上传
-    }
-    
-    // 文件下载
-    public void download(String fileId, HttpServletResponse response) {
-        // 处理文件下载
-    }
-    
-    // 文件管理
-    public void manage(String fileId, FileOperation operation) {
-        // 处理文件管理操作
-    }
-}
-```
-
-#### 6.3 工作流引擎 (core-workflow)
-```java
-@Service
-public class WorkflowService {
-    // 启动流程
-    public ProcessInstance startProcess(String processKey, Map<String, Object> variables) {
-        // 启动工作流程
-    }
-    
-    // 处理任务
-    public void completeTask(String taskId, Map<String, Object> variables) {
-        // 处理工作流任务
-    }
-    
-    // 查询流程
-    public List<Task> queryTasks(String assignee) {
-        // 查询待办任务
-    }
-}
-```
-
-#### 6.4 搜索引擎 (core-search)
-```java
-@Service
-public class SearchService {
-    // 索引文档
-    public void indexDocument(String index, Document document) {
-        // 索引文档
-    }
-    
-    // 搜索文档
-    public SearchResult search(String index, SearchQuery query) {
-        // 搜索文档
-    }
-    
-    // 聚合分析
-    public AggregationResult aggregate(String index, AggregationQuery query) {
-        // 聚合分析
-    }
-}
-```
-
-## 三、配置说明
-
-### 1. 应用配置
 ```yaml
+# application.yml
 server:
   port: 8080
+  servlet:
+    context-path: /api
 
 spring:
   application:
     name: law-firm-api
-    
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/law_firm
-    username: root
-    password: root
-    
-  redis:
-    host: localhost
-    port: 6379
+  profiles:
+    include:
+      - system
+      - auth
+      - document
+      - personnel
+      - client
+      - case
+      - contract
+      - finance
 ```
 
-### 2. 安全配置
+各模块配置单独文件：
+
+```yaml
+# application-system.yml, application-auth.yml 等
+```
+
+## 10. 与 vue-vben-admin 对接
+
+vue-vben-admin 是一个基于 Vue 3、Vite 2、TypeScript、Ant Design Vue 等主流技术栈的中后台架构。为了与其对接，需要进行以下配置：
+
+### 10.1 认证对接
+
+#### 10.1.1 登录接口适配
+
+vue-vben-admin 登录接口期望的请求格式：
+
+```json
+// POST /api/login
+{
+  "username": "admin",
+  "password": "123456",
+  "captcha": "code",
+  "rememberMe": true
+}
+```
+
+期望的响应格式：
+
+```json
+{
+  "code": 200,
+  "success": true,
+  "message": "ok",
+  "result": {
+    "userId": "1",
+    "token": "token123",
+    "realName": "管理员",
+    "username": "admin",
+    "roles": [
+      { "roleName": "管理员", "value": "admin" }
+    ]
+  }
+}
+```
+
+#### 10.1.2 获取用户信息接口
+
+vue-vben-admin 获取用户信息接口期望的响应格式：
+
+```json
+// GET /api/getUserInfo
+{
+  "code": 200,
+  "success": true,
+  "message": "ok",
+  "result": {
+    "userId": "1",
+    "username": "admin",
+    "realName": "管理员",
+    "avatar": "https://...",
+    "desc": "系统管理员",
+    "roles": [
+      { "roleName": "管理员", "value": "admin" }
+    ],
+    "permissions": [
+      "sys:user:list",
+      "sys:user:create"
+    ]
+  }
+}
+```
+
+#### 10.1.3 JWT Token 配置
+
 ```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) {
-        http.authorizeHttpRequests()
-            .requestMatchers("/api/login", "/api/captcha").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .csrf().disable()
-            .cors();
-        return http.build();
+@Component
+public class JwtTokenUtil {
+
+    private static final long EXPIRE_TIME = 24 * 60 * 60 * 1000; // 24小时
+    private static final String JWT_SECRET = "law-firm-secret";  // 实际应用中需要配置在配置文件中
+
+    // 生成 token
+    public String generateToken(String username, String userId, List<String> roles) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + EXPIRE_TIME);
+        
+        return Jwts.builder()
+                .setHeaderParam("typ", "JWT")
+                .setSubject(username)
+                .claim("userId", userId)
+                .claim("roles", roles)
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
+                .compact();
+    }
+    
+    // 验证 token
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    // 从 token 中获取用户名
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody();
+        
+        return claims.getSubject();
     }
 }
 ```
 
-## 四、开发规范
+### 10.2 权限对接
 
-1. **命名规范**
-   - Controller类名以Controller结尾
-   - Service类名以Service结尾
-   - 实体类直接使用名词
-   - 方法名使用动词开头
+vue-vben-admin 使用基于角色和权限的访问控制。
 
-2. **接口规范**
-   - 统一使用RESTful风格
-   - 请求响应格式统一
-   - 接口版本控制
-   - 统一的错误码
+#### 10.2.1 菜单权限接口
 
-3. **注释规范**
-   - 类注释：说明类的用途
-   - 方法注释：说明参数和返回值
-   - 关键代码注释
-   - 统一的注释格式
+vue-vben-admin 菜单权限接口期望的响应格式：
 
-4. **安全规范**
-   - 统一的认证机制
-   - 细粒度的权限控制
-   - 数据脱敏处理
-   - 安全审计日志
+```json
+// GET /api/getMenuList
+{
+  "code": 200,
+  "success": true,
+  "message": "ok",
+  "result": [
+    {
+      "path": "/dashboard",
+      "name": "Dashboard",
+      "component": "LAYOUT",
+      "redirect": "/dashboard/analysis",
+      "meta": {
+        "title": "仪表盘",
+        "icon": "DashboardOutlined",
+        "sort": 1
+      },
+      "children": [
+        {
+          "path": "analysis",
+          "name": "Analysis",
+          "component": "/dashboard/analysis/index",
+          "meta": {
+            "title": "分析页",
+            "icon": "ChartLineOutlined"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
 
-## 五、注意事项
+#### 10.2.2 权限编码适配
 
-1. **性能优化**
-   - 合理使用缓存
-   - 避免大事务
-   - 分页查询优化
-   - 批量操作优化
+```java
+@Service
+public class PermissionService {
 
-2. **安全措施**
-   - XSS防护
-   - SQL注入防护
-   - CSRF防护
-   - 敏感数据加密
+    /**
+     * 将系统权限编码转换为前端权限格式
+     */
+    public List<String> convertToFrontendPermissions(List<String> sysPermissions) {
+        // 示例转换逻辑
+        return sysPermissions.stream()
+                .map(p -> {
+                    // 例如：将 system:user:view 转换为 sys:user:view
+                    if (p.startsWith("system:")) {
+                        return "sys:" + p.substring(7);
+                    }
+                    return p;
+                })
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * 将系统角色转换为前端角色格式
+     */
+    public List<Map<String, String>> convertToFrontendRoles(List<SysRole> roles) {
+        return roles.stream()
+                .map(role -> {
+                    Map<String, String> roleMap = new HashMap<>();
+                    roleMap.put("roleName", role.getRoleName());
+                    roleMap.put("value", role.getRoleCode());
+                    return roleMap;
+                })
+                .collect(Collectors.toList());
+    }
+}
+```
 
-3. **日志记录**
-   - 操作日志
-   - 异常日志
-   - 性能日志
-   - 安全日志
+### 10.3 响应格式适配
+
+为了适配 vue-vben-admin 的响应格式，需要修改 ApiResponse 类：
+
+```java
+@Data
+@Accessors(chain = true)
+public class ApiResponse<T> {
+    
+    private int code;
+    private String message;
+    private T data;
+    
+    // 兼容 vue-vben-admin
+    private boolean success;
+    private T result;
+    
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<T>()
+                .setCode(200)
+                .setMessage("success")
+                .setData(data)
+                .setSuccess(true)
+                .setResult(data);
+    }
+    
+    public static <T> ApiResponse<T> error(int code, String message) {
+        return new ApiResponse<T>()
+                .setCode(code)
+                .setMessage(message)
+                .setSuccess(false);
+    }
+}
+```
+
+### 10.4 跨域配置
+
+vue-vben-admin 需要进行跨域配置：
+
+```java
+@Configuration
+public class CorsConfig {
+    
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        // 允许的域，实际生产中可以指定具体的域名
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        
+        return new CorsFilter(source);
+    }
+}
+```
+
+## 11. 具体实现示例
+
+### 11.1 主应用类
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+@ComponentScan(basePackages = {"com.lawfirm"})
+public class LawFirmApiApplication {
+    
+    public static void main(String[] args) {
+        SpringApplication.run(LawFirmApiApplication.class, args);
+    }
+    
+    /**
+     * 消息转换器，处理字符串返回值
+     */
+    @Bean
+    public HttpMessageConverter<String> stringConverter() {
+        return new StringHttpMessageConverter(StandardCharsets.UTF_8);
+    }
+    
+    /**
+     * Jackson 配置
+     */
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+        return builder -> {
+            builder.serializationInclusion(JsonInclude.Include.NON_NULL);
+            builder.timeZone(TimeZone.getTimeZone("GMT+8"));
+            builder.dateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+            builder.modules(new JavaTimeModule());
+        };
+    }
+}
+```
+
+### 11.2 全局异常处理
+
+```java
+@RestControllerAdvice
+@Slf4j
+public class GlobalExceptionHandler {
+    
+    /**
+     * 处理业务异常
+     */
+    @ExceptionHandler(BusinessException.class)
+    public ApiResponse<Void> handleBusinessException(BusinessException e) {
+        log.error("业务异常: {}", e.getMessage());
+        return ApiResponse.error(e.getCode(), e.getMessage());
+    }
+    
+    /**
+     * 处理参数校验异常
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ApiResponse<Void> handleValidationException(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+        log.error("参数校验异常: {}", message);
+        return ApiResponse.error(400, message);
+    }
+    
+    /**
+     * 处理认证异常
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ApiResponse<Void> handleAuthenticationException(AuthenticationException e) {
+        log.error("认证异常: {}", e.getMessage());
+        return ApiResponse.error(401, "认证失败: " + e.getMessage());
+    }
+    
+    /**
+     * 处理授权异常
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ApiResponse<Void> handleAccessDeniedException(AccessDeniedException e) {
+        log.error("授权异常: {}", e.getMessage());
+        return ApiResponse.error(403, "权限不足: " + e.getMessage());
+    }
+    
+    /**
+     * 处理其他异常
+     */
+    @ExceptionHandler(Exception.class)
+    public ApiResponse<Void> handleException(Exception e) {
+        log.error("系统异常", e);
+        return ApiResponse.error(500, "系统繁忙，请稍后再试");
+    }
+}
+```
+
+### 11.3 JWT 认证过滤器
+
+```java
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    
+    private final JwtTokenUtil jwtTokenUtil;
+    
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
+            throws ServletException, IOException {
+        
+        String path = request.getRequestURI();
+        
+        // 放行不需要认证的路径
+        if (isExcludedPath(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        // 获取 Authorization 头
+        String authHeader = request.getHeader("Authorization");
+        
+        // 如果没有 Authorization 头或者不是以 Bearer 开头，则直接放行（后续会被拦截器拦截）
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        // 提取 token
+        String token = authHeader.substring(7);
+        
+        try {
+            // 验证 token
+            if (jwtTokenUtil.validateToken(token)) {
+                // 从 token 中获取用户名
+                String username = jwtTokenUtil.getUsernameFromToken(token);
+                
+                // 设置认证信息到上下文中
+                UsernamePasswordAuthenticationToken authentication = 
+                    new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+                
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            // token 验证失败，不设置认证信息
+        }
+        
+        filterChain.doFilter(request, response);
+    }
+    
+    /**
+     * 判断是否是排除认证的路径
+     */
+    private boolean isExcludedPath(String path) {
+        return path.startsWith("/api/auth/login") || 
+               path.startsWith("/api/auth/logout") ||
+               path.startsWith("/swagger-ui") ||
+               path.startsWith("/v3/api-docs");
+    }
+}
+```
+
+### 11.4 SwaggerConfig 配置
+
+```java
+@Configuration
+@EnableOpenApi
+public class SwaggerConfig {
+    
+    @Bean
+    public OpenAPI lawFirmOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("律师事务所管理系统 API")
+                        .description("律师事务所管理系统 API 文档")
+                        .version("1.0.0")
+                        .contact(new Contact().name("Law Firm Team").email("support@lawfirm.com")))
+                .externalDocs(new ExternalDocumentation()
+                        .description("API 规范文档")
+                        .url("https://docs.lawfirm.com"));
+    }
+}
+```
+
+### 11.5 配置文件示例
+
+```yaml
+# application.yml
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  tomcat:
+    max-threads: 200
+    min-spare-threads: 10
+
+spring:
+  application:
+    name: law-firm-api
+  profiles:
+    active: dev
+    include:
+      - system
+      - auth
+      - document
+      - personnel
+      - client
+      - case
+      - contract
+      - finance
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 10000
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.lawfirm: DEBUG
+  file:
+    name: logs/law-firm-api.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# OpenAPI 配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    operations-sorter: method
+    tags-sorter: alpha
+    
+# 自定义配置
+law-firm:
+  security:
+    jwt:
+      secret: law-firm-secret-key
+      expiration: 86400000  # 24小时
+      issuer: law-firm
+  cors:
+    allowed-origins: http://localhost:3100
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: Content-Type,Authorization
+  file:
+    upload-dir: /data/upload
+    max-size: 10MB
+    allowed-types: .jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx
+```
+
+## 12. 注意事项与最佳实践
+
+### 12.1 接口设计注意事项
+
+1. **合理定义接口**：根据业务需求设计接口，避免过度设计
+2. **保持统一**：接口命名、参数格式、返回格式等要保持统一
+3. **版本控制**：接口版本控制要遵循统一规范
+4. **幂等性**：GET、PUT、DELETE 等操作应保证幂等性
+5. **安全性**：敏感操作需要做好验证和授权
+
+### 12.2 对接 vue-vben-admin 最佳实践
+
+1. **响应格式**：确保响应格式符合 vue-vben-admin 的要求
+2. **权限控制**：权限编码格式要与前端对应
+3. **菜单数据**：菜单数据结构要符合前端要求
+4. **用户信息**：用户信息包含前端所需的所有字段
+5. **Token 处理**：按照前端要求处理 Token
+
+### 12.3 性能优化建议
+
+1. **合理使用缓存**：对于频繁访问的数据使用 Redis 缓存
+2. **请求合并**：避免前端多次请求，合并接口减少请求次数
+3. **分页和懒加载**：大量数据要分页加载，避免一次性返回过多数据
+4. **异步处理**：耗时操作使用异步处理，避免阻塞
+5. **减少不必要的数据传输**：只返回前端需要的数据
+
+### 12.4 安全最佳实践
+
+1. **输入验证**：对所有输入进行严格验证
+2. **防止 SQL 注入**：使用参数绑定，避免拼接 SQL
+3. **防止 XSS**：对输入输出进行安全过滤
+4. **防止 CSRF**：使用 CSRF Token
+5. **敏感数据加密**：敏感数据要加密存储和传输
+6. **日志记录**：记录关键操作和安全事件的日志

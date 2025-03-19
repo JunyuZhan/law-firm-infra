@@ -34,20 +34,6 @@
         <module>law-firm-case</module>
         <module>law-firm-contract</module>
         <module>law-firm-finance</module>
-        
-        <!-- 支撑业务模块（依赖核心模块） -->
-        <module>law-firm-knowledge</module>
-        <module>law-firm-archive</module>
-        
-        <!-- 辅助业务模块（依赖多个其他模块） -->
-        <module>law-firm-task</module>
-        <module>law-firm-schedule</module>
-        <module>law-firm-supplies</module>
-        <module>law-firm-seal</module>
-        
-        <!-- 分析类模块（依赖几乎所有模块） -->
-        <module>law-firm-conflict</module>
-        <module>law-firm-analysis</module>
     </modules>
 
     <dependencyManagement>

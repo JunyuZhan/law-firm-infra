@@ -7,44 +7,97 @@
     <parent>
         <groupId>com.lawfirm</groupId>
         <artifactId>law-firm</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>law-firm-api</artifactId>
-    <packaging>pom</packaging>
-    <description>API层，提供对外接口</description>
+    <version>${revision}</version>
+    <packaging>jar</packaging>
+    <name>Law Firm API</name>
+    <description>法律事务管理系统API层</description>
 
-    <modules>
-        <module>api-common</module>
-        <module>api-model</module>
-        <module>api-admin</module>
-        <module>api-lawyer</module>
-        <module>api-client</module>
-        <module>api-clerk</module>
-        <module>api-finance</module>
-        <module>api-mini</module>
-    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
 
     <dependencies>
-        <!-- 公共依赖 -->
+        <!-- 业务模块依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-system</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-auth</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-document</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-personnel</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-case</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-contract</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-finance</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- 通用组件依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>base-model</artifactId>
+            <artifactId>common-security</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        
-        <!-- Web依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-data</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        
+        <!-- Spring Boot Validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         
         <!-- API文档 -->
@@ -60,4 +113,25 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-</project> 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

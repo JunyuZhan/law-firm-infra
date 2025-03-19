@@ -17,6 +17,11 @@ public class DocumentUploadDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 文档标题
+     */
+    private String title;
+
+    /**
      * 文件名
      */
     private String fileName;
@@ -30,6 +35,31 @@ public class DocumentUploadDTO implements Serializable {
      * 文件大小
      */
     private Long fileSize;
+
+    /**
+     * 文档类型
+     */
+    private String docType;
+
+    /**
+     * 文档状态
+     */
+    private String docStatus;
+
+    /**
+     * 关键词
+     */
+    private String keywords;
+
+    /**
+     * 是否加密
+     */
+    private Boolean isEncrypted;
+
+    /**
+     * 访问级别
+     */
+    private String accessLevel;
 
     /**
      * 业务类型

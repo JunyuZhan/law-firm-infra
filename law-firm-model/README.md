@@ -1,198 +1,386 @@
-# 律师事务所管理系统 - 数据模型层
+# 数据模型层 (Model Layer)
 
 ## 模块说明
+数据模型层是系统的数据模型定义层,包含所有业务实体、数据传输对象、视图对象等。该层不包含任何业务逻辑,只负责数据的定义和转换。
 
-数据模型层定义了系统所有的数据结构和业务模型，采用DDD（领域驱动设计）思想，将业务模型按照领域进行划分。每个模型模块都包含实体（Entity）、数据传输对象（DTO）、视图对象（VO）等。
+## 目录结构
+```
+law-firm-model/
+├── base-model/           # 基础模型
+│   ├── entity/          # 基础实体类
+│   ├── dto/             # 基础数据传输对象
+│   ├── vo/              # 基础视图对象
+│   ├── enums/           # 基础枚举类
+│   ├── constants/       # 基础常量类
+│   ├── query/           # 基础查询对象
+│   ├── result/          # 基础结果对象
+│   ├── service/         # 基础服务接口
+│   ├── controller/      # 基础控制器
+│   ├── tenant/          # 租户相关
+│   └── support/         # 支持类
+├── system-model/        # 系统模型
+├── log-model/          # 日志模型
+├── case-model/         # 案件模型
+├── client-model/       # 客户模型
+├── contract-model/     # 合同模型
+├── document-model/     # 文档模型
+├── finance-model/      # 财务模型
+├── organization-model/ # 组织模型
+├── personnel-model/    # 人员模型
+├── auth-model/        # 认证模型
+├── workflow-model/    # 工作流模型
+├── storage-model/     # 存储模型
+├── search-model/      # 搜索模型
+├── message-model/     # 消息模型
+├── knowledge-model/   # 知识模型
+└── ai-model/         # AI模型
+```
 
-## 模块结构
+## 模块分类
 
-### 1. 基础模型 (base-model)
-系统基础模型定义，为其他模型提供基础支持：
-- entity: 基础实体类
-- dto: 数据传输对象
-- vo: 视图对象
-- query: 查询对象
-- result: 统一返回结果
-- enums: 枚举定义
-- constants: 常量定义
-- support: 工具支持类
-- tenant: 租户相关模型
-- geo: 地理位置模型
-- service: 基础服务接口
+### 1. 基础模块
+- **base-model**: 基础模型,提供基础实体类、DTO、VO等
+- **system-model**: 系统模型,包含系统配置、系统参数等
+- **log-model**: 日志模型,包含日志记录、审计日志等
 
-### 2. 认证授权模型 (auth-model)
-认证授权相关的数据模型：
-- 用户模型
-- 角色模型
-- 权限模型
-- 认证信息
-- 授权规则
+### 2. 业务模块
+- **case-model**: 案件相关模型
+- **client-model**: 客户相关模型
+- **contract-model**: 合同相关模型
+- **document-model**: 文档相关模型
+- **finance-model**: 财务相关模型
+- **organization-model**: 组织相关模型
+- **personnel-model**: 人员相关模型
 
-### 3. 组织架构模型 (organization-model)
-组织架构相关的数据模型：
-- 律所信息
-- 部门架构
-- 岗位设置
-- 团队管理
-
-### 4. 人事管理模型 (personnel-model)
-人事管理相关的数据模型：
-- 员工信息
-- 考勤管理
-- 绩效考核
-- 薪资管理
-
-### 5. 客户管理模型 (client-model)
-客户管理相关的数据模型：
-- 客户信息
-- 联系人
-- 客户分类
-- 客户关系
-
-### 6. 案件管理模型 (case-model)
-案件管理相关的数据模型：
-- 案件信息
-- 案件进度
-- 案件文书
-- 案件关系人
-
-### 7. 合同管理模型 (contract-model)
-合同管理相关的数据模型：
-- 合同信息
-- 合同条款
-- 合同审批
-- 收费管理
-
-### 8. 文档管理模型 (document-model)
-文档管理相关的数据模型：
-- 文档信息
-- 文档分类
-- 文档版本
-- 文档权限
-
-### 9. 财务管理模型 (finance-model)
-财务管理相关的数据模型：
-- 收支记录
-- 发票管理
-- 费用报销
-- 财务报表
-
-### 10. 工作流模型 (workflow-model)
-工作流相关的数据模型：
-- 流程定义
-- 流程实例
-- 任务信息
-- 表单数据
-
-### 11. 存储模型 (storage-model)
-存储服务相关的数据模型：
-- 文件信息
-- 存储配置
-- 访问权限
-- 存储策略
-
-### 12. 搜索模型 (search-model)
-搜索服务相关的数据模型：
-- 索引定义
-- 搜索配置
-- 搜索记录
-
-### 13. 知识库模型 (knowledge-model)
-知识库相关的数据模型：
-- 知识分类
-- 知识内容
-- 标签管理
-- 使用统计
-
-### 14. AI模型 (ai-model)
-AI服务相关的数据模型：
-- AI配置
-- 模型参数
-- 训练数据
-- 使用记录
-
-### 15. 消息模型 (message-model)
-消息服务相关的数据模型：
-- 消息定义
-- 消息模板
-- 发送记录
-- 接收状态
-
-### 16. 日志模型 (log-model)
-日志相关的数据模型：
-- 操作日志
-- 审计日志
-- 安全日志
-- 系统日志
-
-### 17. 系统管理模型 (system-model)
-系统管理相关的数据模型：
-- 系统配置
-- 字典管理
-- 参数设置
-- 定时任务
+### 3. 功能模块
+- **auth-model**: 认证相关模型
+- **workflow-model**: 工作流相关模型
+- **storage-model**: 存储相关模型
+- **search-model**: 搜索相关模型
+- **message-model**: 消息相关模型
+- **knowledge-model**: 知识相关模型
+- **ai-model**: AI相关模型
 
 ## 开发规范
 
 ### 1. 命名规范
-- 实体类：XxxEntity
-- DTO类：XxxDTO
-- VO类：XxxVO
-- 查询类：XxxQuery
-- 枚举类：XxxEnum
-- 常量类：XxxConstants
+- 类名: 使用大驼峰命名法,如`CaseEntity`
+- 方法名: 使用小驼峰命名法,如`getCaseInfo`
+- 变量名: 使用小驼峰命名法,如`caseId`
+- 常量名: 使用全大写下划线分隔,如`CASE_STATUS`
+- 包名: 使用全小写点分隔,如`com.lawfirm.case.model`
 
-### 2. 模型规范
-- 所有实体类都需要继承 BaseModel
-- DTO类需要实现序列化接口
-- 查询类需要继承 BaseQuery
-- 必须提供合适的构造方法
-- 使用 Lombok 简化代码
-- 字段必须添加注释
+### 2. 目录规范
+每个模块必须包含以下目录:
+```
+module/
+├── entity/          # 实体类
+├── dto/             # 数据传输对象
+├── vo/              # 视图对象
+├── enums/           # 枚举类
+├── constants/       # 常量类
+├── query/           # 查询对象
+└── result/          # 结果对象
+```
 
-### 3. 验证规范
-- 使用 JSR-303 注解进行参数验证
-- 自定义验证注解需要添加文档
-- 验证分组需要合理划分
-- 错误信息需要国际化
+### 3. 类规范
+- 实体类: 以Entity结尾,如`CaseEntity`
+- DTO类: 以DTO结尾,如`CaseDTO`
+- VO类: 以VO结尾,如`CaseVO`
+- 枚举类: 以Enum结尾,如`CaseStatusEnum`
+- 常量类: 以Constants结尾,如`CaseConstants`
+- 查询类: 以Query结尾,如`CaseQuery`
+- 结果类: 以Result结尾,如`CaseResult`
 
-### 4. 数据库规范
-- 表名使用下划线命名法
-- 字段名使用下划线命名法
-- 必须包含基础字段（id, created_time, updated_time等）
-- 需要添加合适的索引
-- 大字段需要单独建表
+### 4. 字段规范
+- 实体类字段:
+  - id: 主键
+  - createTime: 创建时间
+  - updateTime: 更新时间
+  - createBy: 创建人
+  - updateBy: 更新人
+  - deleted: 是否删除
+  - version: 版本号
+  - tenantId: 租户ID
 
-## 技术架构
+- DTO字段:
+  - 不包含实体类基础字段
+  - 只包含业务字段
+  - 字段名与实体类保持一致
 
-### 1. 核心依赖
-- JDK 21
-- Spring Boot 3.2.x
-- MyBatis Plus 3.5.x
-- Lombok
-- MapStruct
-- Hibernate Validator
+- VO字段:
+  - 不包含实体类基础字段
+  - 只包含展示字段
+  - 字段名与实体类保持一致
 
-### 2. 数据库支持
-- MySQL 8.0+
-- Redis 6.0+
-- Elasticsearch 8.12+
+### 5. 注释规范
+- 类注释:
+```java
+/**
+ * 案件实体类
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+```
 
-## 版本说明
+- 字段注释:
+```java
+/**
+ * 案件ID
+ */
+private Long id;
 
-当前版本：1.0.0
-发布日期：2024-03-04
+/**
+ * 案件名称
+ */
+private String name;
+```
 
-### 主要特性
-- 完整的数据模型定义
-- 规范的命名和注释
-- 完善的参数验证
-- 统一的返回格式
-- 多数据源支持
+- 方法注释:
+```java
+/**
+ * 获取案件信息
+ *
+ * @param id 案件ID
+ * @return 案件信息
+ */
+public CaseVO getCaseInfo(Long id);
+```
 
-### 注意事项
-1. 模型设计需要考虑扩展性
-2. 注意数据安全和隐私保护
-3. 遵循最小权限原则
-4. 保持向后兼容性
-5. 及时更新文档说明 
+### 6. 依赖规范
+- 不依赖其他业务模块
+- 只依赖基础模块
+- 不依赖框架模块
+- 不依赖持久层模块
+
+### 7. 测试规范
+- 单元测试覆盖率要求: 80%以上
+- 必须包含以下测试:
+  - 实体类测试
+  - DTO测试
+  - VO测试
+  - 枚举类测试
+  - 常量类测试
+  - 查询类测试
+  - 结果类测试
+
+## 开发流程
+
+### 1. 创建模块
+```bash
+# 创建模块目录
+mkdir -p law-firm-model/new-module
+
+# 创建pom.xml
+cp law-firm-model/base-model/pom.xml law-firm-model/new-module/
+
+# 创建目录结构
+mkdir -p law-firm-model/new-module/src/main/java/com/lawfirm/new/model/{entity,dto,vo,enums,constants,query,result}
+```
+
+### 2. 开发实体类
+```java
+/**
+ * 新模块实体类
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+@Data
+@TableName("new_table")
+public class NewEntity extends ModelBaseEntity {
+    /**
+     * 字段1
+     */
+    private String field1;
+
+    /**
+     * 字段2
+     */
+    private Integer field2;
+}
+```
+
+### 3. 开发DTO
+```java
+/**
+ * 新模块DTO
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+@Data
+public class NewDTO extends BaseDTO {
+    /**
+     * 字段1
+     */
+    private String field1;
+
+    /**
+     * 字段2
+     */
+    private Integer field2;
+}
+```
+
+### 4. 开发VO
+```java
+/**
+ * 新模块VO
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+@Data
+public class NewVO extends BaseVO {
+    /**
+     * 字段1
+     */
+    private String field1;
+
+    /**
+     * 字段2
+     */
+    private Integer field2;
+}
+```
+
+### 5. 开发枚举类
+```java
+/**
+ * 新模块状态枚举
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+public enum NewStatusEnum implements BaseEnum {
+    DRAFT(0, "草稿"),
+    PUBLISHED(1, "已发布");
+
+    private final Integer code;
+    private final String desc;
+
+    NewStatusEnum(Integer code, String desc) {
+        this.code = code;
+        this.desc = desc;
+    }
+
+    @Override
+    public Integer getCode() {
+        return code;
+    }
+
+    @Override
+    public String getDesc() {
+        return desc;
+    }
+}
+```
+
+### 6. 开发常量类
+```java
+/**
+ * 新模块常量类
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+public class NewConstants {
+    /**
+     * 最大长度
+     */
+    public static final int MAX_LENGTH = 100;
+
+    /**
+     * 最小长度
+     */
+    public static final int MIN_LENGTH = 1;
+}
+```
+
+### 7. 开发查询类
+```java
+/**
+ * 新模块查询类
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+@Data
+public class NewQuery extends BaseQuery {
+    /**
+     * 字段1
+     */
+    private String field1;
+
+    /**
+     * 字段2
+     */
+    private Integer field2;
+}
+```
+
+### 8. 开发结果类
+```java
+/**
+ * 新模块结果类
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+@Data
+public class NewResult extends BaseResult {
+    /**
+     * 字段1
+     */
+    private String field1;
+
+    /**
+     * 字段2
+     */
+    private Integer field2;
+}
+```
+
+### 9. 编写测试
+```java
+/**
+ * 新模块测试类
+ *
+ * @author xxx
+ * @date 2024-03-18
+ */
+@SpringBootTest
+public class NewTest {
+    @Test
+    public void testEntity() {
+        NewEntity entity = new NewEntity();
+        entity.setField1("test");
+        entity.setField2(1);
+        Assert.assertEquals("test", entity.getField1());
+        Assert.assertEquals(1, entity.getField2());
+    }
+
+    @Test
+    public void testDTO() {
+        NewDTO dto = new NewDTO();
+        dto.setField1("test");
+        dto.setField2(1);
+        Assert.assertEquals("test", dto.getField1());
+        Assert.assertEquals(1, dto.getField2());
+    }
+
+    @Test
+    public void testVO() {
+        NewVO vo = new NewVO();
+        vo.setField1("test");
+        vo.setField2(1);
+        Assert.assertEquals("test", vo.getField1());
+        Assert.assertEquals(1, vo.getField2());
+    }
+}
+```
+
+## 更新日志
+- 2024-03-18: 初始版本发布 

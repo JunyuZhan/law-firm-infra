@@ -58,7 +58,6 @@
 - law-firm-document: 文档管理
 - law-firm-finance: 财务管理
 - law-firm-knowledge: 知识库
-- law-firm-workflow: 工作流
 - law-firm-personnel: 人事管理
 - law-firm-schedule: 日程管理
 - law-firm-task: 任务管理

@@ -1,172 +1,210 @@
-# 律师事务所管理系统 - 通用模块层
+# 基础设施层 (Infrastructure Layer)
 
 ## 模块说明
+基础设施层提供了一系列通用、抽象的基础设施支持，包括核心功能、工具类、Web支持、数据访问、缓存、安全、日志、消息和测试等基础功能。
 
-通用模块层提供了系统的基础功能支持，包括核心工具、Web功能、数据访问、缓存、安全、日志、消息处理和测试等通用功能。这些模块被其他层复用，提供了统一的基础设施支持。
+## 模块列表
 
-## 模块结构
-
-### 1. 核心模块 (common-core)
-系统最基础的核心功能支持：
-- api: 通用API接口定义
-- context: 上下文管理
-- entity: 基础实体定义
-- exception: 异常处理机制
-- constant: 系统常量定义
-- config: 核心配置类
-
-### 2. 工具模块 (common-util)
-通用工具类库：
-- 字符串处理
-- 日期时间
-- 加密解密
-- 文件操作
-- JSON处理
-- 数学计算
-- 验证工具
-- 集合工具
-
-### 3. Web模块 (common-web)
-Web相关功能支持：
+### 1. common-core（核心模块）
 - 统一响应处理
-- 全局异常处理
-- 请求参数处理
-- 跨域配置
-- 文件上传下载
-- API文档配置
-- 接口版本控制
+- 统一异常处理
+- 基础配置支持
+- 基础实体支持
+- 上下文管理
+- 常量定义
 
-### 4. 数据访问模块 (common-data)
-数据访问层支持：
-- MyBatis Plus配置
-- 数据源管理
-- 事务管理
-- 分页处理
-- 数据审计
-- 多租户支持
-- 动态数据源
+### 2. common-util（工具模块）
+- ID生成工具
+- Bean工具类
+- 文件处理工具
+- 验证工具类
+- 字符串工具类
+- JSON处理工具
+- 图片处理工具
+- HTTP工具类
+- 地理信息工具
+- Excel处理工具
+- 日期处理工具
+- 加密解密工具
+- 压缩解压工具
+- 编码解码工具
+- 集合处理工具
 
-### 5. 缓存模块 (common-cache)
-缓存处理功能：
-- Redis配置
-- 缓存管理
-- 分布式锁
+### 3. common-web（Web模块）
+- Web工具类
+- Web支持类
+- 响应处理
+- 过滤器
+- 请求处理
+- 异常处理
+- 常量定义
+- Web配置
+- Web上下文
+
+### 4. common-data（数据模块）
+- 序列化处理
+- 属性处理
+- 查询处理
+- 实体处理
+- 数据配置
+- 数据注解
+- 数据切面
+
+### 5. common-cache（缓存模块）
+- 缓存服务
+- 缓存常量
+- 缓存配置
+- 缓存切面
 - 缓存注解
-- 缓存工具
-- 缓存监控
 
-### 6. 安全模块 (common-security)
-安全相关功能：
-- 认证授权
-- 密码管理
+### 6. common-security（安全模块）
+- 安全配置
+- 安全工具
 - 令牌处理
-- 安全过滤
-- 权限验证
-- 数据加密
-- 防护配置
+- 加密处理
+- 安全核心
+- 安全上下文
+- 安全常量
+- 授权处理
+- 认证处理
+- 安全审计
+- 安全注解
 
-### 7. 日志模块 (common-log)
-日志处理功能：
-- 操作日志
-- 审计日志
-- 安全日志
-- 性能日志
-- 日志切面
-- 日志配置
+### 7. common-log（日志模块）
+- 日志事件
 - 日志工具
+- 日志属性
+- 日志过滤
+- 日志配置
+- 日志切面
+- 日志注解
 
-### 8. 消息模块 (common-message)
-消息处理功能：
-- 消息发送
-- 消息接收
-- 消息转换
-- 消息模板
-- 消息队列
-- 事件总线
-- 通知管理
+### 8. common-message（消息模块）
+- 消息处理
+- 消息支持
 
-### 9. 测试模块 (common-test)
-测试支持功能：
-- 测试工具类
-- 测试数据构建
-- Mock支持
-- 断言工具
+### 9. common-test（测试模块）
 - 测试配置
+- 测试应用
+- 基础测试
+- 集成测试
 - 性能测试
 
-## 开发规范
+## 使用说明
 
-### 1. 代码规范
-- 遵循阿里巴巴Java开发规范
-- 统一的代码格式化模板
-- 完整的注释文档
-- 单元测试覆盖
-- 代码审查机制
+### 1. 依赖引入
+```xml
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>law-firm-common</artifactId>
+    <version>${project.version}</version>
+</dependency>
+```
 
-### 2. 异常处理
-- 统一的异常体系
-- 异常信息国际化
-- 异常日志记录
-- 优雅的异常处理
-- 异常监控告警
+### 2. 模块依赖
+```xml
+<!-- 核心模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-core</artifactId>
+</dependency>
 
-### 3. 日志规范
-- 统一的日志配置
-- 分级日志管理
-- 日志脱敏处理
-- 日志收集分析
-- 日志监控预警
+<!-- 工具模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-util</artifactId>
+</dependency>
 
-### 4. 安全规范
-- 身份认证
-- 权限控制
-- 数据加密
-- 安全审计
-- 攻击防护
+<!-- Web模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-web</artifactId>
+</dependency>
 
-## 技术架构
+<!-- 数据模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-data</artifactId>
+</dependency>
 
-### 1. 核心依赖
-- JDK 21
-- Spring Boot 3.2.x
-- Spring Cloud 2023.x
-- MyBatis Plus 3.5.x
-- Redis 6.x
-- RocketMQ 5.x
+<!-- 缓存模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-cache</artifactId>
+</dependency>
 
-### 2. 工具框架
-- Lombok
-- Hutool
-- MapStruct
-- Jackson
-- Commons Lang3
-- Guava
+<!-- 安全模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-security</artifactId>
+</dependency>
 
-### 3. 安全框架
-- Spring Security
-- JWT
-- Spring OAuth2
+<!-- 日志模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-log</artifactId>
+</dependency>
 
-### 4. 文档工具
-- Springdoc OpenAPI
-- Knife4j
+<!-- 消息模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-message</artifactId>
+</dependency>
 
-## 版本说明
+<!-- 测试模块 -->
+<dependency>
+    <groupId>com.lawfirm</groupId>
+    <artifactId>common-test</artifactId>
+    <scope>test</scope>
+</dependency>
+```
 
-当前版本：1.0.0
-发布日期：2024-03-04
+### 3. 配置说明
+```yaml
+# application.yml
+law-firm:
+  common:
+    core:
+      enabled: true
+    web:
+      enabled: true
+    data:
+      enabled: true
+    cache:
+      enabled: true
+    security:
+      enabled: true
+    log:
+      enabled: true
+    message:
+      enabled: true
+```
 
-### 主要特性
-- 完整的通用功能支持
-- 统一的异常处理
-- 规范的日志管理
-- 安全的认证授权
-- 高效的缓存处理
-- 可靠的消息机制
+## 详细文档
+- [核心模块文档](common-core/README.md)
+- [工具模块文档](common-util/README.md)
+- [Web模块文档](common-web/README.md)
+- [数据模块文档](common-data/README.md)
+- [缓存模块文档](common-cache/README.md)
+- [安全模块文档](common-security/README.md)
+- [日志模块文档](common-log/README.md)
+- [消息模块文档](common-message/README.md)
+- [测试模块文档](common-test/README.md)
 
-### 注意事项
-1. 通用模块的修改需要考虑对其他模块的影响
-2. 保持接口的向后兼容性
-3. 注意性能和安全性
-4. 完善文档和测试
-5. 遵循最小依赖原则 
+## 最佳实践
+1. 优先使用基础设施层提供的功能
+2. 遵循模块的设计规范
+3. 合理使用注解和配置
+4. 注意性能优化
+5. 做好异常处理
+6. 完善单元测试
+
+## 常见问题
+1. 模块依赖问题
+2. 配置问题
+3. 性能问题
+4. 安全问题
+5. 日志问题
+
+## 更新日志
+- 2024-03-18: 初始版本发布

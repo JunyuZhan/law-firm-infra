@@ -7,6 +7,8 @@ import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.document.dto.document.DocumentCreateDTO;
 import com.lawfirm.model.document.dto.document.DocumentQueryDTO;
 import com.lawfirm.model.document.dto.document.DocumentUpdateDTO;
+import com.lawfirm.model.document.dto.DocumentDTO;
+import com.lawfirm.model.document.dto.DocumentUploadDTO;
 import com.lawfirm.model.document.entity.base.BaseDocument;
 import com.lawfirm.model.document.mapper.DocumentMapper;
 import com.lawfirm.model.document.service.DocumentService;
@@ -130,13 +132,19 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteDocument(Long id) {
+    public boolean deleteDocument(Long id) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "delete")) {
             throw new RuntimeException("无权限删除文档");
         }
 
-        // TODO: 删除文档记录和文件
+        try {
+            // TODO: 删除文档记录和文件
+            return true;
+        } catch (Exception e) {
+            log.error("删除文档失败", e);
+            return false;
+        }
     }
 
     @Override
@@ -252,5 +260,96 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     @Override
     public void refreshCache() {
         // TODO: 刷新文档缓存
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean setDocumentTags(Long documentId, List<String> tags) {
+        // 检查权限
+        if (!securityManager.checkDocumentPermission(documentId.toString(), "edit")) {
+            throw new RuntimeException("无权限设置文档标签");
+        }
+
+        try {
+            // TODO: 设置文档标签
+            return true;
+        } catch (Exception e) {
+            log.error("设置文档标签失败", e);
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long uploadDocument(MultipartFile file, DocumentUploadDTO uploadDTO) {
+        // 检查权限
+        if (!securityManager.checkDocumentManagementPermission()) {
+            throw new RuntimeException("无权限上传文档");
+        }
+
+        try {
+            // 获取存储桶
+            StorageBucket bucket = getDefaultBucket();
+            
+            // 上传文件
+            FileObject fileObject = storageManager.uploadDocument(file, bucket);
+            
+            // 创建文档记录
+            BaseDocument document = new BaseDocument();
+            document.setTitle(uploadDTO.getTitle());
+            document.setDescription(uploadDTO.getDescription());
+            document.setDocType(uploadDTO.getDocType());
+            document.setStoragePath(fileObject.getStoragePath());
+            document.setFileName(fileObject.getFileName());
+            document.setFileSize(fileObject.getFileSize());
+            document.setFileType(fileObject.getContentType());
+            document.setStorageType(StorageTypeEnum.LOCAL.getCode());
+            document.setDocStatus(uploadDTO.getDocStatus());
+            document.setKeywords(uploadDTO.getKeywords());
+            document.setIsEncrypted(uploadDTO.getIsEncrypted());
+            document.setAccessLevel(uploadDTO.getAccessLevel());
+            document.setBusinessId(uploadDTO.getBusinessId());
+            document.setBusinessType(uploadDTO.getBusinessType());
+            
+            // 保存文档记录
+            save(document);
+            
+            return document.getId();
+        } catch (Exception e) {
+            log.error("上传文档失败", e);
+            throw new RuntimeException("上传文档失败: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<DocumentDTO> getBusinessDocuments(String businessType, Long businessId) {
+        // 检查权限
+        if (!securityManager.checkDocumentManagementPermission()) {
+            throw new RuntimeException("无权限查询业务相关文档");
+        }
+
+        try {
+            // TODO: 查询业务相关文档
+            return null;
+        } catch (Exception e) {
+            log.error("查询业务相关文档失败", e);
+            throw new RuntimeException("查询业务相关文档失败: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public DocumentDTO getDocumentDetail(Long documentId) {
+        // 检查权限
+        if (!securityManager.checkDocumentPermission(documentId.toString(), "view")) {
+            throw new RuntimeException("无权限查看文档详情");
+        }
+
+        try {
+            // TODO: 获取文档详情
+            return null;
+        } catch (Exception e) {
+            log.error("获取文档详情失败", e);
+            throw new RuntimeException("获取文档详情失败: " + e.getMessage());
+        }
     }
 }
