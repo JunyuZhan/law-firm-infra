@@ -1,15 +1,18 @@
 package com.lawfirm.api.adaptor.finance;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.api.adaptor.BaseAdaptor;
 import com.lawfirm.model.finance.dto.paymentplan.PaymentPlanCreateDTO;
 import com.lawfirm.model.finance.dto.paymentplan.PaymentPlanUpdateDTO;
 import com.lawfirm.model.finance.entity.PaymentPlan;
 import com.lawfirm.model.finance.service.PaymentPlanService;
-import com.lawfirm.model.finance.vo.paymentplan.PaymentPlanVO;
+import com.lawfirm.model.finance.vo.payment.PaymentPlanVO;
 import com.lawfirm.model.finance.enums.PaymentPlanStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,39 +28,41 @@ public class PaymentPlanAdaptor extends BaseAdaptor {
     /**
      * 创建付款计划
      */
-    public PaymentPlanVO createPaymentPlan(PaymentPlanCreateDTO dto) {
-        PaymentPlan paymentPlan = paymentPlanService.createPaymentPlan(dto);
-        return convert(paymentPlan, PaymentPlanVO.class);
+    public Long createPaymentPlan(PaymentPlanCreateDTO dto) {
+        PaymentPlan paymentPlan = convert(dto, PaymentPlan.class);
+        return paymentPlanService.createPaymentPlan(paymentPlan);
     }
 
     /**
      * 更新付款计划
      */
-    public PaymentPlanVO updatePaymentPlan(Long id, PaymentPlanUpdateDTO dto) {
-        PaymentPlan paymentPlan = paymentPlanService.updatePaymentPlan(id, dto);
-        return convert(paymentPlan, PaymentPlanVO.class);
+    public boolean updatePaymentPlan(Long id, PaymentPlanUpdateDTO dto) {
+        PaymentPlan paymentPlan = convert(dto, PaymentPlan.class);
+        paymentPlan.setId(id);
+        return paymentPlanService.updatePaymentPlan(paymentPlan);
     }
 
     /**
      * 获取付款计划详情
      */
     public PaymentPlanVO getPaymentPlan(Long id) {
-        PaymentPlan paymentPlan = paymentPlanService.getPaymentPlan(id);
+        PaymentPlan paymentPlan = paymentPlanService.getPaymentPlanById(id);
         return convert(paymentPlan, PaymentPlanVO.class);
     }
 
     /**
      * 删除付款计划
      */
-    public void deletePaymentPlan(Long id) {
-        paymentPlanService.deletePaymentPlan(id);
+    public boolean deletePaymentPlan(Long id) {
+        return paymentPlanService.deletePaymentPlan(id);
     }
 
     /**
-     * 获取所有付款计划
+     * 查询付款计划列表
      */
-    public List<PaymentPlanVO> listPaymentPlans() {
-        List<PaymentPlan> paymentPlans = paymentPlanService.listPaymentPlans();
+    public List<PaymentPlanVO> listPaymentPlans(PaymentPlanStatusEnum status, Long contractId,
+                                           LocalDateTime startTime, LocalDateTime endTime) {
+        List<PaymentPlan> paymentPlans = paymentPlanService.listPaymentPlans(status, contractId, startTime, endTime);
         return paymentPlans.stream()
                 .map(paymentPlan -> convert(paymentPlan, PaymentPlanVO.class))
                 .collect(Collectors.toList());
@@ -66,51 +71,72 @@ public class PaymentPlanAdaptor extends BaseAdaptor {
     /**
      * 更新付款计划状态
      */
-    public void updatePaymentPlanStatus(Long id, PaymentPlanStatusEnum status) {
-        paymentPlanService.updatePaymentPlanStatus(id, status);
+    public boolean updatePaymentPlanStatus(Long id, PaymentPlanStatusEnum status, String remark) {
+        return paymentPlanService.updatePaymentPlanStatus(id, status, remark);
     }
 
     /**
-     * 根据合同ID查询付款计划
+     * 确认付款
      */
-    public List<PaymentPlanVO> getPaymentPlansByContractId(Long contractId) {
-        List<PaymentPlan> paymentPlans = paymentPlanService.getPaymentPlansByContractId(contractId);
+    public boolean confirmPayment(Long id, BigDecimal actualAmount, LocalDateTime paymentTime,
+                               Long operatorId, String remark) {
+        return paymentPlanService.confirmPayment(id, actualAmount, paymentTime, operatorId, remark);
+    }
+
+    /**
+     * 取消付款计划
+     */
+    public boolean cancelPaymentPlan(Long id, String reason) {
+        return paymentPlanService.cancelPaymentPlan(id, reason);
+    }
+
+    /**
+     * 分页查询付款计划
+     */
+    public IPage<PaymentPlanVO> pagePaymentPlans(IPage<PaymentPlan> page, PaymentPlanStatusEnum status,
+                                            Long contractId, LocalDateTime startTime, LocalDateTime endTime) {
+        IPage<PaymentPlan> paymentPlanPage = paymentPlanService.pagePaymentPlans(page, status, contractId, startTime, endTime);
+        return paymentPlanPage.convert(paymentPlan -> convert(paymentPlan, PaymentPlanVO.class));
+    }
+
+    /**
+     * 按合同查询付款计划
+     */
+    public List<PaymentPlanVO> listPaymentPlansByContract(Long contractId) {
+        List<PaymentPlan> paymentPlans = paymentPlanService.listPaymentPlansByContract(contractId);
         return paymentPlans.stream()
                 .map(paymentPlan -> convert(paymentPlan, PaymentPlanVO.class))
                 .collect(Collectors.toList());
     }
 
     /**
-     * 根据客户ID查询付款计划
+     * 按客户查询付款计划
      */
-    public List<PaymentPlanVO> getPaymentPlansByClientId(Long clientId) {
-        List<PaymentPlan> paymentPlans = paymentPlanService.getPaymentPlansByClientId(clientId);
+    public List<PaymentPlanVO> listPaymentPlansByClient(Long clientId, LocalDateTime startTime, LocalDateTime endTime) {
+        List<PaymentPlan> paymentPlans = paymentPlanService.listPaymentPlansByClient(clientId, startTime, endTime);
         return paymentPlans.stream()
                 .map(paymentPlan -> convert(paymentPlan, PaymentPlanVO.class))
                 .collect(Collectors.toList());
     }
 
     /**
-     * 根据部门ID查询付款计划
+     * 统计付款计划金额
      */
-    public List<PaymentPlanVO> getPaymentPlansByDepartmentId(Long departmentId) {
-        List<PaymentPlan> paymentPlans = paymentPlanService.getPaymentPlansByDepartmentId(departmentId);
-        return paymentPlans.stream()
-                .map(paymentPlan -> convert(paymentPlan, PaymentPlanVO.class))
-                .collect(Collectors.toList());
+    public BigDecimal sumPaymentPlanAmount(PaymentPlanStatusEnum status, LocalDateTime startTime, LocalDateTime endTime) {
+        return paymentPlanService.sumPaymentPlanAmount(status, startTime, endTime);
     }
 
     /**
-     * 检查付款计划是否存在
+     * 统计合同付款计划金额
      */
-    public boolean existsPaymentPlan(Long id) {
-        return paymentPlanService.existsPaymentPlan(id);
+    public BigDecimal sumContractPaymentPlanAmount(Long contractId, PaymentPlanStatusEnum status) {
+        return paymentPlanService.sumContractPaymentPlanAmount(contractId, status);
     }
 
     /**
-     * 获取付款计划数量
+     * 导出付款计划数据
      */
-    public long countPaymentPlans() {
-        return paymentPlanService.countPaymentPlans();
+    public String exportPaymentPlans(List<Long> paymentPlanIds) {
+        return paymentPlanService.exportPaymentPlans(paymentPlanIds);
     }
 } 

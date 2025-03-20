@@ -34,12 +34,75 @@ public interface OrganizationAuthBridge {
     List<Long> getUserAccessibleOrganizationIds(Long userId);
     
     /**
-     * 检查用户是否对指定组织有特定权限
+     * 检查用户是否有组织权限
      *
      * @param userId 用户ID
      * @param organizationId 组织ID
      * @param permission 权限代码
      * @return 是否有权限
      */
-    boolean hasOrganizationPermission(Long userId, Long organizationId, String permission);
+    boolean checkOrganizationPermission(Long userId, Long organizationId, String permission);
+
+    /**
+     * 获取用户有权限的组织列表
+     *
+     * @param userId 用户ID
+     * @param permission 权限代码
+     * @return 有权限的组织ID列表
+     */
+    List<Long> getUserAuthorizedOrganizations(Long userId, String permission);
+
+    /**
+     * 获取组织有权限的用户列表
+     *
+     * @param organizationId 组织ID
+     * @param permission 权限代码
+     * @return 有权限的用户ID列表
+     */
+    List<Long> getOrganizationAuthorizedUsers(Long organizationId, String permission);
+
+    /**
+     * 授予用户组织权限
+     *
+     * @param userId 用户ID
+     * @param organizationId 组织ID
+     * @param permission 权限代码
+     */
+    void grantOrganizationPermission(Long userId, Long organizationId, String permission);
+
+    /**
+     * 撤销用户组织权限
+     *
+     * @param userId 用户ID
+     * @param organizationId 组织ID
+     * @param permission 权限代码
+     */
+    void revokeOrganizationPermission(Long userId, Long organizationId, String permission);
+
+    /**
+     * 检查用户是否是组织管理员
+     *
+     * @param userId 用户ID
+     * @param organizationId 组织ID
+     * @return 是否是管理员
+     */
+    boolean isOrganizationAdmin(Long userId, Long organizationId);
+
+    /**
+     * 检查用户是否是组织成员
+     *
+     * @param userId 用户ID
+     * @param organizationId 组织ID
+     * @return 是否是成员
+     */
+    boolean isOrganizationMember(Long userId, Long organizationId);
+
+    /**
+     * 获取用户在组织中的所有权限
+     *
+     * @param userId 用户ID
+     * @param organizationId 组织ID
+     * @return 权限列表
+     */
+    List<String> getUserOrganizationPermissions(Long userId, Long organizationId);
 } 

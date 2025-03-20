@@ -1,10 +1,13 @@
 package com.lawfirm.api.adaptor.contract;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.model.contract.dto.business.ContractReviewDTO;
-import com.lawfirm.model.contract.service.business.ContractReviewService;
-import com.lawfirm.model.contract.vo.business.ContractReviewVO;
+import com.lawfirm.model.contract.dto.ContractReviewDTO;
+import com.lawfirm.model.contract.dto.ContractReviewQueryDTO;
+import com.lawfirm.model.contract.service.ContractReviewService;
+import com.lawfirm.model.contract.vo.ContractReviewDetailVO;
+import com.lawfirm.model.contract.vo.ContractReviewVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -48,7 +51,7 @@ public class ReviewAdaptor extends BaseAdaptor {
     /**
      * 获取审批详情
      */
-    public ContractReviewVO getReviewDetail(Long reviewId) {
+    public ContractReviewDetailVO getReviewDetail(Long reviewId) {
         log.info("获取审批详情, 审批ID: {}", reviewId);
         return reviewService.getReviewDetail(reviewId);
     }
@@ -66,7 +69,11 @@ public class ReviewAdaptor extends BaseAdaptor {
      */
     public IPage<ContractReviewVO> pagePendingReviews(Long reviewerId, Integer pageNum, Integer pageSize) {
         log.info("分页查询待审批列表, 审批人: {}, pageNum={}, pageSize={}", reviewerId, pageNum, pageSize);
-        return reviewService.pagePendingReviews(reviewerId, pageNum, pageSize);
+        ContractReviewQueryDTO queryDTO = new ContractReviewQueryDTO();
+        queryDTO.setReviewerId(reviewerId);
+        queryDTO.setStatus(0); // 0-待审核
+        Page<ContractReviewVO> page = new Page<>(pageNum, pageSize);
+        return reviewService.pageReviews(page, queryDTO);
     }
 
     /**
@@ -74,7 +81,11 @@ public class ReviewAdaptor extends BaseAdaptor {
      */
     public IPage<ContractReviewVO> pageCompletedReviews(Long reviewerId, Integer pageNum, Integer pageSize) {
         log.info("分页查询已审批列表, 审批人: {}, pageNum={}, pageSize={}", reviewerId, pageNum, pageSize);
-        return reviewService.pageCompletedReviews(reviewerId, pageNum, pageSize);
+        ContractReviewQueryDTO queryDTO = new ContractReviewQueryDTO();
+        queryDTO.setReviewerId(reviewerId);
+        queryDTO.setStatus(1); // 1-已通过
+        Page<ContractReviewVO> page = new Page<>(pageNum, pageSize);
+        return reviewService.pageReviews(page, queryDTO);
     }
 
     /**

@@ -1,16 +1,18 @@
 package com.lawfirm.api.adaptor.finance;
 
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.model.finance.dto.contract.ContractFinanceCreateDTO;
-import com.lawfirm.model.finance.dto.contract.ContractFinanceUpdateDTO;
-import com.lawfirm.model.finance.entity.ContractFinance;
+import com.lawfirm.model.finance.entity.Income;
+import com.lawfirm.model.finance.entity.Invoice;
+import com.lawfirm.model.finance.entity.PaymentPlan;
 import com.lawfirm.model.finance.service.ContractFinanceService;
 import com.lawfirm.model.finance.vo.contract.ContractFinanceVO;
+import com.lawfirm.model.finance.vo.receivable.ReceivableDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 合同财务管理适配器
@@ -22,108 +24,132 @@ public class ContractFinanceAdaptor extends BaseAdaptor {
     private ContractFinanceService contractFinanceService;
 
     /**
-     * 创建合同财务记录
+     * 获取合同财务信息
      */
-    public ContractFinanceVO createContractFinance(ContractFinanceCreateDTO dto) {
-        ContractFinance contractFinance = contractFinanceService.createContractFinance(dto);
-        return convert(contractFinance, ContractFinanceVO.class);
+    public ContractFinanceVO getContractFinanceInfo(Long contractId) {
+        return contractFinanceService.getContractFinanceInfo(contractId);
     }
 
     /**
-     * 更新合同财务记录
+     * 更新合同实际金额
      */
-    public ContractFinanceVO updateContractFinance(Long id, ContractFinanceUpdateDTO dto) {
-        ContractFinance contractFinance = contractFinanceService.updateContractFinance(id, dto);
-        return convert(contractFinance, ContractFinanceVO.class);
+    public boolean updateContractAmount(Long contractId, BigDecimal actualAmount, String remark) {
+        return contractFinanceService.updateContractAmount(contractId, actualAmount, remark);
     }
 
     /**
-     * 获取合同财务记录详情
+     * 更新合同税率
      */
-    public ContractFinanceVO getContractFinance(Long id) {
-        ContractFinance contractFinance = contractFinanceService.getContractFinance(id);
-        return convert(contractFinance, ContractFinanceVO.class);
+    public boolean updateContractTaxRate(Long contractId, BigDecimal taxRate, String remark) {
+        return contractFinanceService.updateContractTaxRate(contractId, taxRate, remark);
     }
 
     /**
-     * 删除合同财务记录
+     * 获取合同收款计划
      */
-    public void deleteContractFinance(Long id) {
-        contractFinanceService.deleteContractFinance(id);
+    public Object getContractPaymentPlan(Long contractId) {
+        return contractFinanceService.getContractPaymentPlan(contractId);
     }
 
     /**
-     * 获取所有合同财务记录
+     * 更新合同收款计划
      */
-    public List<ContractFinanceVO> listContractFinances() {
-        List<ContractFinance> contractFinances = contractFinanceService.listContractFinances();
-        return contractFinances.stream()
-                .map(contractFinance -> convert(contractFinance, ContractFinanceVO.class))
-                .collect(Collectors.toList());
+    public boolean updateContractPaymentPlan(Long contractId, Object planData) {
+        return contractFinanceService.updateContractPaymentPlan(contractId, planData);
     }
 
     /**
-     * 根据合同ID查询财务记录
+     * 获取合同发票列表
      */
-    public List<ContractFinanceVO> getContractFinancesByContractId(Long contractId) {
-        List<ContractFinance> contractFinances = contractFinanceService.getContractFinancesByContractId(contractId);
-        return contractFinances.stream()
-                .map(contractFinance -> convert(contractFinance, ContractFinanceVO.class))
-                .collect(Collectors.toList());
+    public List<Invoice> getContractInvoiceObjects(Long contractId) {
+        return contractFinanceService.getContractInvoiceObjects(contractId);
     }
 
     /**
-     * 根据客户ID查询合同财务记录
+     * 获取合同财务审计记录
      */
-    public List<ContractFinanceVO> getContractFinancesByClientId(Long clientId) {
-        List<ContractFinance> contractFinances = contractFinanceService.getContractFinancesByClientId(clientId);
-        return contractFinances.stream()
-                .map(contractFinance -> convert(contractFinance, ContractFinanceVO.class))
-                .collect(Collectors.toList());
+    public List<Object> getContractFinanceAuditLogs(Long contractId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return contractFinanceService.getContractFinanceAuditLogs(contractId, startDateTime, endDateTime);
     }
 
     /**
-     * 根据部门ID查询合同财务记录
+     * 导出合同财务报表
      */
-    public List<ContractFinanceVO> getContractFinancesByDepartmentId(Long departmentId) {
-        List<ContractFinance> contractFinances = contractFinanceService.getContractFinancesByDepartmentId(departmentId);
-        return contractFinances.stream()
-                .map(contractFinance -> convert(contractFinance, ContractFinanceVO.class))
-                .collect(Collectors.toList());
+    public String exportContractFinanceReport(Long contractId) {
+        return contractFinanceService.exportContractFinanceReport(contractId);
     }
 
     /**
-     * 计算合同应收金额
+     * 创建合同应收账款
      */
-    public Double calculateContractReceivable(Long contractId) {
-        return contractFinanceService.calculateContractReceivable(contractId);
+    public Long createContractReceivable(Long contractId, String contractNo, BigDecimal amount, Long clientId) {
+        return contractFinanceService.createContractReceivable(contractId, contractNo, amount, clientId);
     }
 
     /**
-     * 计算合同已收金额
+     * 更新合同应收账款
      */
-    public Double calculateContractReceived(Long contractId) {
-        return contractFinanceService.calculateContractReceived(contractId);
+    public boolean updateContractReceivable(Long contractId, String contractNo, BigDecimal updateAmount) {
+        return contractFinanceService.updateContractReceivable(contractId, contractNo, updateAmount);
     }
 
     /**
-     * 计算合同未收金额
+     * 创建合同收款计划
      */
-    public Double calculateContractUnreceived(Long contractId) {
-        return contractFinanceService.calculateContractUnreceived(contractId);
+    public Long createPaymentPlan(Long contractId, String contractNo, String planName, 
+                         BigDecimal totalAmount, Integer installments, Long clientId) {
+        return contractFinanceService.createPaymentPlan(contractId, contractNo, planName, 
+                                      totalAmount, installments, clientId);
     }
 
     /**
-     * 检查合同财务记录是否存在
+     * 记录合同收款
      */
-    public boolean existsContractFinance(Long id) {
-        return contractFinanceService.existsContractFinance(id);
+    public Long recordContractIncome(Long contractId, String contractNo, BigDecimal amount, 
+                           Long accountId, String description) {
+        return contractFinanceService.recordContractIncome(contractId, contractNo, amount, 
+                                     accountId, description);
     }
 
     /**
-     * 获取合同财务记录数量
+     * 处理合同发票申请
      */
-    public long countContractFinances() {
-        return contractFinanceService.countContractFinances();
+    public Long processContractInvoice(Long contractId, String contractNo, BigDecimal amount, String description) {
+        return contractFinanceService.processContractInvoice(contractId, contractNo, amount, description);
+    }
+
+    /**
+     * 获取合同应收账款列表
+     */
+    public List<ReceivableDetailVO> getContractReceivables(Long contractId) {
+        return contractFinanceService.getContractReceivables(contractId);
+    }
+
+    /**
+     * 获取合同收款记录
+     */
+    public List<Income> getContractIncomes(Long contractId) {
+        return contractFinanceService.getContractIncomes(contractId);
+    }
+
+    /**
+     * 获取合同收款计划列表
+     */
+    public List<PaymentPlan> getContractPaymentPlans(Long contractId) {
+        return contractFinanceService.getContractPaymentPlans(contractId);
+    }
+
+    /**
+     * 获取合同发票记录
+     */
+    public List<Invoice> getContractInvoices(Long contractId) {
+        return contractFinanceService.getContractInvoices(contractId);
+    }
+
+    /**
+     * 获取合同财务汇总信息
+     */
+    public ContractFinanceService.ContractFinanceSummary getContractFinanceSummary(Long contractId) {
+        return contractFinanceService.getContractFinanceSummary(contractId);
     }
 } 

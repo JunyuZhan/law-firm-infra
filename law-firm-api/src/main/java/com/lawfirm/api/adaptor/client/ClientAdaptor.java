@@ -1,7 +1,7 @@
 package com.lawfirm.api.adaptor.client;
 
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.client.service.ClientService;
+import com.lawfirm.model.client.service.ClientService;
 import com.lawfirm.model.client.dto.client.ClientCreateDTO;
 import com.lawfirm.model.client.dto.client.ClientQueryDTO;
 import com.lawfirm.model.client.dto.client.ClientUpdateDTO;

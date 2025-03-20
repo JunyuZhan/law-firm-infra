@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,8 +75,9 @@ public class OrganizationTreeVO extends BaseVO {
 
     /**
      * 子组织列表
+     * 使用transient关键字，因为这是一个递归引用，不需要序列化
      */
-    private List<OrganizationTreeVO> children;
+    private transient List<OrganizationTreeVO> children;
 
     /**
      * 员工数量
@@ -106,4 +108,14 @@ public class OrganizationTreeVO extends BaseVO {
      * 组织全称
      */
     private String fullName;
+
+    /**
+     * 获取子组织列表，如果为空则初始化
+     */
+    public List<OrganizationTreeVO> getChildren() {
+        if (children == null) {
+            children = new ArrayList<>();
+        }
+        return children;
+    }
 } 

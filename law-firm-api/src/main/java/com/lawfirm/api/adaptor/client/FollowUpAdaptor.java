@@ -3,13 +3,15 @@ package com.lawfirm.api.adaptor.client;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.client.service.FollowUpService;
+import com.lawfirm.model.client.service.FollowUpService;
 import com.lawfirm.model.client.entity.follow.ClientFollowUp;
+import com.lawfirm.model.client.vo.follow.ClientFollowUpVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 客户跟进记录适配器
@@ -23,23 +25,28 @@ public class FollowUpAdaptor extends BaseAdaptor {
     /**
      * 获取客户的跟进记录列表
      */
-    public List<ClientFollowUp> getFollowUpList(Long clientId) {
-        return followUpService.listByClientId(clientId);
+    public List<ClientFollowUpVO> getFollowUpList(Long clientId) {
+        List<ClientFollowUp> followUps = followUpService.listByClientId(clientId);
+        return followUps.stream()
+                .map(followUp -> convert(followUp, ClientFollowUpVO.class))
+                .collect(Collectors.toList());
     }
 
     /**
      * 分页查询跟进记录
      */
-    public IPage<ClientFollowUp> getFollowUpPage(Long clientId, Integer status, Integer pageNum, Integer pageSize) {
+    public IPage<ClientFollowUpVO> getFollowUpPage(Long clientId, Integer status, Integer pageNum, Integer pageSize) {
         Page<ClientFollowUp> page = new Page<>(pageNum, pageSize);
-        return followUpService.pageFollowUpRecords(clientId, status, page);
+        IPage<ClientFollowUp> followUpPage = followUpService.page(page);
+        return followUpPage.convert(followUp -> convert(followUp, ClientFollowUpVO.class));
     }
 
     /**
      * 获取跟进记录详情
      */
-    public ClientFollowUp getFollowUpDetail(Long id) {
-        return followUpService.getFollowUp(id);
+    public ClientFollowUpVO getFollowUpDetail(Long id) {
+        ClientFollowUp followUp = followUpService.getFollowUp(id);
+        return convert(followUp, ClientFollowUpVO.class);
     }
 
     /**
@@ -71,16 +78,22 @@ public class FollowUpAdaptor extends BaseAdaptor {
     }
 
     /**
-     * 取消跟进任务
+     * 获取待处理的跟进任务
      */
-    public void cancelFollowUp(Long id, String reason) {
-        followUpService.cancelFollowUp(id, reason);
+    public List<ClientFollowUpVO> getPendingFollowUps(LocalDateTime startTime, LocalDateTime endTime) {
+        List<ClientFollowUp> followUps = followUpService.listPendingFollowUps(startTime, endTime);
+        return followUps.stream()
+                .map(followUp -> convert(followUp, ClientFollowUpVO.class))
+                .collect(Collectors.toList());
     }
 
     /**
-     * 获取待处理的跟进任务
+     * 获取用户的跟进任务列表
      */
-    public List<ClientFollowUp> getPendingFollowUps(LocalDateTime startTime, LocalDateTime endTime) {
-        return followUpService.listPendingFollowUps(startTime, endTime);
+    public List<ClientFollowUpVO> getUserFollowUps(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        List<ClientFollowUp> followUps = followUpService.listUserFollowUps(userId, startTime, endTime);
+        return followUps.stream()
+                .map(followUp -> convert(followUp, ClientFollowUpVO.class))
+                .collect(Collectors.toList());
     }
 } 

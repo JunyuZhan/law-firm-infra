@@ -1,12 +1,14 @@
 package com.lawfirm.api.adaptor.client;
 
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.client.service.TagService;
+import com.lawfirm.model.client.service.TagService;
 import com.lawfirm.model.client.entity.common.ClientTag;
+import com.lawfirm.model.client.vo.tag.ClientTagVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 客户标签适配器
@@ -20,29 +22,39 @@ public class TagAdaptor extends BaseAdaptor {
     /**
      * 获取所有标签列表
      */
-    public List<ClientTag> getTagList() {
-        return tagService.listAllTags();
+    public List<ClientTagVO> getTagList() {
+        List<ClientTag> tags = tagService.listAllTags();
+        return tags.stream()
+                .map(tag -> convert(tag, ClientTagVO.class))
+                .collect(Collectors.toList());
     }
 
     /**
      * 根据类型获取标签列表
      */
-    public List<ClientTag> getTagListByType(String tagType) {
-        return tagService.listByType(tagType);
+    public List<ClientTagVO> getTagListByType(String tagType) {
+        List<ClientTag> tags = tagService.listByType(tagType);
+        return tags.stream()
+                .map(tag -> convert(tag, ClientTagVO.class))
+                .collect(Collectors.toList());
     }
 
     /**
      * 获取标签详情
      */
-    public ClientTag getTagDetail(Long id) {
-        return tagService.getTag(id);
+    public ClientTagVO getTagDetail(Long id) {
+        ClientTag tag = tagService.getTag(id);
+        return convert(tag, ClientTagVO.class);
     }
 
     /**
      * 获取客户的标签列表
      */
-    public List<ClientTag> getClientTags(Long clientId) {
-        return tagService.getClientTags(clientId);
+    public List<ClientTagVO> getClientTags(Long clientId) {
+        List<ClientTag> tags = tagService.getClientTags(clientId);
+        return tags.stream()
+                .map(tag -> convert(tag, ClientTagVO.class))
+                .collect(Collectors.toList());
     }
 
     /**

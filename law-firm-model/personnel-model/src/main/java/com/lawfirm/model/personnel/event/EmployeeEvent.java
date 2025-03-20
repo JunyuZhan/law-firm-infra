@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * 员工事件基类
@@ -48,7 +49,8 @@ public abstract class EmployeeEvent implements Serializable {
             throw new IllegalArgumentException("员工不能为空");
         }
         
-        this.eventId = generateEventId();
+        // 使用UUID替代调用子类方法来生成事件ID
+        this.eventId = UUID.randomUUID().toString();
         this.timestamp = LocalDateTime.now();
         this.employee = employee;
         this.employeeId = employee.getId();
@@ -63,12 +65,12 @@ public abstract class EmployeeEvent implements Serializable {
     public abstract String getEventType();
 
     /**
-     * 生成事件ID
-     * 格式：事件类型前缀 + 时间戳 + 随机数
+     * 获取完整的事件ID
+     * 格式：事件类型前缀 + 事件ID
      *
-     * @return 事件ID
+     * @return 完整的事件ID
      */
-    private String generateEventId() {
-        return getEventType() + "-" + System.currentTimeMillis() + "-" + ((int) (Math.random() * 10000));
+    public String getFullEventId() {
+        return getEventType() + "-" + this.eventId;
     }
 } 

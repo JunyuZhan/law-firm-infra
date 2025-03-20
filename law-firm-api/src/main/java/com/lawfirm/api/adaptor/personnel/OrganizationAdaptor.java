@@ -1,16 +1,13 @@
 package com.lawfirm.api.adaptor.personnel;
 
 import com.lawfirm.api.adaptor.BaseAdaptor;
-import com.lawfirm.model.personnel.dto.organization.OrganizationCreateDTO;
-import com.lawfirm.model.personnel.dto.organization.OrganizationUpdateDTO;
-import com.lawfirm.model.personnel.entity.Organization;
-import com.lawfirm.model.personnel.service.OrganizationService;
-import com.lawfirm.model.personnel.vo.OrganizationVO;
+import com.lawfirm.model.organization.service.OrganizationTreeService;
+import com.lawfirm.model.organization.service.OrganizationPersonnelRelationService;
+import com.lawfirm.model.organization.vo.OrganizationTreeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 组织管理适配器
@@ -19,130 +16,85 @@ import java.util.stream.Collectors;
 public class OrganizationAdaptor extends BaseAdaptor {
 
     @Autowired
-    private OrganizationService organizationService;
+    private OrganizationTreeService organizationTreeService;
+    
+    @Autowired
+    private OrganizationPersonnelRelationService organizationPersonnelService;
 
     /**
-     * 创建组织
+     * 获取组织树
      */
-    public OrganizationVO createOrganization(OrganizationCreateDTO dto) {
-        Organization organization = organizationService.createOrganization(dto);
-        return convert(organization, OrganizationVO.class);
-    }
-
-    /**
-     * 更新组织信息
-     */
-    public OrganizationVO updateOrganization(Long id, OrganizationUpdateDTO dto) {
-        Organization organization = organizationService.updateOrganization(id, dto);
-        return convert(organization, OrganizationVO.class);
-    }
-
-    /**
-     * 删除组织
-     */
-    public void deleteOrganization(Long id) {
-        organizationService.deleteOrganization(id);
-    }
-
-    /**
-     * 获取组织详情
-     */
-    public OrganizationVO getOrganization(Long id) {
-        Organization organization = organizationService.getOrganization(id);
-        return convert(organization, OrganizationVO.class);
-    }
-
-    /**
-     * 获取所有组织
-     */
-    public List<OrganizationVO> listOrganizations() {
-        List<Organization> organizations = organizationService.listOrganizations();
-        return organizations.stream()
-                .map(organization -> convert(organization, OrganizationVO.class))
-                .collect(Collectors.toList());
+    public OrganizationTreeVO getOrganizationTree(Long rootId) {
+        return organizationTreeService.getTree(rootId);
     }
 
     /**
      * 获取子组织列表
      */
-    public List<OrganizationVO> getChildOrganizations(Long parentId) {
-        List<Organization> organizations = organizationService.getChildOrganizations(parentId);
-        return organizations.stream()
-                .map(organization -> convert(organization, OrganizationVO.class))
-                .collect(Collectors.toList());
+    public List<OrganizationTreeVO> getChildOrganizations(Long parentId) {
+        return organizationTreeService.getChildren(parentId);
     }
 
     /**
      * 获取父组织
      */
-    public OrganizationVO getParentOrganization(Long id) {
-        Organization organization = organizationService.getParentOrganization(id);
-        return convert(organization, OrganizationVO.class);
+    public OrganizationTreeVO getParentOrganization(Long id) {
+        return organizationTreeService.getParent(id);
     }
 
     /**
      * 获取所有父组织
      */
-    public List<OrganizationVO> getAllParentOrganizations(Long id) {
-        List<Organization> organizations = organizationService.getAllParentOrganizations(id);
-        return organizations.stream()
-                .map(organization -> convert(organization, OrganizationVO.class))
-                .collect(Collectors.toList());
+    public List<OrganizationTreeVO> getAllParentOrganizations(Long id) {
+        return organizationTreeService.getAllParents(id);
     }
 
     /**
-     * 获取组织路径
+     * 获取根组织
      */
-    public String getOrganizationPath(Long id) {
-        return organizationService.getOrganizationPath(id);
+    public OrganizationTreeVO getRootOrganization(Long id) {
+        return organizationTreeService.getRoot(id);
+    }
+    
+    /**
+     * 获取同级组织
+     */
+    public List<OrganizationTreeVO> getSiblingOrganizations(Long id) {
+        return organizationTreeService.getSiblings(id);
+    }
+    
+    /**
+     * 获取叶子组织
+     */
+    public List<OrganizationTreeVO> getLeafOrganizations(Long rootId) {
+        return organizationTreeService.getLeaves(rootId);
     }
 
     /**
-     * 获取组织层级
+     * 获取组织下的员工列表
      */
-    public int getOrganizationLevel(Long id) {
-        return organizationService.getOrganizationLevel(id);
+    public List<Long> getOrganizationEmployees(Long organizationId, boolean includeSubOrgs) {
+        return organizationPersonnelService.getEmployeeIdsByOrganizationId(organizationId, includeSubOrgs);
     }
 
     /**
-     * 检查组织是否存在
+     * 添加员工到组织
      */
-    public boolean existsOrganization(Long id) {
-        return organizationService.existsOrganization(id);
+    public boolean addEmployeeToOrganization(Long employeeId, Long organizationId, boolean isPrimary) {
+        return organizationPersonnelService.addEmployeeToOrganization(employeeId, organizationId, isPrimary);
     }
 
     /**
-     * 获取组织数量
+     * 从组织中移除员工
      */
-    public long countOrganizations() {
-        return organizationService.countOrganizations();
+    public boolean removeEmployeeFromOrganization(Long employeeId, Long organizationId) {
+        return organizationPersonnelService.removeEmployeeFromOrganization(employeeId, organizationId);
     }
 
     /**
-     * 获取子组织数量
+     * 检查员工是否在组织中
      */
-    public long countChildOrganizations(Long parentId) {
-        return organizationService.countChildOrganizations(parentId);
-    }
-
-    /**
-     * 获取组织下的员工数量
-     */
-    public long countEmployeesByOrganizationId(Long organizationId) {
-        return organizationService.countEmployeesByOrganizationId(organizationId);
-    }
-
-    /**
-     * 获取组织下的职位数量
-     */
-    public long countPositionsByOrganizationId(Long organizationId) {
-        return organizationService.countPositionsByOrganizationId(organizationId);
-    }
-
-    /**
-     * 移动组织
-     */
-    public void moveOrganization(Long id, Long targetParentId) {
-        organizationService.moveOrganization(id, targetParentId);
+    public boolean isEmployeeInOrganization(Long employeeId, Long organizationId, boolean includeSubOrgs) {
+        return organizationPersonnelService.isEmployeeInOrganization(employeeId, organizationId, includeSubOrgs);
     }
 } 
