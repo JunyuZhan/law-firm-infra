@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * 案件审计提供器
+ * 案件审计提供者
  * <p>
  * 负责与core-audit模块集成，为审计模块提供案件相关的审计信息。
  * 主要提供案件创建、修改、状态变更等操作的审计记录。
  * </p>
  *
- * @author 系统生成
+ * @author JunyuZhan
  */
 @Slf4j
 @Component

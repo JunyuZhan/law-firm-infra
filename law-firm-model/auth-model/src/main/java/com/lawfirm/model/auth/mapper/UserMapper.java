@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 用户数据访问接口
  * 
- * @author lawfirm
+ * @author JunyuZhan
  */
 public interface UserMapper extends BaseMapper<User> {
     

@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  * 人事模块缓存配置
  */
 @Slf4j
-@Configuration
+@Configuration("personnelCacheConfig")
 @EnableCaching
 @ConditionalOnProperty(prefix = "personnel.cache", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class PersonnelCacheConfig {
@@ -45,7 +45,7 @@ public class PersonnelCacheConfig {
     /**
      * 缓存配置
      */
-    @Bean
+    @Bean("personnelCacheManager")
     public CacheManager personnelCacheManager(RedisConnectionFactory redisConnectionFactory) {
         log.info("初始化人事模块缓存管理器");
         

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * 使用指定Bean名称"financeAdaptor"以避免与案件模块中的同名适配器冲突。
  * </p>
  * 
- * @author lawfirm-dev
+ * @author JunyuZhan
  * @version 1.0.0
  * @since 1.0.0
  */

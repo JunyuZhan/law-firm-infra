@@ -6,6 +6,7 @@ import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.client.entity.common.ClientCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,11 +16,12 @@ import java.util.List;
  * 客户分类控制器
  */
 @Slf4j
-@RestController
+@RestController("clientCategoryController")
 @RequiredArgsConstructor
 @RequestMapping("/client/category")
 public class CategoryController extends BaseController {
 
+    @Qualifier("clientCategoryServiceImpl")
     private final CategoryService categoryService;
 
     /**

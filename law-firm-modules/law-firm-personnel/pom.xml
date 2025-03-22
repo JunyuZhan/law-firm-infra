@@ -50,6 +50,13 @@
             <artifactId>core-audit</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <!-- 引入消息核心模块 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Spring Boot Web -->
         <dependency>

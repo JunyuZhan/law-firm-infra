@@ -119,7 +119,7 @@ module/
 /**
  * 案件实体类
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 ```
@@ -184,7 +184,7 @@ mkdir -p law-firm-model/new-module/src/main/java/com/lawfirm/new/model/{entity,d
 /**
  * 新模块实体类
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 @Data
@@ -207,7 +207,7 @@ public class NewEntity extends ModelBaseEntity {
 /**
  * 新模块DTO
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 @Data
@@ -229,7 +229,7 @@ public class NewDTO extends BaseDTO {
 /**
  * 新模块VO
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 @Data
@@ -251,7 +251,7 @@ public class NewVO extends BaseVO {
 /**
  * 新模块状态枚举
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 public enum NewStatusEnum implements BaseEnum {
@@ -283,7 +283,7 @@ public enum NewStatusEnum implements BaseEnum {
 /**
  * 新模块常量类
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 public class NewConstants {
@@ -304,7 +304,7 @@ public class NewConstants {
 /**
  * 新模块查询类
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 @Data
@@ -326,7 +326,7 @@ public class NewQuery extends BaseQuery {
 /**
  * 新模块结果类
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 @Data
@@ -348,7 +348,7 @@ public class NewResult extends BaseResult {
 /**
  * 新模块测试类
  *
- * @author xxx
+ * @author JunyuZhan
  * @date 2024-03-18
  */
 @SpringBootTest

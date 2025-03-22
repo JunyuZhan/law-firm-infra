@@ -7,6 +7,8 @@ import com.lawfirm.auth.security.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -27,11 +29,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * - 认证管理器
  * - 安全过滤链
  * </p>
+ * 
+ * 注意: 该配置类优先级高于通用安全配置，Bean名称唯一，避免与其他安全配置冲突
  */
 @Configuration("authSecurityConfig")
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@Order(90)  // 确保此配置在通用安全配置之前加载
 public class SecurityConfig {
     
     private final JwtTokenProvider tokenProvider;
@@ -41,7 +46,8 @@ public class SecurityConfig {
     /**
      * 配置密码编码器
      */
-    @Bean
+    @Bean("authPasswordEncoder")
+    @Primary
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -49,7 +55,7 @@ public class SecurityConfig {
     /**
      * 配置认证管理器
      */
-    @Bean
+    @Bean("authenticationManager")
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
@@ -57,7 +63,7 @@ public class SecurityConfig {
     /**
      * 配置JWT认证过滤器
      */
-    @Bean
+    @Bean("jwtAuthFilter")
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(tokenProvider);
     }
@@ -66,6 +72,7 @@ public class SecurityConfig {
      * 配置安全过滤链
      */
     @Bean("authFilterChain")
+    @Order(95)  // 确保此过滤链在通用过滤链之前加载
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             // 禁用CSRF

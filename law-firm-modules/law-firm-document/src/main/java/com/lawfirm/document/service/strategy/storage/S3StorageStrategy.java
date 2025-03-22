@@ -1,6 +1,6 @@
 package com.lawfirm.document.service.strategy.storage;
 
-import com.lawfirm.core.storage.strategy.StorageStrategy;
+import com.lawfirm.core.storage.strategy.AbstractStorageStrategy;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.entity.file.FileObject;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
@@ -16,10 +16,14 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class S3StorageStrategy implements StorageStrategy {
+public class S3StorageStrategy extends AbstractStorageStrategy {
 
     // 实际项目中应该注入S3客户端
     // private final AmazonS3 s3Client;
+    
+    public S3StorageStrategy() {
+        super(StorageTypeEnum.AWS_S3);
+    }
 
     @Override
     public boolean uploadFile(StorageBucket bucket, FileObject fileObject, InputStream inputStream) {
@@ -174,8 +178,8 @@ public class S3StorageStrategy implements StorageStrategy {
     
     @Override
     public void initialize() {
-        log.info("初始化S3存储策略");
-        // 实际项目中可能需要初始化AWS S3客户端
+        // 初始化S3客户端
+        log.info("初始化AWS S3客户端");
     }
     
     @Override
@@ -293,5 +297,11 @@ public class S3StorageStrategy implements StorageStrategy {
             log.error("获取S3对象元数据失败: {}", objectName, e);
             return null;
         }
+    }
+
+    @Override
+    protected boolean isEnabled() {
+        // 实际实现中应该检查配置是否启用S3存储
+        return true;
     }
 }

@@ -30,11 +30,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 文件控制器
+ * 存储服务文件控制器
  */
 @Slf4j
-@RestController
-@RequestMapping("/api/files")
+@RestController("storageFileController")
+@RequestMapping("/api/storage/files")
 @RequiredArgsConstructor
 public class FileController {
 

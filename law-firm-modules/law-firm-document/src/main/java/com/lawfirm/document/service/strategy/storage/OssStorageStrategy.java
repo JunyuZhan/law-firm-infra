@@ -1,6 +1,6 @@
 package com.lawfirm.document.service.strategy.storage;
 
-import com.lawfirm.core.storage.strategy.StorageStrategy;
+import com.lawfirm.core.storage.strategy.AbstractStorageStrategy;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.entity.file.FileObject;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
@@ -18,7 +18,11 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class OssStorageStrategy implements StorageStrategy {
+public class OssStorageStrategy extends AbstractStorageStrategy {
+
+    public OssStorageStrategy() {
+        super(StorageTypeEnum.ALIYUN_OSS);
+    }
 
     @Override
     public boolean uploadFile(StorageBucket bucket, FileObject fileObject, InputStream inputStream) {
@@ -153,14 +157,15 @@ public class OssStorageStrategy implements StorageStrategy {
     }
     
     @Override
-    public StorageTypeEnum getStorageType() {
-        return StorageTypeEnum.ALIYUN_OSS;
+    protected boolean isEnabled() {
+        // 实际实现中应该检查配置是否启用OSS存储
+        return true;
     }
     
     @Override
     public void initialize() {
-        log.info("初始化阿里云OSS存储策略");
-        // 实际项目中可能需要初始化OSS客户端
+        // 初始化OSS客户端
+        log.info("初始化阿里云OSS客户端");
     }
     
     @Override

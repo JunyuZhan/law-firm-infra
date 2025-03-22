@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.lawfirm.model.personnel.entity.Employee;
 import com.lawfirm.model.personnel.event.EmployeeCreatedEvent;
 import com.lawfirm.model.personnel.event.EmployeeStatusChangedEvent;
-import com.lawfirm.personnel.config.MessageConfig;
+import com.lawfirm.personnel.config.PersonnelMessageConfig;
 import com.lawfirm.personnel.config.PersonnelConfig;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class NotificationEventListener {
                 employee.getId(), employee.getName());
         
         // 构建通知内容
-        String subject = MessageConfig.NEW_EMPLOYEE_SUBJECT;
+        String subject = PersonnelMessageConfig.NEW_EMPLOYEE_SUBJECT;
         String content = String.format("新员工 %s 已加入，请大家欢迎！", employee.getName());
         
         // 发送通知
@@ -86,7 +86,7 @@ public class NotificationEventListener {
                 employee.getId(), employee.getName());
         
         // 构建通知内容
-        String subject = MessageConfig.EMPLOYEE_RESIGN_SUBJECT;
+        String subject = PersonnelMessageConfig.EMPLOYEE_RESIGN_SUBJECT;
         String content = String.format("员工 %s 已办理离职手续，离职原因：%s", 
                                       employee.getName(), 
                                       reason != null ? reason : "个人原因");

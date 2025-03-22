@@ -26,14 +26,14 @@ import java.util.Map;
 /**
  * 客户模块缓存配置类
  */
-@Configuration
+@Configuration("clientCacheConfig")
 @EnableCaching
 public class CacheConfig {
 
     /**
      * 配置Redis缓存管理器
      */
-    @Bean
+    @Bean("clientCacheManager")
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         // 配置Redis缓存管理器
         RedisCacheManager cacheManager = RedisCacheManager.builder(factory)
@@ -77,7 +77,7 @@ public class CacheConfig {
     /**
      * 配置RedisTemplate
      */
-    @Bean
+    @Bean("clientRedisTemplate")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);

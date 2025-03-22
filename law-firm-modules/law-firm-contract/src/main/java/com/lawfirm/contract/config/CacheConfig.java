@@ -16,14 +16,14 @@ import java.util.Map;
 /**
  * 合同缓存配置类
  */
-@Configuration
+@Configuration("contractCacheConfig")
 @EnableCaching
 public class CacheConfig {
 
     /**
      * Redis缓存管理器
      */
-    @Bean
+    @Bean("contractCacheManager")
     public RedisCacheManager contractCacheManager(RedisConnectionFactory connectionFactory) {
         // 默认配置
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()

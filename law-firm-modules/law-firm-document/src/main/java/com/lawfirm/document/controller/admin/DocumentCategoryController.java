@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +22,13 @@ import java.util.List;
  * 文档分类管理控制器
  */
 @Slf4j
-@RestController
+@RestController("documentCategoryController")
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/document-categories")
 @Tag(name = "文档分类管理", description = "文档分类管理相关接口")
-public class CategoryController {
+public class DocumentCategoryController {
 
+    @Qualifier("documentCategoryServiceImpl")
     private final DocumentCategoryService categoryService;
 
     /**

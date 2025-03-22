@@ -14,7 +14,7 @@ import java.util.Map;
  * 包括消息发送、接收、通知和事件处理等。
  * </p>
  *
- * @author 系统生成
+ * @author JunyuZhan
  */
 @Slf4j
 @Component

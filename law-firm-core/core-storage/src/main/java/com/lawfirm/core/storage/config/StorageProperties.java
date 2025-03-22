@@ -9,7 +9,7 @@ import lombok.Data;
  * 存储配置属性
  */
 @Data
-@Component
+@Component("coreStorageProperties")
 @ConfigurationProperties(prefix = "storage")
 public class StorageProperties {
     

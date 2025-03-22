@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
  * 客户分类服务实现
  */
 @Slf4j
-@Service
+@Service("clientCategoryServiceImpl")
 @RequiredArgsConstructor
-public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, ClientCategory> implements CategoryService {
+public class ClientCategoryServiceImpl extends ServiceImpl<CategoryMapper, ClientCategory> implements CategoryService {
 
     private final CategoryMapper categoryMapper;
 

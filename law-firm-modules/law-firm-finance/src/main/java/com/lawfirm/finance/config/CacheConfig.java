@@ -12,11 +12,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-@Configuration
+/**
+ * 财务模块缓存配置
+ */
+@Configuration("financeCacheConfig")
 @EnableCaching
 public class CacheConfig {
     
-    @Bean
+    @Bean("financeCacheManager")
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory, FinanceConfig financeConfig) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(financeConfig.getCache().getExpireTime()))

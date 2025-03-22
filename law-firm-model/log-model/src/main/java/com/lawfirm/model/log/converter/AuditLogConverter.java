@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * 属于日志模型模块，处理审计日志的数据转换逻辑。
  * </p>
  *
- * @author lawfirm-dev
+ * @author JunyuZhan
  * @version 1.0.0
  * @since 1.0.0
  */

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 权限数据访问接口
  * 
- * @author lawfirm
+ * @author JunyuZhan
  */
 public interface PermissionMapper extends BaseMapper<Permission> {
     

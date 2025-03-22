@@ -40,5 +40,8 @@
         "org.graalvm.*",
         "io.micrometer.shaded.*"
     ],
-    "java.jdt.ls.lombokSupport.enabled": true
+    "java.jdt.ls.lombokSupport.enabled": true,
+    "cSpell.words": [
+        "ALIYUN"
+    ]
 }

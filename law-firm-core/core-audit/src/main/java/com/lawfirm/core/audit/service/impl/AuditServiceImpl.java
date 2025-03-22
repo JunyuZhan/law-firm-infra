@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
  * 使用log-model模块中定义的数据模型和转换器。
  * </p>
  *
- * @author lawfirm-dev
+ * @author JunyuZhan
  * @version 1.0.0
  * @since 1.0.0
  */

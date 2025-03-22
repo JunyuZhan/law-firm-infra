@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 角色数据访问接口
  * 
- * @author lawfirm
+ * @author JunyuZhan
  */
 public interface RoleMapper extends BaseMapper<Role> {
     

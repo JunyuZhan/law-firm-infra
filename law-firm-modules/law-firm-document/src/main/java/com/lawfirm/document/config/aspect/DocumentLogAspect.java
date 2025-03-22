@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Aspect
-@Component
+@Component("documentLogAspect")
 @RequiredArgsConstructor
-public class LogAspect {
+public class DocumentLogAspect {
 
     private final LogProperties logProperties;
 
@@ -29,13 +29,13 @@ public class LogAspect {
      * 配置切入点
      */
     @Pointcut("execution(* com.lawfirm.document..*.controller..*.*(..))")
-    public void logPointcut() {
+    public void documentLogPointcut() {
     }
 
     /**
      * 环绕通知
      */
-    @Around("logPointcut()")
+    @Around("documentLogPointcut()")
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         // 如果禁用了方法日志，直接执行方法
         if (!logProperties.isEnableMethodLog()) {

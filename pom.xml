@@ -76,10 +76,8 @@
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <additionalJOption>-Xdoclint:none</additionalJOption>
                         <notimestamp>true</notimestamp>
-                        <isOffline>true</isOffline>
-                        <additionalOptions>
-                            <additionalOption>--no-external-link-access</additionalOption>
-                        </additionalOptions>
+                        <source>${java.version}</source>
+                        <offline>true</offline>
                     </configuration>
                     <executions>
                         <execution>

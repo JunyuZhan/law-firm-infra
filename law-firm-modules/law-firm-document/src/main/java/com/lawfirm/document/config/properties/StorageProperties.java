@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * 文档存储配置属性
  */
 @Data
-@Component
+@Component("documentStorageProperties")
 @ConfigurationProperties(prefix = "lawfirm.document.storage")
 public class StorageProperties {
     

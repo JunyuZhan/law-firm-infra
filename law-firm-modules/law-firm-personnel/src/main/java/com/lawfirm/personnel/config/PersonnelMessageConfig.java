@@ -1,19 +1,23 @@
 package com.lawfirm.personnel.config;
 
+import com.lawfirm.core.message.config.MessageConfig;
+import com.lawfirm.core.message.service.MessageTemplateService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * 人事模块消息配置
- * 配置模块间的消息集成
+ * 配置模块间的消息集成，扩展核心消息模块功能
  */
 @Slf4j
 @Configuration
 @ConditionalOnProperty(prefix = "personnel.notification", name = "enabled", havingValue = "true", matchIfMissing = true)
-public class MessageConfig {
+@Import(MessageConfig.class) // 引入核心消息配置
+public class PersonnelMessageConfig {
 
     /**
      * 邮件通知主题前缀
@@ -42,13 +46,16 @@ public class MessageConfig {
     
     /**
      * 消息模板配置
+     * 复用核心消息模块的模板服务
      */
     @Bean
-    public void initMessageTemplates() {
+    public void initPersonnelMessageTemplates(MessageTemplateService messageTemplateService) {
         log.info("初始化人事模块消息模板");
         
-        // 在实际实现中，这里会注册消息模板或加载消息模板配置
-        // 例如：将模板注册到消息服务
-        // messageTemplateService.registerTemplate("employee_welcome", "欢迎加入我们的团队，{name}！");
+        // 使用核心消息模块的模板服务注册人事模块特有的模板
+        messageTemplateService.registerTemplate("employee_welcome", "欢迎加入我们的团队，{name}！");
+        messageTemplateService.registerTemplate("employee_resign", "感谢您在公司的贡献，祝您未来一切顺利！");
+        messageTemplateService.registerTemplate("contract_expiry", "您的合同将于{date}到期，请注意办理相关手续。");
+        messageTemplateService.registerTemplate("birthday_wishes", "祝您生日快乐，工作顺利！");
     }
 } 

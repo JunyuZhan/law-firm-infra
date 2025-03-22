@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 登录历史数据访问接口
  * 
- * @author lawfirm
+ * @author JunyuZhan
  */
 public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
     

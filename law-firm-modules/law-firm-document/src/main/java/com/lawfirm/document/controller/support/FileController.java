@@ -24,13 +24,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 文件处理控制器
+ * 文档文件处理控制器
  */
 @Slf4j
-@RestController
+@RestController("documentFileController")
 @RequiredArgsConstructor
-@RequestMapping("/api/files")
-@Tag(name = "文件处理", description = "文件上传下载等操作")
+@RequestMapping("/api/documents/files")
+@Tag(name = "文档文件处理", description = "文档文件上传下载等操作")
 public class FileController {
 
     private final DocumentService documentService;
@@ -38,10 +38,10 @@ public class FileController {
     private final StorageManager storageManager;
 
     /**
-     * 上传文件
+     * 上传文档文件
      */
     @PostMapping("/upload")
-    @Operation(summary = "上传文件")
+    @Operation(summary = "上传文档文件")
     public CommonResult<FileObject> uploadFile(
             @Parameter(description = "文件") @RequestPart("file") MultipartFile file,
             @Parameter(description = "存储桶ID") @RequestParam(required = false, defaultValue = "1") Long bucketId) throws IOException {

@@ -20,12 +20,12 @@ import java.util.List;
  * 文档分类服务实现类
  */
 @Slf4j
-@Service
-public class CategoryServiceImpl extends BaseServiceImpl<DocumentCategoryMapper, DocumentCategory> implements DocumentCategoryService {
+@Service("documentCategoryServiceImpl")
+public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategoryMapper, DocumentCategory> implements DocumentCategoryService {
 
     private final SecurityManager securityManager;
     
-    public CategoryServiceImpl(SecurityManager securityManager) {
+    public DocumentCategoryServiceImpl(SecurityManager securityManager) {
         this.securityManager = securityManager;
     }
 
