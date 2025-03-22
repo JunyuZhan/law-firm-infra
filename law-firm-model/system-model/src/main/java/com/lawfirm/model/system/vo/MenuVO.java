@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,5 +75,5 @@ public class MenuVO implements Serializable {
     /**
      * 子菜单
      */
-    private List<MenuVO> children;
+    private transient List<MenuVO> children;
 } 

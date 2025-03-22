@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * 基于任务服务和工作流引擎实现流程管理
  */
 @Slf4j
-@Service
+@Service("caseProcessServiceImpl")
 @RequiredArgsConstructor
 public class ProcessServiceImpl implements CaseTaskService {
 

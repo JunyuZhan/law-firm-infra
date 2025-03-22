@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator
 /**
  * Redis配置
  */
-@Configuration
+@Configuration("dataRedisConfig")
 @EnableCaching
 @ConditionalOnClass(RedisOperations.class)
 @EnableConfigurationProperties(RedisProperties.class)

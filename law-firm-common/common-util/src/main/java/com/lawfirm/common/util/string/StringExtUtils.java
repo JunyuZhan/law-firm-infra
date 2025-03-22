@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * 字符串工具类，扩展自 Apache Commons Lang 的 StringUtils
  */
-public class StringExtUtils extends StringUtils {
+public class StringExtUtils {
     
     /**
      * 截取字符串，超出部分用省略号代替
@@ -159,7 +159,7 @@ public class StringExtUtils extends StringUtils {
      * @return 脱敏后的手机号码
      */
     public static String maskPhone(String phone) {
-        if (isBlank(phone) || phone.length() < 7) {
+        if (StringUtils.isBlank(phone) || phone.length() < 7) {
             return phone;
         }
         return phone.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
@@ -173,7 +173,7 @@ public class StringExtUtils extends StringUtils {
      * @return 脱敏后的邮箱地址
      */
     public static String maskEmail(String email) {
-        if (isBlank(email) || !email.contains("@")) {
+        if (StringUtils.isBlank(email) || !email.contains("@")) {
             return email;
         }
         String[] parts = email.split("@");

@@ -121,17 +121,80 @@ development:
 ```
 
 ### 2. 快速开始
-```bash
-# 克隆代码
-git clone https://github.com/your-org/law-firm-infra.git
 
-# 安装依赖
+#### 环境要求
+
+- JDK 21
+- Maven 3.9.x
+- MySQL 8.0
+- Redis 7.0
+- Elasticsearch 7.17.x
+- RocketMQ 5.1.x
+- MinIO
+
+#### 本地开发
+
+1. 克隆代码
+
+```bash
+git clone https://github.com/your-org/law-firm-infra.git
 cd law-firm-infra
+```
+
+2. 编译打包
+
+```bash
 mvn clean install -DskipTests
+```
+
+3. 启动服务
+
+```bash
+cd law-firm-api
+mvn spring-boot:run
+```
+
+#### Docker部署
+
+本项目支持使用Docker进行部署，提供了完整的Docker配置。
+
+#### 前提条件
+
+- 安装 [Docker](https://www.docker.com/get-started)
+- 安装 [Docker Compose](https://docs.docker.com/compose/install/)
+
+#### 使用Docker Compose启动
+
+Windows环境:
+
+```bash
+scripts/docker-build.bat
+```
+
+Linux/Mac环境:
+
+```bash
+chmod +x scripts/docker-build.sh
+./scripts/docker-build.sh
+```
+
+或者手动执行:
+
+```bash
+# 构建镜像
+docker-compose build
 
 # 启动服务
 docker-compose up -d
 ```
+
+#### 访问地址
+
+- 律所管理系统: http://localhost:8080
+- Swagger API文档: http://localhost:8080/swagger-ui.html
+- MinIO控制台: http://localhost:9001 (默认用户名/密码: minioadmin/minioadmin)
+
+### 服务启动
 
 ## 项目规范
 

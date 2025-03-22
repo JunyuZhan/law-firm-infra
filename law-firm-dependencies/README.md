@@ -14,7 +14,7 @@
 ### 基础环境
 - Java: 21
 - Maven: 3.8+
-- Spring Boot: 3.2.2
+- Spring Boot: 3.4.4
 - Spring Cloud: 2023.x
 - Spring Security: 6.x
 
@@ -64,7 +64,7 @@
 - Caffeine: 3.1.8
 
 ### 消息队列
-- RocketMQ: 2.2.3
+- RocketMQ: 2.3.1
 
 ### 存储
 - MinIO: 8.5.7

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * 案件费用服务实现类
  */
 @Slf4j
-@Service
+@Service("caseFeeServiceImpl")
 @RequiredArgsConstructor
 public class FeeServiceImpl implements CaseFinanceService {
 

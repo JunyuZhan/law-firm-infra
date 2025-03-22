@@ -6,6 +6,8 @@ import com.lawfirm.common.cache.constant.CacheConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,7 +19,10 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "spring.autoconfigure.exclude=com.lawfirm.common.cache.config.CacheAutoConfiguration"
+})
+@EnableAutoConfiguration(exclude = {RedisAutoConfiguration.class})
 @ActiveProfiles("test")
 @Import(RedisTestConfig.class)
 public class SimpleCacheAspectTest {

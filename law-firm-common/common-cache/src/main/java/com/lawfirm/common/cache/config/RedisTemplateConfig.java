@@ -15,13 +15,13 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
- * Redis配置类
+ * Redis模板配置类，负责配置RedisTemplate及其序列化器
  */
 @Configuration
 @EnableCaching
 @ConditionalOnProperty(prefix = "spring.redis", name = "host")
 @Profile("!test")
-public class RedisConfig {
+public class RedisTemplateConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
@@ -43,4 +43,4 @@ public class RedisConfig {
 
         return template;
     }
-} 
+}

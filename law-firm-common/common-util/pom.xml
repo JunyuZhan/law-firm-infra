@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lawfirm</groupId>
         <artifactId>law-firm-common</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>common-util</artifactId>
@@ -18,7 +18,7 @@
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>law-firm-dependencies</artifactId>
-                <version>1.0.0</version>
+                <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -29,6 +29,11 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         
         <dependency>

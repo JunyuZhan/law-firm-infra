@@ -38,7 +38,19 @@ import org.springframework.context.annotation.FilterType;
                 classes = {com.lawfirm.document.service.strategy.storage.DocumentLocalStorageStrategy.class}),
         // 排除personnel模块的消息配置，优先使用core模块的实现
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.personnel.config.PersonnelMessageConfig.class})
+                classes = {com.lawfirm.personnel.config.PersonnelMessageConfig.class}),
+        // 排除案例模块中的DocumentServiceImpl，避免与document模块冲突
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
+                classes = {com.lawfirm.cases.service.impl.DocumentServiceImpl.class}),
+        // 排除案例模块中的ProcessServiceImpl，避免与工作流模块冲突
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
+                classes = {com.lawfirm.cases.service.impl.ProcessServiceImpl.class}),
+        // 排除合同模块中的WorkflowConfig，避免与工作流核心模块冲突
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
+                classes = {com.lawfirm.contract.config.WorkflowConfig.class}),
+        // 排除案例模块中的FeeServiceImpl，避免与财务模块冲突
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
+                classes = {com.lawfirm.cases.service.impl.FeeServiceImpl.class})
     }
 )
 public class LawFirmApiApplication {

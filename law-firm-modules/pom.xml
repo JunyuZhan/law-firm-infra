@@ -19,7 +19,6 @@
     <description>法律事务管理系统模块</description>
 
     <properties>
-        <revision>1.0.0</revision>
     </properties>
 
     <modules>

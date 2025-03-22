@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * 案件文档服务实现类
  */
 @Slf4j
-@Service
+@Service("caseDocumentServiceImpl")
 @RequiredArgsConstructor
 public class DocumentServiceImpl implements CaseDocumentService {
 

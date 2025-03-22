@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
  * 工作流配置类
  * 负责合同模块与core-workflow组件的集成配置
  */
-@Configuration
+@Configuration("contractWorkflowConfig")
 public class WorkflowConfig {
     
     // 工作流相关的配置会在这里定义

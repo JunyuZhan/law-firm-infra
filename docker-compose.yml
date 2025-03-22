@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  # 应用服务
+  law-firm-api:
+    build:
+      context: .
+      dockerfile: law-firm-api/Dockerfile
+    container_name: law-firm-api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/law_firm?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_ELASTICSEARCH_REST_URIS=http://elasticsearch:9200
+      - SPRING_ROCKETMQ_NAME_SERVER=rocketmq-namesrv:9876
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    depends_on:
+      - mysql
+      - redis
+      - elasticsearch
+      - minio
+      - rocketmq-namesrv
+      - rocketmq-broker
+    volumes:
+      - law-firm-logs:/app/logs
+    networks:
+      - law-firm-network
+
+  # MySQL数据库
+  mysql:
+    image: mysql:8.0
+    container_name: law-firm-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=law_firm
+      - TZ=Asia/Shanghai
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./scripts/init-mysql.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - law-firm-network
+
+  # Redis缓存
+  redis:
+    image: redis:7.0
+    container_name: law-firm-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - law-firm-network
+
+  # Elasticsearch搜索引擎
+  elasticsearch:
+    image: elasticsearch:7.17.6
+    container_name: law-firm-elasticsearch
+    restart: always
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - law-firm-network
+
+  # MinIO对象存储
+  minio:
+    image: minio/minio:latest
+    container_name: law-firm-minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - law-firm-network
+
+  # RocketMQ名称服务器
+  rocketmq-namesrv:
+    image: apache/rocketmq:5.1.4
+    container_name: law-firm-rocketmq-namesrv
+    restart: always
+    ports:
+      - "9876:9876"
+    command: sh mqnamesrv
+    volumes:
+      - rocketmq-namesrv-logs:/home/rocketmq/logs
+    networks:
+      - law-firm-network
+
+  # RocketMQ消息代理
+  rocketmq-broker:
+    image: apache/rocketmq:5.1.4
+    container_name: law-firm-rocketmq-broker
+    restart: always
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+    depends_on:
+      - rocketmq-namesrv
+    command: sh mqbroker -n rocketmq-namesrv:9876
+    volumes:
+      - rocketmq-broker-logs:/home/rocketmq/logs
+      - rocketmq-broker-data:/home/rocketmq/store
+    networks:
+      - law-firm-network
+
+# 数据卷
+volumes:
+  mysql-data:
+  redis-data:
+  elasticsearch-data:
+  minio-data:
+  rocketmq-namesrv-logs:
+  rocketmq-broker-logs:
+  rocketmq-broker-data:
+  law-firm-logs:
+
+# 网络
+networks:
+  law-firm-network:
+    driver: bridge 

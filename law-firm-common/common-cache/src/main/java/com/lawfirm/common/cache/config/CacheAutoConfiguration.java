@@ -11,6 +11,6 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @ConditionalOnProperty(prefix = "spring.redis", name = "host")
 @ComponentScan(basePackages = "com.lawfirm.common.cache")
-@Import({RedisConfig.class, CacheConfig.class})
+@Import({RedisTemplateConfig.class, CacheConfig.class})
 public class CacheAutoConfiguration {
 } 

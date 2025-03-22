@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 
 /**
  * 测试配置类
@@ -74,6 +75,7 @@ import org.springframework.test.context.TestPropertySource;
 @Import({
     JacksonConfig.class
 })
+@ActiveProfiles("test")
 public class TestConfig {
     
     @Bean
