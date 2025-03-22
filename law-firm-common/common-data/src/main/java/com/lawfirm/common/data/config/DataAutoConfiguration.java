@@ -12,9 +12,7 @@ import org.springframework.context.annotation.Import;
     MybatisPlusConfig.class,
     JacksonConfig.class,
     RedisConfig.class,
-    CacheConfig.class,
     DynamicDataSourceConfig.class,
-    JpaConfig.class,
     ElasticsearchConfig.class,
     StorageConfig.class
 })

@@ -6,6 +6,7 @@ import com.lawfirm.api.adaptor.BaseAdaptor;
 import com.lawfirm.model.finance.dto.receivable.ReceivableCreateDTO;
 import com.lawfirm.model.finance.dto.receivable.ReceivableUpdateDTO;
 import com.lawfirm.model.finance.dto.receivable.ReceivableQueryDTO;
+import com.lawfirm.model.finance.entity.Receivable;
 import com.lawfirm.model.finance.service.ReceivableService;
 import com.lawfirm.model.finance.vo.receivable.ReceivableDetailVO;
 import com.lawfirm.model.finance.enums.ReceivableStatusEnum;
@@ -31,14 +32,16 @@ public class ReceivableAdaptor extends BaseAdaptor {
      * 创建应收账款
      */
     public Long createReceivable(ReceivableCreateDTO createDTO) {
-        return receivableService.createReceivable(createDTO);
+        Receivable receivable = convert(createDTO, Receivable.class);
+        return receivableService.createReceivable(receivable);
     }
 
     /**
      * 更新应收账款
      */
     public Boolean updateReceivable(ReceivableUpdateDTO updateDTO) {
-        return receivableService.updateReceivable(updateDTO);
+        Receivable receivable = convert(updateDTO, Receivable.class);
+        return receivableService.updateReceivable(receivable);
     }
 
     /**
@@ -74,14 +77,26 @@ public class ReceivableAdaptor extends BaseAdaptor {
      * 查询应收账款列表
      */
     public List<ReceivableDetailVO> listReceivables(ReceivableQueryDTO queryDTO) {
-        return receivableService.listReceivables(queryDTO);
+        return receivableService.listReceivables(
+                queryDTO.getContractId(),
+                queryDTO.getClientId(),
+                queryDTO.getStatus(),
+                queryDTO.getOverdueDays()
+        );
     }
 
     /**
      * 分页查询应收账款
      */
     public IPage<ReceivableDetailVO> pageReceivables(Page<ReceivableDetailVO> page, ReceivableQueryDTO queryDTO) {
-        return receivableService.pageReceivables(page, queryDTO);
+        Page<Receivable> receivablePage = new Page<>(page.getCurrent(), page.getSize());
+        return receivableService.pageReceivables(
+                receivablePage, 
+                queryDTO.getContractId(),
+                queryDTO.getClientId(),
+                queryDTO.getStatus(),
+                queryDTO.getOverdueDays()
+        );
     }
 
     /**
@@ -102,21 +117,31 @@ public class ReceivableAdaptor extends BaseAdaptor {
      * 统计应收账款总额
      */
     public BigDecimal sumReceivableAmount(ReceivableQueryDTO queryDTO) {
-        return receivableService.sumReceivableAmount(queryDTO);
+        return receivableService.sumReceivableAmount(
+                queryDTO.getContractId(),
+                queryDTO.getClientId(),
+                queryDTO.getStatus()
+        );
     }
 
     /**
      * 统计已收款总额
      */
     public BigDecimal sumReceivedAmount(ReceivableQueryDTO queryDTO) {
-        return receivableService.sumReceivedAmount(queryDTO);
+        return receivableService.sumReceivedAmount(
+                queryDTO.getContractId(),
+                queryDTO.getClientId()
+        );
     }
 
     /**
      * 统计未收款总额
      */
     public BigDecimal sumUnreceivedAmount(ReceivableQueryDTO queryDTO) {
-        return receivableService.sumUnreceivedAmount(queryDTO);
+        return receivableService.sumUnreceivedAmount(
+                queryDTO.getContractId(),
+                queryDTO.getClientId()
+        );
     }
 
     /**

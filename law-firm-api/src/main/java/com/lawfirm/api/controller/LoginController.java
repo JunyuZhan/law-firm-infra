@@ -1,7 +1,7 @@
 package com.lawfirm.api.controller;
 
 import com.lawfirm.api.adaptor.auth.AuthAdaptor;
-import com.lawfirm.api.common.ResponseResult;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.auth.dto.auth.LoginDTO;
 import com.lawfirm.model.auth.vo.LoginVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ public class LoginController {
 
     @Operation(summary = "用户登录")
     @PostMapping("/login")
-    public ResponseResult<LoginVO> login(@RequestBody LoginDTO loginDTO) {
-        return ResponseResult.success(authAdaptor.login(loginDTO));
+    public CommonResult<LoginVO> login(@RequestBody LoginDTO loginDTO) {
+        return CommonResult.success(authAdaptor.login(loginDTO));
     }
 } 

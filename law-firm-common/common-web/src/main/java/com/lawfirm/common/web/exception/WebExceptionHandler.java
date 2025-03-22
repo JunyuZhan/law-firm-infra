@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * 全局异常处理器
- * 只处理框架级的基础异常，业务异常应该由具体的业务模块自行处理
+ * Web层异常处理器
+ * 处理Web层面的框架异常
  */
 @Slf4j
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+@RestControllerAdvice(basePackages = "com.lawfirm.common.web")
+public class WebExceptionHandler {
 
     /**
      * 处理框架异常

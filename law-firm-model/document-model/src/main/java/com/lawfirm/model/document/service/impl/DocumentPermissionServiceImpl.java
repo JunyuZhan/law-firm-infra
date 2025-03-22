@@ -8,6 +8,9 @@ import com.lawfirm.model.document.service.DocumentPermissionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +34,15 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
         DocumentPermission permission = new DocumentPermission();
         permission.setId(generateId());
         permission.setDocumentId(dto.getDocumentId());
-        permission.setUserId(dto.getUserId());
-        permission.setOperation(dto.getOperation());
-        permission.setCreateTime(System.currentTimeMillis());
-        permission.setUpdateTime(System.currentTimeMillis());
+        permission.setSubjectId(dto.getSubjectId());
+        permission.setSubjectType(dto.getSubjectType());
+        permission.setPermissionType(dto.getPermissionType().name());
+        permission.setIsAllowed(dto.getIsAllowed());
+        permission.setPermissionSource(dto.getPermissionSource());
+        permission.setExpireTime(dto.getExpireTime());
+        permission.setIsEnabled(dto.getIsEnabled());
+        permission.setCreateTime(LocalDateTime.now());
+        permission.setUpdateTime(LocalDateTime.now());
         
         permissionMap.put(permission.getId(), permission);
         
@@ -43,7 +51,7 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
                 .add(permission);
         
         // 更新用户权限映射
-        userPermissionsMap.computeIfAbsent(dto.getUserId(), k -> new ArrayList<>())
+        userPermissionsMap.computeIfAbsent(dto.getSubjectId(), k -> new ArrayList<>())
                 .add(permission);
         
         return permission;
@@ -57,8 +65,31 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
             throw new IllegalArgumentException("Permission not found: " + id);
         }
         
-        permission.setOperation(dto.getOperation());
-        permission.setUpdateTime(System.currentTimeMillis());
+        if (dto.getDocumentId() != null) {
+            permission.setDocumentId(dto.getDocumentId());
+        }
+        if (dto.getSubjectId() != null) {
+            permission.setSubjectId(dto.getSubjectId());
+        }
+        if (dto.getSubjectType() != null) {
+            permission.setSubjectType(dto.getSubjectType());
+        }
+        if (dto.getPermissionType() != null) {
+            permission.setPermissionType(dto.getPermissionType().name());
+        }
+        if (dto.getIsAllowed() != null) {
+            permission.setIsAllowed(dto.getIsAllowed());
+        }
+        if (dto.getPermissionSource() != null) {
+            permission.setPermissionSource(dto.getPermissionSource());
+        }
+        if (dto.getExpireTime() != null) {
+            permission.setExpireTime(dto.getExpireTime());
+        }
+        if (dto.getIsEnabled() != null) {
+            permission.setIsEnabled(dto.getIsEnabled());
+        }
+        permission.setUpdateTime(LocalDateTime.now());
         
         return permission;
     }
@@ -75,7 +106,7 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
             }
             
             // 从用户权限映射中移除
-            List<DocumentPermission> userPermissions = userPermissionsMap.get(permission.getUserId());
+            List<DocumentPermission> userPermissions = userPermissionsMap.get(permission.getSubjectId());
             if (userPermissions != null) {
                 userPermissions.removeIf(p -> p.getId().equals(id));
             }
@@ -109,7 +140,9 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
             return false;
         }
         return permissions.stream()
-                .anyMatch(p -> p.getUserId().equals(userId) && p.getOperation() == operation);
+                .anyMatch(p -> p.getSubjectId().equals(userId) && 
+                               p.getPermissionType().equals(operation.name()) && 
+                               Boolean.TRUE.equals(p.getIsAllowed()));
     }
 
     @Override
@@ -117,8 +150,10 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
     public void grantPermission(Long documentId, Long userId, DocumentOperationEnum operation) {
         PermissionCreateDTO dto = new PermissionCreateDTO();
         dto.setDocumentId(documentId);
-        dto.setUserId(userId);
-        dto.setOperation(operation);
+        dto.setSubjectId(userId);
+        dto.setSubjectType("USER");
+        dto.setPermissionType(operation);
+        dto.setIsAllowed(true);
         createPermission(dto);
     }
 
@@ -128,7 +163,8 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
         List<DocumentPermission> permissions = documentPermissionsMap.get(documentId);
         if (permissions != null) {
             permissions.stream()
-                    .filter(p -> p.getUserId().equals(userId) && p.getOperation() == operation)
+                    .filter(p -> p.getSubjectId().equals(userId) && 
+                                p.getPermissionType().equals(operation.name()))
                     .findFirst()
                     .ifPresent(p -> deletePermission(p.getId()));
         }

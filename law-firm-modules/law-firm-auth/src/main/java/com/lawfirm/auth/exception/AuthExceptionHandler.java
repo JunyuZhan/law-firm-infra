@@ -20,11 +20,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 全局异常处理器
+ * 认证模块全局异常处理器
  */
 @Slf4j
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+@RestControllerAdvice(basePackages = "com.lawfirm.auth")
+public class AuthExceptionHandler {
     
     /**
      * 处理认证异常

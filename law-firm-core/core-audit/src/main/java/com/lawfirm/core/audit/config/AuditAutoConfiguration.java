@@ -50,4 +50,16 @@ public class AuditAutoConfiguration {
             AuditLogConverter auditLogConverter, AuditRecordConverter auditRecordConverter) {
         return new AuditServiceImpl(auditLogMapper, auditRecordMapper, auditLogConverter, auditRecordConverter);
     }
+
+    @Bean
+    @ConditionalOnMissingBean(name = "modelAuditLogConverter")
+    public AuditLogConverter auditLogConverter() {
+        return null;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(name = "modelAuditRecordConverter")
+    public AuditRecordConverter auditRecordConverter() {
+        return null;
+    }
 } 

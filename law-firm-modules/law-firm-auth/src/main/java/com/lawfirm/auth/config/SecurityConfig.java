@@ -19,9 +19,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * 安全配置类
+ * 认证模块安全配置类
+ * <p>
+ * 提供认证授权相关的安全配置，包括:
+ * - JWT认证过滤器
+ * - 密码编码器
+ * - 认证管理器
+ * - 安全过滤链
+ * </p>
  */
-@Configuration
+@Configuration("authSecurityConfig")
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -58,7 +65,7 @@ public class SecurityConfig {
     /**
      * 配置安全过滤链
      */
-    @Bean
+    @Bean("authFilterChain")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             // 禁用CSRF

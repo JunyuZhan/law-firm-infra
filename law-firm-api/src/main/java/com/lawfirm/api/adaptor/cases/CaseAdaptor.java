@@ -5,6 +5,7 @@ import com.lawfirm.api.adaptor.BaseAdaptor;
 import com.lawfirm.model.cases.dto.base.CaseCreateDTO;
 import com.lawfirm.model.cases.dto.base.CaseQueryDTO;
 import com.lawfirm.model.cases.dto.base.CaseUpdateDTO;
+import com.lawfirm.model.cases.entity.base.Case;
 import com.lawfirm.model.cases.service.base.CaseService;
 import com.lawfirm.model.cases.vo.base.CaseDetailVO;
 import com.lawfirm.model.cases.vo.base.CaseQueryVO;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 案件适配器
@@ -102,6 +104,9 @@ public class CaseAdaptor extends BaseAdaptor {
      */
     public List<CaseQueryVO> getUserCases(Long userId) {
         log.info("获取用户相关案件: userId={}", userId);
-        return caseService.getUserCases(userId);
+        List<Case> cases = caseService.getUserCases(userId);
+        return cases.stream()
+                .map(c -> convert(c, CaseQueryVO.class))
+                .collect(Collectors.toList());
     }
 } 

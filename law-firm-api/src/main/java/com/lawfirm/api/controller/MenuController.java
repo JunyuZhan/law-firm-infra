@@ -1,7 +1,7 @@
 package com.lawfirm.api.controller;
 
 import com.lawfirm.api.adaptor.system.MenuAdaptor;
-import com.lawfirm.api.common.ResponseResult;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.system.vo.MenuVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +25,7 @@ public class MenuController {
 
     @Operation(summary = "获取用户菜单")
     @GetMapping("/list")
-    public ResponseResult<List<MenuVO>> getUserMenus() {
-        return ResponseResult.success(menuAdaptor.getUserMenus());
+    public CommonResult<List<MenuVO>> getUserMenus() {
+        return CommonResult.success(menuAdaptor.getUserMenus());
     }
 } 

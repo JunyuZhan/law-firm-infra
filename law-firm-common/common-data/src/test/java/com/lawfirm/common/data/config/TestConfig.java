@@ -39,6 +39,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.test.context.TestPropertySource;
 
+/**
+ * 测试配置类
+ * <p>
+ * 用于配置测试环境中使用的Bean。
+ * 不再包含JPA相关的配置，因为项目已移除JPA依赖。
+ * </p>
+ */
 @TestConfiguration
 @TestPropertySource(properties = {
     "spring.main.allow-bean-definition-overriding=true",

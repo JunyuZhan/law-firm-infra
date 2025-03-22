@@ -16,9 +16,9 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * 全局异常处理器
- * 只处理框架级的基础异常，业务异常应该由具体的业务模块自行处理
+ * 处理基础框架及HTTP相关异常
  */
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.lawfirm.common.core")
 @Slf4j
 public class GlobalExceptionHandler {
     

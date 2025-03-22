@@ -14,6 +14,7 @@ import com.lawfirm.model.log.converter.AuditLogConverter;
 import com.lawfirm.model.log.converter.AuditRecordConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,14 @@ import java.time.LocalDateTime;
 
 /**
  * 审计服务实现
+ * <p>
+ * 提供审计日志和审计记录的写入服务，支持同步和异步记录方式。
+ * 使用log-model模块中定义的数据模型和转换器。
+ * </p>
+ *
+ * @author lawfirm-dev
+ * @version 1.0.0
+ * @since 1.0.0
  */
 @Slf4j
 @Service
@@ -29,7 +38,11 @@ public class AuditServiceImpl implements AuditService {
 
     private final AuditLogMapper auditLogMapper;
     private final AuditRecordMapper auditRecordMapper;
+    
+    @Qualifier("modelAuditLogConverter")
     private final AuditLogConverter auditLogConverter;
+    
+    @Qualifier("modelAuditRecordConverter")
     private final AuditRecordConverter auditRecordConverter;
 
     @Override
@@ -60,6 +73,11 @@ public class AuditServiceImpl implements AuditService {
         record(auditRecordDTO);
     }
 
+    /**
+     * 丰富审计日志信息
+     *
+     * @param auditLog 审计日志实体
+     */
     private void enrichAuditLog(AuditLog auditLog) {
         // 优先使用上下文中的信息
         AuditContext.AuditInfo info = AuditContext.get();
@@ -75,6 +93,11 @@ public class AuditServiceImpl implements AuditService {
         auditLog.setOperationTime(LocalDateTime.now());
     }
 
+    /**
+     * 丰富审计记录信息
+     *
+     * @param auditRecord 审计记录实体
+     */
     private void enrichAuditRecord(AuditRecord auditRecord) {
         // 优先使用上下文中的信息
         AuditContext.AuditInfo info = AuditContext.get();

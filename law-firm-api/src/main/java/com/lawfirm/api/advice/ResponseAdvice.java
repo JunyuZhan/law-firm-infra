@@ -1,6 +1,6 @@
 package com.lawfirm.api.advice;
 
-import com.lawfirm.api.common.ResponseResult;
+import com.lawfirm.common.core.api.CommonResult;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -24,9 +24,9 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                 Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                 ServerHttpRequest request, ServerHttpResponse response) {
-        if (body instanceof ResponseResult) {
+        if (body instanceof CommonResult) {
             return body;
         }
-        return ResponseResult.success(body);
+        return CommonResult.success(body);
     }
 } 

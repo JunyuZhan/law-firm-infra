@@ -92,7 +92,10 @@ public class DocumentAdaptor extends BaseAdaptor {
      */
     public ResponseEntity<byte[]> downloadDocument(Long documentId) {
         log.info("下载文档: {}", documentId);
-        return documentService.downloadDocument(documentId);
+        byte[] fileBytes = documentService.downloadDocument(documentId);
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=document-" + documentId)
+                .body(fileBytes);
     }
 
     /**

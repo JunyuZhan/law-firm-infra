@@ -34,7 +34,7 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
         permission.setDocumentId(dto.getDocumentId());
         permission.setSubjectType("USER");
         permission.setSubjectId(dto.getSubjectId());
-        permission.setPermissionType(dto.getOperation().name());
+        permission.setPermissionType(dto.getPermissionType().name());
         permission.setIsAllowed(true);
         permission.setPermissionSource("DIRECT");
         permission.setIsEnabled(true);
@@ -62,7 +62,7 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
             throw new IllegalArgumentException("Permission not found: " + id);
         }
         
-        permission.setPermissionType(dto.getOperation().name());
+        permission.setPermissionType(dto.getPermissionType().name());
         permission.setIsAllowed(dto.getIsAllowed());
         permission.setUpdateTime(LocalDateTime.now());
         
@@ -127,7 +127,7 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
         PermissionCreateDTO dto = new PermissionCreateDTO();
         dto.setDocumentId(documentId);
         dto.setSubjectId(userId);
-        dto.setOperation(operation);
+        dto.setPermissionType(operation);
         createPermission(dto);
     }
 

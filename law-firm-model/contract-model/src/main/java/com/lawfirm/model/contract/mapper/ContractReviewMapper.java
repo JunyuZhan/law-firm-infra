@@ -41,7 +41,7 @@ public interface ContractReviewMapper {
      */
     @Mapping(source = "id", target = "id")
     @Mapping(source = "node", target = "node")
-    @Mapping(source = "node", target = "nodeName", expression = "java(getNodeName(approval.getNode()))")
+    @Mapping(target = "nodeName", expression = "java(getNodeName(approval.getNode()))")
     @Mapping(source = "approverName", target = "reviewerName")
     @Mapping(source = "approverId", target = "reviewerId")
     @Mapping(source = "status", target = "status")

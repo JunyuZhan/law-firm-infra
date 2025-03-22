@@ -103,7 +103,6 @@ alwaysApply: false
 #创建文件规则：
 创建任何文件前，请先搜索，不要盲目创建。
 
-#底层已经完成，现在正在进行law-firm-modules层，完成了law-firm-auth、law-firm-system、law-firm-client、law-firm-contract、law-firm-document、law-firm-personnel、law-firm-finance、law-firm-case
 
 [README.md](mdc:README.md)D:\weidi\law-firm-infra\README.md
 核心依赖

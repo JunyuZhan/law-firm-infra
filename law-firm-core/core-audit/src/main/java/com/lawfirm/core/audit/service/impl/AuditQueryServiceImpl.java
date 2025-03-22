@@ -14,6 +14,7 @@ import com.lawfirm.model.log.mapper.AuditRecordMapper;
 import com.lawfirm.model.log.converter.AuditLogConverter;
 import com.lawfirm.model.log.converter.AuditRecordConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,14 @@ import java.util.stream.Collectors;
 
 /**
  * 审计查询服务实现
+ * <p>
+ * 提供审计日志和审计记录的查询服务，支持分页查询和条件过滤。
+ * 使用log-model模块中定义的数据模型和转换器。
+ * </p>
+ *
+ * @author lawfirm-dev
+ * @version 1.0.0
+ * @since 1.0.0
  */
 @Service
 @RequiredArgsConstructor
@@ -28,7 +37,11 @@ public class AuditQueryServiceImpl implements AuditQueryService {
 
     private final AuditLogMapper auditLogMapper;
     private final AuditRecordMapper auditRecordMapper;
+    
+    @Qualifier("modelAuditLogConverter")
     private final AuditLogConverter auditLogConverter;
+    
+    @Qualifier("modelAuditRecordConverter")
     private final AuditRecordConverter auditRecordConverter;
 
     @Override
@@ -54,15 +67,15 @@ public class AuditQueryServiceImpl implements AuditQueryService {
 
     @Override
     public List<AuditRecordDTO> queryAuditRecords(Long targetId, String targetType) {
-        List<AuditRecord> records = auditRecordMapper.selectList(
-                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<AuditRecord>()
-                        .eq(AuditRecord::getAuditLogId, targetId)
-                        .eq(targetType != null, AuditRecord::getAuditNode, targetType)
-                        .orderByDesc(AuditRecord::getAuditTime)
-        );
-        return records.stream()
-                .map(auditRecordConverter::toDTO)
-                .collect(Collectors.toList());
+        LambdaQueryWrapper<AuditRecord> wrapper = new LambdaQueryWrapper<AuditRecord>()
+            .eq(targetId != null, AuditRecord::getAuditLogId, targetId)
+            .eq(targetType != null, AuditRecord::getAuditNode, targetType)
+            .orderByDesc(AuditRecord::getAuditTime);
+        
+        return auditRecordMapper.selectList(wrapper)
+            .stream()
+            .map(auditRecordConverter::toDTO)
+            .collect(Collectors.toList());
     }
 
     @Override
