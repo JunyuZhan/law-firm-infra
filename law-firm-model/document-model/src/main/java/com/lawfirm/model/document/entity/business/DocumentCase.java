@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @TableName("doc_case")
-public class CaseDocument extends BaseDocument {
+public class DocumentCase extends BaseDocument {
 
     private static final long serialVersionUID = 1L;
 

@@ -55,9 +55,10 @@ public class SecurityConfig {
     /**
      * 配置认证管理器
      */
-    @Bean("authenticationManager")
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    @Bean("authAuthenticationManager")
+    @Primary
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
     
     /**

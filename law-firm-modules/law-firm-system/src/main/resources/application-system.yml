@@ -1,0 +1,35 @@
+# 系统管理模块配置
+
+# 系统配置
+spring:
+  # Flyway配置
+  flyway:
+    enabled: ${SYSTEM_FLYWAY_ENABLED:true}
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_system
+
+# 系统管理模块自定义配置
+system:
+  security:
+    admin-role: ${SYSTEM_ADMIN_ROLE:ROLE_ADMIN}
+    ip-whitelist: ${SYSTEM_IP_WHITELIST:127.0.0.1,192.168.1.1}
+  
+  monitor:
+    metrics-interval: ${SYSTEM_METRICS_INTERVAL:60}
+    alert-threshold:
+      cpu: ${SYSTEM_ALERT_CPU:80}
+      memory: ${SYSTEM_ALERT_MEMORY:80}
+      disk: ${SYSTEM_ALERT_DISK:90}
+  
+  upgrade:
+    backup-path: ${SYSTEM_BACKUP_PATH:/data/backup}
+    patch-path: ${SYSTEM_PATCH_PATH:/data/patch}
+  
+  log:
+    retention-days: ${SYSTEM_LOG_RETENTION:30}
+    audit-enabled: ${SYSTEM_AUDIT_ENABLED:true}
+    export-path: ${SYSTEM_LOG_EXPORT:/data/export/log} 

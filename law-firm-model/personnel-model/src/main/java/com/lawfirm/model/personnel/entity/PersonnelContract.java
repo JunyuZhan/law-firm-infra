@@ -14,13 +14,13 @@ import lombok.experimental.Accessors;
 import java.time.LocalDate;
 
 /**
- * 合同信息实体
+ * 人事合同信息实体
  */
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName(PersonnelConstants.Table.CONTRACT)
-public class Contract extends ModelBaseEntity {
+@TableName(PersonnelConstants.Table.PERSONNEL_CONTRACT)
+public class PersonnelContract extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
 

@@ -24,6 +24,7 @@ public interface PersonnelConstants extends BaseConstants {
         
         String CONTACT = "per_contact";
         String CONTRACT = "per_contract";
+        String PERSONNEL_CONTRACT = "per_contract"; // 人事合同表与CONTRACT相同，用于区分PersonnelContract实体
         String EMPLOYEE_ORGANIZATION = "per_employee_organization";
         String EMPLOYEE_POSITION_HISTORY = "per_employee_position_history";
         String EDUCATION_EXPERIENCE = "per_education_experience";

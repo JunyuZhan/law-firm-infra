@@ -1,56 +1,58 @@
 # 存储服务配置
+
+# 存储模块特定配置
 storage:
   # 默认存储类型
-  default-type: LOCAL
+  default-type: ${STORAGE_DEFAULT_TYPE:LOCAL}
   # 默认存储桶ID
-  default-bucket-id: 1
+  default-bucket-id: ${STORAGE_DEFAULT_BUCKET_ID:1}
   
   # 路径配置
   path:
     # 本地存储根路径
-    base-dir: /data/files
+    base-dir: ${STORAGE_BASE_DIR:/data/files}
     # 临时目录
-    temp-dir: /data/temp
+    temp-dir: ${STORAGE_TEMP_DIR:/data/temp}
     # URL前缀
-    url-prefix: http://localhost:8080/api/files
+    url-prefix: ${STORAGE_URL_PREFIX:http://localhost:8080/api/files}
     
   # 上传配置
   upload:
     # 最大文件大小 (100MB)
-    max-size: 104857600
+    max-size: ${STORAGE_MAX_SIZE:104857600}
     # 分片大小 (5MB)
-    chunk-size: 5242880
+    chunk-size: ${STORAGE_CHUNK_SIZE:5242880}
     # 允许的文件类型 (全部允许使用*)
-    allowed-types: '*'
+    allowed-types: ${STORAGE_ALLOWED_TYPES:'*'}
     # 禁止的文件类型
-    denied-types: exe,bat,sh,dll
+    denied-types: ${STORAGE_DENIED_TYPES:exe,bat,sh,dll}
     
   # 本地存储配置
   local:
-    enabled: true
-    base-path: /data/files
-    url-prefix: http://localhost:8080/api/files
+    enabled: ${STORAGE_LOCAL_ENABLED:true}
+    base-path: ${STORAGE_LOCAL_PATH:/data/files}
+    url-prefix: ${STORAGE_LOCAL_URL_PREFIX:http://localhost:8080/api/files}
     
   # MinIO配置
   minio:
-    enabled: true
-    endpoint: http://minio.example.com
-    port: 9000
+    enabled: ${STORAGE_MINIO_ENABLED:false}
+    endpoint: ${STORAGE_MINIO_ENDPOINT:http://minio.example.com}
+    port: ${STORAGE_MINIO_PORT:9000}
     access-key: ${MINIO_ACCESS_KEY:minioadmin}
     secret-key: ${MINIO_SECRET_KEY:minioadmin}
-    use-ssl: false
+    use-ssl: ${STORAGE_MINIO_USE_SSL:false}
     
   # 阿里云OSS配置
   aliyun-oss:
-    enabled: false
-    endpoint: oss-cn-beijing.aliyuncs.com
+    enabled: ${STORAGE_ALIYUN_ENABLED:false}
+    endpoint: ${STORAGE_ALIYUN_ENDPOINT:oss-cn-beijing.aliyuncs.com}
     access-key: ${ALIYUN_ACCESS_KEY:}
     secret-key: ${ALIYUN_SECRET_KEY:}
     
   # 腾讯云COS配置
   tencent-cos:
-    enabled: false
-    region: ap-beijing
+    enabled: ${STORAGE_TENCENT_ENABLED:false}
+    region: ${STORAGE_TENCENT_REGION:ap-beijing}
     app-id: ${TENCENT_APP_ID:}
     secret-id: ${TENCENT_SECRET_ID:}
     secret-key: ${TENCENT_SECRET_KEY:}
@@ -58,15 +60,15 @@ storage:
 # 日志配置
 logging:
   level:
-    com.lawfirm.core.storage: INFO
-    io.minio: WARN
+    com.lawfirm.core.storage: ${LOG_LEVEL_STORAGE:INFO}
+    io.minio: ${LOG_LEVEL_MINIO:WARN}
 
 # 文件上传配置
 spring:
   servlet:
     multipart:
-      max-file-size: 100MB
-      max-request-size: 200MB
+      max-file-size: ${MULTIPART_MAX_FILE_SIZE:100MB}
+      max-request-size: ${MULTIPART_MAX_REQUEST_SIZE:200MB}
       location: ${storage.path.temp-dir}
 
 # 缓存配置
@@ -76,11 +78,11 @@ cache:
     # 缓存名称
     name: fileCache
     # 最大缓存条目
-    max-entries: 1000
+    max-entries: ${CACHE_FILE_MAX_ENTRIES:1000}
     # 缓存过期时间(秒)
-    ttl: 1800
+    ttl: ${CACHE_FILE_TTL:1800}
     # 空闲时间(秒)
-    idle-time: 300
+    idle-time: ${CACHE_FILE_IDLE_TIME:300}
 
 # Swagger配置
 springdoc:

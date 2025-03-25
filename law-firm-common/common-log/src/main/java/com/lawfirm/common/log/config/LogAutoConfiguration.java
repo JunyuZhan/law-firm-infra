@@ -22,7 +22,7 @@ public class LogAutoConfiguration {
     /**
      * 配置日志切面
      */
-    @Bean
+    @Bean("commonLogAspect")
     public LogAspect logAspect(ObjectMapper objectMapper, 
                               LogProperties logProperties,
                               ThreadPoolTaskExecutor asyncLogExecutor) {

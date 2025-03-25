@@ -1,7 +1,7 @@
 package com.lawfirm.model.document.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lawfirm.model.document.entity.business.CaseDocument;
+import com.lawfirm.model.document.entity.business.DocumentCase;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  * 重命名为DocumentCaseMapper避免与案件模块中的同名接口冲突
  */
 @Mapper
-public interface DocumentCaseMapper extends BaseMapper<CaseDocument> {
+public interface DocumentCaseMapper extends BaseMapper<DocumentCase> {
     // 继承自BaseMapper的基础方法已经满足大部分需求
     // 如需自定义方法，可在此添加
 } 

@@ -1,7 +1,7 @@
 package com.lawfirm.common.util.validate;
 
 import com.lawfirm.common.core.constant.ResultCode;
-import com.lawfirm.common.core.exception.BaseException;
+import com.lawfirm.common.core.exception.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -9,16 +9,20 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 断言工具类，提供基础的参数校验功能
+ * 断言工具类，用于参数校验
  */
-public class Assert {
+public final class Assert {
+    
+    private Assert() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
     
     /**
      * 断言对象不为空
      */
     public static void notNull(Object object, ResultCode resultCode) {
         if (object == null) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -27,7 +31,7 @@ public class Assert {
      */
     public static void isNull(Object object, ResultCode resultCode) {
         if (object != null) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -36,7 +40,7 @@ public class Assert {
      */
     public static void notEmpty(String str, ResultCode resultCode) {
         if (StringUtils.isEmpty(str)) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -45,7 +49,7 @@ public class Assert {
      */
     public static void notBlank(String str, ResultCode resultCode) {
         if (StringUtils.isBlank(str)) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -54,7 +58,7 @@ public class Assert {
      */
     public static void isTrue(boolean expression, ResultCode resultCode) {
         if (!expression) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -63,7 +67,7 @@ public class Assert {
      */
     public static void isFalse(boolean expression, ResultCode resultCode) {
         if (expression) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -73,7 +77,7 @@ public class Assert {
     public static void isInstanceOf(Class<?> type, Object obj, ResultCode resultCode) {
         notNull(type, ResultCode.VALIDATION_ERROR);
         if (!type.isInstance(obj)) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -82,7 +86,7 @@ public class Assert {
      */
     public static void notEmpty(Collection<?> collection, ResultCode resultCode) {
         if (collection == null || collection.isEmpty()) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -91,7 +95,7 @@ public class Assert {
      */
     public static void notEmpty(Map<?, ?> map, ResultCode resultCode) {
         if (map == null || map.isEmpty()) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -100,7 +104,7 @@ public class Assert {
      */
     public static void notEmpty(Object[] array, ResultCode resultCode) {
         if (array == null || array.length == 0) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -109,7 +113,7 @@ public class Assert {
      */
     public static void equals(Object obj1, Object obj2, ResultCode resultCode) {
         if (!Objects.equals(obj1, obj2)) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -118,7 +122,7 @@ public class Assert {
      */
     public static void inRange(long value, long min, long max, ResultCode resultCode) {
         if (min > max || value < min || value > max) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 
@@ -127,14 +131,14 @@ public class Assert {
      */
     public static void lengthInRange(String str, int min, int max, ResultCode resultCode) {
         if (str == null) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
         if (min < 0 || min > max) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
         int length = str.length();
         if (length < min || length > max) {
-            throw new ValidationException(resultCode);
+            throw new ValidationException(resultCode.getMessage());
         }
     }
 }

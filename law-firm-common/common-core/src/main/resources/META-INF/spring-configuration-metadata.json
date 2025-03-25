@@ -1,0 +1,30 @@
+{
+  "groups": [
+    {
+      "name": "app",
+      "type": "com.lawfirm.common.core.config.properties.AppProperties",
+      "sourceType": "com.lawfirm.common.core.config.properties.AppProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.name",
+      "type": "java.lang.String",
+      "description": "应用名称",
+      "sourceType": "com.lawfirm.common.core.config.properties.AppProperties"
+    },
+    {
+      "name": "app.version",
+      "type": "java.lang.String",
+      "description": "应用版本",
+      "sourceType": "com.lawfirm.common.core.config.properties.AppProperties"
+    },
+    {
+      "name": "app.description",
+      "type": "java.lang.String",
+      "description": "应用描述",
+      "sourceType": "com.lawfirm.common.core.config.properties.AppProperties"
+    }
+  ],
+  "hints": []
+} 

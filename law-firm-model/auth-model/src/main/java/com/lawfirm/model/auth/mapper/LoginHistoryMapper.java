@@ -2,7 +2,9 @@ package com.lawfirm.model.auth.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.LoginHistory;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
  * 
  * @author JunyuZhan
  */
+@Mapper
 public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
     
     /**
@@ -20,6 +23,7 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param userId 用户ID
      * @return 登录历史列表
      */
+    @Select("SELECT * FROM auth_login_history WHERE user_id = #{userId} ORDER BY login_time DESC")
     List<LoginHistory> selectByUserId(Long userId);
     
     /**
@@ -88,5 +92,6 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param userId 用户ID
      * @return 登录历史实体
      */
+    @Select("SELECT * FROM auth_login_history WHERE user_id = #{userId} ORDER BY login_time DESC LIMIT 1")
     LoginHistory selectLastLoginByUserId(Long userId);
 } 

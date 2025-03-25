@@ -1,6 +1,7 @@
 package com.lawfirm.common.util.validate;
 
 import com.lawfirm.common.core.constant.ResultCode;
+import com.lawfirm.common.core.exception.ValidationException;
 import com.lawfirm.common.util.BaseUtilTest;
 import org.junit.jupiter.api.Test;
 

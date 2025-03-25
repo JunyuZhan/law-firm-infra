@@ -12,7 +12,7 @@ spring:
   # SQL脚本执行配置
   sql:
     init:
-      mode: always
+      mode: ${SQL_INIT_MODE:always}
       schema-locations: classpath:db/migration/V*.sql
       continue-on-error: true
 
@@ -27,54 +27,54 @@ document:
   # 存储配置
   storage:
     # 默认存储类型：LOCAL, OSS, S3
-    default-type: LOCAL
+    default-type: ${DOCUMENT_STORAGE_TYPE:LOCAL}
     # 本地存储路径
-    local-path: ${user.home}/lawfirm/document
+    local-path: ${DOCUMENT_LOCAL_PATH:${user.home}/lawfirm/document}
     # 临时文件存储路径
-    temp-path: ${java.io.tmpdir}/document-temp
+    temp-path: ${DOCUMENT_TEMP_PATH:${java.io.tmpdir}/document-temp}
     # 文件访问基础URL
-    base-url: /api/document/file
+    base-url: ${DOCUMENT_BASE_URL:/api/document/file}
     # 预览文件访问URL
-    preview-url: /api/document/preview
+    preview-url: ${DOCUMENT_PREVIEW_URL:/api/document/preview}
     # 允许的文件类型
-    allowed-types: doc,docx,pdf,txt,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,zip,rar
+    allowed-types: ${DOCUMENT_ALLOWED_TYPES:doc,docx,pdf,txt,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,zip,rar}
     # 最大文件大小（字节）
-    max-size: 104857600
+    max-size: ${DOCUMENT_MAX_SIZE:104857600}
   
   # 预览配置
   preview:
     # 是否启用水印
-    watermark-enabled: true
+    watermark-enabled: ${DOCUMENT_WATERMARK_ENABLED:true}
     # 水印文字
-    watermark-text: 预览版本，仅供查看
+    watermark-text: ${DOCUMENT_WATERMARK_TEXT:预览版本，仅供查看}
     # 是否启用转换
-    convert-enabled: true
+    convert-enabled: ${DOCUMENT_CONVERT_ENABLED:true}
     # 支持预览的文件类型
-    supported-types: pdf,doc,docx,xls,xlsx,ppt,pptx,txt,jpg,jpeg,png,gif
+    supported-types: ${DOCUMENT_PREVIEW_TYPES:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,jpg,jpeg,png,gif}
 
   # 版本控制
   version:
     # 是否启用版本控制
-    enabled: true
+    enabled: ${DOCUMENT_VERSION_ENABLED:true}
     # 最大保留版本数
-    max-count: 10
+    max-count: ${DOCUMENT_VERSION_MAX_COUNT:10}
 
   # 分享配置
   share:
     # 默认过期时间（小时）
-    default-expire-hours: 24
+    default-expire-hours: ${DOCUMENT_SHARE_EXPIRE:24}
     # 最大过期时间（小时）
-    max-expire-hours: 720
+    max-expire-hours: ${DOCUMENT_SHARE_MAX_EXPIRE:720}
     # 是否启用密码保护
-    password-protection: true
+    password-protection: ${DOCUMENT_SHARE_PASSWORD:true}
 
 # 定时任务配置
 scheduling:
-  enabled: true
+  enabled: ${SCHEDULING_ENABLED:true}
   # Cron表达式
-  cleanup-temp-files: 0 0 2 * * ?
-  calculate-storage-usage: 0 0 3 * * ?
-  rebuild-document-index: 0 0 1 ? * SUN
-  optimize-search-index: 0 0 4 * * ?
-  cleanup-expired-documents: 0 0 5 * * ?
-  cleanup-operation-logs: 0 0 6 1 * ? 
+  cleanup-temp-files: ${SCHEDULING_CLEANUP_TEMP:0 0 2 * * ?}
+  calculate-storage-usage: ${SCHEDULING_STORAGE_USAGE:0 0 3 * * ?}
+  rebuild-document-index: ${SCHEDULING_REBUILD_INDEX:0 0 1 ? * SUN}
+  optimize-search-index: ${SCHEDULING_OPTIMIZE_INDEX:0 0 4 * * ?}
+  cleanup-expired-documents: ${SCHEDULING_CLEANUP_EXPIRED:0 0 5 * * ?}
+  cleanup-operation-logs: ${SCHEDULING_CLEANUP_LOGS:0 0 6 1 * ?} 

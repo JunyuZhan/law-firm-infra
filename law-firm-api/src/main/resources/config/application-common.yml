@@ -1,0 +1,90 @@
+# 通用配置
+
+# Spring配置
+spring:
+  application:
+    name: law-firm
+  main:
+    allow-bean-definition-overriding: false
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
+      location: /tmp
+
+# 线程池配置
+thread:
+  pool:
+    core-size: 10
+    max-size: 20
+    queue-capacity: 200
+    keep-alive-seconds: 60
+
+# 缓存配置
+cache:
+  default:
+    ttl: 3600
+    max-size: 1000
+
+# 安全配置
+security:
+  basic:
+    enabled: false
+  cors:
+    allowed-origins: "*"
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: "*"
+    allow-credentials: true
+    max-age: 3600
+
+# 配置刷新配置
+config:
+  refresh:
+    enabled: true
+    refresh-interval: 30000
+    refresh-on-startup: true
+
+# 配置加密
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    provider-name: SunJCE
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:your-secret-key}
+
+# API文档配置
+springdoc:
+  swagger-ui:
+    path: ${SWAGGER_UI_PATH:/swagger-ui.html}
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: ${API_DOCS_PATH:/v3/api-docs}
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.lawfirm
+      
+# Knife4j增强配置
+knife4j:
+  enable: ${KNIFE4J_ENABLED:true}
+  setting:
+    language: ${KNIFE4J_LANGUAGE:zh_cn}
+    enable-swagger-models: true
+    enable-document-manage: true
+    swagger-model-name: 实体类列表
+    enable-version: false
+    enable-reload-cache-parameter: false
+    enable-after-script: true
+    enable-filter-multipart-api-method-type: POST
+    enable-filter-multipart-apis: false
+    enable-request-cache: true
+    enable-host: false
+    enable-host-text: 
