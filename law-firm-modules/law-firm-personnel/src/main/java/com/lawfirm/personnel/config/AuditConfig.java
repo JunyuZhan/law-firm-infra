@@ -46,10 +46,11 @@ public class AuditConfig {
      * 初始化审计配置
      */
     @Bean
-    public void initAuditConfig() {
+    public Object initAuditConfig() {
         log.info("初始化人事模块审计配置");
         
         // 注意：实际审计功能需要在core-audit模块可用时实现
         // 这里仅做占位，避免编译错误
+        return new Object(); // 返回一个简单对象
     }
 } 

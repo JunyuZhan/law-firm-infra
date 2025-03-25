@@ -29,10 +29,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 权限服务实现
+ * 认证权限服务实现类
  */
 @Slf4j
-@Service
+@Service("authPermissionServiceImpl")
 @RequiredArgsConstructor
 public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permission> implements PermissionService {
 

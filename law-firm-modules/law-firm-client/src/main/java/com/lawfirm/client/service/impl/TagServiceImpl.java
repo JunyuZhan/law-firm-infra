@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +21,8 @@ import java.util.stream.Collectors;
 /**
  * 客户标签服务实现类
  */
-@Service
+@Slf4j
+@Service("clientTagServiceImpl")
 @RequiredArgsConstructor
 public class TagServiceImpl extends ServiceImpl<TagMapper, ClientTag> implements TagService {
 

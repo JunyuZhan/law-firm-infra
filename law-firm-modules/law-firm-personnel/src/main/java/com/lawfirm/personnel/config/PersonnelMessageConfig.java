@@ -3,11 +3,11 @@ package com.lawfirm.personnel.config;
 import com.lawfirm.core.message.config.MessageConfig;
 import com.lawfirm.core.message.service.MessageTemplateService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import lombok.extern.slf4j.Slf4j;
+import jakarta.annotation.PostConstruct;
 
 /**
  * 人事模块消息配置
@@ -44,12 +44,20 @@ public class PersonnelMessageConfig {
      */
     public static final String BIRTHDAY_WISHES_SUBJECT = EMAIL_SUBJECT_PREFIX + "生日祝福";
     
+    private final MessageTemplateService messageTemplateService;
+    
     /**
-     * 消息模板配置
-     * 复用核心消息模块的模板服务
+     * 构造函数注入消息模板服务
      */
-    @Bean
-    public void initPersonnelMessageTemplates(MessageTemplateService messageTemplateService) {
+    public PersonnelMessageConfig(MessageTemplateService messageTemplateService) {
+        this.messageTemplateService = messageTemplateService;
+    }
+    
+    /**
+     * 初始化人事模块消息模板
+     */
+    @PostConstruct
+    public void initPersonnelMessageTemplates() {
         log.info("初始化人事模块消息模板");
         
         // 使用核心消息模块的模板服务注册人事模块特有的模板

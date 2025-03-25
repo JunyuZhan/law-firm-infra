@@ -19,7 +19,7 @@ public class SystemModuleConfig {
     /**
      * 系统安全配置
      */
-    @Bean
+    @Bean("systemSecurityProperties")
     @ConfigurationProperties(prefix = "system.security")
     public SecurityProperties securityProperties() {
         return new SecurityProperties();

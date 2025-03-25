@@ -1,5 +1,5 @@
 com.lawfirm.common.data.config.DataAutoConfiguration
-com.lawfirm.common.data.config.DruidConfig
+com.lawfirm.common.data.config.DataSourceConfig
 com.lawfirm.common.data.config.MybatisPlusConfig
 com.lawfirm.common.data.config.JacksonConfig
 com.lawfirm.common.data.config.RedisConfig

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @author JunyuZhan
  */
 @Slf4j
-@Service
+@Service("workflowTaskServiceImpl")
 @RequiredArgsConstructor
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, ProcessTask> implements TaskService {
 

@@ -22,10 +22,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 发票服务实现类
+ * 财务发票服务实现类
  */
 @Slf4j
-@Service
+@Service("financeInvoiceServiceImpl")
 @RequiredArgsConstructor
 public class InvoiceServiceImpl extends BaseServiceImpl<InvoiceMapper, Invoice> implements InvoiceService {
 

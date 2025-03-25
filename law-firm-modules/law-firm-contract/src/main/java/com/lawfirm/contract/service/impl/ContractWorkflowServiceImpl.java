@@ -19,7 +19,7 @@ import java.util.Map;
  * 集成core-workflow组件，负责合同审批流程的管理
  */
 @Slf4j
-@Service
+@Service("contractWorkflowServiceImpl")
 @RequiredArgsConstructor
 public class ContractWorkflowServiceImpl implements ContractWorkflowService {
 

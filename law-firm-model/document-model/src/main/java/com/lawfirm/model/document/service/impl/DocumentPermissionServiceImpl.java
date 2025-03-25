@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 文档权限服务实现类
  */
-@Service
+@Service("modelDocumentPermissionServiceImpl")
 public class DocumentPermissionServiceImpl implements DocumentPermissionService {
 
     // 使用内存存储，实际项目中应该使用数据库

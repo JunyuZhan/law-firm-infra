@@ -17,7 +17,7 @@ import java.util.Map;
  * @author JunyuZhan
  */
 @Slf4j
-@Service
+@Service("workflowMonitorServiceImpl")
 @RequiredArgsConstructor
 public class ProcessMonitorServiceImpl implements ProcessMonitorService {
 

@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 角色服务实现
+ * 认证角色服务实现类
  */
 @Slf4j
-@Service
+@Service("authRoleServiceImpl")
 @RequiredArgsConstructor
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
     

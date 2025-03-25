@@ -21,10 +21,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 付款计划服务实现类
+ * 财务付款计划服务实现类
  */
 @Slf4j
-@Service
+@Service("financePaymentPlanServiceImpl")
 @RequiredArgsConstructor
 public class PaymentPlanServiceImpl extends BaseServiceImpl<PaymentPlanMapper, PaymentPlan> implements PaymentPlanService {
 

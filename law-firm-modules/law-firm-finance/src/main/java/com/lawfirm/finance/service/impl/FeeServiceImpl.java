@@ -25,7 +25,7 @@ import java.util.List;
  * 费用服务实现类
  */
 @Slf4j
-@Service
+@Service("financeServiceImpl")
 @RequiredArgsConstructor
 public class FeeServiceImpl extends BaseServiceImpl<FeeMapper, Fee> implements FeeService {
 

@@ -3,11 +3,14 @@ package com.lawfirm.model.personnel.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.personnel.entity.Contact;
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 联系人数据访问接口
+ * 人事联系人数据访问接口
+ * 重命名为PersonnelContactMapper避免与客户模块中的同名接口冲突
  */
-public interface ContactMapper extends BaseMapper<Contact> {
+@Mapper
+public interface PersonnelContactMapper extends BaseMapper<Contact> {
 
     /**
      * 根据人员ID查询联系人列表

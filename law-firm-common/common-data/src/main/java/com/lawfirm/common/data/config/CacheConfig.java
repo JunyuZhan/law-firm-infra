@@ -20,12 +20,12 @@ import java.time.Duration;
 /**
  * 缓存配置
  */
-@Configuration
+@Configuration("dataCacheConfig")
 @EnableCaching
 @EnableConfigurationProperties(CacheProperties.class)
 public class CacheConfig {
 
-    @Bean
+    @Bean("dataCacheManager")
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
         // 配置序列化
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
@@ -42,7 +42,7 @@ public class CacheConfig {
                 .build();
     }
 
-    @Bean
+    @Bean("dataRedisCacheConfiguration")
     public RedisCacheConfiguration redisCacheConfiguration(ObjectMapper objectMapper) {
         // 使用新的构造方法创建序列化器
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);

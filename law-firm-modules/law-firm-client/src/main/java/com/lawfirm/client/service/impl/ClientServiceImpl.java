@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * 客户服务实现类
  */
 @Slf4j
-@Service
+@Service("clientServiceImpl")
 @RequiredArgsConstructor
 public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> implements ClientService {
     

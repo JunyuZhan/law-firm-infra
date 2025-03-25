@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("caseFeeServiceImpl")
 @RequiredArgsConstructor
-public class FeeServiceImpl implements CaseFinanceService {
+public class CaseFeeServiceImpl implements CaseFinanceService {
 
     private final CaseFeeMapper feeMapper;
     private final CaseAuditProvider auditProvider;

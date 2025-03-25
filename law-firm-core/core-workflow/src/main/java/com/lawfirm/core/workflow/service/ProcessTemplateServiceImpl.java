@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author JunyuZhan
  */
 @Slf4j
-@Service
+@Service("workflowTemplateServiceImpl")
 @RequiredArgsConstructor
 public class ProcessTemplateServiceImpl extends ServiceImpl<ProcessTemplateMapper, ProcessTemplate> implements ProcessTemplateService {
 

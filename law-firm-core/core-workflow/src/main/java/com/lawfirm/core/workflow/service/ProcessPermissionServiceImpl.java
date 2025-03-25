@@ -15,7 +15,7 @@ import java.util.Map;
  * @author JunyuZhan
  */
 @Slf4j
-@Service
+@Service("workflowPermissionServiceImpl")
 @RequiredArgsConstructor
 public class ProcessPermissionServiceImpl implements ProcessPermissionService {
 

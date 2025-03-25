@@ -36,7 +36,7 @@ import java.util.UUID;
  * 案件服务实现类
  */
 @Slf4j
-@Service
+@Service("caseServiceImpl")
 @RequiredArgsConstructor
 public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implements CaseService {
 

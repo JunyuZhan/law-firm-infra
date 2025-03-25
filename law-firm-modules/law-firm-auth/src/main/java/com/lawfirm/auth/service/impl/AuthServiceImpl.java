@@ -21,10 +21,10 @@ import org.springframework.util.StringUtils;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 认证服务实现
+ * 认证服务实现类
  */
 @Slf4j
-@Service
+@Service("authServiceImpl")
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     

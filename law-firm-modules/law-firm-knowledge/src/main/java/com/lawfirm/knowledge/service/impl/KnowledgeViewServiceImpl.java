@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 知识浏览记录服务实现类
+ * 知识库查看记录服务实现类
  */
 @Slf4j
-@Service
+@Service("knowledgeViewServiceImpl")
 @RequiredArgsConstructor
 public class KnowledgeViewServiceImpl extends ServiceImpl<KnowledgeViewMapper, KnowledgeView> implements KnowledgeViewService {
 

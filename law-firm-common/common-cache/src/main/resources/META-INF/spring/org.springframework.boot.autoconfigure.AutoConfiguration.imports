@@ -1,2 +1,2 @@
 com.lawfirm.common.cache.config.CacheAutoConfiguration
-com.lawfirm.common.cache.config.RedisConfig 
+com.lawfirm.common.cache.config.RedisTemplateConfig 

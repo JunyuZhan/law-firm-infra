@@ -10,7 +10,6 @@ import com.lawfirm.model.ai.enums.ModelStatus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,19 +19,14 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * AI模型服务实现类
  */
-@Service
+@Service("aiModelServiceImpl")
 public class AIModelServiceImpl implements AIModelService {
     
     private static final Logger logger = LoggerFactory.getLogger(AIModelServiceImpl.class);
     
-    @Autowired
-    private AIProviderFactory providerFactory;
-    
-    @Autowired
-    private AIConfig aiConfig;
-    
-    @Autowired
-    private ModelConfig modelConfig;
+    private final AIProviderFactory providerFactory;
+    private final AIConfig aiConfig;
+    private final ModelConfig modelConfig;
     
     // 当前使用的模型ID
     private String currentModelId;
@@ -42,6 +36,12 @@ public class AIModelServiceImpl implements AIModelService {
     
     // 反馈ID计数器
     private final AtomicLong feedbackIdCounter = new AtomicLong(1);
+    
+    public AIModelServiceImpl(AIProviderFactory providerFactory, AIConfig aiConfig, ModelConfig modelConfig) {
+        this.providerFactory = providerFactory;
+        this.aiConfig = aiConfig;
+        this.modelConfig = modelConfig;
+    }
     
     @Override
     public String getDefaultModel() {

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({
-    DruidConfig.class,
+    DataSourceConfig.class,
     MybatisPlusConfig.class,
     JacksonConfig.class,
     RedisConfig.class,

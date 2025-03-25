@@ -17,29 +17,26 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 职位服务实现类
- * 实现扩展的ExtendedPositionService接口
+ * 人事岗位服务实现类
  */
 @Slf4j
-@Service
+@Service("personnelPositionServiceImpl")
+@RequiredArgsConstructor
 public class PositionServiceImpl implements ExtendedPositionService {
 
-    @Autowired
-    private PositionMapper positionMapper;
+    private final PositionMapper positionMapper;
     
-    @Autowired
-    private EmployeeMapper employeeMapper;
+    private final EmployeeMapper employeeMapper;
     
-    @Autowired
-    private PositionConverter positionConverter;
+    private final PositionConverter positionConverter;
     
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional(rollbackFor = Exception.class)

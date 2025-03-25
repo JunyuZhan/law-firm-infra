@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 模板服务实现类
+ * 文档模板服务实现类
  */
 @Slf4j
-@Service
+@Service("documentTemplateServiceImpl")
 public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper, TemplateDocument> implements TemplateService {
 
     private final StorageManager storageManager;

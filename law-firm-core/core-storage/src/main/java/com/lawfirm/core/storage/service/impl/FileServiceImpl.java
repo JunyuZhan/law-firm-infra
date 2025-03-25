@@ -32,25 +32,19 @@ import com.lawfirm.model.storage.vo.FileVO;
 import com.lawfirm.model.storage.vo.PageVO;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 文件服务实现类
  */
 @Slf4j
-@Service
+@Service("storageFileServiceImpl")
+@RequiredArgsConstructor
 public class FileServiceImpl extends BaseServiceImpl<FileObjectMapper, FileObject> implements FileService {
 
     private final FileUploader fileUploader;
     private final FileOperator fileOperator;
     private final StorageProperties storageProperties;
-    
-    public FileServiceImpl(FileObjectMapper baseMapper, FileUploader fileUploader, 
-                          FileOperator fileOperator, StorageProperties storageProperties) {
-        super();
-        this.fileUploader = fileUploader;
-        this.fileOperator = fileOperator;
-        this.storageProperties = storageProperties;
-    }
     
     @Override
     @Transactional

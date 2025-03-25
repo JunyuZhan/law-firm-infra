@@ -3,11 +3,14 @@ package com.lawfirm.model.personnel.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.personnel.entity.Contract;
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 合同数据访问接口
+ * 人事合同数据访问接口
+ * 重命名为PersonnelContractMapper避免与合同模块中的同名接口冲突
  */
-public interface ContractMapper extends BaseMapper<Contract> {
+@Mapper
+public interface PersonnelContractMapper extends BaseMapper<Contract> {
 
     /**
      * 根据员工ID查询合同列表

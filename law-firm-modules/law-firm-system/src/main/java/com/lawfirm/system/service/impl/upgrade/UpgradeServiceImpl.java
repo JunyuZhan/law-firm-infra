@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import lombok.RequiredArgsConstructor;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -33,21 +34,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.Base64;
 
 @Slf4j
-@Service
+@Service("systemUpgradeServiceImpl")
+@RequiredArgsConstructor
 public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> implements UpgradeService {
 
     private final PatchMapper patchMapper;
     private final FileService fileService;
     private final JdbcTemplate jdbcTemplate;
     private final FileOperator fileOperator;
-
-    public UpgradeServiceImpl(PatchMapper patchMapper, FileService fileService, 
-                            JdbcTemplate jdbcTemplate, FileOperator fileOperator) {
-        this.patchMapper = patchMapper;
-        this.fileService = fileService;
-        this.jdbcTemplate = jdbcTemplate;
-        this.fileOperator = fileOperator;
-    }
 
     @Override
     public List<UpgradeVO> selectUpgradeList(UpgradeQueryDTO queryDTO) {

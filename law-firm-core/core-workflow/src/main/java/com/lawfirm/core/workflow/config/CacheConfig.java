@@ -13,7 +13,7 @@ import java.util.Arrays;
  * 
  * @author JunyuZhan
  */
-@Configuration
+@Configuration("workflowCacheConfig")
 @EnableCaching
 public class CacheConfig {
     
@@ -42,7 +42,7 @@ public class CacheConfig {
      * 
      * @return 缓存管理器
      */
-    @Bean
+    @Bean("workflowCacheManager")
     public CacheManager cacheManager() {
         ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();
         cacheManager.setCacheNames(Arrays.asList(

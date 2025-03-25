@@ -22,8 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * 财务应收款服务实现类
+ */
 @Slf4j
-@Service
+@Service("financeReceivableServiceImpl")
 @RequiredArgsConstructor
 public class ReceivableServiceImpl implements ReceivableService {
 

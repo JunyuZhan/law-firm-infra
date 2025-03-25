@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 用户服务实现
+ * 认证用户服务实现类
  */
 @Slf4j
-@Service
+@Service("authUserServiceImpl")
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     

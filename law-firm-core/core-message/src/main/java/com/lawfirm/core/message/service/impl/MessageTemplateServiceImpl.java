@@ -3,6 +3,7 @@ package com.lawfirm.core.message.service.impl;
 import com.lawfirm.core.message.service.MessageTemplateService;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 消息模板服务实现类
  */
 @Slf4j
-@Service
+@Service("messageTemplateServiceImpl")
+@RequiredArgsConstructor
 public class MessageTemplateServiceImpl implements MessageTemplateService {
     
     /**

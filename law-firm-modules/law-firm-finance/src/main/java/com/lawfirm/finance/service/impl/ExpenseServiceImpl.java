@@ -25,10 +25,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 支出服务实现类
+ * 财务支出服务实现类
  */
 @Slf4j
-@Service
+@Service("financeExpenseServiceImpl")
 @RequiredArgsConstructor
 public class ExpenseServiceImpl extends BaseServiceImpl<ExpenseMapper, Expense> implements ExpenseService {
 

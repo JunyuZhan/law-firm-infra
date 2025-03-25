@@ -46,6 +46,16 @@
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
+            <artifactId>storage-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>base-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
             <artifactId>ai-model</artifactId>
             <version>${revision}</version>
         </dependency>

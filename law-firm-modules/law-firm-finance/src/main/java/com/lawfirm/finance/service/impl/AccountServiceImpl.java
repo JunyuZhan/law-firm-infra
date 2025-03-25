@@ -25,10 +25,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * 账户服务实现类
+ * 财务账户服务实现类
  */
 @Slf4j
-@Service
+@Service("financeAccountServiceImpl")
 @RequiredArgsConstructor
 public class AccountServiceImpl extends BaseServiceImpl<AccountMapper, Account> implements AccountService {
 

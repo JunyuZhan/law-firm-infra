@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 知识点赞服务实现类
+ * 知识库点赞服务实现类
  */
 @Slf4j
-@Service
+@Service("knowledgeLikeServiceImpl")
 @RequiredArgsConstructor
 public class KnowledgeLikeServiceImpl extends ServiceImpl<KnowledgeLikeMapper, KnowledgeLike> implements KnowledgeLikeService {
 

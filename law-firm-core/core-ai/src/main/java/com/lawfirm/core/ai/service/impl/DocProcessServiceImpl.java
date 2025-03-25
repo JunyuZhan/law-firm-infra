@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,13 +19,13 @@ import java.util.Map;
  * 文档处理服务实现类
  * 实现文档解析、分类、关键信息提取等功能
  */
-@Service
+@Service("aiDocProcessServiceImpl")
+@RequiredArgsConstructor
 public class DocProcessServiceImpl implements DocProcessService {
     
     private static final Logger logger = LoggerFactory.getLogger(DocProcessServiceImpl.class);
     
-    @Autowired
-    private AIProviderFactory providerFactory;
+    private final AIProviderFactory providerFactory;
     
     @Value("${lawfirm.ai.default-provider:openai}")
     private String defaultProviderName;

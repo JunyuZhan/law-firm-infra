@@ -38,10 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 合同财务服务实现类
+ * 财务合同服务实现类
  */
 @Slf4j
-@Service
+@Service("financeContractServiceImpl")
 @RequiredArgsConstructor
 public class ContractFinanceServiceImpl implements ContractFinanceService {
 

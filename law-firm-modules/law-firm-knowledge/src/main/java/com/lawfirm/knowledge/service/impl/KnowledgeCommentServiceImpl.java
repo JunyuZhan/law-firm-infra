@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 知识评论服务实现类
+ * 知识库评论服务实现类
  */
 @Slf4j
-@Service
+@Service("knowledgeCommentServiceImpl")
 @RequiredArgsConstructor
 public class KnowledgeCommentServiceImpl extends ServiceImpl<KnowledgeCommentMapper, KnowledgeComment> implements KnowledgeCommentService {
 

@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 交易服务实现类
+ * 财务交易服务实现类
  */
 @Slf4j
-@Service
+@Service("financeTransactionServiceImpl")
 public class TransactionServiceImpl extends BaseServiceImpl<TransactionMapper, Transaction>
         implements TransactionService {
 

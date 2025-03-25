@@ -25,11 +25,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 员工与认证系统桥接服务实现类
- * 实现personnel-model的EmployeeAuthBridge接口
+ * 人事员工认证桥接服务实现类
  */
 @Slf4j
-@Service
+@Service("personnelAuthBridgeServiceImpl")
 public class EmployeeAuthBridgeImpl implements EmployeeAuthBridge {
 
     @Autowired

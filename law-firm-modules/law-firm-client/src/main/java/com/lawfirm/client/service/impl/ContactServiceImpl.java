@@ -12,14 +12,16 @@ import com.lawfirm.model.client.vo.ContactVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 联系人服务实现类
+ * 客户联系人服务实现类
  */
-@Service
+@Slf4j
+@Service("clientContactServiceImpl")
 @RequiredArgsConstructor
 public class ContactServiceImpl extends ServiceImpl<ContactMapper, ClientContact> implements ContactService {
     

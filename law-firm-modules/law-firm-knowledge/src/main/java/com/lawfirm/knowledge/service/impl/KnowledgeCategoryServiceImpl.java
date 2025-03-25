@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 知识分类服务实现类
+ * 知识库分类服务实现类
  */
 @Slf4j
-@Service
+@Service("knowledgeCategoryServiceImpl")
 @RequiredArgsConstructor
 public class KnowledgeCategoryServiceImpl extends ServiceImpl<KnowledgeCategoryMapper, KnowledgeCategory> implements KnowledgeCategoryService {
 

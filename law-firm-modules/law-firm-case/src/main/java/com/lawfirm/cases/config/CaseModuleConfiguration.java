@@ -25,7 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @ConditionalOnProperty(prefix = "lawfirm.module", name = "case", havingValue = "true", matchIfMissing = true)
 @ComponentScan(basePackages = "com.lawfirm.cases")
-@MapperScan("com.lawfirm.model.cases.mapper")
+// 注释掉冲突的MapperScan配置，使用全局配置
+// @MapperScan("com.lawfirm.model.cases.mapper")
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
 @EnableAsync

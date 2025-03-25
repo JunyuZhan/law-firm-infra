@@ -27,24 +27,18 @@ import com.lawfirm.model.storage.vo.BucketVO;
 import com.lawfirm.model.storage.vo.PageVO;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 存储桶服务实现类
  */
 @Slf4j
-@Service
+@Service("storageBucketServiceImpl")
+@RequiredArgsConstructor
 public class BucketServiceImpl extends BaseServiceImpl<StorageBucketMapper, StorageBucket> implements BucketService {
 
     private final StorageContext storageContext;
     private final StorageProperties storageProperties;
-    
-    public BucketServiceImpl(StorageBucketMapper baseMapper, 
-                           StorageContext storageContext,
-                           StorageProperties storageProperties) {
-        super();
-        this.storageContext = storageContext;
-        this.storageProperties = storageProperties;
-    }
     
     @Override
     @Transactional

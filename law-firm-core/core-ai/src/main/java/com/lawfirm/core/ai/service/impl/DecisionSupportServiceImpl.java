@@ -15,10 +15,15 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 决策支持服务实现类
  */
-@Service
+@Slf4j
+@Service("aiDecisionSupportServiceImpl")
+@RequiredArgsConstructor
 public class DecisionSupportServiceImpl implements DecisionSupportService {
     
     private static final Logger logger = LoggerFactory.getLogger(DecisionSupportServiceImpl.class);

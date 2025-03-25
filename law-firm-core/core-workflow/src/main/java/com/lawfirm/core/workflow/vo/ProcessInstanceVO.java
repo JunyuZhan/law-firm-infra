@@ -118,4 +118,14 @@ public class ProcessInstanceVO implements FlowableVO {
      * 当前处理人
      */
     private String currentHandler;
+
+    /**
+     * 设置租户ID
+     * 
+     * @param tenantId 租户ID
+     */
+    @Override
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 } 

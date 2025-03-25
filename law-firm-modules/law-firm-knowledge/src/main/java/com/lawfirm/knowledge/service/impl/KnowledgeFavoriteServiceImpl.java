@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 知识收藏服务实现类
+ * 知识库收藏服务实现类
  */
 @Slf4j
-@Service
+@Service("knowledgeFavoriteServiceImpl")
 @RequiredArgsConstructor
 public class KnowledgeFavoriteServiceImpl extends ServiceImpl<KnowledgeFavoriteMapper, KnowledgeFavorite> implements KnowledgeFavoriteService {
 

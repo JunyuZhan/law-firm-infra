@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("caseProcessServiceImpl")
 @RequiredArgsConstructor
-public class ProcessServiceImpl implements CaseTaskService {
+public class CaseProcessServiceImpl implements CaseTaskService {
 
     private final CaseWorkflowManager workflowManager;
     private final CaseTaskAssigner taskAssigner;

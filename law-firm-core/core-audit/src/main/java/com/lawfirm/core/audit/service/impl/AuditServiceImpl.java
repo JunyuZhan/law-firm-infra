@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
  * @since 1.0.0
  */
 @Slf4j
-@Service
+@Service("auditServiceImpl")
 @RequiredArgsConstructor
 public class AuditServiceImpl implements AuditService {
 

@@ -2,58 +2,33 @@ package com.lawfirm.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * API层启动类
+ * 律师事务所API应用启动类
+ * 
+ * 作为系统的入口点，负责初始化和启动应用程序。
+ * 该类配置了Spring Boot应用程序的基本设置，包括组件扫描路径和其他启动参数。
+ * 
+ * 注意：所有模块中的Bean应通过明确的命名方式(@Service, @Component等)避免冲突，
+ * 而不是通过复杂的扫描配置
  */
-@SpringBootApplication
-@ComponentScan(basePackages = {"com.lawfirm"},
-    excludeFilters = {
-        // 排除所有模型层的服务实现
-        @ComponentScan.Filter(type = FilterType.REGEX, 
-                pattern = "com\\.lawfirm\\.model\\..*\\.service\\.impl\\..*"),
-        // 排除非API层的WebConfig
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.common.web.config.WebConfig.class}),
-        // 排除非API层的XssFilter
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.common.web.filter.XssFilter.class}),
-        // 排除非API层相关的CacheConfig
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.common.data.config.CacheConfig.class}),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.core.workflow.config.CacheConfig.class}),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.common.cache.config.CacheConfig.class}),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.client.config.CacheConfig.class}),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.contract.config.CacheConfig.class}),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.finance.config.CacheConfig.class}),
-        // 排除document模块的存储策略，优先使用core模块的实现
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.document.service.strategy.storage.DocumentLocalStorageStrategy.class}),
-        // 排除personnel模块的消息配置，优先使用core模块的实现
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.personnel.config.PersonnelMessageConfig.class}),
-        // 排除案例模块中的DocumentServiceImpl，避免与document模块冲突
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.cases.service.impl.DocumentServiceImpl.class}),
-        // 排除案例模块中的ProcessServiceImpl，避免与工作流模块冲突
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.cases.service.impl.ProcessServiceImpl.class}),
-        // 排除合同模块中的WorkflowConfig，避免与工作流核心模块冲突
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.contract.config.WorkflowConfig.class}),
-        // 排除案例模块中的FeeServiceImpl，避免与财务模块冲突
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-                classes = {com.lawfirm.cases.service.impl.FeeServiceImpl.class})
+@SpringBootApplication(
+    scanBasePackages = {
+        "com.lawfirm.api",
+        "com.lawfirm.common",
+        "com.lawfirm.core",
+        "com.lawfirm.model",
+        "com.lawfirm.modules"
     }
 )
+@EnableTransactionManagement
 public class LawFirmApiApplication {
+    /**
+     * 应用程序主入口方法
+     * 
+     * @param args 命令行参数
+     */
     public static void main(String[] args) {
         SpringApplication.run(LawFirmApiApplication.class, args);
     }

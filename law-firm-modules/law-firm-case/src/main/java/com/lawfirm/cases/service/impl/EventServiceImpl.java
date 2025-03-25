@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * 案件事件服务实现类
  */
 @Slf4j
-@Service
+@Service("caseEventServiceImpl")
 @RequiredArgsConstructor
 public class EventServiceImpl implements CaseEventService {
 

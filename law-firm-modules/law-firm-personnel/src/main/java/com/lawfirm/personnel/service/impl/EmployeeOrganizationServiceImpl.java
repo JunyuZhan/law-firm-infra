@@ -8,8 +8,8 @@ import com.lawfirm.model.personnel.mapper.EmployeeOrganizationRelationMapper;
 import com.lawfirm.model.personnel.mapper.EmployeePositionHistoryMapper;
 import com.lawfirm.model.personnel.service.EmployeeOrganizationService;
 import com.lawfirm.common.core.exception.ValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,20 +23,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 员工与组织关系服务实现类
+ * 人事员工组织关系服务实现类
  */
 @Slf4j
-@Service
+@Service("personnelEmployeeOrgServiceImpl")
+@RequiredArgsConstructor
 public class EmployeeOrganizationServiceImpl implements EmployeeOrganizationService {
 
-    @Autowired
-    private EmployeeOrganizationRelationMapper relationMapper;
+    private final EmployeeOrganizationRelationMapper relationMapper;
     
-    @Autowired
-    private EmployeePositionHistoryMapper positionHistoryMapper;
+    private final EmployeePositionHistoryMapper positionHistoryMapper;
     
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public Long getPrimaryOrganizationId(Long employeeId) {

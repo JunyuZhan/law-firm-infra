@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 成本中心服务实现类
+ * 财务成本中心服务实现类
  */
 @Slf4j
-@Service
+@Service("financeCostCenterServiceImpl")
 @RequiredArgsConstructor
 public class CostCenterServiceImpl extends BaseServiceImpl<CostCenterMapper, CostCenter> implements CostCenterService {
 

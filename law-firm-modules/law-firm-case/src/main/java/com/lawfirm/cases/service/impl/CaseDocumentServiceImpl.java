@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("caseDocumentServiceImpl")
 @RequiredArgsConstructor
-public class DocumentServiceImpl implements CaseDocumentService {
+public class CaseDocumentServiceImpl implements CaseDocumentService {
 
     private final CaseDocumentMapper documentMapper;
     private final CaseAuditProvider auditProvider;

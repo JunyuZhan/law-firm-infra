@@ -19,11 +19,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 用户与人员关联服务实现
- * 作为auth-model和personnel-model之间的桥接层，实现模块间的松耦合集成
+ * 认证用户人事服务实现类
  */
 @Slf4j
-@Service
+@Service("authUserPersonnelServiceImpl")
 @RequiredArgsConstructor
 public class UserPersonnelServiceImpl implements UserPersonnelService {
 

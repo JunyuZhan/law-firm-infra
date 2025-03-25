@@ -20,7 +20,7 @@ import java.util.List;
  * 知识库服务实现类
  */
 @Slf4j
-@Service
+@Service("knowledgeServiceImpl")
 @RequiredArgsConstructor
 public class KnowledgeServiceImpl extends ServiceImpl<KnowledgeMapper, Knowledge> implements KnowledgeService {
 

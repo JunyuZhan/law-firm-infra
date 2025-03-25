@@ -27,19 +27,17 @@ import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.common.log.annotation.Log;
 
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 系统配置服务实现类
  */
 @Slf4j
-@Service
+@Service("systemConfigServiceImpl")
+@RequiredArgsConstructor
 public class ConfigServiceImpl extends BaseServiceImpl<SysConfigMapper, SysConfig> implements ConfigService {
 
     private final SysConfigMapper configMapper;
-
-    public ConfigServiceImpl(SysConfigMapper configMapper) {
-        this.configMapper = configMapper;
-    }
 
     /**
      * 创建配置

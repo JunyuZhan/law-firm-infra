@@ -46,7 +46,7 @@ import com.lawfirm.model.system.vo.dict.DictVO;
  * 字典服务实现类
  */
 @Slf4j
-@Service
+@Service("systemDictServiceImpl")
 @RequiredArgsConstructor
 public class DictServiceImpl extends BaseServiceImpl<SysDictMapper, SysDict> implements DictService {
 

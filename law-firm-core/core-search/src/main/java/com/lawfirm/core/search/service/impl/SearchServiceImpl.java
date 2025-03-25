@@ -22,7 +22,7 @@ import java.util.Map;
  * 搜索服务实现
  */
 @Slf4j
-@Service
+@Service("searchServiceImpl")
 @Transactional(rollbackFor = Exception.class)
 public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 

@@ -30,7 +30,7 @@ import java.util.List;
  * 文档服务实现类
  */
 @Slf4j
-@Service
+@Service("documentServiceImpl")
 public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDocument> implements DocumentService {
 
     private final StorageManager storageManager;

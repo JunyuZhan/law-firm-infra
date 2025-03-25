@@ -37,7 +37,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 
 @Slf4j
-@Service
+@Service("systemMonitorServiceImpl")
 public class MonitorServiceImpl extends BaseServiceImpl<SysMonitorDataMapper, SysMonitorData> implements MonitorService {
     
     private final SysMonitorDataMapper dataMapper;

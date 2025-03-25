@@ -21,10 +21,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 预算服务实现类
+ * 财务预算服务实现类
  */
 @Slf4j
-@Service
+@Service("financeBudgetServiceImpl")
 @RequiredArgsConstructor
 public class BudgetServiceImpl extends BaseServiceImpl<BudgetMapper, Budget> implements BudgetService {
 

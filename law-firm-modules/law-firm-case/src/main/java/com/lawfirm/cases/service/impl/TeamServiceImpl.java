@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * 整合了案件参与方和案件分配两个服务
  */
 @Slf4j
-@Service
+@Service("caseTeamServiceImpl")
 @RequiredArgsConstructor
 public class TeamServiceImpl implements CaseTeamService {
 

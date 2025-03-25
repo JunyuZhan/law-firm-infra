@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * 合同服务实现类
  */
 @Slf4j
-@Service
+@Service("contractServiceImpl")
 @RequiredArgsConstructor
 public class ContractServiceImpl extends BaseServiceImpl<ContractMapper, Contract> implements ContractService {
 

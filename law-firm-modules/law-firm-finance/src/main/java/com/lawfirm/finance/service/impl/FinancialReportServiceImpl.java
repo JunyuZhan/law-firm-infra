@@ -21,7 +21,7 @@ import java.util.Map;
  * 财务报表服务实现类
  */
 @Slf4j
-@Service
+@Service("financeReportServiceImpl")
 public class FinancialReportServiceImpl extends BaseServiceImpl<FinancialReportMapper, FinancialReport>
         implements FinancialReportService {
 

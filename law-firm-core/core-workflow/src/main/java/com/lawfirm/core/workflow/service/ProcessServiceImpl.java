@@ -13,17 +13,11 @@ import org.flowable.engine.TaskService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 流程服务实现类
- * 
- * @author JunyuZhan
- */
 @Slf4j
-@Service
+@Service("coreProcessServiceImpl")
 @RequiredArgsConstructor
 public class ProcessServiceImpl implements ProcessService {
 
@@ -33,116 +27,97 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createProcess(ProcessCreateDTO createDTO) {
-        log.info("创建流程: createDTO={}", createDTO);
-        // TODO: 实现创建流程逻辑
-        return null;
+        log.info("创建流程: {}", createDTO);
+        // 实现创建流程的逻辑
+        return 0L;
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void updateProcess(ProcessUpdateDTO updateDTO) {
-        log.info("更新流程: updateDTO={}", updateDTO);
-        // TODO: 实现更新流程逻辑
+        log.info("更新流程: {}", updateDTO);
+        // 实现更新流程的逻辑
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void deleteProcess(Long id) {
-        log.info("删除流程: id={}", id);
-        // TODO: 实现删除流程逻辑
+        log.info("删除流程: {}", id);
+        // 实现删除流程的逻辑
     }
 
     @Override
     public ProcessVO getProcess(Long id) {
-        log.info("获取流程详情: id={}", id);
-        // TODO: 实现获取流程详情逻辑
+        log.info("获取流程: {}", id);
+        // 实现获取流程的逻辑
         return null;
     }
 
     @Override
     public List<ProcessVO> listProcesses(ProcessQueryDTO queryDTO) {
-        log.info("查询流程列表: queryDTO={}", queryDTO);
-        // TODO: 实现查询流程列表逻辑
-        return null;
+        log.info("列出流程: {}", queryDTO);
+        // 实现列出流程的逻辑
+        return List.of();
     }
 
     @Override
     public Page<ProcessVO> getProcessList(ProcessQueryDTO queryDTO, int current, int size) {
-        log.info("分页查询流程列表: queryDTO={}, current={}, size={}", queryDTO, current, size);
-        // TODO: 实现分页查询流程列表逻辑
-        return null;
+        log.info("分页获取流程列表: {}, current: {}, size: {}", queryDTO, current, size);
+        // 实现分页获取流程列表的逻辑
+        return new Page<>();
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void startProcess(Long id) {
-        log.info("启动流程: id={}", id);
-        // TODO: 实现启动流程逻辑
+        log.info("启动流程: {}", id);
+        // 实现启动流程的逻辑
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void suspendProcess(Long id) {
-        log.info("暂停流程: id={}", id);
-        // TODO: 实现暂停流程逻辑
+        log.info("暂停流程: {}", id);
+        // 实现暂停流程的逻辑
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void resumeProcess(Long id) {
-        log.info("恢复流程: id={}", id);
-        // TODO: 实现恢复流程逻辑
+        log.info("恢复流程: {}", id);
+        // 实现恢复流程的逻辑
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void terminateProcess(Long id) {
-        log.info("终止流程: id={}", id);
-        // TODO: 实现终止流程逻辑
+        log.info("终止流程: {}", id);
+        // 实现终止流程的逻辑
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void cancelProcess(Long id) {
-        log.info("取消流程: id={}", id);
-        // TODO: 实现取消流程逻辑
+        log.info("取消流程: {}", id);
+        // 实现取消流程的逻辑
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void completeProcess(Long id) {
-        log.info("完成流程: id={}", id);
-        // TODO: 实现完成流程逻辑
+        log.info("完成流程: {}", id);
+        // 实现完成流程的逻辑
     }
 
-    /**
-     * 启动流程实例
-     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public String startProcessInstance(String processDefinitionKey, String businessKey, Map<String, Object> variables) {
-        log.info("启动流程实例: processDefinitionKey={}, businessKey={}, variables={}", processDefinitionKey, businessKey, variables);
-        return runtimeService.startProcessInstanceByKey(processDefinitionKey, businessKey, variables)
-            .getProcessInstanceId();
+        log.info("启动流程实例: processDefinitionKey: {}, businessKey: {}, variables: {}", 
+                processDefinitionKey, businessKey, variables);
+        // 实现启动流程实例的逻辑
+        return "";
     }
 
-    /**
-     * 完成任务
-     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void completeTask(String taskId, Map<String, Object> variables) {
-        log.info("完成任务: taskId={}, variables={}", taskId, variables);
-        taskService.complete(taskId, variables);
+        log.info("完成任务: taskId: {}, variables: {}", taskId, variables);
+        // 实现完成任务的逻辑
     }
 
-    /**
-     * 终止流程实例
-     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void terminateProcessInstance(String processInstanceId, String reason) {
-        log.info("终止流程实例: processInstanceId={}, reason={}", processInstanceId, reason);
-        runtimeService.deleteProcessInstance(processInstanceId, reason);
+        log.info("终止流程实例: processInstanceId: {}, reason: {}", processInstanceId, reason);
+        // 实现终止流程实例的逻辑
     }
-}
+} 

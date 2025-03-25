@@ -20,11 +20,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 组织与人员关系服务实现类
- * 实现organization-model中的OrganizationPersonnelRelationService接口
+ * 人事组织关系服务实现类
  */
 @Slf4j
-@Service
+@Service("personnelOrgRelationServiceImpl")
 public class OrganizationPersonnelRelationServiceImpl implements OrganizationPersonnelRelationService {
 
     @Autowired

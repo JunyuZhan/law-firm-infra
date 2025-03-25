@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,24 +33,20 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * 员工服务实现类
- * 整合了原律师和行政人员服务的功能
+ * 人事员工服务实现类
  */
 @Slf4j
-@Service
+@Service("personnelEmployeeServiceImpl")
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
-    private EmployeeMapper employeeMapper;
+    private final EmployeeMapper employeeMapper;
     
-    @Autowired
-    private EmployeeConverter employeeConverter;
+    private final EmployeeConverter employeeConverter;
     
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
     
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     @Override
     @Transactional(rollbackFor = Exception.class)

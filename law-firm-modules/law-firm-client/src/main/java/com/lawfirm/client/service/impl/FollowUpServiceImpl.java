@@ -17,14 +17,16 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 客户跟进服务实现
+ * 客户跟进服务实现类
  */
-@Service
+@Slf4j
+@Service("clientFollowUpServiceImpl")
 @RequiredArgsConstructor
 public class FollowUpServiceImpl extends ServiceImpl<FollowUpMapper, ClientFollowUp> implements FollowUpService {
 

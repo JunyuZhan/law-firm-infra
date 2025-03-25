@@ -78,4 +78,14 @@ public class ProcessDeploymentVO implements FlowableVO {
      * 父部署ID
      */
     private String parentDeploymentId;
+
+    /**
+     * 设置租户ID
+     * 
+     * @param tenantId 租户ID
+     */
+    @Override
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 } 

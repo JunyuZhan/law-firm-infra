@@ -5,43 +5,44 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 缓存配置类
+ * 缓存配置
  */
-@Configuration
+@Configuration("commonCacheConfig")
+@EnableCaching
 @ConditionalOnProperty(prefix = "spring.redis", name = "host")
 public class CacheConfig {
 
-    @Value("${spring.redis.host:localhost}")
+    @Value("${spring.redis.host}")
     private String host;
 
-    @Value("${spring.redis.port:6379}")
-    private String port;
+    @Value("${spring.redis.port}")
+    private int port;
 
     @Value("${spring.redis.password:}")
     private String password;
 
-    @Value("${spring.redis.database:0}")
-    private int database;
-
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        String address = "redis://" + host + ":" + port;
         config.useSingleServer()
-                .setAddress(address)
-                .setPassword(password.isEmpty() ? null : password)
-                .setDatabase(database)
-                .setConnectionMinimumIdleSize(10)
-                .setConnectionPoolSize(100)
-                .setIdleConnectionTimeout(10000)
-                .setConnectTimeout(10000)
-                .setTimeout(3000)
-                .setRetryAttempts(3)
-                .setRetryInterval(1500);
+              .setAddress("redis://" + host + ":" + port)
+              .setPassword(password.isEmpty() ? null : password);
         return Redisson.create(config);
+    }
+
+    /**
+     * 定义缓存管理器，使用内存缓存作为备用
+     * 注意：在实际应用中应该使用RedissonSpringCacheManager
+     */
+    @Bean("commonCacheManager")
+    public CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager("common");
     }
 } 

@@ -17,10 +17,15 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 问答服务实现类
  */
-@Service
+@Slf4j
+@Service("aiQAServiceImpl")
+@RequiredArgsConstructor
 public class QAServiceImpl implements QAService {
     
     private static final Logger logger = LoggerFactory.getLogger(QAServiceImpl.class);

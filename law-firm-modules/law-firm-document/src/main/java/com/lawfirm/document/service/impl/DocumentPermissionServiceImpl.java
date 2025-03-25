@@ -7,6 +7,7 @@ import com.lawfirm.model.document.enums.DocumentOperationEnum;
 import com.lawfirm.model.document.service.DocumentPermissionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 文档权限服务实现类
  */
-@Service
+@Service("documentPermissionServiceImpl")
+@RequiredArgsConstructor
 public class DocumentPermissionServiceImpl implements DocumentPermissionService {
 
     // 使用内存存储，实际项目中应该使用数据库

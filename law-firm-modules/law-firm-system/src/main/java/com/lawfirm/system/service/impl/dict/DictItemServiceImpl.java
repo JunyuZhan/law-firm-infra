@@ -37,7 +37,7 @@ import com.lawfirm.model.base.service.impl.BaseServiceImpl;
  * 系统字典项服务实现类
  */
 @Slf4j
-@Service
+@Service("systemDictItemServiceImpl")
 @RequiredArgsConstructor
 public class DictItemServiceImpl extends BaseServiceImpl<SysDictItemMapper, SysDictItem> implements DictItemService {
 
