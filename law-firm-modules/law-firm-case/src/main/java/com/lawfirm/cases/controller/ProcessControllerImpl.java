@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +23,14 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/cases/process")
-@RequiredArgsConstructor
 @Tag(name = "案件流程管理", description = "案件流程管理相关接口")
 public class ProcessControllerImpl {
 
     private final CaseApprovalService approvalService;
+
+    public ProcessControllerImpl(@Qualifier("casesApprovalService") CaseApprovalService approvalService) {
+        this.approvalService = approvalService;
+    }
 
     @PostMapping("/approvals")
     @Operation(summary = "发起审批")

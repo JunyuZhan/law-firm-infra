@@ -1,5 +1,8 @@
+-- 文档模块数据库表初始化脚本
+-- 添加模块标识前缀D，避免版本冲突
+
 -- 文档表
-CREATE TABLE IF NOT EXISTS `doc_document` (
+CREATE TABLE IF NOT EXISTS `Ddoc_document` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `category_id` BIGINT COMMENT '分类ID',
     `file_name` VARCHAR(255) NOT NULL COMMENT '文件名',
@@ -28,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `doc_document` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文档表';
 
 -- 文档分类表
-CREATE TABLE IF NOT EXISTS `doc_category` (
+CREATE TABLE IF NOT EXISTS `Ddoc_category` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `parent_id` BIGINT DEFAULT NULL COMMENT '父分类ID',
     `name` VARCHAR(100) NOT NULL COMMENT '分类名称',
@@ -46,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `doc_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文档分类表';
 
 -- 文档标签表
-CREATE TABLE IF NOT EXISTS `doc_tag` (
+CREATE TABLE IF NOT EXISTS `Ddoc_tag` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `name` VARCHAR(50) NOT NULL COMMENT '标签名称',
     `color` VARCHAR(20) COMMENT '标签颜色',
@@ -60,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `doc_tag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文档标签表';
 
 -- 文档标签关联表
-CREATE TABLE IF NOT EXISTS `doc_document_tag` (
+CREATE TABLE IF NOT EXISTS `Ddoc_document_tag` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `document_id` BIGINT NOT NULL COMMENT '文档ID',
     `tag_id` BIGINT NOT NULL COMMENT '标签ID',
@@ -71,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `doc_document_tag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文档标签关联表';
 
 -- 文档版本表
-CREATE TABLE IF NOT EXISTS `doc_version` (
+CREATE TABLE IF NOT EXISTS `Ddoc_version` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `document_id` BIGINT NOT NULL COMMENT '文档ID',
     `version` INT NOT NULL COMMENT '版本号',
@@ -87,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `doc_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文档版本表';
 
 -- 文档访问记录表
-CREATE TABLE IF NOT EXISTS `doc_access_log` (
+CREATE TABLE IF NOT EXISTS `Ddoc_access_log` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `document_id` BIGINT NOT NULL COMMENT '文档ID',
     `user_id` BIGINT NOT NULL COMMENT '用户ID',
@@ -102,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `doc_access_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文档访问记录表';
 
 -- 文档分享表
-CREATE TABLE IF NOT EXISTS `doc_share` (
+CREATE TABLE IF NOT EXISTS `Ddoc_share` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `document_id` BIGINT NOT NULL COMMENT '文档ID',
     `share_code` VARCHAR(32) NOT NULL COMMENT '分享码',

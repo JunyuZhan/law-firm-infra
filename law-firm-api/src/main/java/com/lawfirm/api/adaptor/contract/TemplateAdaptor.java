@@ -8,8 +8,8 @@ import com.lawfirm.model.contract.dto.ContractTemplateQueryDTO;
 import com.lawfirm.model.contract.service.ContractTemplateService;
 import com.lawfirm.model.contract.vo.ContractTemplateVO;
 import com.lawfirm.model.contract.vo.ContractTemplateDetailVO;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,10 +19,13 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class TemplateAdaptor extends BaseAdaptor {
 
     private final ContractTemplateService templateService;
+
+    public TemplateAdaptor(@Qualifier("contractTemplateService") ContractTemplateService templateService) {
+        this.templateService = templateService;
+    }
 
     /**
      * 创建模板

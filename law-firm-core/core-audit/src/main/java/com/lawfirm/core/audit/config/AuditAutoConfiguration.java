@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @EnableConfigurationProperties(AuditProperties.class)
 @ConditionalOnProperty(prefix = "lawfirm.audit", name = "enabled", havingValue = "true", matchIfMissing = true)
-@Import({AsyncConfig.class})
+@Import(AuditAsyncConfig.class)
 public class AuditAutoConfiguration {
 
     @Bean
@@ -44,11 +44,14 @@ public class AuditAutoConfiguration {
         return new AuditFieldAspect(auditService);
     }
 
-    @Bean
-    @ConditionalOnMissingBean
+    @Bean(name = "coreAuditService")
+    @ConditionalOnMissingBean(name = "coreAuditService")
     public AuditService auditService(AuditLogMapper auditLogMapper, AuditRecordMapper auditRecordMapper,
             AuditLogConverter auditLogConverter, AuditRecordConverter auditRecordConverter) {
-        return new AuditServiceImpl(auditLogMapper, auditRecordMapper, auditLogConverter, auditRecordConverter);
+        AuditServiceImpl auditService = new AuditServiceImpl(auditLogMapper, auditRecordMapper);
+        auditService.setAuditLogConverter(auditLogConverter);
+        auditService.setAuditRecordConverter(auditRecordConverter);
+        return auditService;
     }
 
     @Bean

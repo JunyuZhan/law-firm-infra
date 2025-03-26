@@ -3,6 +3,7 @@ package com.lawfirm.document.manager.security;
 import com.lawfirm.common.security.authorization.Authorization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,10 +11,13 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class SecurityContext {
     
     private final Authorization authorization;
+    
+    public SecurityContext(@Qualifier("jdbcAuthorization") Authorization authorization) {
+        this.authorization = authorization;
+    }
     
     /**
      * 检查用户是否有权限访问指定文档

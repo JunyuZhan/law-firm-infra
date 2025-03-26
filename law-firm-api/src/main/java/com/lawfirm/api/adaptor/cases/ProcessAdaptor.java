@@ -7,6 +7,7 @@ import com.lawfirm.model.cases.service.business.CaseApprovalService;
 import com.lawfirm.model.cases.vo.business.CaseApprovalVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,10 +18,13 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class ProcessAdaptor extends BaseAdaptor {
 
     private final CaseApprovalService approvalService;
+
+    public ProcessAdaptor(@Qualifier("casesApprovalService") CaseApprovalService approvalService) {
+        this.approvalService = approvalService;
+    }
 
     /**
      * 发起审批

@@ -1,8 +1,11 @@
+-- 人事模块数据库表初始化脚本
+-- 添加模块标识前缀P，避免版本冲突
+
 -- 注意：这是一个虚拟的迁移脚本，实际中应该根据personnel-model中的实体类定义创建表结构
 -- 数据表实际上已经在其他模块中创建，这里只是为了演示
 
 -- 创建人员表（如果不存在）
-CREATE TABLE IF NOT EXISTS `person` (
+CREATE TABLE IF NOT EXISTS `Pperson` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `code` varchar(32) NOT NULL COMMENT '人员编号',
   `name` varchar(64) NOT NULL COMMENT '姓名',
@@ -27,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `person` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='人员信息表';
 
 -- 创建员工表（如果不存在）
-CREATE TABLE IF NOT EXISTS `employee` (
+CREATE TABLE IF NOT EXISTS `Pemployee` (
   `id` bigint(20) NOT NULL COMMENT '主键ID,关联person表ID',
   `employee_no` varchar(32) NOT NULL COMMENT '工号',
   `join_date` date DEFAULT NULL COMMENT '入职日期',
@@ -48,11 +51,11 @@ CREATE TABLE IF NOT EXISTS `employee` (
   `update_by` bigint(20) DEFAULT NULL COMMENT '更新人ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_employee_no` (`employee_no`, `tenant_id`),
-  CONSTRAINT `fk_employee_person` FOREIGN KEY (`id`) REFERENCES `person` (`id`)
+  CONSTRAINT `fk_employee_person` FOREIGN KEY (`id`) REFERENCES `Pperson` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='员工信息表';
 
 -- 创建律师表（如果不存在）
-CREATE TABLE IF NOT EXISTS `lawyer` (
+CREATE TABLE IF NOT EXISTS `Plawyer` (
   `id` bigint(20) NOT NULL COMMENT '主键ID,关联employee表ID',
   `license_number` varchar(32) DEFAULT NULL COMMENT '律师执业证号',
   `license_issue_date` date DEFAULT NULL COMMENT '证书发放日期',
@@ -69,11 +72,11 @@ CREATE TABLE IF NOT EXISTS `lawyer` (
   `update_by` bigint(20) DEFAULT NULL COMMENT '更新人ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_license_number` (`license_number`, `tenant_id`),
-  CONSTRAINT `fk_lawyer_employee` FOREIGN KEY (`id`) REFERENCES `employee` (`id`)
+  CONSTRAINT `fk_lawyer_employee` FOREIGN KEY (`id`) REFERENCES `Pemployee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='律师信息表';
 
 -- 创建行政人员表（如果不存在）
-CREATE TABLE IF NOT EXISTS `staff` (
+CREATE TABLE IF NOT EXISTS `Pstaff` (
   `id` bigint(20) NOT NULL COMMENT '主键ID,关联employee表ID',
   `staff_function` varchar(100) DEFAULT NULL COMMENT '行政职能',
   `specialist_area` varchar(255) DEFAULT NULL COMMENT '专业领域',
@@ -83,5 +86,5 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `update_time` datetime NOT NULL COMMENT '更新时间',
   `update_by` bigint(20) DEFAULT NULL COMMENT '更新人ID',
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_staff_employee` FOREIGN KEY (`id`) REFERENCES `employee` (`id`)
+  CONSTRAINT `fk_staff_employee` FOREIGN KEY (`id`) REFERENCES `Pemployee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='行政人员信息表'; 

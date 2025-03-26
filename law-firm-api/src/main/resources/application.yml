@@ -7,11 +7,17 @@ spring:
     url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
     username: sa
     password: 
+  # 禁用所有非必要的功能
+  flyway:
+    enabled: false  # 禁用Flyway
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 # 应用基础配置
 app:
   name: law-firm
-  version: ${project.version}
+  version: 1.0.0
   description: 法律事务管理系统
 
 # 服务器配置
@@ -19,77 +25,69 @@ server:
   port: 8081
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
-  tomcat:
-    max-threads: 200
-    connection-timeout: 5000
 
 # 日志配置
 logging:
   level:
     root: INFO
-    com.lawfirm: DEBUG
-    org.springframework: WARN
+    com.lawfirm.api: DEBUG
+    org.springframework: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
-  file:
-    name: logs/law-firm-api.log
-  logback:
-    rollingpolicy:
-      max-file-size: 100MB
-      max-history: 30
 
-# 配置监控
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: ALWAYS
-  info:
-    env:
-      enabled: true
+# 禁用不需要的功能模块
+lawfirm:
+  audit:
+    enabled: false
+  workflow:
+    enabled: false
+  storage:
+    enabled: false
+  search:
+    enabled: false
 
-# JWT配置
-law:
-  firm:
-    security:
-      jwt:
-        secret: your-secret-key-should-be-very-long-and-secure
-        expiration: 86400000  # 24小时，单位：毫秒
-        refresh-expiration: 604800000  # 7天，单位：毫秒
-        issuer: law-firm-auth
-        audience: law-firm-web
+# 禁用工作流引擎  
+flowable:
+  check-process-definitions: false
+  database-schema-update: false
+  async-executor-activate: false
 
-# MyBatis-Plus 配置
+# MyBatis配置
 mybatis-plus:
-  mapper-locations: classpath*:/mapper/**/*.xml
-  type-aliases-package: com.lawfirm.model.**.entity
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
     call-setters-on-nulls: true
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-  global-config:
-    banner: false
-    db-config:
-      id-type: auto
-      table-underline: true
-      logic-delete-field: deleted
-      logic-delete-value: 1
-      logic-not-delete-value: 0
+  # 不使用XML映射，改为注解方式
+  # mapper-locations: classpath*:/mapper/**/*.xml
 
+# Swagger/Springdoc配置 - 默认禁用，可通过环境变量启用
 springdoc:
+  api-docs:
+    enabled: ${ENABLE_API_DOCS:false}
   swagger-ui:
+    enabled: ${ENABLE_API_DOCS:false}
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
-  api-docs:
-    path: /v3/api-docs
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan: com.lawfirm.api.controller
-  show-actuator: true 
+
+# 安全配置
+law.firm.security:
+  jwt:
+    secret: your-secret-key-should-be-very-long-and-secure
+    expiration: 86400000  # 24小时，单位：毫秒
+    refresh-expiration: 604800000  # 7天，单位：毫秒
+    issuer: law-firm-auth
+    audience: law-firm-web 

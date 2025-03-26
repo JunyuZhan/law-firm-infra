@@ -1,7 +1,6 @@
 package com.lawfirm.common.security.context;
 
-import com.lawfirm.common.security.core.SecurityContext;
-import com.lawfirm.common.security.core.UserDetails;
+import com.lawfirm.common.security.authorization.Authorization;
 
 /**
  * 安全上下文持有者，用于存储和获取当前用户的安全信息
@@ -42,7 +41,7 @@ public class SecurityContextHolder {
      * 创建空的安全上下文
      */
     private static SecurityContext createEmptyContext() {
-        return new SecurityContext();
+        return new DefaultSecurityContext();
     }
 
     /**
@@ -50,11 +49,11 @@ public class SecurityContextHolder {
      */
     public static boolean hasPermission(String permission) {
         SecurityContext context = getContext();
-        UserDetails userDetails = context.getUserDetails();
-        if (userDetails == null || userDetails.getPermissions() == null) {
+        Authorization authorization = context.getAuthorization();
+        if (authorization == null) {
             return false;
         }
-        return userDetails.getPermissions().contains(permission);
+        return authorization.hasPermission(permission);
     }
 
     /**

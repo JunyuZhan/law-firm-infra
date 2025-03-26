@@ -4,6 +4,7 @@ import com.lawfirm.api.adaptor.BaseAdaptor;
 import com.lawfirm.model.organization.service.OrganizationTreeService;
 import com.lawfirm.model.organization.vo.OrganizationTreeVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,8 +15,13 @@ import java.util.List;
 @Component
 public class PersonnelOrganizationTreeAdaptor extends BaseAdaptor {
 
+    private final OrganizationTreeService organizationTreeService;
+
     @Autowired
-    private OrganizationTreeService organizationTreeService;
+    public PersonnelOrganizationTreeAdaptor(
+            @Qualifier("organizationTreeServiceImpl") OrganizationTreeService organizationTreeService) {
+        this.organizationTreeService = organizationTreeService;
+    }
 
     /**
      * 获取组织树

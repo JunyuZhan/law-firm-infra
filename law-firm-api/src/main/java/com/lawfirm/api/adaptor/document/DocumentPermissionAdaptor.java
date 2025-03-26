@@ -8,6 +8,7 @@ import com.lawfirm.model.document.service.DocumentPermissionService;
 import com.lawfirm.model.document.vo.permission.PermissionVO;
 import com.lawfirm.model.document.enums.DocumentOperationEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,8 +20,12 @@ import java.util.stream.Collectors;
 @Component
 public class DocumentPermissionAdaptor extends BaseAdaptor {
 
+    private final DocumentPermissionService documentPermissionService;
+
     @Autowired
-    private DocumentPermissionService documentPermissionService;
+    public DocumentPermissionAdaptor(@Qualifier("documentPermissionServiceImpl") DocumentPermissionService documentPermissionService) {
+        this.documentPermissionService = documentPermissionService;
+    }
 
     /**
      * 创建文档权限

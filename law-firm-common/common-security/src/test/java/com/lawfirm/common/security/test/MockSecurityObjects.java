@@ -2,6 +2,9 @@ package com.lawfirm.common.security.test;
 
 import com.lawfirm.common.security.authentication.Authentication;
 import com.lawfirm.common.security.authorization.Authorization;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 安全模块测试工具类
@@ -48,6 +51,16 @@ public class MockSecurityObjects {
         public MockAuthorization(String[] permissions, String[] roles) {
             this.permissions = permissions;
             this.roles = roles;
+        }
+        
+        @Override
+        public Set<String> getPermissions() {
+            return permissions == null ? new HashSet<>() : new HashSet<>(Arrays.asList(permissions));
+        }
+        
+        @Override
+        public Set<String> getRoles() {
+            return roles == null ? new HashSet<>() : new HashSet<>(Arrays.asList(roles));
         }
 
         @Override

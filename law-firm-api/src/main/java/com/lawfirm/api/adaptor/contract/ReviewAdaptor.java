@@ -8,8 +8,8 @@ import com.lawfirm.model.contract.dto.ContractReviewQueryDTO;
 import com.lawfirm.model.contract.service.ContractReviewService;
 import com.lawfirm.model.contract.vo.ContractReviewDetailVO;
 import com.lawfirm.model.contract.vo.ContractReviewVO;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,10 +19,13 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class ReviewAdaptor extends BaseAdaptor {
 
     private final ContractReviewService reviewService;
+
+    public ReviewAdaptor(@Qualifier("contractReviewService") ContractReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
 
     /**
      * 提交审批

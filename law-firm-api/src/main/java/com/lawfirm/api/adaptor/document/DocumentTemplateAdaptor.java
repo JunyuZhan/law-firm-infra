@@ -9,6 +9,7 @@ import com.lawfirm.model.document.service.TemplateService;
 import com.lawfirm.model.document.enums.TemplateTypeEnum;
 import com.lawfirm.model.document.enums.DocumentStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,8 +21,12 @@ import java.util.Map;
 @Component
 public class DocumentTemplateAdaptor extends BaseAdaptor {
 
+    private final TemplateService templateService;
+
     @Autowired
-    private TemplateService templateService;
+    public DocumentTemplateAdaptor(@Qualifier("documentTemplateServiceImpl") TemplateService templateService) {
+        this.templateService = templateService;
+    }
 
     /**
      * 创建文档模板

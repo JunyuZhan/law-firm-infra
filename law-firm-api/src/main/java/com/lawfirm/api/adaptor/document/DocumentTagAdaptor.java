@@ -10,6 +10,7 @@ import com.lawfirm.model.document.service.DocumentTagService;
 import com.lawfirm.model.document.vo.TagVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -23,8 +24,12 @@ import java.util.stream.Collectors;
 @Component
 public class DocumentTagAdaptor extends BaseAdaptor {
 
+    private final DocumentTagService documentTagService;
+
     @Autowired
-    private DocumentTagService documentTagService;
+    public DocumentTagAdaptor(@Qualifier("documentTagServiceImpl") DocumentTagService documentTagService) {
+        this.documentTagService = documentTagService;
+    }
 
     /**
      * 创建文档标签

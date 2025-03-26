@@ -3,6 +3,7 @@ package com.lawfirm.api.adaptor.personnel;
 import com.lawfirm.api.adaptor.BaseAdaptor;
 import com.lawfirm.model.organization.service.OrganizationAuthBridge;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,8 +14,13 @@ import java.util.List;
 @Component
 public class PersonnelOrganizationAuthAdaptor extends BaseAdaptor {
 
+    private final OrganizationAuthBridge organizationAuthBridge;
+
     @Autowired
-    private OrganizationAuthBridge organizationAuthBridge;
+    public PersonnelOrganizationAuthAdaptor(
+            @Qualifier("organizationAuthBridgeImpl") OrganizationAuthBridge organizationAuthBridge) {
+        this.organizationAuthBridge = organizationAuthBridge;
+    }
 
     /**
      * 检查用户是否有组织权限

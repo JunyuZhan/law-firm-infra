@@ -14,6 +14,7 @@ import com.lawfirm.model.log.converter.AuditLogConverter;
 import com.lawfirm.model.log.converter.AuditRecordConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -32,18 +33,38 @@ import java.time.LocalDateTime;
  * @since 1.0.0
  */
 @Slf4j
-@Service("auditServiceImpl")
+@Service("coreAuditServiceImpl")
 @RequiredArgsConstructor
 public class AuditServiceImpl implements AuditService {
 
     private final AuditLogMapper auditLogMapper;
     private final AuditRecordMapper auditRecordMapper;
     
+    @Autowired
     @Qualifier("modelAuditLogConverter")
-    private final AuditLogConverter auditLogConverter;
+    private AuditLogConverter auditLogConverter;
     
+    @Autowired
     @Qualifier("modelAuditRecordConverter")
-    private final AuditRecordConverter auditRecordConverter;
+    private AuditRecordConverter auditRecordConverter;
+    
+    /**
+     * 设置审计日志转换器
+     * 
+     * @param auditLogConverter 审计日志转换器
+     */
+    public void setAuditLogConverter(AuditLogConverter auditLogConverter) {
+        this.auditLogConverter = auditLogConverter;
+    }
+    
+    /**
+     * 设置审计记录转换器
+     * 
+     * @param auditRecordConverter 审计记录转换器
+     */
+    public void setAuditRecordConverter(AuditRecordConverter auditRecordConverter) {
+        this.auditRecordConverter = auditRecordConverter;
+    }
 
     @Override
     public void log(AuditLogDTO auditLogDTO) {

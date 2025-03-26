@@ -18,7 +18,7 @@ dev:
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    jdbcUrl: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
     username: sa
     password: 
     type: com.zaxxer.hikari.HikariDataSource
@@ -53,4 +53,11 @@ redisson:
 # 禁用原始安全配置
 auth:
   security:
-    enabled: false 
+    enabled: false
+
+# 添加Jasypt加密配置
+jasypt:
+  encryptor:
+    password: your-secret-key
+    algorithm: PBEWithMD5AndDES
+    provider-name: SunJCE 

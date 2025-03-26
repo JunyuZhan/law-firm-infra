@@ -10,12 +10,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * 异步配置
+ * 审计模块专用异步配置
+ * 改名为AuditAsyncConfig，避免与其他模块的AsyncConfig冲突
  */
 @EnableAsync
 @Configuration
 @RequiredArgsConstructor
-public class AsyncConfig {
+public class AuditAsyncConfig {
 
     private final AuditProperties auditProperties;
 
