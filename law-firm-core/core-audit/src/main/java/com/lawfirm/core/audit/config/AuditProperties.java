@@ -2,6 +2,7 @@ package com.lawfirm.core.audit.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,8 @@ import java.util.Map;
  * 审计配置属性
  */
 @Data
-@ConfigurationProperties(prefix = "lawfirm.audit")
+@Component
+@ConfigurationProperties(prefix = "law.firm.audit")
 public class AuditProperties {
     
     /**

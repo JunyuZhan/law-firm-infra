@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "lawfirm.document.search")
+@ConfigurationProperties(prefix = "law.firm.document.search")
 public class SearchProperties {
     
     /**

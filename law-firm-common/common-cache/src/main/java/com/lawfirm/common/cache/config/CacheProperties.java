@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "law-firm.cache")
+@ConfigurationProperties(prefix = "law.firm.cache")
 public class CacheProperties {
 
     /**
@@ -25,12 +25,12 @@ public class CacheProperties {
     /**
      * 缓存有效期（分钟）
      */
-    private long expiration = 720;
+    private long expiration = 30;
 
     /**
      * 缓存刷新时间（分钟）
      */
-    private long refreshTime = 120;
+    private long refreshTime = 10;
 
     /**
      * 缓存类型枚举

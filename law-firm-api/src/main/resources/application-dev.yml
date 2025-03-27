@@ -13,13 +13,13 @@ spring:
       host: localhost
       port: 6379
       database: 0
-      timeout: 3000
+      timeout: 10000
       lettuce:
         pool:
           max-active: 8
+          max-wait: -1
           max-idle: 8
           min-idle: 0
-          max-wait: -1
 
 # 数据库初始化配置
 sql:
@@ -31,10 +31,16 @@ sql:
 
 # 开发模式配置
 dev:
-  # 开发模式下认证配置
+  use-redis: true
   auth:
-    # 禁用Redis会话存储
-    session-store: memory
+    # Redis存储会话
+    session-store: redis
+    # 启用Redis会话
+    disable-redis: false
+    # 简化安全配置
+    simplified-security: true
+    # 禁用原始安全配置
+    disable-original-security: true
     # 令牌有效期（秒）
     token-expiration: 86400
 
@@ -71,4 +77,88 @@ mybatis-plus:
       id-type: auto
       logic-delete-field: deleted
       logic-delete-value: 1
-      logic-not-delete-value: 0 
+      logic-not-delete-value: 0
+
+# 禁止覆盖Bean定义，确保Bean冲突时抛出异常而不是静默替换
+main:
+  allow-bean-definition-overriding: false
+
+# 简化安全设置
+security:
+  user:
+    name: admin
+    password: admin
+    roles: ADMIN
+
+# Redisson配置
+redisson:
+  enabled: true
+  singleServerConfig:
+    address: redis://localhost:6379
+    password:
+    database: 0
+    idleConnectionTimeout: 10000
+    connectTimeout: 10000
+    timeout: 3000
+    retryAttempts: 3
+    retryInterval: 1500
+    subscriptionsPerConnection: 5
+    clientName: null
+    subscriptionConnectionMinimumIdleSize: 1
+    subscriptionConnectionPoolSize: 50
+    connectionMinimumIdleSize: 32
+    connectionPoolSize: 64
+    dnsMonitoringInterval: 5000
+
+# 禁用原始安全配置
+auth:
+  security:
+    enabled: false
+
+# Jasypt加密配置
+jasypt:
+  encryptor:
+    password: your-secret-key
+    algorithm: PBEWithMD5AndDES
+    provider-name: SunJCE
+
+# 财务模块配置
+finance:
+  cache:
+    enabled: true
+    expireTime: 3600
+  event:
+    async: true
+    retryTimes: 3
+  business:
+    maxPageSize: 100
+    exportLimit: 1000
+
+# 配置刷新设置
+config:
+  refresh:
+    enabled: true
+    refresh-interval: 60000
+    refresh-on-startup: true
+    source-type: redis
+    source-path: config/
+
+# 统一缓存配置命名规范 (law.firm.* 格式)
+law.firm.cache:
+  enabled: true
+  type: REDIS
+  expiration: 30
+  refresh-time: 10
+
+# 日志配置 - 统一命名规范
+law.firm.log:
+  enable-method-log: true
+  enable-request-log: true
+  enable-async-log: true
+  enable-tracing: true
+  log-request-params: true
+  log-response-body: true
+  log-stack-trace: true
+  exclude-paths:
+    - /swagger-ui/**
+    - /v3/api-docs/** 

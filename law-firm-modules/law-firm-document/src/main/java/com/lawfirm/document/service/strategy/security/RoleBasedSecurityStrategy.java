@@ -2,8 +2,8 @@ package com.lawfirm.document.service.strategy.security;
 
 import com.lawfirm.common.security.authorization.Authorization;
 import com.lawfirm.model.document.entity.base.BaseDocument;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,10 +11,17 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class RoleBasedSecurityStrategy implements SecurityStrategy {
 
     private final Authorization authorization;
+
+    /**
+     * 构造函数，通过@Qualifier指定使用jdbc授权实现
+     * @param authorization 授权接口实现
+     */
+    public RoleBasedSecurityStrategy(@Qualifier("jdbcAuthorization") Authorization authorization) {
+        this.authorization = authorization;
+    }
 
     @Override
     public boolean hasDocumentPermission(String documentId, String userId, String action) {

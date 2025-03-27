@@ -11,6 +11,11 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.redisson.spring.cache.RedissonSpringCacheManager;
+import org.springframework.core.env.Environment;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 缓存配置
@@ -27,6 +32,21 @@ public class CacheConfig {
 
     @Value("${spring.redis.password:}")
     private String password;
+    
+    @Value("${law.firm.cache.enabled:false}")
+    private boolean cacheEnabled;
+    
+    @Value("${law.firm.cache.type:LOCAL}")
+    private String cacheType;
+    
+    @Value("${law.firm.cache.expiration:30}")
+    private int cacheExpiration;
+
+    private final Environment environment;
+    
+    public CacheConfig(Environment environment) {
+        this.environment = environment;
+    }
 
     @Bean
     @ConditionalOnProperty(prefix = "spring.redis", name = "host")
@@ -39,12 +59,23 @@ public class CacheConfig {
     }
 
     /**
-     * 定义缓存管理器，使用内存缓存作为备用
-     * 注意：在实际应用中应该使用RedissonSpringCacheManager
+     * 定义缓存管理器，根据配置使用Redis或内存缓存
      */
     @Bean("commonCacheManager")
     @Primary
-    public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("common");
+    public CacheManager cacheManager(RedissonClient redissonClient) {
+        // 获取是否使用Redis的配置
+        boolean useRedis = "REDIS".equalsIgnoreCase(cacheType) && cacheEnabled && 
+                           environment.getProperty("dev.use-redis", Boolean.class, true);
+
+        // 定义需要缓存的项
+        List<String> cacheNames = Arrays.asList("common", "menu", "dict", "user", "role", "perm");
+        
+        // 根据配置选择缓存实现
+        if (useRedis && redissonClient != null) {
+            return new RedissonSpringCacheManager(redissonClient);
+        } else {
+            return new ConcurrentMapCacheManager(cacheNames.toArray(new String[0]));
+        }
     }
 } 

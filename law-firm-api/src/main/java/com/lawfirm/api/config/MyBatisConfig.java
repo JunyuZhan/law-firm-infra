@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * MyBatis配置类
@@ -27,10 +27,12 @@ public class MyBatisConfig {
 
     /**
      * 创建SqlSessionFactory
+     * 使用common-data模块提供的MybatisPlusInterceptor
      */
     @Bean
     @Primary
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, 
+                                              @Qualifier("commonMybatisPlusInterceptor") MybatisPlusInterceptor interceptor) throws Exception {
         MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         
@@ -41,9 +43,8 @@ public class MyBatisConfig {
         // 不设置XML映射文件位置，完全使用注解方式
         log.info("使用注解方式配置MyBatis映射，不加载XML映射文件");
         
-        // 配置分页插件
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        // 使用common-data模块提供的拦截器，避免重复创建
+        log.info("使用common-data模块提供的MybatisPlusInterceptor");
         factoryBean.setPlugins(interceptor);
         
         // MyBatis配置

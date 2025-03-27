@@ -2,33 +2,35 @@ package com.lawfirm.common.log.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * 日志配置属性
  */
 @Data
-@ConfigurationProperties(prefix = "lawfirm.log")
+@Component
+@ConfigurationProperties(prefix = "law.firm.log")
 public class LogProperties {
 
     /**
      * 是否启用方法调用日志
      */
-    private boolean enableMethodLog = true;
+    private boolean enableMethodLog = false;
 
     /**
      * 是否启用请求响应日志
      */
-    private boolean enableRequestLog = true;
+    private boolean enableRequestLog = false;
 
     /**
      * 是否启用异步日志
      */
-    private boolean enableAsyncLog = true;
+    private boolean enableAsyncLog = false;
 
     /**
      * 是否启用链路追踪
      */
-    private boolean enableTracing = true;
+    private boolean enableTracing = false;
 
     /**
      * 是否记录请求参数
@@ -48,7 +50,7 @@ public class LogProperties {
     /**
      * 需要排除的路径
      */
-    private String[] excludePaths = {};
+    private String[] excludePaths = {"/swagger-ui/**", "/v3/api-docs/**"};
 
     /**
      * 需要排除的请求参数字段（敏感信息）

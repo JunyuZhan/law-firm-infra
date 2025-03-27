@@ -1,5 +1,5 @@
 # 案件模块配置
-law-firm:
+lawfirm:
   case:
     # 模块是否启用
     enabled: true

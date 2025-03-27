@@ -9,11 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * AI模型配置�? *
- * @author JunyuZhan */
+ * AI模型配置
+ *
+ * @author JunyuZhan 
+ */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "lawfirm.ai.model")
+@ConfigurationProperties(prefix = "law.firm.ai.model")
 public class ModelConfig {
 
     /**
@@ -37,7 +39,8 @@ public class ModelConfig {
     private Map<String, ModelParam> modelParams = new HashMap<>();
     
     /**
-     * OpenAI配置�?     */
+     * OpenAI配置
+     */
     @Data
     public static class OpenAIConfig {
         /**
@@ -67,7 +70,8 @@ public class ModelConfig {
     }
     
     /**
-     * 百度AI配置�?     */
+     * 百度AI配置
+     */
     @Data
     public static class BaiduAIConfig {
         /**
@@ -92,7 +96,8 @@ public class ModelConfig {
     }
     
     /**
-     * 本地AI配置�?     */
+     * 本地AI配置
+     */
     @Data
     public static class LocalAIConfig {
         /**
@@ -106,16 +111,19 @@ public class ModelConfig {
         private String modelType = "llama";
         
         /**
-         * 是否启用GPU加�?         */
+         * 是否启用GPU加速
+         */
         private Boolean enableGpu = false;
         
         /**
-         * 模型线程�?         */
+         * 模型线程数
+         */
         private Integer threads = 4;
     }
     
     /**
-     * 模型参数�?     */
+     * 模型参数
+     */
     @Data
     public static class ModelParam {
         /**
@@ -129,7 +137,8 @@ public class ModelConfig {
         private Float temperature = 0.7f;
         
         /**
-         * 最大输出token�?         */
+         * 最大输出token数
+         */
         private Integer maxTokens = 4096;
         
         /**

@@ -31,7 +31,7 @@ spring:
     exclude:
       - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
       - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
-  # 我们已解决循环依赖问题，不再需要强制允许循环引用
+  # 允许Bean定义覆盖
   main:
     allow-bean-definition-overriding: true
   # 简化安全设置
@@ -45,6 +45,19 @@ spring:
     headers:
       frame: SAMEORIGIN
       xss: true
+  # 禁用数据库脚本
+  sql:
+    init:
+      enabled: false
+  # 禁用Flyway
+  flyway:
+    enabled: false
+  # 禁用Liquibase
+  liquibase:
+    enabled: false
+  # 禁用Runner
+  runner:
+    enabled: false
 
 # 禁用Redisson配置
 redisson:
@@ -62,17 +75,18 @@ jasypt:
     algorithm: PBEWithMD5AndDES
     provider-name: SunJCE 
 
-# 财务模块配置
-finance:
-  cache:
-    enabled: false
-    expireTime: 3600
-  event:
-    async: false
-    retryTimes: 3
-  business:
-    maxPageSize: 100
-    exportLimit: 1000
+# 财务模块配置 - 使用统一的命名规范
+lawfirm:
+  finance:
+    cache:
+      enabled: false
+      expireTime: 3600
+    event:
+      async: false
+      retryTimes: 3
+    business:
+      maxPageSize: 100
+      exportLimit: 1000
 
 # 配置刷新设置
 config:
@@ -83,24 +97,22 @@ config:
     source-type: file
     source-path: config/
 
-# 缓存配置
-law-firm:
-  cache:
-    enabled: false
-    type: LOCAL
-    expiration: 30
-    refresh-time: 10
+# 统一的缓存配置命名规范 (law.firm.* 格式)
+law.firm.cache:
+  enabled: false
+  type: LOCAL
+  expiration: 30
+  refresh-time: 10
 
-# 日志配置
-lawfirm:
-  log:
-    enable-method-log: false
-    enable-request-log: false
-    enable-async-log: false
-    enable-tracing: false
-    log-request-params: true
-    log-response-body: true
-    log-stack-trace: true
-    exclude-paths:
-      - /swagger-ui/**
-      - /v3/api-docs/** 
+# 日志配置 - 使用统一的命名规范
+law.firm.log:
+  enable-method-log: false
+  enable-request-log: false
+  enable-async-log: false
+  enable-tracing: false
+  log-request-params: true
+  log-response-body: true
+  log-stack-trace: true
+  exclude-paths:
+    - /swagger-ui/**
+    - /v3/api-docs/** 

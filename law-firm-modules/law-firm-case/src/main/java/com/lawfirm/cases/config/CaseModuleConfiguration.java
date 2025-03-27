@@ -68,7 +68,7 @@ public class CaseModuleConfiguration {
      * 案件配置属性
      */
     @Data
-    @ConfigurationProperties(prefix = "law-firm.case")
+    @ConfigurationProperties(prefix = "lawfirm.case")
     public static class CaseProperties {
         
         /**
@@ -159,7 +159,7 @@ public class CaseModuleConfiguration {
      * 案件服务配置
      */
     @Bean
-    @ConditionalOnProperty(name = "law-firm.case.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "lawfirm.case.enabled", havingValue = "true", matchIfMissing = true)
     public CaseServiceConfig caseServiceConfig(CaseProperties properties) {
         log.info("案件服务配置初始化，编号前缀：{}，状态流转：{}", 
                 properties.getCaseNumber().getPrefix(),

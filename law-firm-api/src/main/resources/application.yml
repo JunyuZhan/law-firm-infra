@@ -50,6 +50,11 @@ spring:
     elasticsearch-reactive:
       repositories:
         enabled: false
+  sql:
+    init:
+      enabled: false
+      mode: never
+      platform: none
 
 # 应用基础配置
 app:

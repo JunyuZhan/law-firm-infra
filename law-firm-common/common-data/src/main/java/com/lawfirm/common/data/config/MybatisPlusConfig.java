@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInt
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -19,8 +20,10 @@ public class MybatisPlusConfig {
 
     /**
      * 新的分页插件
+     * 设置为Primary，确保在有多个MybatisPlusInterceptor时优先使用此Bean
      */
     @Bean(name = "commonMybatisPlusInterceptor")
+    @Primary
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 分页插件
