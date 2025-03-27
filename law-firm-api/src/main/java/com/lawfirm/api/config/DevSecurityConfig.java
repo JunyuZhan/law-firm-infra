@@ -32,10 +32,19 @@ public class DevSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)  // 禁用CSRF
             .cors(AbstractHttpConfigurer::disable)  // 禁用CORS
             .authorizeHttpRequests(authorize -> authorize
+                // 明确允许/direct/**路径的所有请求
+                .requestMatchers("/direct/**").permitAll()
+                // 允许其他所有请求
                 .anyRequest().permitAll()  // 允许所有请求
             )
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())  // 允许同源iframe
+            )
+            .formLogin(form -> form
+                .loginPage("/api/login")
+                .loginProcessingUrl("/api/login")
+                .defaultSuccessUrl("/api/index")
+                .permitAll()
             )
             .build();
     }

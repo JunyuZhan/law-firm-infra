@@ -46,7 +46,21 @@ public class JwtTokenProvider {
     
     @PostConstruct
     public void init() {
-        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        // 使用安全的方法生成密钥，确保至少256位
+        if (jwtSecret.length() < 32) { // 至少32字节(256位)
+            // 如果配置的密钥不够长，使用推荐的方式生成
+            this.key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
+            log.warn("配置的JWT密钥长度不足，已自动生成安全密钥");
+        } else {
+            try {
+                this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+            } catch (Exception e) {
+                log.error("JWT密钥初始化失败: {}", e.getMessage());
+                // 出错时使用安全的随机密钥作为备选
+                this.key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
+                log.warn("已自动生成备选JWT密钥");
+            }
+        }
     }
     
     /**
