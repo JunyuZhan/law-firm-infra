@@ -39,9 +39,6 @@ import java.util.Map;
     },
     exclude = {
         SecurityAutoConfiguration.class,
-        // 排除SQL和数据源自动配置
-        DataSourceAutoConfiguration.class,
-        DataSourceTransactionManagerAutoConfiguration.class,
         // 排除Flowable相关自动配置类
         FlywayAutoConfiguration.class,
         // 排除JPA相关自动配置类
@@ -121,14 +118,17 @@ public class LawFirmApiApplication {
             "org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration," +
             "org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration," +
             "org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration," +
-            "org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration," +
-            "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration");
+            "org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration");
         
-        // 禁用数据库相关功能
+        // 配置数据库
         System.setProperty("spring.datasource.driver-class-name", "org.h2.Driver");
         System.setProperty("spring.datasource.url", "jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1");
         System.setProperty("spring.datasource.username", "sa");
         System.setProperty("spring.datasource.password", "");
+        
+        // 启用H2控制台
+        System.setProperty("spring.h2.console.enabled", "true");
+        System.setProperty("spring.h2.console.path", "/h2-console");
         
         // 禁用SQL初始化
         System.setProperty("spring.flyway.enabled", "false");
@@ -138,6 +138,9 @@ public class LawFirmApiApplication {
         System.setProperty("spring.sql.init.mode", "never");
         System.setProperty("spring.boot.sql.init.enabled", "false");
         
+        // 设置服务器端口为8080
+        System.setProperty("server.port", "8080");
+        
         // 创建SpringApplication并配置
         SpringApplication application = new SpringApplication(LawFirmApiApplication.class);
         
@@ -146,7 +149,9 @@ public class LawFirmApiApplication {
         props.put("spring.sql.init.enabled", "false");
         props.put("spring.main.banner-mode", "off");
         props.put("spring.main.log-startup-info", "false");
-        props.put("spring.h2.console.enabled", "false");
+        props.put("spring.h2.console.enabled", "true");
+        props.put("spring.main.allow-bean-definition-overriding", "true");
+        props.put("server.port", "8080");
         application.setDefaultProperties(props);
         
         // 运行应用
