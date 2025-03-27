@@ -369,3 +369,17 @@ docker-compose up -d
 ## 许可证
 
 本项目采用 [MIT](LICENSE) 许可证 
+
+## 模块文档
+
+详细的模块依赖关系请参阅 [模块文档](docs/modules.md)。
+
+
+## 模块文档
+
+详细的模块依赖关系请参阅 [模块文档](docs/modules.md)。
+
+
+## 模块文档
+
+详细的模块依赖关系请参阅 [模块文档](docs/modules.md)。
