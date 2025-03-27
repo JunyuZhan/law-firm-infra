@@ -1,6 +1,6 @@
 ﻿# 应用配置
 server:
-  port: 8081
+  port: 8080
 
 spring:
   application:
@@ -10,19 +10,20 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-  redis:
-    host: localhost
-    port: 6379
-    database: 0
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
 
 # 安全配置
 law:
   firm:
     security:
       jwt:
-        secret: 
-        expiration: 
-        refresh-expiration: 
+        secret: 8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb
+        expiration: 86400000
+        refresh-expiration: 604800000
         issuer: law-firm-auth
         audience: law-firm-web
       password:

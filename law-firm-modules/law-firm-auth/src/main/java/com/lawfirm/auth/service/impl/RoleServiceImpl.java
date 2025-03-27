@@ -228,5 +228,24 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     public boolean removeBatch(List<Long> idList) {
         return super.removeByIds(idList);
     }
+
+    @Override
+    public boolean hasAdminRole(Long userId) {
+        List<Role> roles = getRolesByUserId(userId);
+        if (roles == null || roles.isEmpty()) {
+            return false;
+        }
+        
+        return roles.stream()
+                .anyMatch(role -> 
+                    // 检查是否为系统管理员角色
+                    Role.BUSINESS_ROLE_ADMIN.equals(role.getBusinessRoleType())
+                    // 或者检查是否为律所主任角色
+                    || Role.BUSINESS_ROLE_DIRECTOR.equals(role.getBusinessRoleType())
+                    // 或者检查是否具有"admin"特殊角色编码
+                    || "admin".equals(role.getCode())
+                    || "ROLE_ADMIN".equals(role.getCode())
+                );
+    }
 }
 

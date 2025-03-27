@@ -14,8 +14,9 @@ import java.util.Set;
  * @author JunyuZhan
  * @since 1.0.0
  */
-@Component("jdbcAuthorization")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = false)
+// 移除@Component注解，通过配置类显式创建bean
+// @Component("jdbcAuthorization")
+// @ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = false)
 public class NoOpAuthorization implements Authorization {
 
     /**

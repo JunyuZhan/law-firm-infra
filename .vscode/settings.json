@@ -43,5 +43,6 @@
     "java.jdt.ls.lombokSupport.enabled": true,
     "cSpell.words": [
         "ALIYUN"
-    ]
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }

@@ -19,10 +19,6 @@
         <!-- 内部依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>common-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
             <artifactId>common-util</artifactId>
         </dependency>
         
@@ -176,4 +172,4 @@
     <properties>
         <skipTests>false</skipTests>
     </properties>
-</project> 
+</project>

@@ -148,4 +148,12 @@ public interface RoleService extends BaseService<Role> {
      * @return 角色列表
      */
     List<Role> getAllRoles();
+    
+    /**
+     * 检查是否为管理员角色
+     *
+     * @param userId 用户ID
+     * @return 是否为管理员角色
+     */
+    boolean hasAdminRole(Long userId);
 } 

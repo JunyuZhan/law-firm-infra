@@ -6,15 +6,20 @@ import com.lawfirm.model.auth.vo.LoginVO;
 import com.lawfirm.model.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 认证适配器
  */
 @Component
-@RequiredArgsConstructor
 public class AuthAdaptor extends BaseAdaptor {
 
     private final AuthService authService;
+
+    @Autowired
+    public AuthAdaptor(AuthService authService) {
+        this.authService = authService;
+    }
 
     /**
      * 用户登录

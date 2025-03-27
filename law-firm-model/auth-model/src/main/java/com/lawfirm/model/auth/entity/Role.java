@@ -21,6 +21,36 @@ public class Role extends TenantEntity {
     private static final long serialVersionUID = 1L;
     
     /**
+     * 业务角色类型常量 - 系统管理员
+     */
+    public static final String BUSINESS_ROLE_ADMIN = "ADMIN";
+    
+    /**
+     * 业务角色类型常量 - 律所主任
+     */
+    public static final String BUSINESS_ROLE_DIRECTOR = "DIRECTOR";
+    
+    /**
+     * 业务角色类型常量 - 合伙人律师
+     */
+    public static final String BUSINESS_ROLE_PARTNER = "PARTNER";
+    
+    /**
+     * 业务角色类型常量 - 执业律师
+     */
+    public static final String BUSINESS_ROLE_LAWYER = "LAWYER";
+    
+    /**
+     * 业务角色类型常量 - 实习律师
+     */
+    public static final String BUSINESS_ROLE_TRAINEE = "TRAINEE";
+    
+    /**
+     * 业务角色类型常量 - 行政/财务人员
+     */
+    public static final String BUSINESS_ROLE_FINANCE = "FINANCE";
+    
+    /**
      * 角色名称
      */
     @TableField("name")
@@ -43,6 +73,12 @@ public class Role extends TenantEntity {
      */
     @TableField("data_scope")
     private Integer dataScope;
+    
+    /**
+     * 业务角色类型
+     */
+    @TableField("business_role_type")
+    private String businessRoleType;
     
     /**
      * 父级角色ID，用于角色继承

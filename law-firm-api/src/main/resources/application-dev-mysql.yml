@@ -1,0 +1,128 @@
+# MySQL数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: Zjy-1314
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      # 最小空闲连接数
+      minimum-idle: 5
+      # 最大连接数
+      maximum-pool-size: 20
+      # 空闲连接最大存活时间
+      idle-timeout: 600000
+      # 连接最大存活时间
+      max-lifetime: 1800000
+      # 连接超时时间
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  
+  # SQL初始化配置
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+      encoding: UTF-8
+      continue-on-error: true
+      platform: mysql
+      
+  # Redis配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 10000
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1
+          max-idle: 8
+          min-idle: 0
+
+# Jasypt加密配置
+jasypt:
+  encryptor:
+    password: lawfirm-secret-key
+    algorithm: PBEWithMD5AndDES
+    provider-name: SunJCE
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.model.**.entity
+  type-handlers-package: com.lawfirm.common.core.handler
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.lawfirm: DEBUG
+    org.mybatis: INFO
+    com.baomidou.mybatisplus: INFO
+    org.springframework.jdbc: DEBUG
+
+# JWT配置
+law:
+  firm:
+    security:
+      jwt:
+        secret: 8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb
+        expiration: 86400000 # 24小时
+        refresh-expiration: 604800000 # 7天
+        issuer: law-firm-auth
+        audience: law-firm-web
+
+# 开发模式配置
+dev:
+  use-redis: true
+  auth:
+    session-store: redis
+    disable-redis: false
+    simplified-security: true
+    disable-original-security: true
+    token-expiration: 86400
+
+# Elasticsearch配置
+elasticsearch:
+  enabled: false
+  cluster:
+    name: law-firm-cluster
+    nodes:
+      - localhost:9200
+    
+# 禁止覆盖Bean定义
+spring.main.allow-bean-definition-overriding: true
+
+# 禁用原始安全配置
+auth.security.enabled: false
+
+# 健康检查配置
+management:
+  health:
+    elasticsearch:
+      enabled: false
+    redis:
+      enabled: true
+
+# 开发环境MySQL配置
+
+# 应用信息配置
+app:
+  name: "law-firm-api"
+  version: "1.0.0"
+  description: "律师事务所管理系统API服务" 

@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev-noredis}
+    active: ${SPRING_PROFILES_ACTIVE:dev-mysql}
   main:
     allow-bean-definition-overriding: true
     allow-missing-beans: true
@@ -8,13 +8,11 @@ spring:
     url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
     username: sa
     password: 
-  # 禁用所有非必要的功能
   flyway:
-    enabled: false  # 禁用Flyway
+    enabled: false
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-  # 排除Flowable自动配置
   autoconfigure:
     exclude:
       - org.flowable.spring.boot.FlowableAutoConfiguration
@@ -33,10 +31,15 @@ spring:
       - org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration
       - org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration
       - org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration
-  # 禁用JPA
-  jpa:
-    enabled: false
-  # 禁用响应式JPA
+  mybatis-plus:
+    configuration:
+      map-underscore-to-camel-case: true
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    global-config:
+      db-config:
+        logic-delete-field: deleted
+        logic-not-delete-value: 0
+        logic-delete-value: 1
   data:
     elasticsearch:
       repositories:
@@ -56,171 +59,22 @@ spring:
       mode: never
       platform: none
 
-# 应用基础配置
-app:
-  name: law-firm
-  version: 1.0.0
-  description: 法律事务管理系统
-
-# 服务器配置
 server:
-  port: 8081
+  port: 8080
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
 
-# 开发环境配置
-dev:
-  auth:
-    simplified-security: true  # 启用简化安全配置
-    
-# 禁用Spring Boot Actuator
-management:
-  endpoints:
-    web:
-      exposure:
-        include: none
-    enabled-by-default: false
-  endpoint:
-    health:
-      enabled: false
-    info:
-      enabled: false
-    env:
-      enabled: false
-    metrics:
-      enabled: false
-    prometheus:
-      enabled: false
-    loggers:
-      enabled: false
-  health:
-    db:
-      enabled: false
-    diskspace:
-      enabled: false
-  info:
-    git:
-      enabled: false
-  metrics:
-    enable:
-      all: false
-  # 禁用所有Flowable端点
-  flowable:
-    enabled: false
+# 其他配置保持不变...
 
-# 日志配置
-logging:
-  level:
-    root: INFO
-    com.lawfirm.api: DEBUG
-    org.springframework: INFO
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+law:
+  firm:
+    log:
+      enableMethodLog: true
+      enableRequestLog: true
+      logStackTrace: true
 
-# 禁用不需要的功能模块
-lawfirm:
-  audit:
-    enabled: false
-  workflow:
-    enabled: false
-  storage:
-    enabled: true
-  search:
-    enabled: false
-
-# 禁用工作流引擎  
-flowable:
-  enabled: false
-  check-process-definitions: false
-  database-schema-update: false
-  async-executor-activate: false
-  # 完全禁用Flowable
-  process-engine:
-    enable: false
-  dmn-engine:
-    enable: false
-  idm-engine:
-    enable: false
-  form-engine:
-    enable: false
-  content-engine:
-    enable: false
-  event-registry-engine:
-    enable: false
-  # 禁用端点
-  rest:
-    enabled: false
-  actuator:
-    enabled: false
-  # 禁用自动部署
-  auto-deployment:
-    enabled: false
-  # 禁用所有端点
-  endpoints:
-    enabled: false
-  # 强制禁用
-  disable:
-    complete: true
-    process-engine: true
-    dmn-engine: true
-    idm-engine: true
-    form-engine: true
-    content-engine: true
-    event-registry: true
-
-# 禁用消息服务
-message:
-  enabled: false
-
-# MyBatis配置
-mybatis-plus:
-  global-config:
-    banner: false
-    db-config:
-      id-type: auto
-      logic-delete-field: deleted
-      logic-delete-value: 1
-      logic-not-delete-value: 0
-  configuration:
-    map-underscore-to-camel-case: true
-    cache-enabled: false
-    call-setters-on-nulls: true
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-  # 不使用XML映射，改为注解方式
-  # mapper-locations: classpath*:/mapper/**/*.xml
-
-# Swagger/Springdoc配置 - 默认禁用，可通过环境变量启用
-springdoc:
-  api-docs:
-    enabled: ${ENABLE_API_DOCS:false}
-  swagger-ui:
-    enabled: ${ENABLE_API_DOCS:false}
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
-  group-configs:
-    - group: 'default'
-      paths-to-match: '/**'
-      packages-to-scan: com.lawfirm.api.controller
-
-# 安全配置
-law.firm.security:
-  jwt:
-    secret: your-secret-key-should-be-very-long-and-secure
-    expiration: 86400000  # 24小时，单位：毫秒
-    refresh-expiration: 604800000  # 7天，单位：毫秒
-    issuer: law-firm-auth
-    audience: law-firm-web
-
-# 存储服务配置
-storage:
-  default-type: LOCAL
-  default-bucket-id: 1
-  local:
-    enabled: true
-    base-path: ${user.home}/lawfirm/storage
-    url-prefix: http://localhost:8080/api/files
-
-# 搜索服务配置
-search:
-  enabled: false 
+# 应用信息配置
+app:
+  name: "law-firm-api"
+  version: "1.0.0"
+  description: "律师事务所管理系统API服务"

@@ -1,6 +1,7 @@
 package com.lawfirm.cases.config;
 
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -11,6 +12,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Import;
+import com.lawfirm.client.config.ClientAutoConfiguration;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
  * 事务管理和异步任务支持等配置。
  */
 @Slf4j
-@Configuration
+@AutoConfiguration
 @ConditionalOnProperty(prefix = "lawfirm.module", name = "case", havingValue = "true", matchIfMissing = true)
 @ComponentScan(basePackages = "com.lawfirm.cases")
 // 注释掉冲突的MapperScan配置，使用全局配置
@@ -31,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableAspectJAutoProxy
 @EnableAsync
 @EnableConfigurationProperties(CaseModuleConfiguration.CaseProperties.class)
+@Import(ClientAutoConfiguration.class)
 public class CaseModuleConfiguration {
 
     /**

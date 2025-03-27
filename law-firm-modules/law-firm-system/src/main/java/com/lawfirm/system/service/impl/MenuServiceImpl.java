@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * 菜单服务实现类
  */
 @Slf4j
-@Service
+@Service("menuServiceImpl")
 @RequiredArgsConstructor
 public class MenuServiceImpl implements MenuService {
 

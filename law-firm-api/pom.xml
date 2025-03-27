@@ -168,6 +168,11 @@
             <artifactId>common-cache</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-log</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <!-- Spring Boot Web -->
         <dependency>
@@ -212,6 +217,13 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <!-- MySQL数据库连接器 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
 

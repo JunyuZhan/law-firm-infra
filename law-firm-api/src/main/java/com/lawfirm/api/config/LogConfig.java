@@ -1,8 +1,10 @@
 package com.lawfirm.api.config;
 
+import com.lawfirm.common.log.config.LogAutoConfiguration;
 import com.lawfirm.common.log.properties.LogProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
 /**
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Primary;
  * 为开发环境提供日志配置
  */
 @Configuration
+@Import(LogAutoConfiguration.class)
 public class LogConfig {
 
     /**

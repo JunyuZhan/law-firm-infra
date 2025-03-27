@@ -16,6 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * 律师事务所API应用
@@ -27,7 +28,8 @@ import java.util.Map;
     scanBasePackages = {
         "com.lawfirm.api", 
         "com.lawfirm.model",
-        "com.lawfirm.common",  // 明确包含common包
+        "com.lawfirm.common",     // 明确包含common包
+        "com.lawfirm.common.log", // 特别确保扫描common-log包
         "com.lawfirm.auth",
         "com.lawfirm.client",
         "com.lawfirm.cases",   // 正确的包名是cases，不是case
@@ -54,6 +56,19 @@ import java.util.Map;
     }
 )
 @ConfigurationPropertiesScan(basePackages = {"com.lawfirm.common"})
+@ComponentScan(basePackages = {
+    "com.lawfirm.api.config", 
+    "com.lawfirm.api.controller", 
+    "com.lawfirm.api.adaptor",
+    "com.lawfirm.system",       // 添加system包以确保MenuServiceImpl被扫描到
+    "com.lawfirm.client",       // 添加client包以确保ClientServiceImpl被扫描到
+    "com.lawfirm.contract",     // 添加contract包以确保ContractServiceImpl被扫描到
+    "com.lawfirm.document",     // 添加document包以确保DocumentServiceImpl被扫描到
+    "com.lawfirm.auth",         // 添加auth包以确保AuthorizationDaoImpl被扫描到
+    "com.lawfirm.cases",        // 案件模块
+    "com.lawfirm.finance",      // 财务模块
+    "com.lawfirm.personnel"     // 人事模块
+})
 public class LawFirmApiApplication {
 
     public static void main(String[] args) {
@@ -61,9 +76,9 @@ public class LawFirmApiApplication {
         // System.setProperty("spring.main.allow-circular-references", "true");
         
         // 核心模块功能开关
-        System.setProperty("law.firm.audit.enabled", "false");  // 禁用审计功能
-        System.setProperty("law.firm.workflow.enabled", "false"); // 禁用工作流功能
-        System.setProperty("law.firm.storage.enabled", "true"); // 启用存储功能
+        System.setProperty("lawfirm.audit.enabled", "false");  // 禁用审计功能
+        System.setProperty("lawfirm.workflow.enabled", "false"); // 禁用工作流功能
+        System.setProperty("lawfirm.storage.enabled", "true"); // 启用存储功能
         
         // API文档默认关闭，可通过环境变量ENABLE_API_DOCS启用
         String enableApiDocs = System.getenv("ENABLE_API_DOCS");
@@ -73,8 +88,10 @@ public class LawFirmApiApplication {
         }
         
         // 开发环境下启用所有必要的模块
-        System.setProperty("law.firm.client.enabled", "true");
-        System.setProperty("law.firm.auth.enabled", "true");
+        System.setProperty("lawfirm.client.enabled", "true");
+        System.setProperty("lawfirm.auth.enabled", "true");
+        System.setProperty("lawfirm.module.case", "true");
+        System.setProperty("lawfirm.module.contract", "true");
         
         // 禁用方法级别权限验证
         System.setProperty("spring.security.enabled", "false");
@@ -120,16 +137,6 @@ public class LawFirmApiApplication {
             "org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration," +
             "org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration");
         
-        // 配置数据库
-        System.setProperty("spring.datasource.driver-class-name", "org.h2.Driver");
-        System.setProperty("spring.datasource.url", "jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1");
-        System.setProperty("spring.datasource.username", "sa");
-        System.setProperty("spring.datasource.password", "");
-        
-        // 启用H2控制台
-        System.setProperty("spring.h2.console.enabled", "true");
-        System.setProperty("spring.h2.console.path", "/h2-console");
-        
         // 禁用SQL初始化
         System.setProperty("spring.flyway.enabled", "false");
         System.setProperty("spring.liquibase.enabled", "false");
@@ -149,8 +156,8 @@ public class LawFirmApiApplication {
         props.put("spring.sql.init.enabled", "false");
         props.put("spring.main.banner-mode", "off");
         props.put("spring.main.log-startup-info", "false");
-        props.put("spring.h2.console.enabled", "true");
         props.put("spring.main.allow-bean-definition-overriding", "true");
+        props.put("spring.main.allow-circular-references", "true"); // 允许循环引用
         props.put("server.port", "8080");
         application.setDefaultProperties(props);
         

@@ -2,8 +2,9 @@ package com.lawfirm.cases.integration.client;
 
 import com.lawfirm.model.client.dto.ClientDTO;
 import com.lawfirm.model.client.service.ClientService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -16,10 +17,14 @@ import java.util.Optional;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class ClientComponent {
 
     private final ClientService clientService;
+
+    @Autowired
+    public ClientComponent(@Qualifier("clientServiceImpl") ClientService clientService) {
+        this.clientService = clientService;
+    }
 
     /**
      * 获取客户详情

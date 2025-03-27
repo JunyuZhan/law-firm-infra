@@ -383,3 +383,9 @@ docker-compose up -d
 ## 模块文档
 
 详细的模块依赖关系请参阅 [模块文档](docs/modules.md)。
+
+
+## 文档链接
+
+- [系统使用教程](docs/user-guide.md) - 详细的系统使用说明
+- [模块文档](docs/modules.md) - 模块结构和依赖关系

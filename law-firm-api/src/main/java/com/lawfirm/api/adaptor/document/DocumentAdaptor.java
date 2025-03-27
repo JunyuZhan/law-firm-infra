@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,8 +41,12 @@ import java.util.List;
 @Component("documentsAdaptor")
 public class DocumentAdaptor extends BaseAdaptor {
 
+    private final DocumentService documentService;
+    
     @Autowired
-    private DocumentService documentService;
+    public DocumentAdaptor(@Qualifier("documentServiceImpl") DocumentService documentService) {
+        this.documentService = documentService;
+    }
 
     /**
      * 创建文档

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import com.lawfirm.core.search.config.SearchAutoConfiguration;
 import com.lawfirm.model.search.dto.search.SearchRequestDTO;
@@ -40,5 +41,16 @@ public class SearchConfig {
         // 这个Bean只会在找不到其他SearchService实现时才会被使用
         // 同时我们已经禁用了search.enabled=false，相关依赖组件不会加载
         return null;
+    }
+
+    /**
+     * 解决searchProperties Bean冲突
+     * 当elasticsearch.enabled=false时，提供一个空的Bean来避免搜索模块的错误
+     */
+    @Bean
+    @Primary
+    @ConditionalOnProperty(name = "elasticsearch.enabled", havingValue = "false")
+    public com.lawfirm.core.search.config.SearchProperties coreSearchProperties() {
+        return new com.lawfirm.core.search.config.SearchProperties();
     }
 } 
