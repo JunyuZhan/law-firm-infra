@@ -10,25 +10,26 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * 缓存配置
  */
 @Configuration("commonCacheConfig")
 @EnableCaching
-@ConditionalOnProperty(prefix = "spring.redis", name = "host")
 public class CacheConfig {
 
-    @Value("${spring.redis.host}")
+    @Value("${spring.redis.host:localhost}")
     private String host;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.redis.port:6379}")
     private int port;
 
     @Value("${spring.redis.password:}")
     private String password;
 
     @Bean
+    @ConditionalOnProperty(prefix = "spring.redis", name = "host")
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
@@ -42,6 +43,7 @@ public class CacheConfig {
      * 注意：在实际应用中应该使用RedissonSpringCacheManager
      */
     @Bean("commonCacheManager")
+    @Primary
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager("common");
     }

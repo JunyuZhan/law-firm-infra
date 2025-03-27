@@ -18,6 +18,7 @@ import org.flowable.task.api.TaskInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,8 +33,9 @@ import java.util.stream.Collectors;
  * @author JunyuZhan
  */
 @Slf4j
-@Service("workflowTaskServiceImpl")
+@Service("coreTaskServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, ProcessTask> implements TaskService {
 
     private final org.flowable.engine.TaskService flowableTaskService;

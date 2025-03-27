@@ -6,6 +6,7 @@ import com.lawfirm.core.message.service.MessageSender;
 import com.lawfirm.model.message.entity.base.BaseMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MessageSenderImpl implements MessageSender {
 
     private final CryptoService cryptoService;

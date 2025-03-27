@@ -17,6 +17,8 @@ import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.entity.file.FileObject;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,11 +33,13 @@ import java.util.List;
  */
 @Slf4j
 @Service("documentServiceImpl")
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDocument> implements DocumentService {
 
     private final StorageManager storageManager;
     private final SecurityManager securityManager;
     
+    @Autowired
     public DocumentServiceImpl(StorageManager storageManager, SecurityManager securityManager) {
         this.storageManager = storageManager;
         this.securityManager = securityManager;

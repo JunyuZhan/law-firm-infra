@@ -61,3 +61,46 @@ jasypt:
     password: your-secret-key
     algorithm: PBEWithMD5AndDES
     provider-name: SunJCE 
+
+# 财务模块配置
+finance:
+  cache:
+    enabled: false
+    expireTime: 3600
+  event:
+    async: false
+    retryTimes: 3
+  business:
+    maxPageSize: 100
+    exportLimit: 1000
+
+# 配置刷新设置
+config:
+  refresh:
+    enabled: false
+    refresh-interval: 60000
+    refresh-on-startup: false
+    source-type: file
+    source-path: config/
+
+# 缓存配置
+law-firm:
+  cache:
+    enabled: false
+    type: LOCAL
+    expiration: 30
+    refresh-time: 10
+
+# 日志配置
+lawfirm:
+  log:
+    enable-method-log: false
+    enable-request-log: false
+    enable-async-log: false
+    enable-tracing: false
+    log-request-params: true
+    log-response-body: true
+    log-stack-trace: true
+    exclude-paths:
+      - /swagger-ui/**
+      - /v3/api-docs/** 

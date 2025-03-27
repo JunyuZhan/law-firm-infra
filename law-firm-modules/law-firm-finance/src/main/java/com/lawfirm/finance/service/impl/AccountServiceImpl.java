@@ -12,6 +12,7 @@ import com.lawfirm.model.finance.service.AccountService;
 import com.lawfirm.model.finance.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +31,7 @@ import java.util.List;
 @Slf4j
 @Service("financeAccountServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class AccountServiceImpl extends BaseServiceImpl<AccountMapper, Account> implements AccountService {
 
     private final TransactionService transactionService;

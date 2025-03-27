@@ -8,6 +8,7 @@ import com.lawfirm.model.finance.enums.TransactionTypeEnum;
 import com.lawfirm.model.finance.mapper.TransactionMapper;
 import com.lawfirm.model.finance.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 @Slf4j
 @Service("financeTransactionServiceImpl")
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class TransactionServiceImpl extends BaseServiceImpl<TransactionMapper, Transaction>
         implements TransactionService {
 

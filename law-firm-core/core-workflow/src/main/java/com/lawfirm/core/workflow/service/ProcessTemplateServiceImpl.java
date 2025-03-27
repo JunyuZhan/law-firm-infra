@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.RepositoryService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /**
  * 流程模板服务实现类
@@ -18,8 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
  * @author JunyuZhan
  */
 @Slf4j
-@Service("workflowTemplateServiceImpl")
+@Service("coreProcessTemplateServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessTemplateServiceImpl extends ServiceImpl<ProcessTemplateMapper, ProcessTemplate> implements ProcessTemplateService {
 
     private final RepositoryService repositoryService;

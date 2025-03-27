@@ -3,57 +3,57 @@ package com.lawfirm.api.config;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * 开发模式安全配置
- * 当设置dev.use-redis=false时使用的简化安全配置
+ * 开发环境安全配置
+ * 简化安全规则，便于开发测试
  */
-@Slf4j
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
-@ConditionalOnProperty(name = "dev.use-redis", havingValue = "false")
+@ConditionalOnProperty(name = "dev.auth.simplified-security", havingValue = "true")
 public class DevSecurityConfig {
 
     /**
-     * 提供用于开发的认证管理器
+     * 开发环境下简化的安全配置
+     * 禁用大部分安全特性，仅提供最基本的安全控制
      */
     @Bean
-    @Primary
-    public AuthenticationManager devAuthenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        log.info("======================================================");
-        log.info("正在使用开发模式认证管理器，仅用于开发/测试环境");
-        log.info("======================================================");
-        return authConfig.getAuthenticationManager();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+            .csrf(AbstractHttpConfigurer::disable)  // 禁用CSRF
+            .cors(AbstractHttpConfigurer::disable)  // 禁用CORS
+            .authorizeHttpRequests(authorize -> authorize
+                .anyRequest().permitAll()  // 允许所有请求
+            )
+            .headers(headers -> headers
+                .frameOptions(frameOptions -> frameOptions.sameOrigin())  // 允许同源iframe
+            )
+            .build();
     }
-
+    
     /**
-     * 开发模式安全过滤器链配置
-     * 允许所有端点访问，仅用于开发环境
+     * 禁用方法级别安全检查
+     * 用于开发测试环境
      */
-    @Bean
-    @Primary
-    public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
-        log.info("======================================================");
-        log.info("正在使用开发模式安全配置，仅用于开发/测试环境");
-        log.info("所有接口均可无认证访问，请勿在生产环境使用此配置");
-        log.info("======================================================");
-        
-        // 禁用CSRF保护
-        http.csrf(csrf -> csrf.disable())
-            // 开发环境允许所有请求访问
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-
-        return http.build();
+    @Configuration
+    @ConditionalOnProperty(name = "method.security.enabled", havingValue = "false")
+    public static class DisableMethodSecurity {
+        // 这个内部类的存在会使@EnableMethodSecurity失效
+        // 不需要额外的Bean方法
+    }
+    
+    /**
+     * 当method.security.enabled=true时启用方法级别安全
+     */
+    @Configuration
+    @EnableMethodSecurity
+    @ConditionalOnProperty(name = "method.security.enabled", havingValue = "true", matchIfMissing = true)
+    public static class EnableMethodSecurityConfig {
+        // 这个内部类启用方法级别安全
     }
 } 

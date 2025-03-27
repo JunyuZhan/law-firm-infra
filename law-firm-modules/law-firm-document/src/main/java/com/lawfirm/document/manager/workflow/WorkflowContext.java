@@ -3,13 +3,17 @@ package com.lawfirm.document.manager.workflow;
 import com.lawfirm.model.workflow.service.ProcessService;
 import com.lawfirm.model.workflow.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
  * 文档工作流上下文，提供工作流相关的配置和上下文信息
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class WorkflowContext {
     
     private final ProcessService processService;

@@ -1,17 +1,29 @@
 package com.lawfirm.document.manager.search;
 
 import com.lawfirm.model.search.service.SearchService;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
  * 文档搜索上下文，提供文档搜索相关的配置和上下文信息
  */
+@Slf4j
 @Component
-@RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "search", name = "enabled", havingValue = "true", matchIfMissing = false)
 public class DocumentSearchContext {
     
     private final SearchService searchService;
+    
+    /**
+     * 构造函数
+     * 
+     * @param searchService 搜索服务（可能为null）
+     */
+    public DocumentSearchContext(SearchService searchService) {
+        this.searchService = searchService;
+        log.info("文档搜索上下文初始化完成，搜索服务状态: {}", searchService != null ? "可用" : "不可用");
+    }
     
     /**
      * 获取文档索引名称

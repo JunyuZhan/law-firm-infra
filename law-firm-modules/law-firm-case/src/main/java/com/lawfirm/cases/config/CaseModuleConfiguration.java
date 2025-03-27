@@ -68,7 +68,6 @@ public class CaseModuleConfiguration {
      * 案件配置属性
      */
     @Data
-    @Component
     @ConfigurationProperties(prefix = "law-firm.case")
     public static class CaseProperties {
         

@@ -10,6 +10,7 @@ import com.lawfirm.model.document.enums.TemplateTypeEnum;
 import com.lawfirm.model.document.enums.DocumentStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Map;
  * 文档模板管理适配器
  */
 @Component
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class DocumentTemplateAdaptor extends BaseAdaptor {
 
     private final TemplateService templateService;

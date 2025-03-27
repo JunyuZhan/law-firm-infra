@@ -1,14 +1,22 @@
 package com.lawfirm.document.manager.search;
 
-import com.lawfirm.model.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+/**
+ * 文档搜索管理器
+ */
+@Slf4j
 @Component
-@RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "search", name = "enabled", havingValue = "true", matchIfMissing = false)
 public class SearchManager {
-    private final SearchService searchService;
-    private final DocumentSearchContext documentSearchContext;
+
+    private final DocumentSearchContext searchContext;
     
-    // 实现文档搜索相关功能
+    public SearchManager(DocumentSearchContext searchContext) {
+        this.searchContext = searchContext;
+        log.info("文档搜索管理器初始化完成");
+    }
 }

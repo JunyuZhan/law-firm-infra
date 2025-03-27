@@ -5,6 +5,7 @@ import com.lawfirm.model.message.entity.base.BaseMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -14,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class AsyncMessageSenderImpl implements MessageSender {
 
     private final MessageSenderImpl messageSender;

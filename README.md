@@ -170,7 +170,8 @@ Windows环境:
 ```bash
 scripts/docker-build.bat
 ```
-
+-jar target/law-firm-api-1.0.0.jar
+java "-Dspring.profiles.active=dev-noredis" 
 Linux/Mac环境:
 
 ```bash

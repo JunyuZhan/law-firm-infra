@@ -12,6 +12,7 @@ import com.lawfirm.model.document.mapper.TemplateDocumentMapper;
 import com.lawfirm.model.document.service.TemplateService;
 import com.lawfirm.model.document.vo.TemplateVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service("documentTemplateServiceImpl")
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper, TemplateDocument> implements TemplateService {
 
     private final StorageManager storageManager;

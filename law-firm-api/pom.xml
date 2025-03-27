@@ -49,41 +49,97 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-system</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-auth</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-document</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-personnel</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-client</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-case</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-contract</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-finance</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <!-- 通用组件依赖 -->

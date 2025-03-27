@@ -13,6 +13,7 @@ import com.lawfirm.model.finance.enums.AccountTypeEnum;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  * 账户管理适配器
  */
 @Component
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class AccountAdaptor extends BaseAdaptor {
 
     @Autowired

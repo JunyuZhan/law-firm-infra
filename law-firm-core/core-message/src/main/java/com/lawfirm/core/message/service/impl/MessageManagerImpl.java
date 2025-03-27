@@ -2,6 +2,7 @@ package com.lawfirm.core.message.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import com.lawfirm.common.security.context.SecurityContextHolder;
 import com.lawfirm.core.message.handler.template.BaseMessageHandler;
 import com.lawfirm.core.message.service.strategy.RoutingStrategy;
@@ -9,7 +10,11 @@ import com.lawfirm.core.message.utils.MessageLogUtils;
 import com.lawfirm.model.message.entity.base.BaseMessage;
 import com.lawfirm.model.message.enums.MessageTypeEnum;
 
+/**
+ * 消息管理实现类
+ */
 @Service
+@ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MessageManagerImpl {
 
     @Autowired

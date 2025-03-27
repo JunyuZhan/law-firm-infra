@@ -18,6 +18,7 @@ import com.lawfirm.model.document.vo.DocumentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("caseDocumentServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class CaseDocumentServiceImpl implements CaseDocumentService {
 
     private final CaseDocumentMapper documentMapper;

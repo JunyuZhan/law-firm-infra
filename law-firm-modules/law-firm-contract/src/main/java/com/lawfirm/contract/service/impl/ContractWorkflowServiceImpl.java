@@ -8,6 +8,7 @@ import com.lawfirm.model.workflow.service.TaskService;
 import com.lawfirm.model.workflow.vo.TaskVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Map;
 @Slf4j
 @Service("contractWorkflowServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ContractWorkflowServiceImpl implements ContractWorkflowService {
 
     /**

@@ -6,17 +6,19 @@ import com.lawfirm.model.document.entity.base.BaseDocument;
 import com.lawfirm.model.document.mapper.DocumentMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * 基于数据库的文档搜索策略实现
+ * 数据库搜索策略实现，当Elasticsearch不可用时使用数据库实现搜索
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "search", name = "enabled", havingValue = "true", matchIfMissing = false)
 public class DatabaseSearchStrategy implements SearchStrategy {
 
     private final DocumentMapper documentMapper;

@@ -10,15 +10,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 流程服务实现类
+ */
 @Slf4j
 @Service("coreProcessServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessServiceImpl implements ProcessService {
 
     private final RuntimeService runtimeService;

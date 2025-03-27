@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
  * API层 MyBatis-Plus 配置
  */
 @Configuration
+@Deprecated
 public class MybatisPlusConfig {
 
     /**
@@ -30,4 +31,4 @@ public class MybatisPlusConfig {
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         return interceptor;
     }
-} 
+}

@@ -57,6 +57,13 @@
             <version>${project.version}</version>
         </dependency>
         
+        <!-- 客户服务模块依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
         <!-- 文档模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>

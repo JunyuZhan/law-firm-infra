@@ -7,6 +7,7 @@ import com.lawfirm.model.cases.service.business.CaseDocumentService;
 import com.lawfirm.model.cases.vo.business.CaseDocumentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class DocumentAdaptor extends BaseAdaptor {
 
     private final CaseDocumentService documentService;

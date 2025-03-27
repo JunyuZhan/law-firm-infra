@@ -15,7 +15,7 @@ import jakarta.annotation.PostConstruct;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(prefix = "personnel.notification", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = false)
 @Import(MessageConfig.class) // 引入核心消息配置
 public class PersonnelMessageConfig {
 

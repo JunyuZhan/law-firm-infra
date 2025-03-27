@@ -34,8 +34,9 @@ public class MyBatisConfig {
         MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         
-        // 设置别名包
-        factoryBean.setTypeAliasesPackage("com.lawfirm.model");
+        // 不使用自动扫描别名方式，避免别名冲突
+        // factoryBean.setTypeAliasesPackage("com.lawfirm.model.*.entity");
+        log.info("禁用自动别名扫描，避免别名冲突问题");
         
         // 不设置XML映射文件位置，完全使用注解方式
         log.info("使用注解方式配置MyBatis映射，不加载XML映射文件");
@@ -49,6 +50,10 @@ public class MyBatisConfig {
         MybatisConfiguration configuration = new MybatisConfiguration();
         configuration.setMapUnderscoreToCamelCase(true);
         configuration.setCacheEnabled(false);
+        
+        // 使用configuration手动注册需要的类型处理器
+        // configuration.getTypeHandlerRegistry().register(YourTypeHandler.class);
+        
         factoryBean.setConfiguration(configuration);
         
         return factoryBean.getObject();

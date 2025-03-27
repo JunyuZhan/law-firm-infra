@@ -2,12 +2,14 @@ package com.lawfirm.common.security.context;
 
 import com.lawfirm.common.security.authentication.Authentication;
 import com.lawfirm.common.security.authorization.Authorization;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
  * SecurityContext接口的默认实现
  */
 @Component
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class DefaultSecurityContext implements SecurityContext {
 
     private Authentication authentication;

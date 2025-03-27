@@ -2,6 +2,7 @@ package com.lawfirm.core.message.service.impl;
 
 import com.lawfirm.core.message.service.MessageTemplateService;
 import org.springframework.stereotype.Service;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service("messageTemplateServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MessageTemplateServiceImpl implements MessageTemplateService {
     
     /**

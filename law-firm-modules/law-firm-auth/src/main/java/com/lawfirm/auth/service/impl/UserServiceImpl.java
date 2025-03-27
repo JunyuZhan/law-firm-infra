@@ -13,13 +13,16 @@ import com.lawfirm.model.auth.entity.User;
 import com.lawfirm.model.auth.service.UserService;
 import com.lawfirm.model.auth.vo.UserInfoVO;
 import com.lawfirm.model.auth.vo.UserVO;
+import com.lawfirm.auth.security.details.SecurityUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -30,9 +33,10 @@ import java.util.stream.Collectors;
  * 认证用户服务实现类
  */
 @Slf4j
-@Service("authUserServiceImpl")
+@Service("userDetailsService")
+@Primary
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
     
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -175,8 +179,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new UsernameNotFoundException("用户不存在");
         }
         
-        // 简化处理，实际应构建UserDetails对象
-        return null;
+        // 获取用户权限列表
+        List<String> permissions = getUserPermissions(user.getId());
+        
+        // 创建并返回SecurityUserDetails对象
+        return new SecurityUserDetails(user, permissions);
     }
     
     @Override
@@ -186,8 +193,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new UsernameNotFoundException("用户不存在");
         }
         
-        // 简化处理，实际应构建UserDetails对象
-        return null;
+        // 获取用户权限列表
+        List<String> permissions = getUserPermissions(user.getId());
+        
+        // 创建并返回SecurityUserDetails对象
+        return new SecurityUserDetails(user, permissions);
     }
     
     @Override
@@ -197,8 +207,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new UsernameNotFoundException("用户不存在");
         }
         
-        // 简化处理，实际应构建UserDetails对象
-        return null;
+        // 获取用户权限列表
+        List<String> permissions = getUserPermissions(user.getId());
+        
+        // 创建并返回SecurityUserDetails对象
+        return new SecurityUserDetails(user, permissions);
     }
     
     @Override

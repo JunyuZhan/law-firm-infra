@@ -6,6 +6,7 @@ import com.lawfirm.model.search.service.SearchService;
 import com.lawfirm.model.search.vo.SearchVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "search", name = "enabled", havingValue = "true", matchIfMissing = false)
 public class ElasticsearchSearchStrategy implements SearchStrategy {
 
     private final SearchService searchService;

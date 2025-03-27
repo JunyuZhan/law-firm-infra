@@ -2,6 +2,7 @@ package com.lawfirm.common.security.authorization;
 
 import org.springframework.stereotype.Component;
 import com.lawfirm.common.security.dao.AuthorizationDao;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import java.util.Set;
 
 /**
@@ -13,7 +14,8 @@ import java.util.Set;
  * @author JunyuZhan
  * @since 1.0.0
  */
-@Component
+@Component("jdbcAuthorization")
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class JdbcAuthorization implements Authorization {
     
     /**
