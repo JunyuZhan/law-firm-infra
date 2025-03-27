@@ -34,6 +34,15 @@ public class DevSecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 // 明确允许/direct/**路径的所有请求
                 .requestMatchers("/direct/**").permitAll()
+                // 允许API文档访问
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/webjars/**",
+                    "/doc.html",
+                    "/swagger-resources/**"
+                ).permitAll()
                 // 允许其他所有请求
                 .anyRequest().permitAll()  // 允许所有请求
             )

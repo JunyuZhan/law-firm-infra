@@ -3,17 +3,18 @@ package com.lawfirm.api.config;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 /**
  * Swagger API文档配置
- * 通过springdoc.api-docs.enabled属性控制是否启用
  */
 @Configuration
-@ConditionalOnProperty(name = "springdoc.api-docs.enabled", havingValue = "true", matchIfMissing = false)
 public class SwaggerConfig {
 
     @Value("${app.name:法律事务所管理系统}")
@@ -23,7 +24,7 @@ public class SwaggerConfig {
     private String appVersion;
     
     @Bean
-    public OpenAPI openApi() {
+    public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(new Info()
                         .title(appName + " API文档")
@@ -31,6 +32,25 @@ public class SwaggerConfig {
                         .version(appVersion)
                         .contact(new Contact()
                                 .name("开发团队")
-                                .email("dev@lawfirm.com")));
+                                .email("dev@lawfirm.com")))
+                .servers(List.of(
+                        new Server().url("/api").description("API服务器")
+                ));
+    }
+
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("public")
+                .pathsToMatch("/api/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi adminApi() {
+        return GroupedOpenApi.builder()
+                .group("admin")
+                .pathsToMatch("/api/admin/**")
+                .build();
     }
 } 
