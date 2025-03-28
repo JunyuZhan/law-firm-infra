@@ -80,12 +80,10 @@ public class LawFirmApiApplication {
         System.setProperty("lawfirm.workflow.enabled", "false"); // 禁用工作流功能
         System.setProperty("lawfirm.storage.enabled", "true"); // 启用存储功能
         
-        // API文档默认关闭，可通过环境变量ENABLE_API_DOCS启用
-        String enableApiDocs = System.getenv("ENABLE_API_DOCS");
-        if (!"true".equals(enableApiDocs)) {
-            System.setProperty("springdoc.api-docs.enabled", "false");
-            System.setProperty("springdoc.swagger-ui.enabled", "false");
-        }
+        // API文档配置 - 只启用Knife4j
+        System.setProperty("springdoc.api-docs.enabled", "true"); // 仍需启用基础API文档，Knife4j依赖它
+        System.setProperty("springdoc.swagger-ui.enabled", "false"); // 禁用原生Swagger UI
+        System.setProperty("knife4j.enable", "true"); // 启用Knife4j
         
         // 开发环境下启用所有必要的模块
         System.setProperty("lawfirm.client.enabled", "true");

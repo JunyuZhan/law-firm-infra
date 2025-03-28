@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * 系统字典项控制器
  */
-@Tag(name = "系统字典项管理")
+@Tag(name = "系统字典项管理", description = "管理系统字典项数据，包括字典项的增删改查等操作")
 @RestController
 @RequestMapping("/system/dict/item")
 @RequiredArgsConstructor
@@ -37,7 +37,10 @@ public class DictItemController extends BaseController {
     /**
      * 获取字典项列表
      */
-    @Operation(summary = "获取字典项列表")
+    @Operation(
+        summary = "获取字典项列表",
+        description = "分页获取字典项列表，支持按字典ID、标签、值等条件筛选"
+    )
     @GetMapping("/list")
     @RequiresPermissions("system:dict:list")
     public CommonResult<Page<DictItemVO>> list(
@@ -60,7 +63,10 @@ public class DictItemController extends BaseController {
     /**
      * 获取字典项详情
      */
-    @Operation(summary = "获取字典项详情")
+    @Operation(
+        summary = "获取字典项详情",
+        description = "根据字典项ID获取字典项的详细信息"
+    )
     @GetMapping("/{id}")
     @RequiresPermissions("system:dict:query")
     public CommonResult<DictItemVO> getInfo(@Parameter(description = "字典项ID") @PathVariable Long id) {
@@ -71,7 +77,10 @@ public class DictItemController extends BaseController {
     /**
      * 根据字典ID获取字典项列表
      */
-    @Operation(summary = "根据字典ID获取字典项列表")
+    @Operation(
+        summary = "根据字典ID获取字典项列表",
+        description = "获取指定字典下的所有字典项列表，用于下拉选择等场景"
+    )
     @GetMapping("/dict/{dictId}")
     public CommonResult<List<DictItemVO>> getDictItemsByDictId(@Parameter(description = "字典ID") @PathVariable Long dictId) {
         List<DictItemVO> dictItems = dictItemService.listDictItemsByDictId(dictId);
@@ -81,7 +90,10 @@ public class DictItemController extends BaseController {
     /**
      * 新增字典项
      */
-    @Operation(summary = "新增字典项")
+    @Operation(
+        summary = "新增字典项",
+        description = "创建新的字典项数据，包括标签、值、排序等信息"
+    )
     @PostMapping
     @RequiresPermissions("system:dict:add")
     @Log(title = "字典项管理", businessType = "INSERT")
@@ -93,7 +105,10 @@ public class DictItemController extends BaseController {
     /**
      * 修改字典项
      */
-    @Operation(summary = "修改字典项")
+    @Operation(
+        summary = "修改字典项",
+        description = "更新已存在的字典项信息，包括标签、值、排序等"
+    )
     @PutMapping("/{id}")
     @RequiresPermissions("system:dict:edit")
     @Log(title = "字典项管理", businessType = "UPDATE")
@@ -107,7 +122,10 @@ public class DictItemController extends BaseController {
     /**
      * 删除字典项
      */
-    @Operation(summary = "删除字典项")
+    @Operation(
+        summary = "删除字典项",
+        description = "根据ID删除单个字典项"
+    )
     @DeleteMapping("/{id}")
     @RequiresPermissions("system:dict:remove")
     @Log(title = "字典项管理", businessType = "DELETE")
@@ -119,7 +137,10 @@ public class DictItemController extends BaseController {
     /**
      * 批量删除字典项
      */
-    @Operation(summary = "批量删除字典项")
+    @Operation(
+        summary = "批量删除字典项",
+        description = "批量删除多个字典项"
+    )
     @DeleteMapping("/batch")
     @RequiresPermissions("system:dict:remove")
     @Log(title = "字典项管理", businessType = "DELETE")

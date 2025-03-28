@@ -12,7 +12,7 @@ import com.lawfirm.model.ai.entity.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
  * 问答服务实现类
  */
 @Slf4j
-@Service("aiQAServiceImpl")
+@Component("aiQAServiceImpl")
 @RequiredArgsConstructor
 public class QAServiceImpl implements QAService {
     

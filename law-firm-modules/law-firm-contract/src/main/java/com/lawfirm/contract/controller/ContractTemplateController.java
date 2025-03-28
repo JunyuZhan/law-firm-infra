@@ -29,7 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/contract-templates")
 @RequiredArgsConstructor
-@Tag(name = "合同模板接口", description = "提供合同模板的创建、查询、修改、删除等功能")
+@Tag(name = "合同模板接口", description = "提供合同模板的创建、查询、修改、删除等功能，支持模板变量管理和模板启用禁用")
 public class ContractTemplateController {
 
     private final ContractTemplateService contractTemplateService;
@@ -40,8 +40,12 @@ public class ContractTemplateController {
      * 创建合同模板
      */
     @PostMapping
-    @Operation(summary = "创建合同模板", description = "创建新的合同模板")
-    public CommonResult<Long> createContractTemplate(@RequestBody @Validated ContractTemplateCreateDTO createDTO) {
+    @Operation(
+        summary = "创建合同模板",
+        description = "创建新的合同模板，包括模板名称、编码、内容、变量定义等信息"
+    )
+    public CommonResult<Long> createContractTemplate(
+            @Parameter(description = "模板创建参数，包括模板名称、编码、内容等") @RequestBody @Validated ContractTemplateCreateDTO createDTO) {
         log.info("创建合同模板: {}", createDTO.getTemplateName());
         Long templateId = contractTemplateService.createTemplate(createDTO);
         return CommonResult.success(templateId, "创建合同模板成功");
@@ -51,10 +55,13 @@ public class ContractTemplateController {
      * 更新合同模板
      */
     @PutMapping("/{id}")
-    @Operation(summary = "更新合同模板", description = "根据ID更新合同模板")
+    @Operation(
+        summary = "更新合同模板",
+        description = "更新已存在的合同模板信息，支持更新模板名称、内容、变量定义等"
+    )
     public CommonResult<Boolean> updateContractTemplate(
-            @PathVariable("id") Long id,
-            @RequestBody @Validated ContractTemplateUpdateDTO updateDTO) {
+            @Parameter(description = "模板ID") @PathVariable("id") Long id,
+            @Parameter(description = "模板更新参数，包括需要更新的字段") @RequestBody @Validated ContractTemplateUpdateDTO updateDTO) {
         log.info("更新合同模板: {}", id);
         updateDTO.setId(id);
         boolean result = contractTemplateService.updateTemplate(updateDTO);
@@ -65,8 +72,12 @@ public class ContractTemplateController {
      * 获取合同模板详情
      */
     @GetMapping("/{id}")
-    @Operation(summary = "获取合同模板详情", description = "根据ID获取合同模板详情")
-    public CommonResult<ContractTemplateDetailVO> getContractTemplate(@PathVariable("id") Long id) {
+    @Operation(
+        summary = "获取合同模板详情",
+        description = "根据ID获取合同模板的详细信息，包括模板内容、变量定义、使用状态等"
+    )
+    public CommonResult<ContractTemplateDetailVO> getContractTemplate(
+            @Parameter(description = "模板ID") @PathVariable("id") Long id) {
         log.info("获取合同模板详情: {}", id);
         ContractTemplateDetailVO detailVO = contractTemplateService.getTemplateDetail(id);
         return CommonResult.success(detailVO);
@@ -76,8 +87,12 @@ public class ContractTemplateController {
      * 删除合同模板
      */
     @DeleteMapping("/{id}")
-    @Operation(summary = "删除合同模板", description = "根据ID删除合同模板")
-    public CommonResult<Boolean> deleteContractTemplate(@PathVariable("id") Long id) {
+    @Operation(
+        summary = "删除合同模板",
+        description = "根据ID删除合同模板，如果模板已被使用则不允许删除"
+    )
+    public CommonResult<Boolean> deleteContractTemplate(
+            @Parameter(description = "模板ID") @PathVariable("id") Long id) {
         log.info("删除合同模板: {}", id);
         boolean result = contractTemplateService.removeById(id);
         return CommonResult.success(result, "删除合同模板" + (result ? "成功" : "失败"));
@@ -87,10 +102,14 @@ public class ContractTemplateController {
      * 分页查询合同模板
      */
     @GetMapping("/page")
-    @Operation(summary = "分页查询合同模板", description = "根据条件分页查询合同模板")
+    @Operation(
+        summary = "分页查询合同模板",
+        description = "根据条件分页查询合同模板列表，支持按模板名称、编码、状态等条件筛选"
+    )
     @Parameters({
             @Parameter(name = "current", description = "当前页码，从1开始", required = true),
-            @Parameter(name = "size", description = "每页记录数", required = true)
+            @Parameter(name = "size", description = "每页记录数", required = true),
+            @Parameter(name = "queryDTO", description = "查询参数，包括模板名称、编码、状态等")
     })
     public CommonResult<IPage<ContractTemplateVO>> pageContractTemplates(
             @RequestParam(defaultValue = "1") long current,
@@ -106,8 +125,12 @@ public class ContractTemplateController {
      * 查询合同模板列表
      */
     @GetMapping("/list")
-    @Operation(summary = "查询合同模板列表", description = "根据条件查询合同模板列表")
-    public CommonResult<List<ContractTemplateVO>> listContractTemplates(ContractTemplateQueryDTO queryDTO) {
+    @Operation(
+        summary = "查询合同模板列表",
+        description = "根据条件查询合同模板列表，不分页，支持按模板名称、编码、状态等条件筛选"
+    )
+    public CommonResult<List<ContractTemplateVO>> listContractTemplates(
+            @Parameter(description = "查询参数，包括模板名称、编码、状态等") ContractTemplateQueryDTO queryDTO) {
         log.info("查询合同模板列表");
         List<ContractTemplateVO> templates = contractTemplateService.listTemplates(queryDTO);
         return CommonResult.success(templates);
@@ -117,8 +140,12 @@ public class ContractTemplateController {
      * 提取模板变量
      */
     @PostMapping("/extract-variables")
-    @Operation(summary = "提取模板变量", description = "从模板内容中提取变量")
-    public CommonResult<Map<String, String>> extractTemplateVariables(@RequestBody String templateContent) {
+    @Operation(
+        summary = "提取模板变量",
+        description = "从模板内容中提取所有变量，返回变量名称和描述的映射关系"
+    )
+    public CommonResult<Map<String, String>> extractTemplateVariables(
+            @Parameter(description = "模板内容") @RequestBody String templateContent) {
         log.info("提取模板变量");
         Map<String, String> variables = templateParser.extractVariables(templateContent);
         return CommonResult.success(variables);
@@ -128,9 +155,12 @@ public class ContractTemplateController {
      * 验证模板变量
      */
     @PostMapping("/validate-variables")
-    @Operation(summary = "验证模板变量", description = "验证模板变量是否完整")
+    @Operation(
+        summary = "验证模板变量",
+        description = "验证模板变量是否完整，检查所有必填变量是否都已提供值"
+    )
     public CommonResult<Boolean> validateTemplateVariables(
-            @RequestBody Map<String, Object> request) {
+            @Parameter(description = "请求参数，包括模板内容和变量值") @RequestBody Map<String, Object> request) {
         log.info("验证模板变量");
         String templateContent = (String) request.get("templateContent");
         @SuppressWarnings("unchecked")
@@ -143,8 +173,12 @@ public class ContractTemplateController {
      * 启用合同模板
      */
     @PutMapping("/{id}/enable")
-    @Operation(summary = "启用合同模板", description = "启用指定ID的合同模板")
-    public CommonResult<Boolean> enableContractTemplate(@PathVariable("id") Long id) {
+    @Operation(
+        summary = "启用合同模板",
+        description = "启用指定的合同模板，启用后可以被选择使用"
+    )
+    public CommonResult<Boolean> enableContractTemplate(
+            @Parameter(description = "模板ID") @PathVariable("id") Long id) {
         log.info("启用合同模板: {}", id);
         boolean result = contractTemplateService.enableTemplate(id);
         return CommonResult.success(result, "启用合同模板" + (result ? "成功" : "失败"));
@@ -154,8 +188,12 @@ public class ContractTemplateController {
      * 禁用合同模板
      */
     @PutMapping("/{id}/disable")
-    @Operation(summary = "禁用合同模板", description = "禁用指定ID的合同模板")
-    public CommonResult<Boolean> disableContractTemplate(@PathVariable("id") Long id) {
+    @Operation(
+        summary = "禁用合同模板",
+        description = "禁用指定的合同模板，禁用后不能被选择使用"
+    )
+    public CommonResult<Boolean> disableContractTemplate(
+            @Parameter(description = "模板ID") @PathVariable("id") Long id) {
         log.info("禁用合同模板: {}", id);
         boolean result = contractTemplateService.disableTemplate(id);
         return CommonResult.success(result, "禁用合同模板" + (result ? "成功" : "失败"));

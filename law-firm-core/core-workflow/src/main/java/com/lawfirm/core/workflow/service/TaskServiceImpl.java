@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.RuntimeService;
 import org.flowable.task.api.TaskInfo;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @author JunyuZhan
  */
 @Slf4j
-@Service("coreTaskServiceImpl")
+@Component("coreTaskServiceImpl")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, ProcessTask> implements TaskService {
@@ -50,8 +50,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, ProcessTask> implem
     public TaskVO createTask(TaskCreateDTO createDTO) {
         log.info("创建任务: {}", createDTO);
         Assert.notNull(createDTO, "创建参数不能为空");
-        Assert.hasText(createDTO.getTaskName(), "任务名称不能为空");
-        Assert.notNull(createDTO.getTaskType(), "任务类型不能为空");
+        Assert.hasText(createDTO.getName(), "任务名称不能为空");
+        Assert.notNull(createDTO.getType(), "任务类型不能为空");
         
         // 转换为实体
         ProcessTask task = taskConverter.toEntity(createDTO);

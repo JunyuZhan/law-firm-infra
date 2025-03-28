@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 文档权限管理控制器
  */
-@Tag(name = "文档权限管理")
+@Tag(name = "文档权限管理", description = "管理文档的访问权限，包括同步业务系统权限、添加和移除用户权限等操作")
 @RestController
 @RequestMapping("/api/v1/document/permissions")
 @RequiredArgsConstructor
@@ -23,7 +23,10 @@ public class DocumentPermissionController {
 
     private final DocumentPermissionService documentPermissionService;
 
-    @Operation(summary = "同步业务系统文档权限")
+    @Operation(
+        summary = "同步业务系统文档权限",
+        description = "将业务系统中的文档权限同步到文档系统，支持批量设置用户的文档访问权限"
+    )
     @PostMapping("/sync")
     public ResponseResult<Void> syncBusinessDocumentsPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,
@@ -33,7 +36,10 @@ public class DocumentPermissionController {
         return ResponseResult.success();
     }
 
-    @Operation(summary = "添加用户文档权限")
+    @Operation(
+        summary = "添加用户文档权限",
+        description = "为指定用户添加文档的访问权限，可以设置不同级别的权限类型（如：只读、编辑等）"
+    )
     @PostMapping("/user")
     public ResponseResult<Void> addUserPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,
@@ -44,7 +50,10 @@ public class DocumentPermissionController {
         return ResponseResult.success();
     }
 
-    @Operation(summary = "移除用户文档权限")
+    @Operation(
+        summary = "移除用户文档权限",
+        description = "移除指定用户对文档的所有访问权限"
+    )
     @DeleteMapping("/user")
     public ResponseResult<Void> removeUserPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,

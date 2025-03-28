@@ -1,8 +1,7 @@
 package com.lawfirm.model.workflow.dto.task;
 
 import com.lawfirm.model.base.dto.BaseDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -25,46 +24,73 @@ import jakarta.validation.constraints.NotNull;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "任务创建参数")
+@Schema(description = "任务创建参数")
 public class TaskCreateDTO extends BaseDTO {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("任务名称")
+    /**
+     * 任务名称
+     */
     @NotBlank(message = "任务名称不能为空")
-    private String taskName;
+    @Schema(description = "任务名称")
+    private String name;
 
-    @ApiModelProperty("任务类型")
+    /**
+     * 任务类型
+     */
     @NotNull(message = "任务类型不能为空")
-    private Integer taskType;
+    @Schema(description = "任务类型")
+    private Integer type;
 
-    @ApiModelProperty("流程ID")
-    private Long processId;
+    /**
+     * 流程ID
+     */
+    @Schema(description = "流程ID")
+    private String processId;
 
-    @ApiModelProperty("流程编号")
+    /**
+     * 流程编号
+     */
+    @Schema(description = "流程编号")
     private String processNo;
 
-    @ApiModelProperty("任务描述")
+    /**
+     * 任务描述
+     */
+    @Schema(description = "任务描述")
     private String description;
 
-    @ApiModelProperty("处理人ID")
-    private Long handlerId;
+    /**
+     * 处理人ID
+     */
+    @Schema(description = "处理人ID")
+    private String assigneeId;
 
-    @ApiModelProperty("处理人名称")
-    private String handlerName;
+    /**
+     * 处理人名称
+     */
+    @Schema(description = "处理人名称")
+    private String assigneeName;
 
-    @ApiModelProperty("优先级")
+    /**
+     * 优先级
+     */
+    @Schema(description = "优先级")
     private Integer priority;
 
-    @ApiModelProperty("截止时间")
-    private Date dueDate;
+    /**
+     * 截止时间
+     */
+    @Schema(description = "截止时间")
+    private LocalDateTime dueDate;
 
     /**
      * 自定义序列化逻辑
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
         // 保存时间戳
-        long dueTimeEpoch = dueDate != null ? dueDate.toInstant().toEpochMilli() : 0;
+        long dueTimeEpoch = dueDate != null ? dueDate.toInstant(ZoneOffset.UTC).toEpochMilli() : 0;
         
         // 执行默认序列化
         out.defaultWriteObject();
@@ -84,7 +110,7 @@ public class TaskCreateDTO extends BaseDTO {
         long dueTimeEpoch = in.readLong();
         
         if (dueTimeEpoch > 0) {
-            this.dueDate = new Date(dueTimeEpoch);
+            this.dueDate = LocalDateTime.ofEpochSecond(dueTimeEpoch, 0, ZoneOffset.UTC);
         }
     }
 } 

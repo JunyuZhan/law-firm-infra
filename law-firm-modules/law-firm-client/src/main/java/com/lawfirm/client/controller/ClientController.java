@@ -9,6 +9,8 @@ import com.lawfirm.model.client.dto.client.ClientQueryDTO;
 import com.lawfirm.model.client.dto.client.ClientUpdateDTO;
 import com.lawfirm.model.client.entity.base.Client;
 import com.lawfirm.model.client.vo.ClientVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +21,7 @@ import java.util.List;
 /**
  * 客户管理控制器
  */
+@Tag(name = "客户管理")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,10 +32,8 @@ public class ClientController extends BaseController {
 
     /**
      * 分页查询客户列表
-     *
-     * @param queryDTO 查询条件
-     * @return 客户分页列表
      */
+    @Operation(summary = "分页查询客户列表")
     @GetMapping("/list")
     public CommonResult<List<ClientVO>> list(ClientQueryDTO queryDTO) {
         return success(clientService.listClients(queryDTO));
@@ -40,10 +41,8 @@ public class ClientController extends BaseController {
 
     /**
      * 获取客户详情
-     *
-     * @param id 客户ID
-     * @return 客户详情
      */
+    @Operation(summary = "获取客户详情")
     @GetMapping("/{id}")
     public CommonResult<ClientVO> getClientById(@PathVariable("id") Long id) {
         return success(clientService.getClient(id));
@@ -51,10 +50,8 @@ public class ClientController extends BaseController {
 
     /**
      * 新增客户
-     *
-     * @param createDTO 客户信息
-     * @return 操作结果
      */
+    @Operation(summary = "新增客户")
     @PostMapping
     public CommonResult<Long> add(@Validated @RequestBody ClientCreateDTO createDTO) {
         return success(clientService.createClient(createDTO));
@@ -62,10 +59,8 @@ public class ClientController extends BaseController {
 
     /**
      * 修改客户
-     *
-     * @param updateDTO 客户信息
-     * @return 操作结果
      */
+    @Operation(summary = "修改客户信息")
     @PutMapping
     public CommonResult<Boolean> update(@Validated @RequestBody ClientUpdateDTO updateDTO) {
         clientService.updateClient(updateDTO);
@@ -74,10 +69,8 @@ public class ClientController extends BaseController {
 
     /**
      * 删除客户
-     *
-     * @param id 客户ID
-     * @return 操作结果
      */
+    @Operation(summary = "删除客户")
     @DeleteMapping("/{id}")
     public CommonResult<Boolean> remove(@PathVariable("id") Long id) {
         clientService.deleteClient(id);
@@ -86,11 +79,8 @@ public class ClientController extends BaseController {
 
     /**
      * 更新客户状态
-     *
-     * @param id 客户ID
-     * @param status 状态
-     * @return 操作结果
      */
+    @Operation(summary = "更新客户状态")
     @PutMapping("/{id}/status/{status}")
     public CommonResult<Boolean> updateStatus(
             @PathVariable("id") Long id,
@@ -101,11 +91,8 @@ public class ClientController extends BaseController {
 
     /**
      * 更新客户信用等级
-     *
-     * @param id 客户ID
-     * @param creditLevel 信用等级
-     * @return 操作结果
      */
+    @Operation(summary = "更新客户信用等级")
     @PutMapping("/{id}/credit/{creditLevel}")
     public CommonResult<Boolean> updateCreditLevel(
             @PathVariable("id") Long id,

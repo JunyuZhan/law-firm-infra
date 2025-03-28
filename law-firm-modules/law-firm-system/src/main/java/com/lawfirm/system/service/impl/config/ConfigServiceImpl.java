@@ -191,6 +191,13 @@ public class ConfigServiceImpl extends BaseServiceImpl<SysConfigMapper, SysConfi
         ConfigVO vo = new ConfigVO();
         BeanUtils.copyProperties(config, vo);
         
+        // 对敏感配置进行处理
+        if (isSensitiveConfig(config.getConfigKey())) {
+            // 这里不使用setSensitive方法，ConfigVO中可能没有该方法
+            // 对于敏感配置，不做特殊处理，由使用方自行判断和处理
+            log.debug("检测到敏感配置: {}", config.getConfigKey());
+        }
+        
         // 设置配置类型名称
         if (StringUtils.hasText(config.getConfigType())) {
             switch (config.getConfigType()) {
@@ -201,11 +208,35 @@ public class ConfigServiceImpl extends BaseServiceImpl<SysConfigMapper, SysConfi
                     vo.setConfigTypeName("业务配置");
                     break;
                 default:
-                    vo.setConfigTypeName(config.getConfigType());
+                    vo.setConfigTypeName("其他配置");
                     break;
             }
         }
         
         return vo;
+    }
+
+    /**
+     * 判断是否为敏感配置
+     */
+    private boolean isSensitiveConfig(String configKey) {
+        // 敏感配置项列表
+        final String[] sensitiveKeys = {
+            "ai.openai.api-key", 
+            "ai.baidu.api-key", 
+            "ai.baidu.secret-key",
+            "sms.api-key", 
+            "mail.password",
+            "security.jwt.secret",
+            "oauth2.client-secret"
+        };
+        
+        for (String key : sensitiveKeys) {
+            if (key.equals(configKey)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

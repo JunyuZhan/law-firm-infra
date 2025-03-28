@@ -8,7 +8,9 @@ import com.lawfirm.model.ai.service.TextAnalysisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -17,7 +19,8 @@ import java.util.regex.Pattern;
 /**
  * 文本分析服务实现类
  */
-@Service
+@Component("aiTextAnalysisServiceImpl")
+@RequiredArgsConstructor
 public class TextAnalysisServiceImpl implements TextAnalysisService {
     
     private static final Logger logger = LoggerFactory.getLogger(TextAnalysisServiceImpl.class);

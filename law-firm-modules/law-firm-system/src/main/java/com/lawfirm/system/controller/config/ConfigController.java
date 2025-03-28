@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * 系统配置控制器
  */
-@Tag(name = "系统配置管理")
+@Tag(name = "系统配置管理", description = "管理系统配置数据，包括配置的增删改查、缓存刷新等操作")
 @RestController
 @RequestMapping("/system/config")
 @RequiredArgsConstructor
@@ -36,7 +36,10 @@ public class ConfigController extends BaseController {
     /**
      * 获取配置列表
      */
-    @Operation(summary = "获取配置列表")
+    @Operation(
+        summary = "获取配置列表",
+        description = "分页获取配置列表，支持按配置名称、键名、类型等条件筛选"
+    )
     @GetMapping("/list")
     @RequiresPermissions("system:config:list")
     public CommonResult<Page<ConfigVO>> list(
@@ -59,7 +62,10 @@ public class ConfigController extends BaseController {
     /**
      * 获取配置详情
      */
-    @Operation(summary = "获取配置详情")
+    @Operation(
+        summary = "获取配置详情",
+        description = "根据配置ID获取配置的详细信息"
+    )
     @GetMapping("/{id}")
     @RequiresPermissions("system:config:query")
     public CommonResult<ConfigVO> getInfo(@Parameter(description = "配置ID") @PathVariable Long id) {
@@ -70,7 +76,10 @@ public class ConfigController extends BaseController {
     /**
      * 根据键名获取配置
      */
-    @Operation(summary = "根据键名获取配置")
+    @Operation(
+        summary = "根据键名获取配置",
+        description = "根据配置键名获取配置信息，键名是配置的唯一业务标识"
+    )
     @GetMapping("/key/{configKey}")
     public CommonResult<ConfigVO> getConfigByKey(@Parameter(description = "配置键名") @PathVariable String configKey) {
         ConfigVO config = configService.getConfigByKey(configKey);
@@ -80,7 +89,10 @@ public class ConfigController extends BaseController {
     /**
      * 新增配置
      */
-    @Operation(summary = "新增配置")
+    @Operation(
+        summary = "新增配置",
+        description = "创建新的系统配置，包括配置名称、键名、值、类型等信息"
+    )
     @PostMapping
     @RequiresPermissions("system:config:add")
     @Log(title = "系统配置", businessType = "INSERT")
@@ -92,7 +104,10 @@ public class ConfigController extends BaseController {
     /**
      * 修改配置
      */
-    @Operation(summary = "修改配置")
+    @Operation(
+        summary = "修改配置",
+        description = "更新已存在的系统配置信息，包括配置名称、键名、值、类型等"
+    )
     @PutMapping("/{id}")
     @RequiresPermissions("system:config:edit")
     @Log(title = "系统配置", businessType = "UPDATE")
@@ -106,7 +121,10 @@ public class ConfigController extends BaseController {
     /**
      * 删除配置
      */
-    @Operation(summary = "删除配置")
+    @Operation(
+        summary = "删除配置",
+        description = "根据ID删除单个系统配置"
+    )
     @DeleteMapping("/{id}")
     @RequiresPermissions("system:config:remove")
     @Log(title = "系统配置", businessType = "DELETE")
@@ -118,7 +136,10 @@ public class ConfigController extends BaseController {
     /**
      * 批量删除配置
      */
-    @Operation(summary = "批量删除配置")
+    @Operation(
+        summary = "批量删除配置",
+        description = "批量删除多个系统配置"
+    )
     @DeleteMapping("/batch")
     @RequiresPermissions("system:config:remove")
     @Log(title = "系统配置", businessType = "DELETE")
@@ -130,7 +151,10 @@ public class ConfigController extends BaseController {
     /**
      * 刷新配置缓存
      */
-    @Operation(summary = "刷新配置缓存")
+    @Operation(
+        summary = "刷新配置缓存",
+        description = "刷新系统中的配置缓存数据，确保配置的实时性"
+    )
     @PostMapping("/refreshCache")
     @RequiresPermissions("system:config:refresh")
     @Log(title = "系统配置", businessType = "CLEAN")

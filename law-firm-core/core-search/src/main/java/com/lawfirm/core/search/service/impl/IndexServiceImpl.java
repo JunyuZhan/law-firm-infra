@@ -12,7 +12,7 @@ import com.lawfirm.model.search.mapper.SearchIndexMapper;
 import com.lawfirm.model.search.service.IndexService;
 import com.lawfirm.model.search.vo.IndexVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.List;
  * 索引服务实现
  */
 @Slf4j
-@Service
+@Component("searchIndexServiceImpl")
 @Transactional(rollbackFor = Exception.class)
 public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchIndex> implements IndexService {
 

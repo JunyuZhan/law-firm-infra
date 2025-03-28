@@ -35,16 +35,15 @@ public class TaskConverter {
         }
         
         ProcessTask task = new ProcessTask();
-        task.setTaskName(createDTO.getTaskName())
-            .setTaskType(createDTO.getTaskType())
+        task.setTaskName(createDTO.getName())
+            .setTaskType(createDTO.getType())
             .setDescription(createDTO.getDescription())
-            .setProcessId(createDTO.getProcessId())
+            .setProcessId(createDTO.getProcessId() != null ? Long.valueOf(createDTO.getProcessId()) : null)
             .setProcessNo(createDTO.getProcessNo())
-            .setHandlerId(createDTO.getHandlerId())
-            .setHandlerName(createDTO.getHandlerName())
+            .setHandlerId(createDTO.getAssigneeId() != null ? Long.valueOf(createDTO.getAssigneeId()) : null)
+            .setHandlerName(createDTO.getAssigneeName())
             .setPriority(createDTO.getPriority())
-            .setDueTime(createDTO.getDueDate() != null ? 
-                LocalDateTime.ofInstant(createDTO.getDueDate().toInstant(), ZoneId.systemDefault()) : null);
+            .setDueTime(createDTO.getDueDate());
         
         return task;
     }
@@ -65,7 +64,7 @@ public class TaskConverter {
         task.setTaskName(flowableTask.getName());
         task.setDescription(flowableTask.getDescription());
         task.setProcessNo(flowableTask.getProcessInstanceId());
-        task.setHandlerId(Long.valueOf(flowableTask.getAssignee()));
+        task.setHandlerId(flowableTask.getAssignee() != null ? Long.valueOf(flowableTask.getAssignee()) : null);
         task.setPriority(flowableTask.getPriority());
         task.setDueTime(flowableTask.getDueDate() != null ? 
             LocalDateTime.ofInstant(flowableTask.getDueDate().toInstant(), ZoneId.systemDefault()) : null);

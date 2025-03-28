@@ -4,7 +4,7 @@ import com.lawfirm.model.workflow.service.ProcessPermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Map;
  * @author JunyuZhan
  */
 @Slf4j
-@Service("coreProcessPermissionServiceImpl")
+@Component("coreProcessPermissionServiceImpl")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessPermissionServiceImpl implements ProcessPermissionService {

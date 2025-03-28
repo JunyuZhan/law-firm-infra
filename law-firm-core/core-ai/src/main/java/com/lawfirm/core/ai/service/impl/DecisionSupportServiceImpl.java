@@ -10,7 +10,7 @@ import com.lawfirm.model.ai.enums.RiskLevelEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  * 决策支持服务实现类
  */
 @Slf4j
-@Service("aiDecisionSupportServiceImpl")
+@Component("aiDecisionSupportServiceImpl")
 @RequiredArgsConstructor
 public class DecisionSupportServiceImpl implements DecisionSupportService {
     

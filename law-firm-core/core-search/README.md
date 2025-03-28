@@ -1,183 +1,171 @@
-# 搜索核心模块 (Core Search)
+# 法律事务管理系统 - 搜索服务模块
 
 ## 模块说明
-搜索核心模块是律师事务所管理系统的搜索引擎实现层，基于Elasticsearch构建。该模块主要负责实现`search-model`中定义的接口，提供高性能的全文检索、聚合分析等功能的具体实现。
 
-## 技术栈
-- Spring Boot 3.2.x
-- Elasticsearch Java API Client
-- Elasticsearch 8.0
-- Lombok
-- JUnit 5 + Testcontainers (测试)
+搜索服务模块基于Elasticsearch实现，提供了全文检索、多条件组合查询、结果排序等核心搜索功能。本模块采用策略模式设计，支持多种搜索策略，保证系统搜索功能的可靠性和灵活性。本模块仅作为服务接口层提供给业务模块使用，不直接暴露REST接口。
 
-## 项目结构
-```
-core-search
-├── src/main/java/com/lawfirm/core/search
-│   ├── config                    // ES配置
-│   │   ├── ElasticsearchConfig.java        // ES客户端配置
-│   │   └── ElasticsearchProperties.java    // ES配置属性
-│   ├── service                   // 服务实现
-│   │   └── impl
-│   │       ├── SearchServiceImpl.java      // 搜索服务实现
-│   │       └── IndexServiceImpl.java       // 索引服务实现
-│   ├── handler                   // 处理器
-│   │   ├── DocumentHandler.java            // 文档处理
-│   │   ├── IndexHandler.java              // 索引处理
-│   │   └── SearchHandler.java             // 搜索处理
-│   └── utils                     // 工具类
-│       ├── ElasticsearchUtils.java        // ES工具类
-│       └── QueryBuilderUtils.java         // 查询构建工具
-└── src/main/resources
-    └── application.yml                    // 配置文件
-```
+## 核心功能
 
-## 配置说明
+### 1. 搜索能力
+- 全文检索
+- 多字段组合搜索
+- 结果分页
+- 相关度排序
+- 基础的聚合分析
 
-### Elasticsearch配置
-```yaml
-elasticsearch:
-  cluster:
-    name: law-firm-cluster
-    nodes: 
-      - localhost:9200
-  client:
-    connect-timeout: 5000
-    socket-timeout: 60000
-    max-retries: 3
-  index:
-    number-of-shards: 3
-    number-of-replicas: 1
-```
+### 2. 索引管理
+- 文档索引
+- 索引更新
+- 索引删除
+- 索引优化
+- 数据同步
 
-## 业务模块集成说明
+### 3. 搜索策略
+- ElasticsearchSearchStrategy: ES搜索策略
+- DatabaseSearchStrategy: 数据库搜索策略（降级方案）
+- 动态策略切换
 
-### 1. 依赖引入
-在需要使用搜索功能的业务模块的`pom.xml`中添加：
-```xml
-<dependency>
-    <groupId>com.lawfirm</groupId>
-    <artifactId>core-search</artifactId>
-</dependency>
-```
+### 4. 搜索优化
+- 搜索结果高亮
+- 同义词扩展
+- 拼音搜索
+- 专业词汇分词
 
-### 2. 配置导入
-业务模块需要在配置类上添加注解以启用搜索功能：
+## 技术架构
+
+### 1. 核心服务接口
+- SearchService: 搜索服务接口
+- IndexService: 索引服务接口
+- SearchStrategy: 搜索策略接口
+
+### 2. 搜索策略实现
 ```java
-@Configuration
-@EnableSearchCore  // 启用搜索核心功能
-public class BusinessConfig {
-    // 业务配置
-}
-```
-
-### 3. 使用方式
-1. 直接注入接口
-```java
-@Service
-public class BusinessService {
-    @Autowired
-    private SearchService searchService;
+public interface SearchStrategy {
+    // 获取策略名称
+    String getStrategyName();
     
-    @Autowired
-    private IndexService indexService;
+    // 按关键词搜索
+    List<SearchDoc> searchByKeyword(String keyword, Pageable pageable);
+    
+    // 按条件搜索
+    List<SearchDoc> searchByCondition(Map<String, Object> condition, Pageable pageable);
+    
+    // 统计结果数量
+    long count(Map<String, Object> condition);
 }
 ```
 
-2. 配置覆盖
-业务模块可在自己的`application.yml`中覆盖默认配置：
+### 3. 配置管理
 ```yaml
-elasticsearch:
-  cluster:
-    name: ${CLUSTER_NAME:law-firm-cluster}
-    nodes: ${ES_NODES:localhost:9200}
+lawfirm:
+  search:
+    enabled: true
+    default-strategy: elasticsearch
+    # Elasticsearch配置
+    elasticsearch:
+      enabled: true
+      nodes: localhost:9200
+      username: ${ES_USERNAME}
+      password: ${ES_PASSWORD}
+      connect-timeout: 5000
+      socket-timeout: 30000
+    # 索引配置
+    index:
+      shards: 3
+      replicas: 1
+      refresh-interval: 1s
+    # 搜索配置
+    search:
+      max-result-window: 10000
+      highlight-enabled: true
+      synonym-enabled: true
+      pinyin-enabled: true
+    # 分页配置
+    page:
+      default-size: 10
+      max-size: 100
 ```
 
-### 4. 注意事项
-- 业务模块不要直接依赖`elasticsearch-java`等ES相关包，统一通过core-search模块调用
-- 建议使用search-model中定义的DTO、VO等对象进行数据传输
-- 索引命名规范：`{业务模块}-{业务类型}`，如：`case-document`
-- 建议实现SearchCallback接口来处理搜索结果的业务逻辑
+## 使用说明
 
-## 开发规范
+### 1. 服务接口调用示例
+```java
+// 注入服务
+@Autowired
+@Qualifier("searchServiceImpl")
+private SearchService searchService;
 
-### 1. 代码规范
-- 遵循阿里巴巴Java开发手册
-- 使用Lombok简化代码
-- 保持与search-model定义的接口一致
-- 添加完整的Java文档注释
+@Autowired
+@Qualifier("searchIndexServiceImpl")
+private IndexService indexService;
 
-### 2. 异常处理
-- 统一使用SearchException处理业务异常
-- 详细记录异常堆栈和上下文信息
-- 提供友好的错误提示
+// 基础搜索
+SearchResult<DocVO> result = searchService.search(
+    "合同违约",     // 关键词
+    "case,contract",  // 搜索范围
+    PageRequest.of(0, 10)  // 分页
+);
 
-### 3. 日志规范
-- 使用SLF4J + Logback
-- 记录关键操作和异常信息
-- 添加MDC支持，便于追踪
+// 高级搜索
+Map<String, Object> conditions = new HashMap<>();
+conditions.put("type", "合同");
+conditions.put("status", "active");
+conditions.put("createTime", new Range<>(startDate, endDate));
 
-### 4. 测试规范
-- 单元测试覆盖率 > 80%
-- 使用Testcontainers进行集成测试
-- 编写完整的测试用例文档
+SearchResult<DocVO> advancedResult = searchService.searchByCondition(
+    conditions,
+    "contract",
+    PageRequest.of(0, 20, Sort.by("createTime").descending())
+);
 
-## 开发计划
+// 索引文档
+indexService.indexDocument(document);
 
-### 1. 基础设施搭建 (Phase 1)
-- [x] 添加search-model依赖
-- [ ] 配置Elasticsearch客户端
-  - [ ] ElasticsearchProperties配置类
-  - [ ] ElasticsearchConfig配置类
-  - [ ] application.yml配置文件
-- [ ] 创建基础工具类
-  - [ ] ElasticsearchUtils
-  - [ ] QueryBuilderUtils
+// 删除索引
+indexService.deleteDocument("contract", "1001");
+```
 
-### 2. 索引管理实现 (Phase 2)
-- [ ] 实现IndexService接口
-  - [ ] 索引CRUD操作
-  - [ ] 索引配置管理
-  - [ ] 索引映射管理
-  - [ ] 索引别名管理
-- [ ] 开发IndexHandler
-  - [ ] 索引模板管理
-  - [ ] 分片管理
-  - [ ] 索引监控
+### 2. 自定义搜索处理
+```java
+@Component
+public class ContractSearchHandler extends SearchHandler<ContractIndex> {
+    
+    @Override
+    public boolean supports(String indexName) {
+        return "contract".equals(indexName);
+    }
+    
+    @Override
+    protected void preprocessQuery(QueryBuilder queryBuilder, Map<String, Object> params) {
+        // 为合同搜索添加额外的查询条件
+        if (params.containsKey("partyA")) {
+            queryBuilder.must(QueryBuilders.matchQuery("partyA", params.get("partyA")));
+        }
+    }
+    
+    @Override
+    protected ContractIndex convertToDocument(Map<String, Object> source) {
+        // 将ES结果转换为合同索引对象
+        ContractIndex contract = new ContractIndex();
+        // 设置属性
+        return contract;
+    }
+}
+```
 
-### 3. 搜索功能实现 (Phase 3)
-- [ ] 实现SearchService接口
-  - [ ] 文档CRUD操作
-  - [ ] 批量操作支持
-  - [ ] 搜索功能实现
-  - [ ] 建议功能实现
-- [ ] 开发SearchHandler
-  - [ ] 查询构建
-  - [ ] 高亮处理
-  - [ ] 排序支持
-  - [ ] 聚合分析
+## 安全说明
 
-### 4. 高级特性实现 (Phase 4)
-- [ ] 分词器配置
-- [ ] 同义词处理
-- [ ] 相关性优化
-- [ ] 性能优化
-- [ ] 错误处理
+1. 数据安全
+   - 搜索内容权限控制
+   - 敏感信息过滤
+   - 索引数据加密
 
-### 5. 测试与文档 (Phase 5)
-- [ ] 单元测试
-  - [ ] 服务层测试
-  - [ ] 处理器测试
-  - [ ] 工具类测试
-- [ ] 集成测试
-  - [ ] Testcontainers支持
-  - [ ] ES集群测试
-- [ ] 性能测试
-- [ ] 文档完善
+2. 服务安全
+   - 访问认证授权
+   - 操作审计日志
+   - 资源限制保护
 
-## 注意事项
-1. 所有版本号统一在law-firm-dependencies中管理
-2. 确保与search-model模块的接口定义保持一致
-3. 关注ES操作的性能优化
-4. 实现优雅的错误处理机制
-5. 保持代码的可测试性 
+3. 性能保障
+   - 查询超时控制
+   - 结果集大小限制
+   - 缓存策略优化 

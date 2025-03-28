@@ -15,7 +15,7 @@ import com.lawfirm.model.log.converter.AuditLogConverter;
 import com.lawfirm.model.log.converter.AuditRecordConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 @Slf4j
-@Service("auditQueryServiceImpl")
+@Component("auditQueryServiceImpl")
 @RequiredArgsConstructor
 public class AuditQueryServiceImpl implements AuditQueryService {
 

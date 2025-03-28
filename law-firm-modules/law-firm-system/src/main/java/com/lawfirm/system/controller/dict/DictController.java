@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * 系统字典控制器
  */
-@Tag(name = "系统字典管理")
+@Tag(name = "系统字典管理", description = "管理系统字典数据，包括字典的增删改查、缓存刷新等操作")
 @RestController
 @RequestMapping("/system/dict")
 @RequiredArgsConstructor
@@ -37,7 +37,10 @@ public class DictController extends BaseController {
     /**
      * 获取字典列表
      */
-    @Operation(summary = "获取字典列表")
+    @Operation(
+        summary = "获取字典列表",
+        description = "分页获取字典列表，支持按字典名称、编码、类型等条件筛选"
+    )
     @GetMapping("/list")
     @RequiresPermissions("system:dict:list")
     public CommonResult<Page<DictVO>> list(
@@ -60,7 +63,10 @@ public class DictController extends BaseController {
     /**
      * 获取字典详情
      */
-    @Operation(summary = "获取字典详情")
+    @Operation(
+        summary = "获取字典详情",
+        description = "根据字典ID获取字典的详细信息，包括字典项列表"
+    )
     @GetMapping("/{id}")
     @RequiresPermissions("system:dict:query")
     public CommonResult<DictVO> getInfo(@Parameter(description = "字典ID") @PathVariable Long id) {
@@ -71,7 +77,10 @@ public class DictController extends BaseController {
     /**
      * 根据编码获取字典
      */
-    @Operation(summary = "根据编码获取字典")
+    @Operation(
+        summary = "根据编码获取字典",
+        description = "根据字典编码获取字典信息，编码是字典的唯一业务标识"
+    )
     @GetMapping("/code/{dictCode}")
     public CommonResult<DictVO> getDictByCode(@Parameter(description = "字典编码") @PathVariable String dictCode) {
         DictVO dict = dictService.getDictByCode(dictCode);
@@ -81,7 +90,10 @@ public class DictController extends BaseController {
     /**
      * 根据类型获取字典列表
      */
-    @Operation(summary = "根据类型获取字典列表")
+    @Operation(
+        summary = "根据类型获取字典列表",
+        description = "获取指定类型的所有字典列表，用于下拉选择等场景"
+    )
     @GetMapping("/type/{dictType}")
     public CommonResult<List<DictVO>> getDictsByType(@Parameter(description = "字典类型") @PathVariable String dictType) {
         List<DictVO> dicts = dictService.listDictsByType(dictType);
@@ -91,7 +103,10 @@ public class DictController extends BaseController {
     /**
      * 获取所有字典
      */
-    @Operation(summary = "获取所有字典")
+    @Operation(
+        summary = "获取所有字典",
+        description = "获取系统中所有的字典数据，包括字典项列表"
+    )
     @GetMapping("/all")
     @RequiresPermissions("system:dict:list")
     public CommonResult<List<DictVO>> getAllDicts() {
@@ -102,7 +117,10 @@ public class DictController extends BaseController {
     /**
      * 新增字典
      */
-    @Operation(summary = "新增字典")
+    @Operation(
+        summary = "新增字典",
+        description = "创建新的字典数据，包括字典的基本信息"
+    )
     @PostMapping
     @RequiresPermissions("system:dict:add")
     @Log(title = "字典管理", businessType = "INSERT")
@@ -114,7 +132,10 @@ public class DictController extends BaseController {
     /**
      * 修改字典
      */
-    @Operation(summary = "修改字典")
+    @Operation(
+        summary = "修改字典",
+        description = "更新已存在的字典信息，包括字典的基本信息"
+    )
     @PutMapping("/{id}")
     @RequiresPermissions("system:dict:edit")
     @Log(title = "字典管理", businessType = "UPDATE")
@@ -128,7 +149,10 @@ public class DictController extends BaseController {
     /**
      * 删除字典
      */
-    @Operation(summary = "删除字典")
+    @Operation(
+        summary = "删除字典",
+        description = "根据ID删除单个字典，同时删除关联的字典项"
+    )
     @DeleteMapping("/{id}")
     @RequiresPermissions("system:dict:remove")
     @Log(title = "字典管理", businessType = "DELETE")
@@ -140,7 +164,10 @@ public class DictController extends BaseController {
     /**
      * 批量删除字典
      */
-    @Operation(summary = "批量删除字典")
+    @Operation(
+        summary = "批量删除字典",
+        description = "批量删除多个字典，同时删除关联的字典项"
+    )
     @DeleteMapping("/batch")
     @RequiresPermissions("system:dict:remove")
     @Log(title = "字典管理", businessType = "DELETE")
@@ -152,7 +179,10 @@ public class DictController extends BaseController {
     /**
      * 刷新字典缓存
      */
-    @Operation(summary = "刷新字典缓存")
+    @Operation(
+        summary = "刷新字典缓存",
+        description = "刷新系统中的字典缓存数据，确保数据的实时性"
+    )
     @PostMapping("/refreshCache")
     @RequiresPermissions("system:dict:refresh")
     @Log(title = "字典管理", businessType = "CLEAN")

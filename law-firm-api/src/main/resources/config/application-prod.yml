@@ -71,4 +71,30 @@ management:
         include: health,info,metrics
   endpoint:
     health:
-      show-details: never 
+      show-details: never
+
+# API文档配置
+springdoc:
+  api-docs:
+    enabled: ${ENABLE_API_DOCS:false}
+  swagger-ui:
+    enabled: ${ENABLE_SWAGGER_UI:false}
+
+# Knife4j配置
+knife4j:
+  enable: ${ENABLE_KNIFE4J:false}
+  production: true
+  basic:
+    enable: true
+    username: ${KNIFE4J_USERNAME:admin}
+    password: ${KNIFE4J_PASSWORD:admin}
+  setting:
+    enable-debug: false
+    enable-open-api: false
+    enable-host: false
+    enable-home-custom: true
+    home-custom-path: classpath:markdown/home.md
+    enable-search: false
+    enable-footer: false
+    enable-footer-custom: true
+    footer-custom-content: © 2024 Law Firm Management System. All rights reserved. 

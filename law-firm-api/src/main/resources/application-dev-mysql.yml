@@ -121,4 +121,44 @@ management:
 app:
   name: "law-firm-api"
   version: "1.0.0"
-  description: "律师事务所管理系统API服务" 
+  description: "律师事务所管理系统API服务"
+
+# API文档配置
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: true
+  packages-to-scan: com.lawfirm
+  paths-to-match: /**
+
+# Knife4j配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    enable-swagger-models: true
+    enable-document-manage: true
+    swagger-model-name: 实体类列表
+    enable-version: false
+    enable-reload-cache-parameter: true
+    enable-after-script: true
+    enable-filter-multipart-api-method-type: POST
+    enable-filter-multipart-apis: false
+    enable-request-cache: true
+    enable-host: true
+    enable-home-custom: false
+    enable-search: true
+    enable-footer: false
+    enable-footer-custom: false
+    enable-debug: true
+    enable-open-api: true
+    enable-group: true
+  production: false
+  basic:
+    enable: false
+
+# 安全配置
+security:
+  basic:
+    enabled: false 

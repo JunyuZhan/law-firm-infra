@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
  * 存储桶服务实现类
  */
 @Slf4j
-@Service("storageBucketServiceImpl")
+@Component("storageBucketServiceImpl")
 @RequiredArgsConstructor
 public class BucketServiceImpl extends BaseServiceImpl<StorageBucketMapper, StorageBucket> implements BucketService {
 

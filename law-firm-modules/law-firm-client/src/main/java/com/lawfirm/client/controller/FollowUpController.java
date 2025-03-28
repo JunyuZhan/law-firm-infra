@@ -6,6 +6,8 @@ import com.lawfirm.client.service.impl.FollowUpServiceImpl;
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.client.entity.follow.ClientFollowUp;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +19,7 @@ import java.util.List;
 /**
  * 客户跟进控制器
  */
+@Tag(name = "客户跟进管理")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -27,10 +30,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 获取客户的跟进记录列表
-     *
-     * @param clientId 客户ID
-     * @return 跟进记录列表
      */
+    @Operation(summary = "获取客户的跟进记录列表")
     @GetMapping("/list/{clientId}")
     public CommonResult<List<ClientFollowUp>> list(@PathVariable("clientId") Long clientId) {
         return success(followUpService.listByClientId(clientId));
@@ -38,11 +39,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 分页查询跟进记录
-     *
-     * @param clientId 客户ID
-     * @param status 状态
-     * @return 分页数据
      */
+    @Operation(summary = "分页查询跟进记录")
     @GetMapping("/page")
     public CommonResult<IPage<ClientFollowUp>> page(
             @RequestParam(value = "clientId", required = false) Long clientId,
@@ -56,10 +54,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 获取跟进记录详情
-     *
-     * @param id 跟进记录ID
-     * @return 跟进记录详情
      */
+    @Operation(summary = "获取跟进记录详情")
     @GetMapping("/{id}")
     public CommonResult<ClientFollowUp> getById(@PathVariable("id") Long id) {
         return success(followUpService.getFollowUp(id));
@@ -67,10 +63,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 新增跟进记录
-     *
-     * @param followUp 跟进记录
-     * @return 操作结果
      */
+    @Operation(summary = "新增跟进记录")
     @PostMapping
     public CommonResult<Long> add(@Validated @RequestBody ClientFollowUp followUp) {
         return success(followUpService.addFollowUp(followUp));
@@ -78,10 +72,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 修改跟进记录
-     *
-     * @param followUp 跟进记录
-     * @return 操作结果
      */
+    @Operation(summary = "修改跟进记录")
     @PutMapping
     public CommonResult<Boolean> update(@Validated @RequestBody ClientFollowUp followUp) {
         followUpService.updateFollowUp(followUp);
@@ -90,10 +82,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 删除跟进记录
-     *
-     * @param id 跟进记录ID
-     * @return 操作结果
      */
+    @Operation(summary = "删除跟进记录")
     @DeleteMapping("/{id}")
     public CommonResult<Boolean> remove(@PathVariable("id") Long id) {
         followUpService.deleteFollowUp(id);
@@ -102,12 +92,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 完成跟进任务
-     *
-     * @param id 跟进记录ID
-     * @param content 跟进内容
-     * @param result 跟进结果
-     * @return 操作结果
      */
+    @Operation(summary = "完成跟进任务")
     @PostMapping("/complete/{id}")
     public CommonResult<Boolean> complete(
             @PathVariable("id") Long id,
@@ -123,11 +109,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 取消跟进任务
-     *
-     * @param id 跟进记录ID
-     * @param reason 取消原因
-     * @return 操作结果
      */
+    @Operation(summary = "取消跟进任务")
     @PostMapping("/cancel/{id}")
     public CommonResult<Boolean> cancel(
             @PathVariable("id") Long id,
@@ -138,11 +121,8 @@ public class FollowUpController extends BaseController {
 
     /**
      * 获取待处理的跟进任务
-     *
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return 待处理的跟进任务列表
      */
+    @Operation(summary = "获取待处理的跟进任务")
     @GetMapping("/pending")
     public CommonResult<List<ClientFollowUp>> getPendingFollowUps(
             @RequestParam(value = "startTime", required = false) LocalDateTime startTime,

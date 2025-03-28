@@ -3,7 +3,8 @@ package com.lawfirm.core.ai.service.impl;
 import com.lawfirm.common.security.crypto.SensitiveDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -12,7 +13,8 @@ import java.util.Map;
 /**
  * AI模块敏感数据服务实现
  */
-@Service("aiSensitiveDataServiceImpl")
+@Component("aiSensitiveDataServiceImpl")
+@RequiredArgsConstructor
 public class SensitiveDataServiceImpl implements SensitiveDataService {
 
     private static final Logger logger = LoggerFactory.getLogger(SensitiveDataServiceImpl.class);

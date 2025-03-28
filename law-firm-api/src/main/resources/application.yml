@@ -73,30 +73,33 @@ law:
       enableRequestLog: true
       logStackTrace: true
 
+# API文档过滤器配置
+api:
+  doc:
+    filter:
+      enabled: false
+
 # 应用信息配置
 app:
   name: "law-firm-api"
   version: "1.0.0"
   description: "律师事务所管理系统API服务"
 
-# API文档配置
+# API文档配置 - 只使用Knife4j
 springdoc:
   api-docs:
     enabled: true
     path: /v3/api-docs
   swagger-ui:
-    enabled: true
-    path: /swagger-ui/index.html
-    tags-sorter: alpha
-    operations-sorter: alpha
+    enabled: false
+    config-url: /v3/api-docs/swagger-config
+    url: /v3/api-docs
   packages-to-scan: com.lawfirm
   paths-to-match: /**
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
-  group-configs:
-    - group: 'default'
-      paths-to-match: '/**'
-      packages-to-scan: com.lawfirm
+  cache:
+    disabled: true
 
 # Knife4j配置
 knife4j:
@@ -106,25 +109,7 @@ knife4j:
     enable-swagger-models: true
     enable-document-manage: true
     swagger-model-name: 实体类列表
-    enable-version: false
-    enable-reload-cache-parameter: false
-    enable-after-script: true
-    enable-filter-multipart-api-method-type: POST
-    enable-filter-multipart-apis: false
-    enable-request-cache: true
-    enable-host: false
-    enable-host-text: 
-    enable-home-custom: false
     enable-search: true
-    enable-footer: false
-    enable-footer-custom: false
     enable-debug: true
     enable-open-api: true
-    enable-group: true
   production: false
-  basic:
-    enable: false
-  documents:
-    - name: 接口文档
-      locations: classpath:markdown/*
-  cors: true

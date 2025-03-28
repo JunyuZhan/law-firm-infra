@@ -11,7 +11,7 @@ import com.lawfirm.model.search.mapper.SearchDocMapper;
 import com.lawfirm.model.search.service.SearchService;
 import com.lawfirm.model.search.vo.SearchVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.util.Map;
  * 搜索服务实现
  */
 @Slf4j
-@Service("searchServiceImpl")
+@Component("searchServiceImpl")
 @Transactional(rollbackFor = Exception.class)
 public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 

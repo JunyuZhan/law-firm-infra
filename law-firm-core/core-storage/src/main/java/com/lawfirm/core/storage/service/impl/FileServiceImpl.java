@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
  * 文件服务实现类
  */
 @Slf4j
-@Service("storageFileServiceImpl")
+@Component("storageFileServiceImpl")
 @RequiredArgsConstructor
 public class FileServiceImpl extends BaseServiceImpl<FileObjectMapper, FileObject> implements FileService {
 

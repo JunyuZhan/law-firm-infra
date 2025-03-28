@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 系统监控控制器
  */
-@Tag(name = "系统监控管理")
+@Tag(name = "系统监控管理", description = "管理系统监控数据，包括服务器、系统、JVM、内存、CPU、磁盘、网络等信息的监控")
 @RestController
 @RequestMapping("/system/monitor")
 @RequiredArgsConstructor
@@ -35,7 +35,10 @@ public class MonitorController extends BaseController {
     /**
      * 获取服务器信息
      */
-    @Operation(summary = "获取服务器信息")
+    @Operation(
+        summary = "获取服务器信息",
+        description = "获取服务器的基本信息，包括主机名、操作系统、IP地址等"
+    )
     @GetMapping("/server")
     @RequiresPermissions("system:monitor:server")
     public CommonResult<ServerInfoVO> getServerInfo() {
@@ -46,7 +49,10 @@ public class MonitorController extends BaseController {
     /**
      * 获取系统信息
      */
-    @Operation(summary = "获取系统信息")
+    @Operation(
+        summary = "获取系统信息",
+        description = "获取系统运行信息，包括系统负载、运行时间、进程数等"
+    )
     @GetMapping("/system")
     @RequiresPermissions("system:monitor:system")
     public CommonResult<SystemInfoVO> getSystemInfo() {
@@ -57,7 +63,10 @@ public class MonitorController extends BaseController {
     /**
      * 获取JVM信息
      */
-    @Operation(summary = "获取JVM信息")
+    @Operation(
+        summary = "获取JVM信息",
+        description = "获取Java虚拟机运行信息，包括内存使用、垃圾回收、线程等"
+    )
     @GetMapping("/jvm")
     @RequiresPermissions("system:monitor:jvm")
     public CommonResult<JvmInfoVO> getJvmInfo() {
@@ -68,7 +77,10 @@ public class MonitorController extends BaseController {
     /**
      * 获取内存信息
      */
-    @Operation(summary = "获取内存信息")
+    @Operation(
+        summary = "获取内存信息",
+        description = "获取系统内存使用情况，包括物理内存和交换内存的使用率"
+    )
     @GetMapping("/memory")
     @RequiresPermissions("system:monitor:memory")
     public CommonResult<MemoryInfoVO> getMemoryInfo() {
@@ -79,7 +91,10 @@ public class MonitorController extends BaseController {
     /**
      * 获取CPU信息
      */
-    @Operation(summary = "获取CPU信息")
+    @Operation(
+        summary = "获取CPU信息",
+        description = "获取CPU使用情况，包括使用率、核心数、频率等信息"
+    )
     @GetMapping("/cpu")
     @RequiresPermissions("system:monitor:cpu")
     public CommonResult<CpuInfoVO> getCpuInfo() {
@@ -90,7 +105,10 @@ public class MonitorController extends BaseController {
     /**
      * 获取磁盘信息
      */
-    @Operation(summary = "获取磁盘信息")
+    @Operation(
+        summary = "获取磁盘信息",
+        description = "获取磁盘使用情况，包括各分区的总容量、已用空间、剩余空间等"
+    )
     @GetMapping("/disk")
     @RequiresPermissions("system:monitor:disk")
     public CommonResult<DiskInfoVO> getDiskInfo() {
@@ -101,7 +119,10 @@ public class MonitorController extends BaseController {
     /**
      * 获取网络信息
      */
-    @Operation(summary = "获取网络信息")
+    @Operation(
+        summary = "获取网络信息",
+        description = "获取网络接口信息，包括网卡流量、连接状态等"
+    )
     @GetMapping("/network")
     @RequiresPermissions("system:monitor:network")
     public CommonResult<NetworkInfoVO> getNetworkInfo() {

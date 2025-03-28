@@ -89,5 +89,18 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        
+        <!-- 系统模型依赖(用于从系统配置表加载AI配置) -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>system-model</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 安全脱敏依赖(用于API密钥脱敏) -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
     </dependencies>
 </project> 

@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
  * @since 1.0.0
  */
 @Slf4j
-@Service("coreAuditServiceImpl")
+@Component("coreAuditServiceImpl")
 @RequiredArgsConstructor
 public class AuditServiceImpl implements AuditService {
 

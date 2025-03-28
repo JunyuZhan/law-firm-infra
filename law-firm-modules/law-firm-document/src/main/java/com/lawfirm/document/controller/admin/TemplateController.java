@@ -36,7 +36,10 @@ public class TemplateController {
      * 创建模板
      */
     @PostMapping
-    @Operation(summary = "创建模板")
+    @Operation(
+        summary = "创建模板",
+        description = "创建新的文档模板，包括模板名称、编码、文档类型、业务类型等基本信息"
+    )
     public CommonResult<Long> createTemplate(
             @Parameter(description = "创建参数") @RequestBody @Validated TemplateCreateDTO createDTO) {
         Long templateId = templateService.createTemplate(createDTO);
@@ -47,7 +50,10 @@ public class TemplateController {
      * 更新模板
      */
     @PutMapping("/{id}")
-    @Operation(summary = "更新模板")
+    @Operation(
+        summary = "更新模板",
+        description = "更新已存在的文档模板信息，包括模板名称、编码、文档类型、业务类型等"
+    )
     public CommonResult<Void> updateTemplate(
             @Parameter(description = "模板ID") @PathVariable Long id,
             @Parameter(description = "更新参数") @RequestBody @Validated TemplateUpdateDTO updateDTO) {
@@ -59,7 +65,10 @@ public class TemplateController {
      * 删除模板
      */
     @DeleteMapping("/{id}")
-    @Operation(summary = "删除模板")
+    @Operation(
+        summary = "删除模板",
+        description = "根据ID删除单个文档模板，同时删除模板文件"
+    )
     public CommonResult<Void> deleteTemplate(
             @Parameter(description = "模板ID") @PathVariable Long id) {
         templateService.deleteTemplate(id);
@@ -70,7 +79,10 @@ public class TemplateController {
      * 批量删除模板
      */
     @DeleteMapping("/batch")
-    @Operation(summary = "批量删除模板")
+    @Operation(
+        summary = "批量删除模板",
+        description = "批量删除多个文档模板，支持同时删除多个模板及其文件"
+    )
     public CommonResult<Void> deleteTemplates(
             @Parameter(description = "模板ID列表") @RequestBody List<Long> ids) {
         templateService.deleteTemplates(ids);
@@ -81,7 +93,10 @@ public class TemplateController {
      * 获取模板详情
      */
     @GetMapping("/{id}")
-    @Operation(summary = "获取模板详情")
+    @Operation(
+        summary = "获取模板详情",
+        description = "根据ID获取模板的详细信息，包括基本信息和变量定义等"
+    )
     public CommonResult<TemplateVO> getTemplate(
             @Parameter(description = "模板ID") @PathVariable Long id) {
         TemplateVO template = templateService.getTemplateById(id);
@@ -92,7 +107,10 @@ public class TemplateController {
      * 根据编码获取模板
      */
     @GetMapping("/code/{code}")
-    @Operation(summary = "根据编码获取模板")
+    @Operation(
+        summary = "根据编码获取模板",
+        description = "根据模板编码获取模板详情，编码是模板的唯一业务标识"
+    )
     public CommonResult<TemplateVO> getTemplateByCode(
             @Parameter(description = "模板编码") @PathVariable String code) {
         TemplateVO template = templateService.getTemplateByCode(code);
@@ -103,7 +121,10 @@ public class TemplateController {
      * 分页查询模板
      */
     @GetMapping
-    @Operation(summary = "分页查询模板")
+    @Operation(
+        summary = "分页查询模板",
+        description = "分页获取模板列表，支持按文档类型、业务类型等条件筛选"
+    )
     public CommonResult<Page<TemplateVO>> pageTemplates(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -121,7 +142,10 @@ public class TemplateController {
      * 列出业务类型下的模板
      */
     @GetMapping("/business/{businessType}")
-    @Operation(summary = "列出业务类型下的模板")
+    @Operation(
+        summary = "列出业务类型下的模板",
+        description = "获取指定业务类型下的所有模板列表，用于业务系统选择模板"
+    )
     public CommonResult<List<TemplateVO>> listTemplatesByBusinessType(
             @Parameter(description = "业务类型") @PathVariable String businessType) {
         List<TemplateVO> templates = templateService.listTemplatesByBusinessType(businessType);
@@ -132,7 +156,10 @@ public class TemplateController {
      * 生成文档
      */
     @PostMapping("/{id}/generate")
-    @Operation(summary = "生成文档")
+    @Operation(
+        summary = "生成文档",
+        description = "根据模板和参数生成新的文档，支持变量替换和格式转换"
+    )
     public CommonResult<Long> generateDocument(
             @Parameter(description = "模板ID") @PathVariable Long id,
             @Parameter(description = "参数数据") @RequestBody Map<String, Object> params) {
@@ -144,7 +171,10 @@ public class TemplateController {
      * 预览模板
      */
     @PostMapping("/{id}/preview")
-    @Operation(summary = "预览模板")
+    @Operation(
+        summary = "预览模板",
+        description = "预览模板渲染后的效果，支持实时预览变量替换的结果"
+    )
     public CommonResult<String> previewTemplate(
             @Parameter(description = "模板ID") @PathVariable Long id,
             @Parameter(description = "参数数据") @RequestBody Map<String, Object> params) {

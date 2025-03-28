@@ -5,7 +5,7 @@ import com.lawfirm.common.security.crypto.CryptoService;
 import com.lawfirm.core.message.service.MessageSender;
 import com.lawfirm.model.message.entity.base.BaseMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 消息发送实现类
  */
-@Service
+@Component("messageServiceImpl")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MessageSenderImpl implements MessageSender {

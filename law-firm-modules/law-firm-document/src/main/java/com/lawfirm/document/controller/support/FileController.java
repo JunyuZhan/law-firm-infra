@@ -41,7 +41,10 @@ public class FileController {
      * 上传文档文件
      */
     @PostMapping("/upload")
-    @Operation(summary = "上传文档文件")
+    @Operation(
+        summary = "上传文档文件",
+        description = "上传文档文件到指定的存储桶，支持多种文件格式，返回文件对象信息，包含文件ID、URL等"
+    )
     public CommonResult<FileObject> uploadFile(
             @Parameter(description = "文件") @RequestPart("file") MultipartFile file,
             @Parameter(description = "存储桶ID") @RequestParam(required = false, defaultValue = "1") Long bucketId) throws IOException {
@@ -61,7 +64,10 @@ public class FileController {
      * 下载文档
      */
     @GetMapping("/download/{id}")
-    @Operation(summary = "下载文档")
+    @Operation(
+        summary = "下载文档",
+        description = "根据文档ID下载文件，支持所有文件格式，返回文件流。自动设置文件名和相关响应头"
+    )
     public ResponseEntity<InputStreamResource> downloadFile(
             @Parameter(description = "文档ID") @PathVariable Long id) throws IOException {
         // 获取文档输入流
@@ -93,7 +99,10 @@ public class FileController {
      * 获取文档访问URL
      */
     @GetMapping("/url/{id}")
-    @Operation(summary = "获取文档访问URL")
+    @Operation(
+        summary = "获取文档访问URL",
+        description = "获取文档的访问URL，可用于在线预览或下载。URL的有效期和访问权限由存储系统控制"
+    )
     public CommonResult<String> getDocumentUrl(
             @Parameter(description = "文档ID") @PathVariable Long id) {
         String url = documentService.getDocumentUrl(id);

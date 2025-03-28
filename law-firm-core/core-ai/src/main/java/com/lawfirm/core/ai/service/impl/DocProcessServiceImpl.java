@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.Map;
  * 文档处理服务实现类
  * 实现文档解析、分类、关键信息提取等功能
  */
-@Service("aiDocProcessServiceImpl")
+@Component("aiDocProcessServiceImpl")
 @RequiredArgsConstructor
 public class DocProcessServiceImpl implements DocProcessService {
     

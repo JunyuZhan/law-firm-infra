@@ -32,10 +32,8 @@ public class AuthController {
     
     /**
      * 用户登录
-     * 
-     * @param loginDTO 登录信息
-     * @return 登录结果
      */
+    @Operation(summary = "用户登录", description = "用户登录接口")
     @PostMapping("/login")
     public CommonResult<LoginVO> login(@RequestBody @Valid LoginDTO loginDTO) {
         LoginVO loginVO = authService.login(loginDTO);
@@ -44,10 +42,8 @@ public class AuthController {
     
     /**
      * 用户注册
-     * 
-     * @param createDTO 注册信息
-     * @return 注册结果
      */
+    @Operation(summary = "用户注册", description = "用户注册接口")
     @PostMapping("/register")
     public CommonResult<?> register(@RequestBody UserCreateDTO createDTO) {
         userService.createUser(createDTO);
@@ -56,10 +52,8 @@ public class AuthController {
     
     /**
      * 刷新令牌
-     * 
-     * @param refreshToken 刷新令牌
-     * @return 新的访问令牌
      */
+    @Operation(summary = "刷新令牌", description = "刷新访问令牌接口")
     @PostMapping("/refresh")
     public CommonResult<TokenDTO> refresh(@RequestParam @NotBlank String refreshToken) {
         TokenDTO tokenDTO = authService.refreshToken(refreshToken);
@@ -68,9 +62,8 @@ public class AuthController {
     
     /**
      * 用户登出
-     * 
-     * @return 登出结果
      */
+    @Operation(summary = "用户登出", description = "用户登出接口")
     @PostMapping("/logout")
     public CommonResult<?> logout() {
         String username = SecurityUtils.getCurrentUsername();
