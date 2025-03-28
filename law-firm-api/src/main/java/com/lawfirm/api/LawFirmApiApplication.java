@@ -37,7 +37,13 @@ import org.springframework.context.annotation.ComponentScan;
         "com.lawfirm.contract",
         "com.lawfirm.finance",
         "com.lawfirm.system",
-        "com.lawfirm.personnel"
+        "com.lawfirm.personnel",
+        "com.lawfirm.knowledge",  // 添加知识库模块包
+        "com.lawfirm.core.audit",  // 审计服务
+        "com.lawfirm.core.message",  // 消息服务
+        "com.lawfirm.core.search",   // 搜索服务
+        "com.lawfirm.core.storage"   // 存储服务（已启用：lawfirm.storage.enabled=true）
+        // 不扫描com.lawfirm.core.workflow包，因为工作流功能已禁用
     },
     exclude = {
         SecurityAutoConfiguration.class,
@@ -55,7 +61,7 @@ import org.springframework.context.annotation.ComponentScan;
         SqlInitializationAutoConfiguration.class
     }
 )
-@ConfigurationPropertiesScan(basePackages = {"com.lawfirm.common"})
+@ConfigurationPropertiesScan(basePackages = {"com.lawfirm.common", "com.lawfirm.core"})
 @ComponentScan(basePackages = {
     "com.lawfirm.api.config", 
     "com.lawfirm.api.controller", 
@@ -67,7 +73,12 @@ import org.springframework.context.annotation.ComponentScan;
     "com.lawfirm.auth",         // 添加auth包以确保AuthorizationDaoImpl被扫描到
     "com.lawfirm.cases",        // 案件模块
     "com.lawfirm.finance",      // 财务模块
-    "com.lawfirm.personnel"     // 人事模块
+    "com.lawfirm.personnel",    // 人事模块
+    "com.lawfirm.knowledge",     // 知识库模块
+    "com.lawfirm.core.audit",    // 审计服务
+    "com.lawfirm.core.message",  // 消息服务
+    "com.lawfirm.core.search",   // 搜索服务
+    "com.lawfirm.core.storage"   // 存储服务
 })
 public class LawFirmApiApplication {
 
@@ -76,7 +87,7 @@ public class LawFirmApiApplication {
         // System.setProperty("spring.main.allow-circular-references", "true");
         
         // 核心模块功能开关
-        System.setProperty("lawfirm.audit.enabled", "false");  // 禁用审计功能
+        System.setProperty("lawfirm.audit.enabled", "true");  // 启用审计功能
         System.setProperty("lawfirm.workflow.enabled", "false"); // 禁用工作流功能
         System.setProperty("lawfirm.storage.enabled", "true"); // 启用存储功能
         

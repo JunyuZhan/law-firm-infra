@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @RestController("documentFileController")
 @RequiredArgsConstructor
-@RequestMapping("/api/documents/files")
+@RequestMapping("/api/document/files")
 @Tag(name = "文档文件处理", description = "文档文件上传下载等操作")
 public class FileController {
 

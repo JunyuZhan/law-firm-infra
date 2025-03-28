@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 系统监控控制器
  */
-@Tag(name = "系统监控管理", description = "管理系统监控数据，包括服务器、系统、JVM、内存、CPU、磁盘、网络等信息的监控")
-@RestController
-@RequestMapping("/system/monitor")
+@Tag(name = "系统监控", description = "提供系统监控指标和相关接口")
+@RestController("monitorController")
+@RequestMapping("/api/system/monitor")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class MonitorController extends BaseController {

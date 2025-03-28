@@ -25,9 +25,9 @@ import java.util.List;
 /**
  * 系统字典项控制器
  */
-@Tag(name = "系统字典项管理", description = "管理系统字典项数据，包括字典项的增删改查等操作")
-@RestController
-@RequestMapping("/system/dict/item")
+@Tag(name = "字典项管理", description = "管理字典的项数据，包括字典项的增删改查等操作")
+@RestController("dictItemController")
+@RequestMapping("/api/system/dict/item")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class DictItemController extends BaseController {

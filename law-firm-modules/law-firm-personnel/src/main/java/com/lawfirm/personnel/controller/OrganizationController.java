@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Tag(name = "组织架构管理", description = "管理组织结构与人员的关联关系")
-@RestController
-@RequestMapping("/api/personnel/organizations")
+@RestController("organizationController")
+@RequestMapping("/api/personnel/organization")
 @Validated
 public class OrganizationController {
 

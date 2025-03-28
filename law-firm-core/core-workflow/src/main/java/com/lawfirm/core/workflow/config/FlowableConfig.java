@@ -1,5 +1,6 @@
 package com.lawfirm.core.workflow.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.*;
 import org.flowable.common.engine.impl.history.HistoryLevel;
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 
 import java.io.IOException;
 
@@ -21,8 +22,11 @@ import java.io.IOException;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@RequiredArgsConstructor
+@ConditionalOnBean(WorkflowProperties.class)
 public class FlowableConfig implements EngineConfigurationConfigurer<SpringProcessEngineConfiguration> {
+
+    private final WorkflowProperties workflowProperties;
 
     /**
      * 自定义配置Flowable流程引擎
@@ -31,6 +35,11 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      */
     @Override
     public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
+        if (!workflowProperties.isEnabled()) {
+            log.info("工作流模块已禁用，跳过Flowable配置");
+            return;
+        }
+        
         log.info("配置Flowable流程引擎...");
         
         // 设置流程实例ID生成器

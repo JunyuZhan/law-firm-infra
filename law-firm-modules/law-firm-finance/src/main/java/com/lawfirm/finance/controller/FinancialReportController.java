@@ -22,10 +22,10 @@ import java.util.Map;
  * 财务报表管理控制器
  */
 @Slf4j
-@RestController
+@RestController("financialReportController")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/finance/reports")
-@Tag(name = "财务报表管理", description = "财务报表相关接口")
+@RequestMapping("/api/finance/report")
+@Tag(name = "财务报表", description = "财务报表相关接口")
 public class FinancialReportController {
 
     private final FinancialReportService financialReportService;

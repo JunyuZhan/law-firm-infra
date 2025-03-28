@@ -22,10 +22,11 @@ import java.util.List;
 
 /**
  * 合同管理控制器
+ * 适配Vue-Vben-Admin风格
  */
 @Slf4j
-@RestController
-@RequestMapping("/contracts")
+@RestController("contractController")
+@RequestMapping("/api/contract")
 @RequiredArgsConstructor
 @Tag(name = "合同管理接口", description = "提供合同的创建、查询、修改、删除等功能，支持合同全生命周期管理")
 public class ContractController {
@@ -67,7 +68,7 @@ public class ContractController {
     /**
      * 获取合同详情
      */
-    @GetMapping("/{id}")
+    @GetMapping("/getContract/{id}")
     @Operation(
         summary = "获取合同详情",
         description = "根据ID获取合同的详细信息，包括基本信息、内容、附件、审批状态等"
@@ -98,7 +99,7 @@ public class ContractController {
     /**
      * 分页查询合同列表
      */
-    @GetMapping("/page")
+    @GetMapping("/getContractPage")
     @Operation(
         summary = "分页查询合同",
         description = "根据条件分页查询合同列表，支持按合同名称、类型、状态、创建时间等条件筛选"
@@ -108,7 +109,7 @@ public class ContractController {
             @Parameter(name = "size", description = "每页记录数", required = true),
             @Parameter(name = "queryDTO", description = "查询参数，包括合同名称、类型、状态等")
     })
-    public CommonResult<IPage<ContractVO>> pageContracts(
+    public CommonResult<IPage<ContractVO>> getContractPage(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
             @Parameter(description = "查询参数，包括合同名称、类型、状态等") ContractQueryDTO queryDTO) {
@@ -121,12 +122,12 @@ public class ContractController {
     /**
      * 查询合同列表
      */
-    @GetMapping("/list")
+    @GetMapping("/getContractList")
     @Operation(
         summary = "查询合同列表",
         description = "根据条件查询合同列表，不分页，支持按合同名称、类型、状态等条件筛选"
     )
-    public CommonResult<List<ContractVO>> listContracts(
+    public CommonResult<List<ContractVO>> getContractList(
             @Parameter(description = "查询参数，包括合同名称、类型、状态等") ContractQueryDTO queryDTO) {
         log.info("查询合同列表");
         List<ContractVO> contracts = contractService.listContracts(queryDTO);

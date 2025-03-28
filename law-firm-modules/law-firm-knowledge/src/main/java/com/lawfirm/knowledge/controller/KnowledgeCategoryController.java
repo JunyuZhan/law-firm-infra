@@ -1,108 +1,126 @@
 package com.lawfirm.knowledge.controller;
 
-import com.lawfirm.knowledge.entity.KnowledgeCategory;
-import com.lawfirm.knowledge.service.KnowledgeCategoryService;
+import com.lawfirm.model.knowledge.service.convert.KnowledgeConvert;
+import com.lawfirm.model.knowledge.entity.KnowledgeCategory;
+import com.lawfirm.model.knowledge.service.KnowledgeCategoryService;
+import com.lawfirm.model.knowledge.vo.KnowledgeCategoryVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * 知识分类管理
+ * 知识分类控制器
  */
-@Tag(name = "知识分类管理", description = "提供知识分类的创建、查询、修改、删除等功能，支持分类树的管理和分类顺序的调整")
-@RestController
-@RequestMapping("/knowledge/category")
-@RequiredArgsConstructor
-@Validated
+@Slf4j
+@Tag(name = "知识分类管理", description = "知识文档分类的增删改查接口")
+@RestController("knowledgeCategoryController")
+@RequestMapping("/api/knowledge/category")
 public class KnowledgeCategoryController {
 
-    private final KnowledgeCategoryService categoryService;
+    @Autowired
+    private KnowledgeCategoryService categoryService;
 
-    @Operation(
-        summary = "创建分类",
-        description = "创建新的知识分类，支持设置分类名称、父分类、排序等信息"
-    )
-    @PostMapping
-    public Long createCategory(
-            @Parameter(description = "分类创建参数，包括分类名称、父分类ID、排序号等") @RequestBody KnowledgeCategory category) {
-        return categoryService.createCategory(category);
-    }
+    @Autowired
+    private KnowledgeConvert knowledgeConvert;
 
-    @Operation(
-        summary = "更新分类",
-        description = "更新已存在的知识分类信息，支持修改分类名称、描述等基本信息"
-    )
-    @PutMapping("/{id}")
-    public void updateCategory(
-            @Parameter(description = "分类ID") @PathVariable Long id,
-            @Parameter(description = "分类更新参数，包括需要更新的字段") @RequestBody KnowledgeCategory category) {
-        category.setId(id);
-        categoryService.updateCategory(category);
-    }
-
-    @Operation(
-        summary = "删除分类",
-        description = "删除指定的知识分类，如果分类下有子分类或知识则不允许删除"
-    )
-    @DeleteMapping("/{id}")
-    public void deleteCategory(
-            @Parameter(description = "分类ID") @PathVariable Long id) {
-        categoryService.deleteCategory(id);
-    }
-
-    @Operation(
-        summary = "获取子分类列表",
-        description = "获取指定分类的直接子分类列表，按排序号升序排列"
-    )
-    @GetMapping("/children/{parentId}")
-    public List<KnowledgeCategory> listChildren(
-            @Parameter(description = "父分类ID") @PathVariable Long parentId) {
-        return categoryService.listChildren(parentId);
-    }
-
-    @Operation(
-        summary = "获取分类路径",
-        description = "获取指定分类到根分类的完整路径，从根分类到当前分类的顺序排列"
-    )
-    @GetMapping("/{id}/path")
-    public List<KnowledgeCategory> getPath(
-            @Parameter(description = "分类ID") @PathVariable Long id) {
-        return categoryService.getPath(id);
-    }
-
-    @Operation(
-        summary = "获取分类树",
-        description = "获取完整的知识分类树结构，包含所有分类的层级关系"
-    )
+    /**
+     * 获取分类树
+     */
+    @Operation(summary = "获取分类树", description = "获取完整的知识分类树结构")
     @GetMapping("/tree")
-    public List<KnowledgeCategory> getTree() {
-        return categoryService.getTree();
+    public ResponseEntity<List<KnowledgeCategoryVO>> getCategoryTree() {
+        List<KnowledgeCategory> categoryTree = categoryService.getCategoryTree();
+        return ResponseEntity.ok(knowledgeConvert.toCategoryVOList(categoryTree));
     }
 
-    @Operation(
-        summary = "移动分类",
-        description = "将分类移动到新的父分类下，同时会更新其所有子分类的路径"
-    )
-    @PostMapping("/{id}/move")
-    public void moveCategory(
-            @Parameter(description = "要移动的分类ID") @PathVariable Long id,
-            @Parameter(description = "目标父分类ID，如果为0则移动到根分类") @RequestParam Long targetParentId) {
-        categoryService.moveCategory(id, targetParentId);
+    /**
+     * 获取子分类
+     */
+    @Operation(summary = "获取子分类", description = "根据父分类ID获取子分类列表")
+    @GetMapping("/children/{parentId}")
+    public ResponseEntity<List<KnowledgeCategoryVO>> getSubCategories(
+            @Parameter(description = "父分类ID") @PathVariable Long parentId) {
+        List<KnowledgeCategory> subCategories = categoryService.getSubCategories(parentId);
+        return ResponseEntity.ok(knowledgeConvert.toCategoryVOList(subCategories));
     }
 
-    @Operation(
-        summary = "调整分类顺序",
-        description = "调整分类在同级分类中的显示顺序，较小的排序号排在前面"
-    )
-    @PostMapping("/{id}/reorder")
-    public void reorderCategory(
+    /**
+     * 获取分类路径
+     */
+    @Operation(summary = "获取分类路径", description = "获取指定分类ID的完整路径（从根到当前）")
+    @GetMapping("/path/{categoryId}")
+    public ResponseEntity<List<KnowledgeCategoryVO>> getCategoryPath(
+            @Parameter(description = "分类ID") @PathVariable Long categoryId) {
+        List<KnowledgeCategory> categoryPath = categoryService.getCategoryPath(categoryId);
+        return ResponseEntity.ok(knowledgeConvert.toCategoryVOList(categoryPath));
+    }
+
+    /**
+     * 创建分类
+     */
+    @Operation(summary = "创建分类", description = "创建新的知识分类")
+    @PostMapping
+    public ResponseEntity<KnowledgeCategoryVO> createCategory(
+            @Parameter(description = "分类信息") @RequestBody @Valid KnowledgeCategory category) {
+        boolean success = categoryService.save(category);
+        if (success) {
+            KnowledgeCategory saved = categoryService.getById(category.getId());
+            return ResponseEntity.ok(knowledgeConvert.toCategoryVO(saved));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * 更新分类
+     */
+    @Operation(summary = "更新分类", description = "根据ID更新知识分类")
+    @PutMapping("/{id}")
+    public ResponseEntity<KnowledgeCategoryVO> updateCategory(
             @Parameter(description = "分类ID") @PathVariable Long id,
-            @Parameter(description = "新的排序号，同级分类中的序号") @RequestParam Integer newOrder) {
-        categoryService.reorderCategory(id, newOrder);
+            @Parameter(description = "分类信息") @RequestBody @Valid KnowledgeCategory category) {
+        // 确保ID一致
+        if (category.getId() == null) {
+            category.setId(id);
+        } else if (!id.equals(category.getId())) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        // 检查分类是否存在
+        KnowledgeCategory existingCategory = categoryService.getById(id);
+        if (existingCategory == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        boolean success = categoryService.save(category);
+        if (success) {
+            KnowledgeCategory updated = categoryService.getById(category.getId());
+            return ResponseEntity.ok(knowledgeConvert.toCategoryVO(updated));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * 删除分类
+     */
+    @Operation(summary = "删除分类", description = "根据ID删除知识分类")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(
+            @Parameter(description = "分类ID") @PathVariable Long id) {
+        try {
+            boolean success = categoryService.remove(id);
+            return success ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            log.error("删除分类失败: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 } 

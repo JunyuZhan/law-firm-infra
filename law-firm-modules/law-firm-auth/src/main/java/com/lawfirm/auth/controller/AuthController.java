@@ -19,11 +19,12 @@ import jakarta.validation.constraints.NotBlank;
 
 /**
  * 认证控制器
+ * 适配Vue-Vben-Admin风格
  */
 @Slf4j
-@Tag(name = "认证管理", description = "认证相关接口")
-@RestController
-@RequestMapping("/auth")
+@Tag(name = "认证服务", description = "用户登录、注册、登出等操作")
+@RestController("authController")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     
@@ -54,8 +55,8 @@ public class AuthController {
      * 刷新令牌
      */
     @Operation(summary = "刷新令牌", description = "刷新访问令牌接口")
-    @PostMapping("/refresh")
-    public CommonResult<TokenDTO> refresh(@RequestParam @NotBlank String refreshToken) {
+    @PostMapping("/refreshToken")
+    public CommonResult<TokenDTO> refreshToken(@RequestParam @NotBlank String refreshToken) {
         TokenDTO tokenDTO = authService.refreshToken(refreshToken);
         return CommonResult.success(tokenDTO);
     }
@@ -64,15 +65,18 @@ public class AuthController {
      * 用户登出
      */
     @Operation(summary = "用户登出", description = "用户登出接口")
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public CommonResult<?> logout() {
         String username = SecurityUtils.getCurrentUsername();
         authService.logout(username);
         return CommonResult.success();
     }
     
+    /**
+     * 获取验证码
+     */
     @Operation(summary = "获取验证码", description = "获取验证码接口")
-    @GetMapping("/captcha")
+    @GetMapping("/getCaptcha")
     public CommonResult<String> getCaptcha() {
         // 这里需要生成验证码并存储到Redis
         // 简化处理，直接返回成功

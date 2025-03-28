@@ -24,9 +24,9 @@ import java.util.List;
  * 合同财务管理控制器
  */
 @Slf4j
-@RestController
+@RestController("contractFinanceController")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/finance/contracts")
+@RequestMapping("/api/finance/contract")
 @Tag(name = "合同财务管理", description = "合同财务相关接口")
 public class ContractFinanceController {
 

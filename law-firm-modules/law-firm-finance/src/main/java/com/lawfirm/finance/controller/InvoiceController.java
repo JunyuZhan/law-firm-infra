@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
-@RestController
+@RestController("invoiceController")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/finance/invoices")
+@RequestMapping("/api/finance/invoice")
 @Tag(name = "发票管理", description = "发票相关接口")
 public class InvoiceController {
 

@@ -1,0 +1,188 @@
+{
+  "groups": [
+    {
+      "name": "knowledge",
+      "type": "com.lawfirm.knowledge.config.KnowledgeProperties",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties",
+      "description": "知识管理模块配置"
+    },
+    {
+      "name": "knowledge.storage",
+      "type": "com.lawfirm.knowledge.config.KnowledgeProperties$Storage",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties",
+      "description": "知识管理存储配置"
+    },
+    {
+      "name": "knowledge.document",
+      "type": "com.lawfirm.knowledge.config.KnowledgeProperties$Document",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties",
+      "description": "知识文档配置"
+    },
+    {
+      "name": "knowledge.attachment",
+      "type": "com.lawfirm.knowledge.config.KnowledgeProperties$Attachment",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties",
+      "description": "知识附件配置"
+    },
+    {
+      "name": "knowledge.category",
+      "type": "com.lawfirm.knowledge.config.KnowledgeProperties$Category",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties",
+      "description": "知识分类配置"
+    },
+    {
+      "name": "knowledge.search",
+      "type": "com.lawfirm.knowledge.config.KnowledgeProperties$Search",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties",
+      "description": "知识搜索配置"
+    },
+    {
+      "name": "knowledge.statistic",
+      "type": "com.lawfirm.knowledge.config.KnowledgeProperties$Statistic",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties",
+      "description": "知识统计配置"
+    }
+  ],
+  "properties": [
+    {
+      "name": "knowledge.storage.base-path",
+      "type": "java.lang.String",
+      "description": "知识存储基础路径",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Storage",
+      "defaultValue": "/data/knowledge"
+    },
+    {
+      "name": "knowledge.storage.temp-path",
+      "type": "java.lang.String",
+      "description": "知识临时存储路径",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Storage",
+      "defaultValue": "/data/knowledge/temp"
+    },
+    {
+      "name": "knowledge.document.max-size",
+      "type": "java.lang.String",
+      "description": "知识文档最大大小",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Document",
+      "defaultValue": "10MB"
+    },
+    {
+      "name": "knowledge.document.allowed-extensions",
+      "type": "java.lang.String",
+      "description": "允许的知识文档扩展名",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Document",
+      "defaultValue": ".doc,.docx,.pdf,.md,.txt"
+    },
+    {
+      "name": "knowledge.attachment.max-size",
+      "type": "java.lang.String",
+      "description": "知识附件最大大小",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Attachment",
+      "defaultValue": "20MB"
+    },
+    {
+      "name": "knowledge.attachment.max-count-per-knowledge",
+      "type": "java.lang.Integer",
+      "description": "每个知识文档最大附件数量",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Attachment",
+      "defaultValue": 10
+    },
+    {
+      "name": "knowledge.attachment.allowed-extensions",
+      "type": "java.lang.String",
+      "description": "允许的知识附件扩展名",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Attachment",
+      "defaultValue": ".doc,.docx,.pdf,.jpg,.png,.zip"
+    },
+    {
+      "name": "knowledge.category.max-depth",
+      "type": "java.lang.Integer",
+      "description": "知识分类最大深度",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Category",
+      "defaultValue": 3
+    },
+    {
+      "name": "knowledge.search.enable-highlight",
+      "type": "java.lang.Boolean",
+      "description": "是否启用搜索结果高亮",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Search",
+      "defaultValue": true
+    },
+    {
+      "name": "knowledge.search.max-result-count",
+      "type": "java.lang.Integer",
+      "description": "最大搜索结果数量",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Search",
+      "defaultValue": 100
+    },
+    {
+      "name": "knowledge.search.min-keyword-length",
+      "type": "java.lang.Integer",
+      "description": "最小关键词长度",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Search",
+      "defaultValue": 2
+    },
+    {
+      "name": "knowledge.statistic.cron",
+      "type": "java.lang.String",
+      "description": "知识统计任务执行时间表达式",
+      "sourceType": "com.lawfirm.knowledge.config.KnowledgeProperties$Statistic",
+      "defaultValue": "0 0 1 * * ?"
+    }
+  ],
+  "hints": [
+    {
+      "name": "knowledge.document.allowed-extensions",
+      "values": [
+        {
+          "value": ".doc",
+          "description": "Word文档(旧版)"
+        },
+        {
+          "value": ".docx",
+          "description": "Word文档"
+        },
+        {
+          "value": ".pdf",
+          "description": "PDF文档"
+        },
+        {
+          "value": ".md",
+          "description": "Markdown文档"
+        },
+        {
+          "value": ".txt",
+          "description": "文本文档"
+        }
+      ]
+    },
+    {
+      "name": "knowledge.attachment.allowed-extensions",
+      "values": [
+        {
+          "value": ".doc",
+          "description": "Word文档(旧版)"
+        },
+        {
+          "value": ".docx",
+          "description": "Word文档"
+        },
+        {
+          "value": ".pdf",
+          "description": "PDF文档"
+        },
+        {
+          "value": ".jpg",
+          "description": "JPG图片"
+        },
+        {
+          "value": ".png",
+          "description": "PNG图片"
+        },
+        {
+          "value": ".zip",
+          "description": "ZIP压缩文件"
+        }
+      ]
+    }
+  ]
+} 

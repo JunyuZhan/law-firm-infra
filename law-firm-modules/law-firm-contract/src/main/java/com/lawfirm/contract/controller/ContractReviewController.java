@@ -21,12 +21,13 @@ import java.util.List;
 
 /**
  * 合同审批控制器
+ * 适配Vue-Vben-Admin风格
  */
 @Slf4j
-@RestController
-@RequestMapping("/contract-reviews")
+@RestController("contractReviewController")
+@RequestMapping("/api/contract/review")
 @RequiredArgsConstructor
-@Tag(name = "合同审批接口", description = "提供合同审批相关功能，包括提交审批、审批操作、查询审批历史等，支持完整的合同审批流程管理")
+@Tag(name = "合同审批管理", description = "提供合同审批相关功能，包括提交审批、审批流程查询等")
 public class ContractReviewController {
 
     private final ContractReviewService contractReviewService;
@@ -49,7 +50,7 @@ public class ContractReviewController {
     /**
      * 审批通过
      */
-    @PostMapping("/{id}/approve")
+    @PostMapping("/approveReview/{id}")
     @Operation(
         summary = "审批通过",
         description = "通过合同审批，可以添加审批意见。审批通过后，合同状态将更新为已通过"
@@ -65,7 +66,7 @@ public class ContractReviewController {
     /**
      * 审批拒绝
      */
-    @PostMapping("/{id}/reject")
+    @PostMapping("/rejectReview/{id}")
     @Operation(
         summary = "审批拒绝",
         description = "拒绝合同审批，必须添加拒绝原因。审批拒绝后，合同状态将更新为已拒绝"
@@ -81,7 +82,7 @@ public class ContractReviewController {
     /**
      * 获取审批详情
      */
-    @GetMapping("/{id}")
+    @GetMapping("/getReview/{id}")
     @Operation(
         summary = "获取审批详情",
         description = "根据ID获取审批记录的详细信息，包括审批状态、审批意见、审批时间等"
@@ -96,12 +97,12 @@ public class ContractReviewController {
     /**
      * 查询合同的审批历史
      */
-    @GetMapping("/contract/{contractId}")
+    @GetMapping("/getContractReviews/{contractId}")
     @Operation(
         summary = "查询合同的审批历史",
         description = "根据合同ID查询该合同的所有审批记录，包括每次审批的状态、意见、时间等"
     )
-    public CommonResult<List<ContractReviewVO>> listContractReviews(
+    public CommonResult<List<ContractReviewVO>> getContractReviews(
             @Parameter(description = "合同ID") @PathVariable("contractId") Long contractId) {
         log.info("查询合同的审批历史, 合同ID: {}", contractId);
         List<ContractReviewVO> reviews = contractReviewService.listContractReviews(contractId);
@@ -111,7 +112,7 @@ public class ContractReviewController {
     /**
      * 分页查询待审批列表
      */
-    @GetMapping("/pending/page")
+    @GetMapping("/getPendingReviewPage")
     @Operation(
         summary = "分页查询待审批列表",
         description = "分页查询当前用户待处理的审批列表，支持按合同名称、提交时间等条件筛选"
@@ -121,7 +122,7 @@ public class ContractReviewController {
             @Parameter(name = "size", description = "每页记录数", required = true),
             @Parameter(name = "reviewerId", description = "审批人ID，用于筛选指定审批人的待办项")
     })
-    public CommonResult<IPage<ContractReviewVO>> pagePendingReviews(
+    public CommonResult<IPage<ContractReviewVO>> getPendingReviewPage(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
             @RequestParam Long reviewerId) {
@@ -137,7 +138,7 @@ public class ContractReviewController {
     /**
      * 分页查询已审批列表
      */
-    @GetMapping("/completed/page")
+    @GetMapping("/getCompletedReviewPage")
     @Operation(
         summary = "分页查询已审批列表",
         description = "分页查询当前用户已处理的审批列表，包括已通过和已拒绝的记录"
@@ -147,7 +148,7 @@ public class ContractReviewController {
             @Parameter(name = "size", description = "每页记录数", required = true),
             @Parameter(name = "reviewerId", description = "审批人ID，用于筛选指定审批人的已办项")
     })
-    public CommonResult<IPage<ContractReviewVO>> pageCompletedReviews(
+    public CommonResult<IPage<ContractReviewVO>> getCompletedReviewPage(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
             @RequestParam Long reviewerId) {
@@ -164,7 +165,7 @@ public class ContractReviewController {
     /**
      * 撤销审批
      */
-    @PostMapping("/{id}/revoke")
+    @PostMapping("/revokeReview/{id}")
     @Operation(
         summary = "撤销审批",
         description = "撤销已提交的审批申请，需要提供撤销原因。仅能撤销未审批的申请"
@@ -180,7 +181,7 @@ public class ContractReviewController {
     /**
      * 催办审批
      */
-    @PostMapping("/{id}/urge")
+    @PostMapping("/urgeReview/{id}")
     @Operation(
         summary = "催办审批",
         description = "对未处理的审批进行催办，系统将通知审批人尽快处理"
@@ -195,7 +196,7 @@ public class ContractReviewController {
     /**
      * 转交审批
      */
-    @PostMapping("/{id}/transfer")
+    @PostMapping("/transferReview/{id}")
     @Operation(
         summary = "转交审批",
         description = "将审批任务转交给其他审批人处理，需要提供转交原因"
@@ -208,4 +209,4 @@ public class ContractReviewController {
         boolean result = contractReviewService.transferReview(id, newReviewerId, reason);
         return CommonResult.success(result, "转交审批" + (result ? "成功" : "失败"));
     }
-} 
+}

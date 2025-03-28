@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @RestController("documentCategoryController")
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/document-categories")
+@RequestMapping("/api/document/category")
 @Tag(name = "文档分类管理", description = "文档分类管理相关接口")
 public class DocumentCategoryController {
 

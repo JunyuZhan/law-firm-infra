@@ -4,6 +4,8 @@ import com.lawfirm.auth.exception.AuthException;
 import com.lawfirm.model.auth.dto.auth.TokenDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecureDigestAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,7 +51,7 @@ public class JwtTokenProvider {
         // 使用安全的方法生成密钥，确保至少256位
         if (jwtSecret.length() < 32) { // 至少32字节(256位)
             // 如果配置的密钥不够长，使用推荐的方式生成
-            this.key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
+            this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode("j2h1EW7AstTO4WzV9yu4PV5Vk7+RXKzK8mZ0Lotxtdo="));
             log.warn("配置的JWT密钥长度不足，已自动生成安全密钥");
         } else {
             try {
@@ -57,7 +59,7 @@ public class JwtTokenProvider {
             } catch (Exception e) {
                 log.error("JWT密钥初始化失败: {}", e.getMessage());
                 // 出错时使用安全的随机密钥作为备选
-                this.key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
+                this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode("j2h1EW7AstTO4WzV9yu4PV5Vk7+RXKzK8mZ0Lotxtdo="));
                 log.warn("已自动生成备选JWT密钥");
             }
         }

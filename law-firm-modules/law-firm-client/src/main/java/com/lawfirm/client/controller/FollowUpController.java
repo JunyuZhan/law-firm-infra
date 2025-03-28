@@ -19,11 +19,11 @@ import java.util.List;
 /**
  * 客户跟进控制器
  */
-@Tag(name = "客户跟进管理")
+@Tag(name = "客户跟进记录管理")
 @Slf4j
-@RestController
+@RestController("clientFollowUpController")
 @RequiredArgsConstructor
-@RequestMapping("/client/follow")
+@RequestMapping("/api/client/followup")
 public class FollowUpController extends BaseController {
 
     private final FollowUpServiceImpl followUpService;

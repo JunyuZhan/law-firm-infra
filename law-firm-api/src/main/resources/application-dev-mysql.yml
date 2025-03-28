@@ -101,6 +101,11 @@ elasticsearch:
     nodes:
       - localhost:9200
     
+# 搜索配置
+search:
+  enabled: true
+  default-strategy: database
+
 # 禁止覆盖Bean定义
 spring.main.allow-bean-definition-overriding: true
 

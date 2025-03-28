@@ -19,9 +19,9 @@ import java.util.List;
  * 成本中心管理控制器
  */
 @Slf4j
-@RestController
+@RestController("costCenterController")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/finance/cost-centers")
+@RequestMapping("/api/finance/cost-center")
 @Tag(name = "成本中心管理", description = "成本中心相关接口")
 public class CostCenterController {
 

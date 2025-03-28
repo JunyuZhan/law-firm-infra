@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Tag(name = "职位管理", description = "管理职位的创建、更新、删除等操作")
-@RestController
-@RequestMapping("/api/personnel/positions")
+@RestController("positionController")
+@RequestMapping("/api/personnel/position")
 @Validated
 public class PositionController {
 

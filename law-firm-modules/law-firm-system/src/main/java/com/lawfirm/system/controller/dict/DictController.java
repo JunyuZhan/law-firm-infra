@@ -26,8 +26,8 @@ import java.util.List;
  * 系统字典控制器
  */
 @Tag(name = "系统字典管理", description = "管理系统字典数据，包括字典的增删改查、缓存刷新等操作")
-@RestController
-@RequestMapping("/system/dict")
+@RestController("dictController")
+@RequestMapping("/api/system/dict")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class DictController extends BaseController {

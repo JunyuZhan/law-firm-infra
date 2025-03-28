@@ -16,10 +16,10 @@ import java.util.Map;
  * 文档预览控制器
  */
 @Slf4j
-@RestController
+@RestController("documentPreviewController")
 @RequiredArgsConstructor
-@RequestMapping("/api/preview")
-@Tag(name = "文档预览", description = "文档和模板预览接口")
+@RequestMapping("/api/document/preview")
+@Tag(name = "文档预览", description = "文档在线预览相关接口")
 public class PreviewController {
 
     private final DocumentService documentService;

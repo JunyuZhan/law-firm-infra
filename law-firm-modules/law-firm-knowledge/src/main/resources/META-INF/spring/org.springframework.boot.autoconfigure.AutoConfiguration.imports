@@ -1,0 +1,5 @@
+com.lawfirm.knowledge.config.KnowledgeConfig
+com.lawfirm.knowledge.config.ResourceConfig
+com.lawfirm.knowledge.config.MessageServiceConfig
+com.lawfirm.knowledge.config.SearchServiceConfig
+com.lawfirm.knowledge.config.StorageServiceConfig 

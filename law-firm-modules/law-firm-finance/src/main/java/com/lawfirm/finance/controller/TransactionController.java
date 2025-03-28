@@ -23,9 +23,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
-@RestController
+@RestController("transactionController")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/transactions")
+@RequestMapping("/api/finance/transaction")
 @Tag(name = "交易管理", description = "交易管理相关API")
 public class TransactionController {
 

@@ -47,6 +47,11 @@
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
+            <artifactId>knowledge-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-system</artifactId>
             <version>${revision}</version>
             <exclusions>
@@ -132,6 +137,18 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-finance</artifactId>
+            <version>${revision}</version>
+            <exclusions>
+                <!-- 排除Flowable相关依赖 -->
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-knowledge</artifactId>
             <version>${revision}</version>
             <exclusions>
                 <!-- 排除Flowable相关依赖 -->

@@ -4,6 +4,9 @@ import com.lawfirm.client.service.strategy.importstrategy.ImportStrategy;
 import com.lawfirm.client.service.strategy.importstrategy.ImportStrategy.ImportResult;
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.model.client.vo.ClientVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +22,11 @@ import java.util.stream.Collectors;
 /**
  * 客户导入导出控制器
  */
+@Tag(name = "客户导入导出管理")
 @Slf4j
-@RestController
+@RestController("clientImportExportController")
 @RequiredArgsConstructor
-@RequestMapping("/client/import-export")
+@RequestMapping("/api/client/import-export")
 public class ImportExportController extends BaseController {
 
     private final List<ImportStrategy> importStrategies;

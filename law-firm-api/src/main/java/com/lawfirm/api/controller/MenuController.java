@@ -14,18 +14,31 @@ import java.util.List;
 
 /**
  * 菜单控制器
+ * 适配Vue-Vben-Admin
  */
 @Tag(name = "菜单管理")
 @RestController
-@RequestMapping("/v1/menu")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class MenuController {
 
     private final MenuAdaptor menuAdaptor;
-
+    
+    /**
+     * 兼容旧版接口
+     */
     @Operation(summary = "获取用户菜单")
-    @GetMapping("/list")
-    public CommonResult<List<MenuVO>> getUserMenus() {
+    @GetMapping("/v1/menu/list")
+    public CommonResult<List<MenuVO>> getUserMenusLegacy() {
+        return CommonResult.success(menuAdaptor.getUserMenus());
+    }
+
+    /**
+     * Vben-Admin菜单接口
+     */
+    @Operation(summary = "获取用户菜单")
+    @GetMapping("/getMenuList")
+    public CommonResult<List<MenuVO>> getMenuList() {
         return CommonResult.success(menuAdaptor.getUserMenus());
     }
 } 

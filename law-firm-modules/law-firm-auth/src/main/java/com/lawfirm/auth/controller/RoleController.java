@@ -18,11 +18,12 @@ import java.util.List;
 
 /**
  * 角色控制器
+ * 适配Vue-Vben-Admin风格
  */
 @Slf4j
 @Tag(name = "角色管理", description = "角色相关接口")
-@RestController
-@RequestMapping("/roles")
+@RestController("roleController")
+@RequestMapping("/api/role")
 @RequiredArgsConstructor
 public class RoleController {
     
@@ -76,9 +77,9 @@ public class RoleController {
      * 获取角色详情
      */
     @Operation(summary = "获取角色详情", description = "获取指定角色详情")
-    @GetMapping("/{id}")
+    @GetMapping("/getRole/{id}")
     @PreAuthorize("hasAuthority('sys:role:read')")
-    public CommonResult<RoleVO> getRoleById(@PathVariable Long id) {
+    public CommonResult<RoleVO> getRole(@PathVariable Long id) {
         RoleVO roleVO = roleService.getRoleById(id);
         return CommonResult.success(roleVO);
     }
@@ -87,9 +88,9 @@ public class RoleController {
      * 分页查询角色
      */
     @Operation(summary = "分页查询角色", description = "分页查询角色列表")
-    @GetMapping
+    @GetMapping("/getRolePage")
     @PreAuthorize("hasAuthority('sys:role:read')")
-    public CommonResult<Page<RoleVO>> pageRoles(RoleUpdateDTO queryDTO) {
+    public CommonResult<Page<RoleVO>> getRolePage(RoleUpdateDTO queryDTO) {
         Page<RoleVO> page = roleService.pageRoles(queryDTO);
         return CommonResult.success(page);
     }
@@ -97,10 +98,10 @@ public class RoleController {
     /**
      * 获取所有角色
      */
-    @Operation(summary = "获取所有角色", description = "获取所有可用角色")
-    @GetMapping("/all")
+    @Operation(summary = "获取所有角色", description = "获取所有角色列表")
+    @GetMapping("/getRoleList")
     @PreAuthorize("hasAuthority('sys:role:read')")
-    public CommonResult<List<RoleVO>> listAllRoles() {
+    public CommonResult<List<RoleVO>> getRoleList() {
         List<RoleVO> roles = roleService.listAllRoles();
         return CommonResult.success(roles);
     }
@@ -109,7 +110,7 @@ public class RoleController {
      * 更新角色状态
      */
     @Operation(summary = "更新角色状态", description = "启用或禁用角色")
-    @PutMapping("/{id}/status")
+    @PutMapping("/updateStatus/{id}")
     @PreAuthorize("hasAuthority('sys:role:update')")
     public CommonResult<?> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
         roleService.updateStatus(id, status);
@@ -117,10 +118,10 @@ public class RoleController {
     }
     
     /**
-     * 分配权限
+     * 分配角色权限
      */
-    @Operation(summary = "分配权限", description = "为角色分配权限")
-    @PutMapping("/{id}/permissions")
+    @Operation(summary = "分配角色权限", description = "为角色分配权限")
+    @PutMapping("/assignPermissions/{id}")
     @PreAuthorize("hasAuthority('sys:role:update')")
     public CommonResult<?> assignPermissions(@PathVariable Long id, @RequestBody List<Long> permissionIds) {
         roleService.assignPermissions(id, permissionIds);
@@ -131,21 +132,10 @@ public class RoleController {
      * 获取角色权限ID列表
      */
     @Operation(summary = "获取角色权限ID列表", description = "获取角色已分配的权限ID列表")
-    @GetMapping("/{id}/permissions")
+    @GetMapping("/getRolePermissions/{id}")
     @PreAuthorize("hasAuthority('sys:role:read')")
-    public CommonResult<List<Long>> getRolePermissionIds(@PathVariable Long id) {
+    public CommonResult<List<Long>> getRolePermissions(@PathVariable Long id) {
         List<Long> permissionIds = roleService.getRolePermissionIds(id);
         return CommonResult.success(permissionIds);
-    }
-    
-    /**
-     * 获取角色用户ID列表
-     */
-    @Operation(summary = "获取角色用户ID列表", description = "获取拥有该角色的用户ID列表")
-    @GetMapping("/{id}/users")
-    @PreAuthorize("hasAuthority('sys:role:read')")
-    public CommonResult<List<Long>> getRoleUserIds(@PathVariable Long id) {
-        List<Long> userIds = roleService.getRoleUserIds(id);
-        return CommonResult.success(userIds);
     }
 } 

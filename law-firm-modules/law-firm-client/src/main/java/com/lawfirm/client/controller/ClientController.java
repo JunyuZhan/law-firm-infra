@@ -23,9 +23,9 @@ import java.util.List;
  */
 @Tag(name = "客户管理")
 @Slf4j
-@RestController
+@RestController("clientController")
 @RequiredArgsConstructor
-@RequestMapping("/client")
+@RequestMapping("/api/client")
 public class ClientController extends BaseController {
 
     private final ClientServiceImpl clientService;

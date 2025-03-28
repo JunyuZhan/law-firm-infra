@@ -8,17 +8,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 /**
  * 文档权限管理控制器
  */
-@Tag(name = "文档权限管理", description = "管理文档的访问权限，包括同步业务系统权限、添加和移除用户权限等操作")
-@RestController
-@RequestMapping("/api/v1/document/permissions")
+@Slf4j
+@RestController("documentPermissionController")
+@RequestMapping("/api/document/permission")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "文档权限管理", description = "文档权限相关接口")
 public class DocumentPermissionController {
 
     private final DocumentPermissionService documentPermissionService;

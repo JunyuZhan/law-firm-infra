@@ -23,9 +23,9 @@ import java.util.List;
  * 付款计划管理控制器
  */
 @Slf4j
-@RestController
+@RestController("paymentPlanController")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/finance/payment-plans")
+@RequestMapping("/api/finance/payment-plan")
 @Tag(name = "付款计划管理", description = "付款计划相关接口")
 public class PaymentPlanController {
 

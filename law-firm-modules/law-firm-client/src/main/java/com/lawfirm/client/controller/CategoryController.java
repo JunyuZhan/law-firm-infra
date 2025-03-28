@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController("clientCategoryController")
 @RequiredArgsConstructor
-@RequestMapping("/client/category")
+@RequestMapping("/api/client/category")
 public class CategoryController extends BaseController {
 
     @Qualifier("clientCategoryServiceImpl")

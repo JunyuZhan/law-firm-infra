@@ -23,9 +23,9 @@ import java.util.List;
  * 支出管理控制器
  */
 @Slf4j
-@RestController
+@RestController("expenseController")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/finance/expenses")
+@RequestMapping("/api/finance/expense")
 @Tag(name = "支出管理", description = "支出相关接口")
 public class ExpenseController {
 

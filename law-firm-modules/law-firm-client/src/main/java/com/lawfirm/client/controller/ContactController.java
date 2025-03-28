@@ -21,9 +21,9 @@ import java.util.List;
  */
 @Tag(name = "客户联系人管理")
 @Slf4j
-@RestController
+@RestController("clientContactController")
 @RequiredArgsConstructor
-@RequestMapping("/client/contact")
+@RequestMapping("/api/client/contact")
 public class ContactController extends BaseController {
 
     private final ContactServiceImpl contactService;

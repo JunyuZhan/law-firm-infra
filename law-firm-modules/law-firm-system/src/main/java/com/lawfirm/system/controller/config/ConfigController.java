@@ -25,8 +25,8 @@ import java.util.List;
  * 系统配置控制器
  */
 @Tag(name = "系统配置管理", description = "管理系统配置数据，包括配置的增删改查、缓存刷新等操作")
-@RestController
-@RequestMapping("/system/config")
+@RestController("configController")
+@RequestMapping("/api/system/config")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class ConfigController extends BaseController {

@@ -24,12 +24,13 @@ import java.util.Map;
 
 /**
  * 合同模板控制器
+ * 适配Vue-Vben-Admin风格
  */
 @Slf4j
-@RestController
-@RequestMapping("/contract-templates")
+@RestController("contractTemplateController")
+@RequestMapping("/api/contract/template")
 @RequiredArgsConstructor
-@Tag(name = "合同模板接口", description = "提供合同模板的创建、查询、修改、删除等功能，支持模板变量管理和模板启用禁用")
+@Tag(name = "合同模板管理", description = "提供合同模板的创建、查询、修改、删除等功能")
 public class ContractTemplateController {
 
     private final ContractTemplateService contractTemplateService;
@@ -71,7 +72,7 @@ public class ContractTemplateController {
     /**
      * 获取合同模板详情
      */
-    @GetMapping("/{id}")
+    @GetMapping("/getContractTemplate/{id}")
     @Operation(
         summary = "获取合同模板详情",
         description = "根据ID获取合同模板的详细信息，包括模板内容、变量定义、使用状态等"
@@ -101,7 +102,7 @@ public class ContractTemplateController {
     /**
      * 分页查询合同模板
      */
-    @GetMapping("/page")
+    @GetMapping("/getContractTemplatePage")
     @Operation(
         summary = "分页查询合同模板",
         description = "根据条件分页查询合同模板列表，支持按模板名称、编码、状态等条件筛选"
@@ -111,7 +112,7 @@ public class ContractTemplateController {
             @Parameter(name = "size", description = "每页记录数", required = true),
             @Parameter(name = "queryDTO", description = "查询参数，包括模板名称、编码、状态等")
     })
-    public CommonResult<IPage<ContractTemplateVO>> pageContractTemplates(
+    public CommonResult<IPage<ContractTemplateVO>> getContractTemplatePage(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
             ContractTemplateQueryDTO queryDTO) {
@@ -124,12 +125,12 @@ public class ContractTemplateController {
     /**
      * 查询合同模板列表
      */
-    @GetMapping("/list")
+    @GetMapping("/getContractTemplateList")
     @Operation(
         summary = "查询合同模板列表",
         description = "根据条件查询合同模板列表，不分页，支持按模板名称、编码、状态等条件筛选"
     )
-    public CommonResult<List<ContractTemplateVO>> listContractTemplates(
+    public CommonResult<List<ContractTemplateVO>> getContractTemplateList(
             @Parameter(description = "查询参数，包括模板名称、编码、状态等") ContractTemplateQueryDTO queryDTO) {
         log.info("查询合同模板列表");
         List<ContractTemplateVO> templates = contractTemplateService.listTemplates(queryDTO);
@@ -139,7 +140,7 @@ public class ContractTemplateController {
     /**
      * 提取模板变量
      */
-    @PostMapping("/extract-variables")
+    @PostMapping("/extractTemplateVariables")
     @Operation(
         summary = "提取模板变量",
         description = "从模板内容中提取所有变量，返回变量名称和描述的映射关系"
@@ -154,7 +155,7 @@ public class ContractTemplateController {
     /**
      * 验证模板变量
      */
-    @PostMapping("/validate-variables")
+    @PostMapping("/validateTemplateVariables")
     @Operation(
         summary = "验证模板变量",
         description = "验证模板变量是否完整，检查所有必填变量是否都已提供值"
@@ -172,7 +173,7 @@ public class ContractTemplateController {
     /**
      * 启用合同模板
      */
-    @PutMapping("/{id}/enable")
+    @PutMapping("/enableContractTemplate/{id}")
     @Operation(
         summary = "启用合同模板",
         description = "启用指定的合同模板，启用后可以被选择使用"
@@ -187,7 +188,7 @@ public class ContractTemplateController {
     /**
      * 禁用合同模板
      */
-    @PutMapping("/{id}/disable")
+    @PutMapping("/disableContractTemplate/{id}")
     @Operation(
         summary = "禁用合同模板",
         description = "禁用指定的合同模板，禁用后不能被选择使用"

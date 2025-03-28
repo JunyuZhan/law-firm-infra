@@ -13,6 +13,42 @@
 
     <!-- No changes needed - dependencies already follow the requirements -->
     <dependencies>
+        <!-- 知识模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>knowledge-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        
+        <!-- 核心模块依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-audit</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-search</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-storage</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        
+        <!-- 工具模块依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-util</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -21,6 +57,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        
+        <!-- Flyway -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
         </dependency>
         
         <!-- MyBatis Plus -->
@@ -48,6 +94,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        
+        <!-- 模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>log-model</artifactId>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 </project> 

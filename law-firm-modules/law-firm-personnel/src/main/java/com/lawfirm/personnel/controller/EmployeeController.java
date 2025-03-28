@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Tag(name = "员工管理", description = "员工信息管理，包括律师和行政人员")
-@RestController
-@RequestMapping("/api/personnel/employees")
+@RestController("employeeController")
+@RequestMapping("/api/personnel/employee")
 @Validated
 public class EmployeeController {
 

@@ -1,16 +1,14 @@
 package com.lawfirm.core.workflow.config;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
  * 工作流配置属性类
- * 用于绑定application-workflow.yml中的配置
+ * 用于业务层注入工作流配置
  */
 @Data
 @Validated
-@ConfigurationProperties(prefix = "workflow")
 public class WorkflowProperties {
 
     /**

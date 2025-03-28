@@ -13,6 +13,11 @@ import java.util.List;
 @ConfigurationProperties(prefix = "elasticsearch")
 public class ElasticsearchProperties {
 
+    /**
+     * 是否启用ElasticSearch
+     */
+    private boolean enabled = false;
+
     @NestedConfigurationProperty
     private Cluster cluster = new Cluster();
 

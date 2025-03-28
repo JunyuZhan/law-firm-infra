@@ -23,10 +23,10 @@ import java.util.List;
  * 账单记录管理控制器
  */
 @Slf4j
-@RestController
+@RestController("billingRecordController")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/finance/billing-records")
-@Tag(name = "账单记录管理", description = "账单记录相关接口")
+@RequestMapping("/api/finance/billing")
+@Tag(name = "计费记录管理", description = "计费记录相关接口")
 public class BillingRecordController {
 
     private final BillingRecordService billingRecordService;

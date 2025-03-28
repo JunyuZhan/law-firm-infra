@@ -21,11 +21,12 @@ import com.lawfirm.auth.utils.SecurityUtils;
 
 /**
  * 用户控制器
+ * 适配Vue-Vben-Admin风格
  */
 @Slf4j
 @Tag(name = "用户管理", description = "用户相关接口")
-@RestController
-@RequestMapping("/users")
+@RestController("userController")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
     
@@ -79,9 +80,9 @@ public class UserController {
      * 获取用户详情
      */
     @Operation(summary = "获取用户详情", description = "获取指定用户详情")
-    @GetMapping("/{id}")
+    @GetMapping("/getUser/{id}")
     @PreAuthorize("hasAuthority('sys:user:read')")
-    public CommonResult<UserVO> getUserById(@PathVariable Long id) {
+    public CommonResult<UserVO> getUser(@PathVariable Long id) {
         UserVO userVO = userService.getUserById(id);
         return CommonResult.success(userVO);
     }
@@ -90,9 +91,9 @@ public class UserController {
      * 分页查询用户
      */
     @Operation(summary = "分页查询用户", description = "分页查询用户列表")
-    @GetMapping
+    @GetMapping("/getUserPage")
     @PreAuthorize("hasAuthority('sys:user:read')")
-    public CommonResult<Page<UserVO>> pageUsers(UserQueryDTO queryDTO) {
+    public CommonResult<Page<UserVO>> getUserPage(UserQueryDTO queryDTO) {
         Page<UserVO> page = userService.pageUsers(queryDTO);
         return CommonResult.success(page);
     }
@@ -101,7 +102,7 @@ public class UserController {
      * 修改密码
      */
     @Operation(summary = "修改密码", description = "修改用户密码")
-    @PutMapping("/{id}/password")
+    @PutMapping("/updatePassword/{id}")
     @PreAuthorize("hasAuthority('sys:user:update') or #id == authentication.principal.userId")
     public CommonResult<?> updatePassword(@PathVariable Long id, 
                                          @RequestParam String oldPassword,
@@ -114,7 +115,7 @@ public class UserController {
      * 重置密码
      */
     @Operation(summary = "重置密码", description = "重置用户密码")
-    @PutMapping("/{id}/reset-password")
+    @PutMapping("/resetPassword/{id}")
     @PreAuthorize("hasAuthority('sys:user:update')")
     public CommonResult<String> resetPassword(@PathVariable Long id) {
         String newPassword = userService.resetPassword(id);
@@ -125,7 +126,7 @@ public class UserController {
      * 更新用户状态
      */
     @Operation(summary = "更新用户状态", description = "启用或禁用用户")
-    @PutMapping("/{id}/status")
+    @PutMapping("/updateStatus/{id}")
     @PreAuthorize("hasAuthority('sys:user:update')")
     public CommonResult<?> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
         userService.updateStatus(id, status);
@@ -136,7 +137,7 @@ public class UserController {
      * 获取用户信息
      */
     @Operation(summary = "获取用户信息", description = "获取当前登录用户信息")
-    @GetMapping("/info")
+    @GetMapping("/getUserInfo")
     public CommonResult<UserInfoVO> getUserInfo() {
         Long userId = SecurityUtils.getCurrentUserId();
         UserInfoVO userInfoVO = userService.getUserInfo(userId);
@@ -147,7 +148,7 @@ public class UserController {
      * 分配用户角色
      */
     @Operation(summary = "分配用户角色", description = "为用户分配角色")
-    @PutMapping("/{id}/roles")
+    @PutMapping("/assignRoles/{id}")
     @PreAuthorize("hasAuthority('sys:user:update')")
     public CommonResult<?> assignRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {
         userService.assignRoles(id, roleIds);
@@ -158,9 +159,9 @@ public class UserController {
      * 获取用户角色ID列表
      */
     @Operation(summary = "获取用户角色ID列表", description = "获取用户已分配的角色ID列表")
-    @GetMapping("/{id}/roles")
+    @GetMapping("/getUserRoles/{id}")
     @PreAuthorize("hasAuthority('sys:user:read')")
-    public CommonResult<List<Long>> getUserRoleIds(@PathVariable Long id) {
+    public CommonResult<List<Long>> getUserRoles(@PathVariable Long id) {
         List<Long> roleIds = userService.getUserRoleIds(id);
         return CommonResult.success(roleIds);
     }

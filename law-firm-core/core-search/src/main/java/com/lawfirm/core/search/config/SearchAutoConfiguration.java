@@ -12,7 +12,8 @@ import org.springframework.context.annotation.Import;
  */
 @AutoConfiguration
 @Import({
-    ElasticsearchConfig.class
+    ElasticsearchConfig.class,
+    CoreElasticsearchDisableConfig.class
 })
 @EnableConfigurationProperties({
     ElasticsearchProperties.class,

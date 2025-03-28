@@ -1,16 +1,17 @@
 package com.lawfirm.core.storage.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
 /**
  * 存储配置属性
  */
 @Data
-@Component("coreStorageProperties")
-@ConfigurationProperties(prefix = "storage")
+@Component
+@Primary
+@ConfigurationProperties(prefix = "lawfirm.storage")
 public class StorageProperties {
     
     /**
