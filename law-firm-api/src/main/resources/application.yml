@@ -4,16 +4,24 @@ spring:
   main:
     allow-bean-definition-overriding: true
     allow-missing-beans: true
+    banner-mode: off
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
-    jdbcUrl: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
-    username: sa
-    password: 
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:Zjy-1314}
   flyway:
+    enabled: false
+  jmx:
     enabled: false
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+    default-property-inclusion: non_null
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
   autoconfigure:
     exclude:
       - org.flowable.spring.boot.FlowableAutoConfiguration
@@ -52,11 +60,21 @@ spring:
       enabled: false
       mode: never
       platform: none
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
 
 server:
   port: 8080
+  tomcat:
+    uri-encoding: UTF-8
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
 
 # 其他配置保持不变...
 
@@ -79,21 +97,29 @@ app:
   version: "1.0.0"
   description: "律师事务所管理系统API服务"
 
-# API文档配置 - 只使用Knife4j
+# API文档配置 - 统一使用Knife4j
 springdoc:
   api-docs:
     enabled: true
     path: /v3/api-docs
   swagger-ui:
-    enabled: false
-    config-url: /v3/api-docs/swagger-config
-    url: /v3/api-docs
-  packages-to-scan: com.lawfirm
+    enabled: false  # 禁用原生Swagger UI
+  packages-to-scan: >
+    com.lawfirm,
+    com.lawfirm.client.controller,
+    com.lawfirm.cases.controller,
+    com.lawfirm.contract.controller,
+    com.lawfirm.knowledge.controller,
+    com.lawfirm.document.controller,
+    com.lawfirm.finance.controller,
+    com.lawfirm.personnel.controller,
+    com.lawfirm.system.controller
   paths-to-match: /**
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
   cache:
     disabled: true
+  writer-with-default-pretty-printer: true
 
 # Knife4j配置
 knife4j:
@@ -107,6 +133,10 @@ knife4j:
     enable-debug: true
     enable-open-api: true
   production: false
+  basic:
+    enable: false
+  # 启用Knife4j增强
+  enhance: true
 
 # 搜索服务配置
 lawfirm:
@@ -135,26 +165,27 @@ lawfirm:
       accessKey: minioadmin
       secretKey: minioadmin
       useSsl: false
-  # AI模块配置
-  ai:
-    enabled: true
-    defaultProvider: openai
-    timeout: 30
-    maxConcurrentRequests: 10
-    enableCache: true
-    enableSensitiveFilter: true
-    enableRiskAssessment: true
-    debug: false
-  ai.model:
-    openai:
-      apiKey: ${AI_OPENAI_API_KEY:sk-demo-key}
-      baseUrl: https://api.openai.com/v1
-      defaultModel: gpt-4
-    baidu:
-      apiKey: ${AI_BAIDU_API_KEY:}
-      secretKey: ${AI_BAIDU_SECRET_KEY:}
-      baseUrl: https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop
-      defaultModel: ERNIE-Bot-4
+
+# AI模块配置 - 移出嵌套结构
+law.firm.ai:
+  enabled: true
+  defaultProvider: openai
+  timeout: 30
+  maxConcurrentRequests: 10
+  enableCache: true
+  enableSensitiveFilter: true
+  enableRiskAssessment: true
+  debug: false
+law.firm.ai.model:
+  openai:
+    apiKey: ${AI_OPENAI_API_KEY:sk-demo-key}
+    baseUrl: https://api.openai.com/v1
+    defaultModel: gpt-4
+  baidu:
+    apiKey: ${AI_BAIDU_API_KEY:}
+    secretKey: ${AI_BAIDU_SECRET_KEY:}
+    baseUrl: https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop
+    defaultModel: ERNIE-Bot-4
 
 # Lucene搜索配置
 search:
@@ -206,12 +237,15 @@ knowledge:
     cron: 0 0 1 * * ?
 
 # 审计模块配置
-audit:
+law.firm.audit:
   enabled: true
-  async: true
-  log-type: db
-  include-request-params: true
-  include-response-body: false
+  async:
+    enabled: true
+    poolSize: 4
+    queueCapacity: 1000
+  logType: db
+  includeRequestParams: true
+  includeResponseBody: false
 
 # 消息服务配置
 message:

@@ -10,7 +10,7 @@ import java.util.Map;
  * 审计配置属性
  */
 @Data
-@ConfigurationProperties(prefix = "lawfirm.audit")
+@ConfigurationProperties(prefix = "law.firm.audit")
 public class AuditProperties {
     
     /**
@@ -27,6 +27,21 @@ public class AuditProperties {
      * 模块配置
      */
     private Map<String, ModuleConfig> modules = new HashMap<>();
+
+    /**
+     * 日志记录类型: db, file, redis
+     */
+    private String logType = "db";
+
+    /**
+     * 是否包含请求参数
+     */
+    private boolean includeRequestParams = true;
+    
+    /**
+     * 是否包含响应体
+     */
+    private boolean includeResponseBody = false;
 
     @Data
     public static class Async {

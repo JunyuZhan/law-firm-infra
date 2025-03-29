@@ -53,6 +53,15 @@ logging:
     com.baomidou.mybatisplus: INFO
     org.springframework.jdbc: DEBUG
 
+# AI模块配置
+law.firm.ai:
+  enabled: true
+  defaultProvider: openai
+  timeout: 30
+  maxConcurrentRequests: 10
+  enableCache: true
+  debug: true
+
 # MyBatis-Plus配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

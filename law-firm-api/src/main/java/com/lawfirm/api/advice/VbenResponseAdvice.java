@@ -19,7 +19,16 @@ public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        // 处理所有响应类型
+        // 排除Swagger/Knife4j相关的包和类
+        String className = returnType.getContainingClass().getName();
+        if (className.contains("springdoc") || 
+            className.contains("swagger") || 
+            className.contains("knife4j") ||
+            className.contains("springfox") ||
+            className.contains("SwaggerConfigController")) {  // 添加我们的自定义控制器
+            return false;
+        }
+        // 处理其他所有响应类型
         return true;
     }
 
@@ -27,6 +36,17 @@ public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
+        // 如果请求路径包含API文档相关路径，不进行处理
+        String path = request.getURI().getPath();
+        if (path.contains("/v3/api-docs") || 
+            path.contains("/swagger-ui") || 
+            path.contains("/doc.html") ||
+            path.contains("/swagger-resources") ||
+            path.contains("/webjars/") ||
+            path.contains("/raw-json")) {  // 添加我们的自定义端点
+            return body;
+        }
+                                      
         // 如果响应体已经是VbenResult类型，直接返回
         if (body instanceof VbenResult) {
             return body;

@@ -19,5 +19,5 @@ echo %ALL_OPTS%
 
 rem 启动应用
 java -jar target/law-firm-api-1.0.0.jar
-
+java -jar law-firm-api/target/law-firm-api-1.0.0.jar
 pause 

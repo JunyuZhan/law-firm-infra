@@ -54,6 +54,17 @@ public class DevSecurityConfig {
             contextPath + "/swagger-ui/**",
             contextPath + "/webjars/**",
             
+            // 添加不带contextPath的文档路径，确保都能访问
+            "/doc.html",
+            "/v3/api-docs/**", 
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/webjars/**",
+            
+            // 明确添加Knife4j的相关路径
+            contextPath + "/swagger-resources/configuration/ui",
+            contextPath + "/swagger-resources/configuration/security",
+            
             // 登录相关
             contextPath + "/login",
             contextPath + "/logout",

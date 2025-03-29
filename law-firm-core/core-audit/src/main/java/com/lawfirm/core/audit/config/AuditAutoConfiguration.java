@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(AuditProperties.class)
-@ConditionalOnProperty(prefix = "lawfirm.audit", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law.firm.audit", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Import(AuditAsyncConfig.class)
 public class AuditAutoConfiguration {
 
@@ -45,6 +45,16 @@ public class AuditAutoConfiguration {
     @ConditionalOnMissingBean
     public AuditFieldAspect auditFieldAspect(AuditService auditService) {
         return new AuditFieldAspect(auditService);
+    }
+    
+    /**
+     * 当没有AuditPropertiesProvider实现类时提供默认实现
+     */
+    @Bean
+    @ConditionalOnMissingBean(AuditPropertiesProvider.class)
+    public AuditPropertiesProvider defaultAuditPropertiesProvider(AuditProperties auditProperties) {
+        log.info("创建默认审计配置提供者");
+        return () -> auditProperties;
     }
 
     @Bean(name = "coreAuditServiceImpl")

@@ -3,6 +3,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
     url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
     password: root
@@ -104,6 +105,12 @@ search:
   enabled: true
   default-strategy: database
 
+# AI配置
+law.firm.ai:
+  enabled: true
+  defaultProvider: openai
+  timeout: 30
+  
 # 禁止覆盖Bean定义
 spring.main.allow-bean-definition-overriding: true
 

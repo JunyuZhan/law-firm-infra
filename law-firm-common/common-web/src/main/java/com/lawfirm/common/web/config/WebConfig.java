@@ -3,11 +3,14 @@ package com.lawfirm.common.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -31,11 +34,33 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     /**
+     * RestTemplate Bean提供方法
+     * 供各模块使用的标准HTTP客户端
+     */
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    /**
      * 消息转换器配置
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter() {
+            @Override
+            public boolean canWrite(Class<?> clazz, org.springframework.http.MediaType mediaType) {
+                // 跳过对API文档相关接口的处理
+                String className = clazz.getName();
+                if (className.contains("springdoc") || 
+                    className.contains("swagger") || 
+                    className.contains("openapi")) {
+                    return false;
+                }
+                return super.canWrite(clazz, mediaType);
+            }
+        };
+        
         ObjectMapper objectMapper = new ObjectMapper();
         
         // Long类型转String
