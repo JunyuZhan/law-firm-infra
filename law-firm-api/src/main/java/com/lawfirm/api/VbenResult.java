@@ -8,7 +8,7 @@ import lombok.Setter;
 
 /**
  * Vue-Vben-Admin期望的响应格式
- * @param <T> 数据类型
+ * @param <T> 响应数据类型
  */
 @Getter
 @Setter

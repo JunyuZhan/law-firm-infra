@@ -10,6 +10,9 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 统一响应格式转换器
  * 将所有响应转换为前端期望的格式
@@ -17,19 +20,25 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @RestControllerAdvice
 public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
 
+    // 排除路径列表
+    private static final List<String> EXCLUDE_PATHS = Arrays.asList(
+        "/v3/api-docs",
+        "/swagger-ui",
+        "/doc.html",
+        "/swagger-resources",
+        "/webjars/",
+        "/raw-json"
+    );
+
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         // 排除Swagger/Knife4j相关的包和类
         String className = returnType.getContainingClass().getName();
-        if (className.contains("springdoc") || 
+        return !(className.contains("springdoc") || 
             className.contains("swagger") || 
             className.contains("knife4j") ||
             className.contains("springfox") ||
-            className.contains("SwaggerConfigController")) {  // 添加我们的自定义控制器
-            return false;
-        }
-        // 处理其他所有响应类型
-        return true;
+            className.contains("SwaggerConfigController"));
     }
 
     @Override
@@ -38,12 +47,9 @@ public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
                                   ServerHttpRequest request, ServerHttpResponse response) {
         // 如果请求路径包含API文档相关路径，不进行处理
         String path = request.getURI().getPath();
-        if (path.contains("/v3/api-docs") || 
-            path.contains("/swagger-ui") || 
-            path.contains("/doc.html") ||
-            path.contains("/swagger-resources") ||
-            path.contains("/webjars/") ||
-            path.contains("/raw-json")) {  // 添加我们的自定义端点
+        
+        // 检查是否应该排除当前路径
+        if (EXCLUDE_PATHS.stream().anyMatch(path::contains)) {
             return body;
         }
                                       

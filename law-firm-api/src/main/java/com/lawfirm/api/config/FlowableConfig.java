@@ -1,8 +1,8 @@
 package com.lawfirm.api.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -17,8 +17,9 @@ import java.util.HashMap;
  * 尝试创建Flowable相关组件，降低应用启动依赖。
  */
 @Slf4j
-@Configuration
+@Configuration("apiFlowableConfig")
 @ConditionalOnProperty(name = "flowable.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnMissingClass("org.flowable.spring.boot.EngineConfigurationConfigurer")
 public class FlowableConfig {
 
     /**

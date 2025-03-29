@@ -5,21 +5,33 @@ spring:
     allow-bean-definition-overriding: true
     allow-missing-beans: true
     banner-mode: off
+    log-startup-info: false
+    allow-circular-references: false
+    lazy-initialization: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbcUrl: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
     url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:Zjy-1314}
+    password: ${MYSQL_PASSWORD:}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 30000
+      pool-name: LawFirmHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
   flyway:
+    enabled: false
+  liquibase:
     enabled: false
   jmx:
     enabled: false
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-    default-property-inclusion: non_null
+    default-property-inclusion: non-null
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
   autoconfigure:
@@ -38,11 +50,10 @@ spring:
       - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
       - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
       - org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration
-      - com.lawfirm.document.config.DocumentSearchConfig
   mybatis-plus:
     configuration:
       map-underscore-to-camel-case: true
-      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+      log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
     global-config:
       db-config:
         logic-delete-field: deleted
@@ -64,6 +75,9 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 100MB
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
 
 server:
   port: 8080
@@ -76,76 +90,36 @@ server:
       force: true
       enabled: true
 
-# 其他配置保持不变...
+# 安全配置
+security:
+  enabled: false
 
-law:
-  firm:
-    log:
-      enableMethodLog: true
-      enableRequestLog: true
-      logStackTrace: true
+method:
+  security:
+    enabled: false
 
-# API文档过滤器配置
-api:
-  doc:
-    filter:
-      enabled: false
+dev:
+  auth:
+    simplified-security: true
 
-# 应用信息配置
-app:
-  name: "law-firm-api"
-  version: "1.0.0"
-  description: "律师事务所管理系统API服务"
-
-# API文档配置 - 统一使用Knife4j
-springdoc:
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-  swagger-ui:
-    enabled: false  # 禁用原生Swagger UI
-  packages-to-scan: >
-    com.lawfirm,
-    com.lawfirm.client.controller,
-    com.lawfirm.cases.controller,
-    com.lawfirm.contract.controller,
-    com.lawfirm.knowledge.controller,
-    com.lawfirm.document.controller,
-    com.lawfirm.finance.controller,
-    com.lawfirm.personnel.controller,
-    com.lawfirm.system.controller
-  paths-to-match: /**
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  cache:
-    disabled: true
-  writer-with-default-pretty-printer: true
-
-# Knife4j配置
-knife4j:
-  enable: true
-  setting:
-    language: zh_cn
-    enable-swagger-models: true
-    enable-document-manage: true
-    swagger-model-name: 实体类列表
-    enable-search: true
-    enable-debug: true
-    enable-open-api: true
-  production: false
-  basic:
-    enable: false
-  # 启用Knife4j增强
-  enhance: true
-
-# 搜索服务配置
+# 律师事务所功能模块开关
 lawfirm:
+  audit:
+    enabled: true
+  workflow:
+    enabled: false
+  client:
+    enabled: true
+  auth:
+    enabled: true
+  module:
+    case: true
+    contract: true
+    knowledge:
+      enabled: true
   search:
     enabled: true
     type: lucene
-  module:
-    knowledge:
-      enabled: true
   storage:
     enabled: true
     defaultType: LOCAL
@@ -166,7 +140,115 @@ lawfirm:
       secretKey: minioadmin
       useSsl: false
 
-# AI模块配置 - 移出嵌套结构
+# 日志配置
+law:
+  firm:
+    log:
+      enableMethodLog: true
+      enableRequestLog: true
+      logStackTrace: true
+
+# API安全配置
+api:
+  security:
+    xss:
+      exclude-urls:
+        - "/api/v1/auth/login"
+        - "/api/v1/auth/register"
+        - "/api/v1/document/upload"
+        - "/api/v1/knowledge/content"
+  doc:
+    filter:
+      enabled: false
+
+# 应用信息配置
+app:
+  name: "law-firm-api"
+  version: "1.0.0"
+  description: "律师事务所管理系统API服务"
+
+# API文档配置 - 统一使用Knife4j
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false  # 禁用原生Swagger UI
+  packages-to-scan: 
+    - com.lawfirm
+  paths-to-match: /**
+
+# Knife4j配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  production: false
+  basic:
+    enable: false
+  # 启用Knife4j增强
+  enhance: true
+
+# 消息服务配置
+message:
+  enabled: true
+  async:
+    enabled: true
+  rocketmq:
+    topic: law-firm-message
+    consumer-group: law-firm-consumer
+
+# RocketMQ配置
+rocketmq:
+  enabled: false
+  producer:
+    enabled: false
+  consumer:
+    enabled: false
+
+# Flowable配置
+flowable:
+  enabled: false
+  process-engine:
+    enable: false
+  dmn-engine:
+    enable: false
+  idm-engine:
+    enable: false
+  form-engine:
+    enable: false
+  content-engine:
+    enable: false
+  event-registry-engine:
+    enable: false
+  rest:
+    enabled: false
+  actuator:
+    enabled: false
+  database-schema-update: false
+  check-process-definitions: false
+
+# 配置刷新相关设置
+config:
+  refresh:
+    enabled: false
+    refresh-interval: 30000
+    refresh-on-startup: true
+    source-type: file
+
+# Lucene搜索配置
+search:
+  engine: lucene
+  enabled: true
+  lucene:
+    index-dir: ${user.home}/.law-firm/lucene-index
+    ram-buffer-size-mb: 32
+    max-results: 1000
+    highlight-enabled: true
+    highlight-pre-tag: <em>
+    highlight-post-tag: </em>
+
+# AI模块配置
 law.firm.ai:
   enabled: true
   defaultProvider: openai
@@ -186,28 +268,6 @@ law.firm.ai.model:
     secretKey: ${AI_BAIDU_SECRET_KEY:}
     baseUrl: https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop
     defaultModel: ERNIE-Bot-4
-
-# Lucene搜索配置
-search:
-  engine: lucene
-  enabled: true
-  lucene:
-    index-dir: ${user.home}/.law-firm/lucene-index
-    ram-buffer-size-mb: 32
-    max-results: 1000
-    highlight-enabled: true
-    highlight-pre-tag: <em>
-    highlight-post-tag: </em>
-    analyzer: ik
-  index:
-    case:
-      name: law_firm_case
-    document:
-      name: law_firm_document
-    client:
-      name: law_firm_client
-    contract:
-      name: law_firm_contract
 
 # 健康检查配置
 management:
@@ -246,12 +306,3 @@ law.firm.audit:
   logType: db
   includeRequestParams: true
   includeResponseBody: false
-
-# 消息服务配置
-message:
-  enabled: true
-  async:
-    enabled: false  # 禁用异步消息，使用同步消息实现
-  template:
-    cache-enabled: true
-    refresh-interval: 3600

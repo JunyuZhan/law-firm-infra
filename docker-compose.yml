@@ -11,18 +11,29 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # 环境配置
       - SPRING_PROFILES_ACTIVE=docker
+      # 数据库配置
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/law_firm?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=Zjy-1314
+      # Redis配置
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
+      # 禁用工作流
+      - FLOWABLE_ENABLED=false
+      - LAWFIRM_WORKFLOW_ENABLED=false
+      # 系统功能开关
       - ELASTICSEARCH_ENABLED=false
+      - LAWFIRM_SEARCH_ENABLED=true
+      - LAWFIRM_SEARCH_TYPE=lucene
+      - LAWFIRM_STORAGE_ENABLED=true
     depends_on:
       - mysql
       - redis
     volumes:
-      - law-firm-logs:/app/logs
+      - ./logs:/app/logs
+      - ./storage:/app/storage
     networks:
       - law-firm-network
 
@@ -39,7 +50,9 @@ services:
       - TZ=Asia/Shanghai
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - mysql-data:/var/lib/mysql
+      - ./data/mysql:/var/lib/mysql
+      # 初始化脚本(如果存在)
+      - ./scripts/mysql:/docker-entrypoint-initdb.d
     networks:
       - law-firm-network
 
@@ -52,15 +65,9 @@ services:
       - "6379:6379"
     command: redis-server --appendonly yes
     volumes:
-      - redis-data:/data
+      - ./data/redis:/data
     networks:
       - law-firm-network
-
-# 数据卷
-volumes:
-  mysql-data:
-  redis-data:
-  law-firm-logs:
 
 # 网络
 networks:

@@ -95,6 +95,7 @@ public class StorageConfiguration {
      * 注册配置提供者Bean
      */
     @Bean(name = "providerStorageProperties")
+    @ConditionalOnBean(StoragePropertiesProvider.class)
     public StorageProperties storagePropertiesFromProvider(StoragePropertiesProvider provider) {
         log.info("从业务层获取存储配置");
         return provider.getStorageProperties();

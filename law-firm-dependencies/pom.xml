@@ -80,6 +80,7 @@
         <mysql.version>8.2.0</mysql.version>
         <postgresql.version>42.7.1</postgresql.version>
         <lucene.version>9.8.0</lucene.version>
+        <mybatis-starter.version>3.0.3</mybatis-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -357,6 +358,13 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
                 <version>${dynamic-datasource.version}</version>
+            </dependency>
+            
+            <!-- MyBatis -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-starter.version}</version>
             </dependency>
             
             <!-- 存储服务 -->

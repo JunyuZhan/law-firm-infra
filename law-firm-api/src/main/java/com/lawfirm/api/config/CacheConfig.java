@@ -1,6 +1,8 @@
 package com.lawfirm.api.config;
 
 import com.lawfirm.common.cache.config.CacheProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
@@ -14,7 +16,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 
@@ -22,10 +23,11 @@ import java.time.Duration;
  * 缓存统一配置类
  * 提供本地缓存和Redis缓存的配置
  */
-@Slf4j
-@Configuration
+@Configuration("apiCacheConfig")
 @EnableCaching
 public class CacheConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(CacheConfig.class);
 
     /**
      * 提供缓存属性Bean
@@ -67,6 +69,32 @@ public class CacheConfig {
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(defaultCacheConfig)
                 .transactionAware()
+                .build();
+    }
+
+    /**
+     * 创建API模块的缓存管理器
+     */
+    @Bean("apiCacheManager")
+    @Primary
+    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        log.info("初始化API模块的Redis缓存管理器");
+        
+        // 默认的Redis缓存配置
+        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofHours(2))  // 默认2小时过期
+                .serializeKeysWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())
+                )
+                .serializeValuesWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
+                )
+                .disableCachingNullValues();  // 不缓存空值
+        
+        log.info("API缓存默认过期时间: 2小时");
+        
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(defaultCacheConfig)
                 .build();
     }
 } 
