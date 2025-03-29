@@ -1,29 +1,72 @@
 package com.lawfirm.api.config;
 
 import com.lawfirm.common.cache.config.CacheProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.Duration;
 
 /**
- * 缓存配置类
- * 为开发环境提供缓存配置
+ * 缓存统一配置类
+ * 提供本地缓存和Redis缓存的配置
  */
+@Slf4j
 @Configuration
+@EnableCaching
 public class CacheConfig {
 
     /**
      * 提供缓存属性Bean
-     * 用于配置文档模块的缓存行为
+     * 用于配置应用的缓存行为
      */
     @Bean
     @Primary
     public CacheProperties cacheProperties() {
+        log.info("初始化缓存配置：开发环境默认使用本地缓存");
         CacheProperties props = new CacheProperties();
-        props.setEnabled(false); // 开发环境禁用缓存
-        props.setType(CacheProperties.CacheType.LOCAL); // 使用本地缓存
+        props.setEnabled(true);
+        props.setType(CacheProperties.CacheType.LOCAL); // 默认使用本地缓存
         props.setExpiration(30); // 过期时间30分钟
         props.setRefreshTime(10); // 刷新时间10分钟
         return props;
+    }
+    
+    /**
+     * 配置Redis缓存管理器
+     * 当Redis可用时使用
+     */
+    @Bean("redisCacheManager")
+    @ConditionalOnProperty(name = "spring.data.redis.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnMissingBean(name = "redisCacheManager")
+    public CacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
+        log.info("初始化Redis缓存管理器");
+        // 默认配置
+        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                // 设置key为String
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                // 设置value为json
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                // 不缓存null
+                .disableCachingNullValues()
+                // 默认缓存过期时间
+                .entryTtl(Duration.ofMinutes(30));
+
+        // 创建Redis缓存管理器
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(defaultCacheConfig)
+                .transactionAware()
+                .build();
     }
 } 

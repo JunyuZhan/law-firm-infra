@@ -1,22 +1,19 @@
 package com.lawfirm.core.search.service.impl;
 
-import co.elastic.clients.elasticsearch._types.mapping.TypeMapping;
-import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.core.search.handler.IndexHandler;
-import com.lawfirm.core.search.utils.ElasticsearchUtils;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.search.entity.SearchIndex;
 import com.lawfirm.model.search.mapper.SearchIndexMapper;
 import com.lawfirm.model.search.service.IndexService;
 import com.lawfirm.model.search.vo.IndexVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +41,8 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     public void createIndex(SearchIndex index) {
         try {
             String indexName = index.getIndexName();
-            TypeMapping mapping = ElasticsearchUtils.generateMapping(index.getClass());
-            indexHandler.createIndex(indexName, mapping);
+            // 使用Lucene创建索引
+            indexHandler.createIndex(indexName, null);
             
             // 创建别名
             String alias = index.getAlias();
@@ -76,8 +73,9 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     @Override
     public void updateSettings(String indexName, String settings) {
         try {
-            indexHandler.updateSettings(indexName, settings);
-        } catch (IOException e) {
+            // Lucene不支持直接更新settings
+            log.warn("Lucene不支持直接更新settings，需要重建索引");
+        } catch (Exception e) {
             log.error("更新索引设置失败", e);
             throw new RuntimeException("更新索引设置失败", e);
         }
@@ -86,9 +84,9 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     @Override
     public void updateMappings(String indexName, String mappings) {
         try {
-            indexHandler.updateMapping(indexName, TypeMapping.of(builder -> 
-                builder.withJson(new StringReader(mappings))));
-        } catch (IOException e) {
+            // Lucene不支持直接更新mappings
+            log.warn("Lucene不支持直接更新mappings，需要重建索引");
+        } catch (Exception e) {
             log.error("更新索引映射失败", e);
             throw new RuntimeException("更新索引映射失败", e);
         }
@@ -97,9 +95,17 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     @Override
     public IndexVO getIndexInfo(String indexName) {
         try {
-            GetIndexResponse response = indexHandler.getIndex(indexName);
-            return convertToIndexVO(indexName, response);
-        } catch (IOException e) {
+            // 从数据库获取索引信息
+            SearchIndex index = baseMapper.selectOne(
+                new QueryWrapper<SearchIndex>().eq("index_name", indexName)
+            );
+            
+            if (index == null) {
+                throw new RuntimeException("索引不存在: " + indexName);
+            }
+            
+            return convertToIndexVO(index);
+        } catch (Exception e) {
             log.error("获取索引信息失败", e);
             throw new RuntimeException("获取索引信息失败", e);
         }
@@ -111,11 +117,10 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
             List<IndexVO> result = new ArrayList<>();
             List<SearchIndex> indices = baseMapper.selectList(null);
             for (SearchIndex index : indices) {
-                GetIndexResponse response = indexHandler.getIndex(index.getIndexName());
-                result.add(convertToIndexVO(index.getIndexName(), response));
+                result.add(convertToIndexVO(index));
             }
             return result;
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("获取所有索引信息失败", e);
             throw new RuntimeException("获取所有索引信息失败", e);
         }
@@ -124,8 +129,9 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     @Override
     public void openIndex(String indexName) {
         try {
-            indexHandler.openIndex(indexName);
-        } catch (IOException e) {
+            // Lucene索引无需显式打开
+            log.info("Lucene索引无需显式打开: {}", indexName);
+        } catch (Exception e) {
             log.error("打开索引失败", e);
             throw new RuntimeException("打开索引失败", e);
         }
@@ -134,6 +140,7 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     @Override
     public void closeIndex(String indexName) {
         try {
+            // 关闭Lucene索引
             indexHandler.closeIndex(indexName);
         } catch (IOException e) {
             log.error("关闭索引失败", e);
@@ -195,11 +202,11 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     /**
      * 转换为IndexVO
      */
-    private IndexVO convertToIndexVO(String indexName, GetIndexResponse response) {
+    private IndexVO convertToIndexVO(SearchIndex index) {
         IndexVO vo = new IndexVO();
-        vo.setIndexName(indexName);
-        vo.setMappings(response.get(indexName).mappings().toString());
-        vo.setSettings(response.get(indexName).settings().toString());
+        vo.setIndexName(index.getIndexName());
+        vo.setMappings("{}");  // Lucene没有固定映射
+        vo.setSettings("{}");  // Lucene没有固定设置
         return vo;
     }
 
@@ -274,15 +281,6 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
 
     @Override
     public boolean removeBatch(List<Long> ids) {
-        int size = ids.size();
-        int batchSize = DEFAULT_BATCH_SIZE;
-        for (int i = 0; i < size; i += batchSize) {
-            int end = Math.min(i + batchSize, size);
-            List<Long> batch = ids.subList(i, end);
-            for (Long id : batch) {
-                remove(id);
-            }
-        }
-        return true;
+        return baseMapper.deleteBatchIds(ids) > 0;
     }
 } 

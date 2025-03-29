@@ -3,6 +3,7 @@ package com.lawfirm.core.ai.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import jakarta.annotation.PostConstruct;
@@ -28,6 +29,7 @@ public class AIConfigLoader {
     private ConfigService configService;
     
     @Autowired(required = false)
+    @Qualifier("aiSensitiveDataService")
     private SensitiveDataService sensitiveDataService;
 
     /**
@@ -61,7 +63,7 @@ public class AIConfigLoader {
         if (StringUtils.hasText(apiKey)) {
             if (sensitiveDataService != null) {
                 // 使用SensitiveDataService进行脱敏
-                return sensitiveDataService.mask(apiKey, 2, 2, '*');
+                return sensitiveDataService.maskApiKey(apiKey);
             } else {
                 // 如果没有注入SensitiveDataService，使用简单脱敏方式
                 if (apiKey.length() <= 4) {

@@ -2,15 +2,21 @@ package com.lawfirm.core.message.listener;
 
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import com.lawfirm.core.message.service.impl.MessageManagerImpl;
 import com.lawfirm.core.message.utils.MessageLogUtils;
 import com.lawfirm.model.message.entity.base.BaseMessage;
 
+/**
+ * RocketMQ消息消费者
+ * 只有在rocketmq.enabled=true时才启用
+ */
 @Component
+@ConditionalOnProperty(name = "rocketmq.enabled", havingValue = "true", matchIfMissing = false)
 @RocketMQMessageListener(
-    topic = "${message.rocketmq.topic}",
-    consumerGroup = "${message.rocketmq.consumer-group}"
+    topic = "${message.rocketmq.topic:law-firm-message}",
+    consumerGroup = "${message.rocketmq.consumer-group:law-firm-consumer}"
 )
 public class RocketMQMessageConsumer implements org.apache.rocketmq.spring.core.RocketMQListener<BaseMessage> {
 

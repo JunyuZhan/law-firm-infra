@@ -1,36 +1,36 @@
 package com.lawfirm.document.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import lombok.extern.slf4j.Slf4j;
+
 import com.lawfirm.document.config.properties.SearchProperties;
 import com.lawfirm.document.service.strategy.search.DatabaseSearchStrategy;
 import com.lawfirm.document.service.strategy.search.SearchStrategy;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.lawfirm.model.document.mapper.DocumentMapper;
 
 /**
- * 文档模块搜索配置类
- * 由于ElasticSearch是付费服务，这里默认使用数据库搜索策略
+ * 文档搜索配置
+ * 简化配置，始终使用数据库搜索
  */
 @Slf4j
-@Configuration("documentSearchConfig")
-@RequiredArgsConstructor
+@Configuration
 public class DocumentSearchConfig {
 
-    private final SearchProperties searchProperties;
-    private final DatabaseSearchStrategy databaseSearchStrategy;
-    
-    // 使用@Slf4j注解自动生成log变量，无需手动定义
+    private final DocumentMapper documentMapper;
+
+    public DocumentSearchConfig(DocumentMapper documentMapper) {
+        this.documentMapper = documentMapper;
+        log.info("初始化文档搜索配置，使用数据库搜索策略");
+    }
 
     /**
-     * 配置默认搜索策略
+     * 创建数据库搜索策略
      */
-    @Bean("documentDefaultSearchStrategy")
-    public SearchStrategy defaultSearchStrategy() {
-        // 总是使用数据库搜索策略，避免依赖ElasticSearch
-        log.info("配置默认搜索策略: database");
-        return databaseSearchStrategy;
+    @Bean
+    public SearchStrategy databaseSearchStrategy() {
+        log.info("注册数据库搜索策略");
+        return new DatabaseSearchStrategy(documentMapper);
     }
 } 

@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 消息发送实现类
  */
-@Component("messageServiceImpl")
+@Component("messageSender")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MessageSenderImpl implements MessageSender {

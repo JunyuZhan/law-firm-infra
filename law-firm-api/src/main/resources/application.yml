@@ -6,6 +6,7 @@ spring:
     allow-missing-beans: true
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    jdbcUrl: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
     username: sa
     password: 
   flyway:
@@ -28,12 +29,8 @@ spring:
       - org.flowable.spring.boot.idm.IdmEngineServicesAutoConfiguration
       - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
       - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration
       - org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration
-      - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchClientAutoConfiguration
-      - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
-      - org.springframework.boot.autoconfigure.elasticsearch.ReactiveElasticsearchClientAutoConfiguration
+      - com.lawfirm.document.config.DocumentSearchConfig
   mybatis-plus:
     configuration:
       map-underscore-to-camel-case: true
@@ -44,16 +41,10 @@ spring:
         logic-not-delete-value: 0
         logic-delete-value: 1
   data:
-    elasticsearch:
-      repositories:
-        enabled: false
     jpa:
       repositories:
         enabled: false
     ldap:
-      repositories:
-        enabled: false
-    elasticsearch-reactive:
       repositories:
         enabled: false
   sql:
@@ -116,3 +107,117 @@ knife4j:
     enable-debug: true
     enable-open-api: true
   production: false
+
+# 搜索服务配置
+lawfirm:
+  search:
+    enabled: true
+    type: lucene
+  module:
+    knowledge:
+      enabled: true
+  storage:
+    enabled: true
+    defaultType: LOCAL
+    defaultBucketId: 1
+    path:
+      baseDir: ${user.home}/.law-firm/storage
+      tempDir: ${user.home}/.law-firm/storage/temp
+      urlPrefix: http://localhost:8080/api/files
+    local:
+      enabled: true
+      basePath: ${user.home}/.law-firm/storage
+      urlPrefix: http://localhost:8080/api/files
+    minio:
+      enabled: false
+      endpoint: http://minio.example.com
+      port: 9000
+      accessKey: minioadmin
+      secretKey: minioadmin
+      useSsl: false
+  # AI模块配置
+  ai:
+    enabled: true
+    defaultProvider: openai
+    timeout: 30
+    maxConcurrentRequests: 10
+    enableCache: true
+    enableSensitiveFilter: true
+    enableRiskAssessment: true
+    debug: false
+  ai.model:
+    openai:
+      apiKey: ${AI_OPENAI_API_KEY:sk-demo-key}
+      baseUrl: https://api.openai.com/v1
+      defaultModel: gpt-4
+    baidu:
+      apiKey: ${AI_BAIDU_API_KEY:}
+      secretKey: ${AI_BAIDU_SECRET_KEY:}
+      baseUrl: https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop
+      defaultModel: ERNIE-Bot-4
+
+# Lucene搜索配置
+search:
+  engine: lucene
+  enabled: true
+  lucene:
+    index-dir: ${user.home}/.law-firm/lucene-index
+    ram-buffer-size-mb: 32
+    max-results: 1000
+    highlight-enabled: true
+    highlight-pre-tag: <em>
+    highlight-post-tag: </em>
+    analyzer: ik
+  index:
+    case:
+      name: law_firm_case
+    document:
+      name: law_firm_document
+    client:
+      name: law_firm_client
+    contract:
+      name: law_firm_contract
+
+# 健康检查配置
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
+# 知识库模块配置
+knowledge:
+  storage:
+    basePath: ${user.home}/.law-firm/knowledge
+    tempPath: ${user.home}/.law-firm/knowledge/temp
+  document:
+    maxSize: 10MB
+    allowedExtensions: .doc,.docx,.pdf,.md,.txt
+  attachment:
+    maxSize: 20MB
+    maxCountPerKnowledge: 10
+    allowedExtensions: .doc,.docx,.pdf,.jpg,.png,.zip
+  category:
+    maxDepth: 3
+  search:
+    enableHighlight: true
+    maxResultCount: 100
+    minKeywordLength: 2
+  statistic:
+    cron: 0 0 1 * * ?
+
+# 审计模块配置
+audit:
+  enabled: true
+  async: true
+  log-type: db
+  include-request-params: true
+  include-response-body: false
+
+# 消息服务配置
+message:
+  enabled: true
+  async:
+    enabled: false  # 禁用异步消息，使用同步消息实现
+  template:
+    cache-enabled: true
+    refresh-interval: 3600

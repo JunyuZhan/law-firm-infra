@@ -15,7 +15,6 @@ import com.lawfirm.model.log.converter.AuditRecordConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -41,11 +40,9 @@ public class AuditServiceImpl implements AuditService {
     private final AuditRecordMapper auditRecordMapper;
     
     @Autowired
-    @Qualifier("modelAuditLogConverter")
     private AuditLogConverter auditLogConverter;
     
     @Autowired
-    @Qualifier("modelAuditRecordConverter")
     private AuditRecordConverter auditRecordConverter;
     
     /**

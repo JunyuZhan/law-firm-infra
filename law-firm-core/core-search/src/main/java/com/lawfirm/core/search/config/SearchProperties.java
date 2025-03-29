@@ -1,22 +1,34 @@
 package com.lawfirm.core.search.config;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * 搜索配置属性类
- * 用于绑定application-search.yml中的配置
+ * 搜索模块配置属性
  */
 @Data
 @Validated
+@Component("coreSearchProperties")
 @ConfigurationProperties(prefix = "search")
 public class SearchProperties {
-
     /**
-     * 是否启用搜索模块
+     * 是否启用搜索功能
      */
     private boolean enabled = true;
+
+    /**
+     * 搜索引擎类型: lucene, database
+     */
+    private String engine = "lucene";
+
+    /**
+     * Lucene配置
+     */
+    private Lucene lucene = new Lucene();
 
     /**
      * 索引配置
@@ -24,29 +36,70 @@ public class SearchProperties {
     private Index index = new Index();
 
     /**
-     * 索引配置类
+     * Lucene配置
+     */
+    @Data
+    public static class Lucene {
+        /**
+         * 索引存储目录
+         */
+        private String indexDir = "${user.home}/.law-firm/lucene-index";
+        
+        /**
+         * 内存缓冲区大小(MB)
+         */
+        private int ramBufferSizeMb = 32;
+        
+        /**
+         * 最大搜索结果数
+         */
+        private int maxResults = 1000;
+        
+        /**
+         * 是否启用高亮
+         */
+        private boolean highlightEnabled = true;
+        
+        /**
+         * 高亮前置标签
+         */
+        private String highlightPreTag = "<em>";
+        
+        /**
+         * 高亮后置标签
+         */
+        private String highlightPostTag = "</em>";
+        
+        /**
+         * 分析器类型: standard, chinese, ik
+         */
+        private String analyzer = "ik";
+    }
+
+    /**
+     * 索引配置
      */
     @Data
     public static class Index {
         /**
          * 案件索引配置
          */
-        private IndexConfig caseIndex = new IndexConfig("law_firm_case", "30s");
+        private IndexConfig caseIndex = new IndexConfig("law_firm_case", "1s");
         
         /**
          * 文档索引配置
          */
-        private IndexConfig document = new IndexConfig("law_firm_document", "1m");
+        private IndexConfig document = new IndexConfig("law_firm_document", "1s");
         
         /**
          * 客户索引配置
          */
-        private IndexConfig client = new IndexConfig("law_firm_client", "1m");
+        private IndexConfig client = new IndexConfig("law_firm_client", "1s");
         
         /**
          * 合同索引配置
          */
-        private IndexConfig contract = new IndexConfig("law_firm_contract", "1m");
+        private IndexConfig contract = new IndexConfig("law_firm_contract", "1s");
     }
     
     /**

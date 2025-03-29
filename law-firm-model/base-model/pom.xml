@@ -32,6 +32,10 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
 
         <!-- Validation -->
         <dependency>

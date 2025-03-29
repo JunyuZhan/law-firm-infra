@@ -73,11 +73,6 @@
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>core-search</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
             <artifactId>core-audit</artifactId>
             <version>${revision}</version>
         </dependency>

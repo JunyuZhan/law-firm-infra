@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 健康检查控制器
- * 用于验证API层能否正常启动
+ * 用于验证API层能否正常启动及系统状态
  */
-@RestController
+@RestController("healthCheckController")
 @RequestMapping("/health")
 public class HealthCheckController {
 
@@ -25,6 +25,19 @@ public class HealthCheckController {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "UP");
         response.put("message", "服务正常运行");
+        response.put("timestamp", System.currentTimeMillis());
+        
+        return ResponseEntity.ok(response);
+    }
+    
+    /**
+     * 认证系统状态检查
+     */
+    @GetMapping("/auth")
+    public ResponseEntity<Map<String, Object>> authStatus() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("message", "认证系统正常运行");
         response.put("timestamp", System.currentTimeMillis());
         
         return ResponseEntity.ok(response);

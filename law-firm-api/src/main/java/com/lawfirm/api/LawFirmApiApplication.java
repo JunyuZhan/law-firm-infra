@@ -2,21 +2,15 @@ package com.lawfirm.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.context.annotation.ComponentScan;
 
 /**
  * 律师事务所API应用
@@ -28,85 +22,76 @@ import org.springframework.context.annotation.ComponentScan;
     scanBasePackages = {
         "com.lawfirm.api", 
         "com.lawfirm.model",
-        "com.lawfirm.common",     // 明确包含common包
-        "com.lawfirm.common.log", // 特别确保扫描common-log包
+        "com.lawfirm.common",     
         "com.lawfirm.auth",
         "com.lawfirm.client",
-        "com.lawfirm.cases",   // 正确的包名是cases，不是case
+        "com.lawfirm.cases",   
         "com.lawfirm.document",
         "com.lawfirm.contract",
         "com.lawfirm.finance",
         "com.lawfirm.system",
         "com.lawfirm.personnel",
-        "com.lawfirm.knowledge",  // 添加知识库模块包
-        "com.lawfirm.core.audit",  // 审计服务
-        "com.lawfirm.core.message",  // 消息服务
-        "com.lawfirm.core.search",   // 搜索服务
-        "com.lawfirm.core.storage"   // 存储服务（已启用：lawfirm.storage.enabled=true）
+        "com.lawfirm.knowledge",  
+        "com.lawfirm.core.audit",  
+        "com.lawfirm.core.message",  
+        "com.lawfirm.core.search",   
+        "com.lawfirm.core.storage"   
         // 不扫描com.lawfirm.core.workflow包，因为工作流功能已禁用
     },
     exclude = {
         SecurityAutoConfiguration.class,
-        // 排除Flowable相关自动配置类
         FlywayAutoConfiguration.class,
-        // 排除JPA相关自动配置类
         HibernateJpaAutoConfiguration.class,
         JpaRepositoriesAutoConfiguration.class,
-        // 排除Elasticsearch相关自动配置类
-        ElasticsearchRepositoriesAutoConfiguration.class,
-        ReactiveElasticsearchRepositoriesAutoConfiguration.class,
-        // 排除LDAP相关自动配置类
         LdapRepositoriesAutoConfiguration.class,
-        // 排除SQL初始化自动配置类，避免ddlApplicationRunner被创建
         SqlInitializationAutoConfiguration.class
     }
 )
 @ConfigurationPropertiesScan(basePackages = {"com.lawfirm.common", "com.lawfirm.core"})
-@ComponentScan(basePackages = {
-    "com.lawfirm.api.config", 
-    "com.lawfirm.api.controller", 
-    "com.lawfirm.api.adaptor",
-    "com.lawfirm.system",       // 添加system包以确保MenuServiceImpl被扫描到
-    "com.lawfirm.client",       // 添加client包以确保ClientServiceImpl被扫描到
-    "com.lawfirm.contract",     // 添加contract包以确保ContractServiceImpl被扫描到
-    "com.lawfirm.document",     // 添加document包以确保DocumentServiceImpl被扫描到
-    "com.lawfirm.auth",         // 添加auth包以确保AuthorizationDaoImpl被扫描到
-    "com.lawfirm.cases",        // 案件模块
-    "com.lawfirm.finance",      // 财务模块
-    "com.lawfirm.personnel",    // 人事模块
-    "com.lawfirm.knowledge",     // 知识库模块
-    "com.lawfirm.core.audit",    // 审计服务
-    "com.lawfirm.core.message",  // 消息服务
-    "com.lawfirm.core.search",   // 搜索服务
-    "com.lawfirm.core.storage"   // 存储服务
-})
 public class LawFirmApiApplication {
 
-    public static void main(String[] args) {
-        // 不再需要允许循环引用，已解决循环依赖问题
-        // System.setProperty("spring.main.allow-circular-references", "true");
-        
+    /**
+     * 应用配置初始化
+     * 设置系统属性和环境变量
+     */
+    private static void initApplicationConfig() {
         // 核心模块功能开关
-        System.setProperty("lawfirm.audit.enabled", "true");  // 启用审计功能
-        System.setProperty("lawfirm.workflow.enabled", "false"); // 禁用工作流功能
-        System.setProperty("lawfirm.storage.enabled", "true"); // 启用存储功能
+        System.setProperty("lawfirm.audit.enabled", "true");
+        System.setProperty("lawfirm.workflow.enabled", "false");
+        System.setProperty("lawfirm.storage.enabled", "true");
         
-        // API文档配置 - 只启用Knife4j
-        System.setProperty("springdoc.api-docs.enabled", "true"); // 仍需启用基础API文档，Knife4j依赖它
-        System.setProperty("springdoc.swagger-ui.enabled", "false"); // 禁用原生Swagger UI
-        System.setProperty("knife4j.enable", "true"); // 启用Knife4j
+        // API文档配置
+        System.setProperty("springdoc.api-docs.enabled", "true");
+        System.setProperty("springdoc.swagger-ui.enabled", "false");
+        System.setProperty("knife4j.enable", "true");
         
-        // 开发环境下启用所有必要的模块
+        // 模块开关
         System.setProperty("lawfirm.client.enabled", "true");
         System.setProperty("lawfirm.auth.enabled", "true");
         System.setProperty("lawfirm.module.case", "true");
         System.setProperty("lawfirm.module.contract", "true");
         
-        // 禁用方法级别权限验证
+        // 安全配置
         System.setProperty("spring.security.enabled", "false");
         System.setProperty("method.security.enabled", "false");
         
-        // 禁用Flowable相关功能
+        // 禁用Flowable
+        disableFlowable();
+        
+        // 禁用JPA
+        disableJpa();
+        
+        // 禁用SQL初始化
+        disableSqlInit();
+        
+        // 消息服务配置
+        configureMessageService();
+    }
+    
+    /**
+     * 禁用Flowable相关功能
+     */
+    private static void disableFlowable() {
         System.setProperty("flowable.enabled", "false");
         System.setProperty("flowable.process-engine.enable", "false");
         System.setProperty("flowable.dmn-engine.enable", "false");
@@ -118,12 +103,14 @@ public class LawFirmApiApplication {
         System.setProperty("flowable.actuator.enabled", "false");
         System.setProperty("flowable.database-schema-update", "false");
         System.setProperty("flowable.check-process-definitions", "false");
-        
-        // 禁用JPA相关功能
+    }
+    
+    /**
+     * 禁用JPA相关功能
+     */
+    private static void disableJpa() {
         System.setProperty("spring.jpa.enabled", "false");
         System.setProperty("spring.data.jpa.repositories.enabled", "false");
-        System.setProperty("spring.data.elasticsearch.repositories.enabled", "false");
-        System.setProperty("spring.data.elasticsearch-reactive.repositories.enabled", "false");
         System.setProperty("spring.data.ldap.repositories.enabled", "false");
         
         // 排除自动配置
@@ -141,33 +128,57 @@ public class LawFirmApiApplication {
             "org.flowable.spring.boot.idm.IdmEngineServicesAutoConfiguration," +
             "org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration," +
             "org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration," +
-            "org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration," +
-            "org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration," +
             "org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration," +
             "org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration");
-        
-        // 禁用SQL初始化
+    }
+    
+    /**
+     * 禁用SQL初始化
+     */
+    private static void disableSqlInit() {
         System.setProperty("spring.flyway.enabled", "false");
         System.setProperty("spring.liquibase.enabled", "false");
         System.setProperty("spring.sql.init.enabled", "false");
         System.setProperty("spring.sql.init.platform", "none");
         System.setProperty("spring.sql.init.mode", "never");
         System.setProperty("spring.boot.sql.init.enabled", "false");
+    }
+    
+    /**
+     * 配置消息服务
+     */
+    private static void configureMessageService() {
+        // 禁用RocketMQ
+        System.setProperty("rocketmq.enabled", "false");
+        System.setProperty("rocketmq.producer.enabled", "false");
+        System.setProperty("rocketmq.consumer.enabled", "false");
         
-        // 设置服务器端口为8080
-        System.setProperty("server.port", "8080");
+        // 启用消息服务
+        System.setProperty("message.enabled", "true");
+        System.setProperty("message.async.enabled", "true");
+        System.setProperty("message.rocketmq.topic", "law-firm-message");
+        System.setProperty("message.rocketmq.consumer-group", "law-firm-consumer");
+    }
+
+    public static void main(String[] args) {
+        // 初始化应用配置
+        initApplicationConfig();
         
         // 创建SpringApplication并配置
         SpringApplication application = new SpringApplication(LawFirmApiApplication.class);
         
-        // 设置额外属性
+        // 设置应用属性
         Map<String, Object> props = new HashMap<>();
-        props.put("spring.sql.init.enabled", "false");
         props.put("spring.main.banner-mode", "off");
         props.put("spring.main.log-startup-info", "false");
         props.put("spring.main.allow-bean-definition-overriding", "true");
-        props.put("spring.main.allow-circular-references", "true"); // 允许循环引用
+        
+        // 解决了循环依赖问题后，这个参数应该设置为false
+        props.put("spring.main.allow-circular-references", "false"); 
+        
+        // 设置服务器端口
         props.put("server.port", "8080");
+        
         application.setDefaultProperties(props);
         
         // 运行应用

@@ -12,12 +12,14 @@ import org.slf4j.LoggerFactory;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
- * MyBatis配置类
- * 此配置不使用XML编码，全部使用注解方式
+ * MyBatis和MyBatis-Plus统一配置类
+ * 配置SqlSessionFactory、拦截器等
  */
 @Configuration
 @MapperScan(basePackages = {"com.lawfirm.model.**.mapper"})
@@ -33,6 +35,8 @@ public class MyBatisConfig {
     @Primary
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource, 
                                               @Qualifier("commonMybatisPlusInterceptor") MybatisPlusInterceptor interceptor) throws Exception {
+        log.info("初始化MyBatis和MyBatis-Plus配置");
+        
         MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         
@@ -58,5 +62,21 @@ public class MyBatisConfig {
         factoryBean.setConfiguration(configuration);
         
         return factoryBean.getObject();
+    }
+    
+    /**
+     * 备用MyBatis-Plus拦截器
+     * 当common-data模块未提供时使用
+     */
+    @Bean
+    @Qualifier("backupMybatisPlusInterceptor")
+    public MybatisPlusInterceptor backupMybatisPlusInterceptor() {
+        log.info("创建备用MybatisPlusInterceptor");
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        // 添加分页插件
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        // 添加乐观锁插件
+        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        return interceptor;
     }
 } 

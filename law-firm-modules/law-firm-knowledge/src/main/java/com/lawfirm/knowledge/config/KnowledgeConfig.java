@@ -16,7 +16,7 @@ import java.io.File;
  * 知识管理模块配置
  */
 @Slf4j
-@Configuration
+@Configuration("knowledgeConfig")
 @EnableScheduling
 @EnableConfigurationProperties(KnowledgeProperties.class)
 public class KnowledgeConfig {
@@ -64,36 +64,6 @@ public class KnowledgeConfig {
                 log.warn("创建目录失败: {}", path);
             }
         }
-    }
-
-    /**
-     * 审计服务（如果缺少实现则提供一个空实现）
-     */
-    @Bean
-    @ConditionalOnMissingBean(name = "auditServiceImpl")
-    public AuditService auditServiceImpl() {
-        log.warn("未检测到审计服务实现，使用默认空实现");
-        return new AuditService() {
-            @Override
-            public void log(AuditLogDTO auditLog) {
-                log.info("审计日志: {}", auditLog);
-            }
-
-            @Override
-            public void record(AuditRecordDTO auditRecord) {
-                log.info("审计记录: {}", auditRecord);
-            }
-
-            @Override
-            public void logAsync(AuditLogDTO auditLog) {
-                log.info("异步审计日志: {}", auditLog);
-            }
-
-            @Override
-            public void recordAsync(AuditRecordDTO auditRecord) {
-                log.info("异步审计记录: {}", auditRecord);
-            }
-        };
     }
 
     /**

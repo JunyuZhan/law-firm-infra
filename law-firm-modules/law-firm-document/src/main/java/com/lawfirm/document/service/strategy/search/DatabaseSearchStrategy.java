@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 数据库搜索策略实现，当Elasticsearch不可用时使用数据库实现搜索
- * 由于ElasticSearch是付费服务，这里默认使用数据库搜索策略
+ * 数据库搜索策略实现
  */
 @Slf4j
 @Component("databaseSearchStrategy")

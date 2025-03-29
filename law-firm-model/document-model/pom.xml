@@ -99,16 +99,6 @@
             <artifactId>common-util</artifactId>
         </dependency>
 
-        <!-- Elasticsearch -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-elasticsearch</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>co.elastic.clients</groupId>
-            <artifactId>elasticsearch-java</artifactId>
-        </dependency>
-
         <!-- MyBatis Plus -->
         <dependency>
             <groupId>com.baomidou</groupId>

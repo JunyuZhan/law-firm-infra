@@ -18,6 +18,6 @@ echo 使用以下参数启动应用:
 echo %ALL_OPTS%
 
 rem 启动应用
-java %ALL_OPTS% -jar target/law-firm-api-1.0.0.jar
+java -jar target/law-firm-api-1.0.0.jar
 
 pause 

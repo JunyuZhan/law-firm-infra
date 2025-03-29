@@ -1,5 +1,6 @@
 package com.lawfirm.knowledge.service;
 
+import com.lawfirm.core.message.service.MessageTemplateService;
 import com.lawfirm.knowledge.config.MessageServiceConfig.MessageSendingService;
 import com.lawfirm.model.knowledge.entity.Knowledge;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class MessageIntegrationService {
 
     @Autowired
     @Qualifier("messageTemplateServiceImpl")
-    private Object templateService;
+    private MessageTemplateService templateService;
 
     /**
      * 知识文档更新后发送通知

@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Import;
     JacksonConfig.class,
     RedisConfig.class,
     DynamicDataSourceConfig.class,
-    ElasticsearchConfig.class,
     StorageConfig.class
 })
 public class DataAutoConfiguration {

@@ -12,9 +12,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 /**
- * Web MVC 配置
+ * 公共模块 Web MVC 配置
  */
-@Configuration
+@Configuration(value = "commonWebConfig")
 public class WebConfig implements WebMvcConfigurer {
     
     /**

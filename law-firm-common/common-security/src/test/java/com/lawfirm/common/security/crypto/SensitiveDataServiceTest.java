@@ -1,6 +1,5 @@
 package com.lawfirm.common.security.crypto;
 
-import com.lawfirm.common.security.crypto.impl.SensitiveDataServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,8 @@ public class SensitiveDataServiceTest {
 
     @BeforeEach
     public void setUp() {
-        sensitiveDataService = new SensitiveDataServiceImpl();
+        // 使用匿名类实现接口，利用默认方法
+        sensitiveDataService = new SensitiveDataService() {};
     }
 
     @Test

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * 文档安全配置属性
  */
 @Data
-@Component
+@Component("documentSecurityProperties")
 @ConfigurationProperties(prefix = "law.firm.document.security")
 public class SecurityProperties {
     

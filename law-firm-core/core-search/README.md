@@ -1,171 +1,231 @@
-# 法律事务管理系统 - 搜索服务模块
+# 搜索模块设计文档
 
-## 模块说明
+## 1. 概述
 
-搜索服务模块基于Elasticsearch实现，提供了全文检索、多条件组合查询、结果排序等核心搜索功能。本模块采用策略模式设计，支持多种搜索策略，保证系统搜索功能的可靠性和灵活性。本模块仅作为服务接口层提供给业务模块使用，不直接暴露REST接口。
+本模块提供基于Lucene的搜索功能，作为替代Elasticsearch的轻量级嵌入式搜索解决方案。相比Elasticsearch，Lucene无需独立部署，可直接嵌入到应用中，资源占用更少，适合中小型系统。
 
-## 核心功能
+## 2. 架构设计
 
-### 1. 搜索能力
-- 全文检索
-- 多字段组合搜索
-- 结果分页
-- 相关度排序
-- 基础的聚合分析
+### 2.1 模块分层
 
-### 2. 索引管理
-- 文档索引
-- 索引更新
-- 索引删除
-- 索引优化
-- 数据同步
-
-### 3. 搜索策略
-- ElasticsearchSearchStrategy: ES搜索策略
-- DatabaseSearchStrategy: 数据库搜索策略（降级方案）
-- 动态策略切换
-
-### 4. 搜索优化
-- 搜索结果高亮
-- 同义词扩展
-- 拼音搜索
-- 专业词汇分词
-
-## 技术架构
-
-### 1. 核心服务接口
-- SearchService: 搜索服务接口
-- IndexService: 索引服务接口
-- SearchStrategy: 搜索策略接口
-
-### 2. 搜索策略实现
-```java
-public interface SearchStrategy {
-    // 获取策略名称
-    String getStrategyName();
-    
-    // 按关键词搜索
-    List<SearchDoc> searchByKeyword(String keyword, Pageable pageable);
-    
-    // 按条件搜索
-    List<SearchDoc> searchByCondition(Map<String, Object> condition, Pageable pageable);
-    
-    // 统计结果数量
-    long count(Map<String, Object> condition);
-}
+```
++------------------------+
+|    业务模块层           |
+| (law-firm-document等)  |
++------------------------+
+           ↓
++------------------------+
+|    搜索核心层           |
+|   (core-search)        |
++------------------------+
+           ↓
++------------------------+
+|    搜索模型层           |
+|   (search-model)       |
++------------------------+
 ```
 
-### 3. 配置管理
+- **search-model**: 定义搜索相关的数据模型、DTO、VO和接口
+- **core-search**: 提供搜索的核心实现，包括Lucene和数据库两种搜索方式
+- **业务模块**: 注入搜索服务，使用搜索功能
+
+### 2.2 核心接口设计
+
+```
++-------------------------+
+|     SearchService       |
+| (search-model模块定义)   |
++-------------------------+
+           ↑
+           |
++-------------------------+
+| AbstractSearchService   |
+| (core-search模块)       |
++-------------------------+
+      ↑           ↑
+      |           |
++------------+  +--------------+
+|LuceneSearch|  |DatabaseSearch|
+|Service     |  |Service       |
++------------+  +--------------+
+```
+
+通过策略模式实现不同的搜索引擎，业务层通过SearchService接口调用而不感知具体实现。
+
+## 3. 技术实现
+
+### 3.1 Lucene索引设计
+
+#### 3.1.1 索引存储位置
+
 ```yaml
-lawfirm:
-  search:
-    enabled: true
-    default-strategy: elasticsearch
-    # Elasticsearch配置
-    elasticsearch:
-      enabled: true
-      nodes: localhost:9200
-      username: ${ES_USERNAME}
-      password: ${ES_PASSWORD}
-      connect-timeout: 5000
-      socket-timeout: 30000
-    # 索引配置
-    index:
-      shards: 3
-      replicas: 1
-      refresh-interval: 1s
-    # 搜索配置
-    search:
-      max-result-window: 10000
-      highlight-enabled: true
-      synonym-enabled: true
-      pinyin-enabled: true
-    # 分页配置
-    page:
-      default-size: 10
-      max-size: 100
+search:
+  engine: lucene # 可选值: lucene, database
+  lucene:
+    index-dir: ${user.home}/.law-firm/lucene-index # 索引存储路径
+    ram-buffer-size-mb: 32 # 缓冲区大小
 ```
 
-## 使用说明
+#### 3.1.2 索引结构
 
-### 1. 服务接口调用示例
-```java
-// 注入服务
-@Autowired
-@Qualifier("searchServiceImpl")
-private SearchService searchService;
+每种文档类型创建独立索引：
+- 案件索引：law_firm_case
+- 文档索引：law_firm_document
+- 客户索引：law_firm_client
+- 合同索引：law_firm_contract
 
-@Autowired
-@Qualifier("searchIndexServiceImpl")
-private IndexService indexService;
+### 3.2 核心组件
 
-// 基础搜索
-SearchResult<DocVO> result = searchService.search(
-    "合同违约",     // 关键词
-    "case,contract",  // 搜索范围
-    PageRequest.of(0, 10)  // 分页
-);
+#### 3.2.1 LuceneManager
 
-// 高级搜索
-Map<String, Object> conditions = new HashMap<>();
-conditions.put("type", "合同");
-conditions.put("status", "active");
-conditions.put("createTime", new Range<>(startDate, endDate));
+负责Lucene索引的底层操作：
+- 索引的创建与管理
+- 文档的CRUD操作
+- 索引优化与维护
 
-SearchResult<DocVO> advancedResult = searchService.searchByCondition(
-    conditions,
-    "contract",
-    PageRequest.of(0, 20, Sort.by("createTime").descending())
-);
+#### 3.2.2 LuceneSearchService
 
-// 索引文档
-indexService.indexDocument(document);
+实现SearchService接口，提供基于Lucene的搜索服务：
+- 文档索引
+- 全文搜索
+- 高亮显示
+- 过滤和排序
 
-// 删除索引
-indexService.deleteDocument("contract", "1001");
-```
+#### 3.2.3 DatabaseSearchService
 
-### 2. 自定义搜索处理
+实现SearchService接口，提供基于数据库的搜索服务：
+- 使用SQL的LIKE语句实现简单搜索
+- 可选使用全文索引进行优化
+
+### 3.3 搜索引擎工厂
+
+通过配置选择搜索引擎类型：
+
 ```java
 @Component
-public class ContractSearchHandler extends SearchHandler<ContractIndex> {
+public class SearchEngineFactory {
+    @Autowired private LuceneSearchService luceneSearchService;
+    @Autowired private DatabaseSearchService databaseSearchService;
+    @Autowired private SearchProperties searchProperties;
     
-    @Override
-    public boolean supports(String indexName) {
-        return "contract".equals(indexName);
-    }
-    
-    @Override
-    protected void preprocessQuery(QueryBuilder queryBuilder, Map<String, Object> params) {
-        // 为合同搜索添加额外的查询条件
-        if (params.containsKey("partyA")) {
-            queryBuilder.must(QueryBuilders.matchQuery("partyA", params.get("partyA")));
+    public SearchService getSearchService() {
+        if ("lucene".equals(searchProperties.getEngine())) {
+            return luceneSearchService;
+        } else {
+            return databaseSearchService;
         }
-    }
-    
-    @Override
-    protected ContractIndex convertToDocument(Map<String, Object> source) {
-        // 将ES结果转换为合同索引对象
-        ContractIndex contract = new ContractIndex();
-        // 设置属性
-        return contract;
     }
 }
 ```
 
-## 安全说明
+## 4. 索引映射设计
 
-1. 数据安全
-   - 搜索内容权限控制
-   - 敏感信息过滤
-   - 索引数据加密
+### 4.1 文档字段映射
 
-2. 服务安全
-   - 访问认证授权
-   - 操作审计日志
-   - 资源限制保护
+使用注解方式定义实体类与Lucene索引的映射关系：
 
-3. 性能保障
-   - 查询超时控制
-   - 结果集大小限制
-   - 缓存策略优化 
+```java
+public @interface LuceneField {
+    String name() default ""; // 字段名称
+    boolean index() default true; // 是否索引
+    boolean store() default true; // 是否存储
+    FieldType type() default FieldType.TEXT; // 字段类型
+    float boost() default 1.0f; // 权重提升
+}
+
+public enum FieldType {
+    TEXT, // 全文检索
+    KEYWORD, // 关键词匹配
+    LONG, // 长整型
+    INTEGER, // 整型
+    DOUBLE, // 双精度浮点型
+    DATE, // 日期类型
+    BOOLEAN // 布尔类型
+}
+```
+
+### 4.2 文档转换器
+
+将Java对象与Lucene文档互相转换：
+
+```java
+public interface DocumentConverter<T> {
+    Document toDocument(T entity);
+    T toEntity(Document document);
+}
+```
+
+## 5. 配置与扩展
+
+### 5.1 配置选项
+
+```yaml
+search:
+  # 搜索引擎类型: lucene 或 database
+  engine: lucene
+  
+  # 是否启用搜索功能
+  enabled: true
+  
+  # Lucene配置
+  lucene:
+    # 索引存储目录
+    index-dir: ${user.home}/.law-firm/lucene-index
+    # 内存缓冲区大小(MB)
+    ram-buffer-size-mb: 32
+    # 最大搜索结果数
+    max-results: 1000
+    # 是否启用高亮
+    highlight-enabled: true
+    # 高亮标签
+    highlight-pre-tag: <em>
+    highlight-post-tag: </em>
+    # 分析器类型: standard, chinese, smart
+    analyzer: chinese
+    
+  # 索引配置
+  index:
+    # 案件索引
+    case:
+      name: law_firm_case
+    # 文档索引
+    document:
+      name: law_firm_document
+    # 客户索引
+    client:
+      name: law_firm_client
+    # 合同索引
+    contract:
+      name: law_firm_contract
+```
+
+### 5.2 扩展点
+
+1. **自定义分析器**: 通过实现AnalyzerProvider接口扩展
+2. **自定义相似度算法**: 通过实现SimilarityProvider接口扩展
+3. **自定义过滤器**: 通过实现TokenFilterProvider接口扩展
+
+## 6. 性能优化
+
+1. **索引优化**:
+   - 定期合并段(merge segments)
+   - 合理设置缓冲区大小
+   - 使用异步索引更新
+
+2. **查询优化**:
+   - 使用缓存减少磁盘IO
+   - 预热常用查询
+   - 使用过滤器缩小搜索范围
+
+3. **存储优化**:
+   - 合理配置字段存储策略
+   - 使用压缩减少索引体积
+
+## 7. 迁移计划
+
+从Elasticsearch迁移到Lucene的计划：
+
+1. **阶段一**: 实现Lucene搜索引擎，与现有Elasticsearch并行
+2. **阶段二**: 测试验证Lucene搜索功能
+3. **阶段三**: 将配置切换为Lucene作为主要搜索引擎
+4. **阶段四**: 完全移除Elasticsearch依赖 

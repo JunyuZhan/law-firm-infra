@@ -17,7 +17,7 @@ import java.util.Map;
  * Swagger配置相关控制器
  * 用于处理Knife4j前端请求的swagger-config接口
  */
-@RestController
+@RestController("swaggerConfigController")
 @RequestMapping("/v3/api-docs")
 public class SwaggerConfigController {
 

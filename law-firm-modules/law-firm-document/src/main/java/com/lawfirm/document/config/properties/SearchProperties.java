@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * 搜索配置属性
  */
 @Data
-@Component
+@Component("documentSearchProperties")
 @ConfigurationProperties(prefix = "lawfirm.document.search")
 public class SearchProperties {
     

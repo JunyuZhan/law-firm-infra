@@ -14,6 +14,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -27,11 +29,17 @@ import java.util.stream.Collectors;
  */
 @Aspect
 @Component
-@RequiredArgsConstructor
 public class AuditLogAspect {
 
     private final AuditService auditService;
     private final PermissionService permissionService;
+
+    @Autowired
+    public AuditLogAspect(@Qualifier("coreAuditServiceImpl") AuditService auditService, 
+                          PermissionService permissionService) {
+        this.auditService = auditService;
+        this.permissionService = permissionService;
+    }
 
     @Around("@annotation(auditLog)")
     public Object around(ProceedingJoinPoint point, AuditLog auditLog) throws Throwable {

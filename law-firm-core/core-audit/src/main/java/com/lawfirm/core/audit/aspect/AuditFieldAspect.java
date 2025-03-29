@@ -6,11 +6,12 @@ import com.lawfirm.core.audit.annotation.AuditField;
 import com.lawfirm.core.audit.util.FieldChangeUtils;
 import com.lawfirm.model.log.dto.AuditLogDTO;
 import com.lawfirm.model.log.service.AuditService;
-import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -21,10 +22,14 @@ import java.util.Arrays;
  */
 @Aspect
 @Component
-@RequiredArgsConstructor
 public class AuditFieldAspect {
 
     private final AuditService auditService;
+
+    @Autowired
+    public AuditFieldAspect(@Qualifier("coreAuditServiceImpl") AuditService auditService) {
+        this.auditService = auditService;
+    }
 
     @Around("@annotation(auditField)")
     public Object around(ProceedingJoinPoint point, AuditField auditField) throws Throwable {
