@@ -3,10 +3,10 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbcUrl: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
-    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+    jdbcUrl: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: root
+    password: Zjy-1314
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -42,9 +42,13 @@ spring:
   
   # Flyway配置
   flyway:
-    enabled: true
-    baseline-on-migrate: true
-    locations: classpath:db/migration
+    enabled: false
+    # 如需启用，请先解决模块间迁移脚本版本冲突问题
+    # baseline-on-migrate: true
+    # locations: classpath:db/migration
+    # url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    # user: root
+    # password: Zjy-1314
 
 # Jasypt加密配置
 jasypt:
@@ -115,7 +119,9 @@ law.firm.ai:
 spring.main.allow-bean-definition-overriding: true
 
 # 禁用原始安全配置
-auth.security.enabled: false
+auth:
+  security:
+    enabled: false
 
 # 健康检查配置
 management:
@@ -132,37 +138,43 @@ app:
 # API文档配置
 springdoc:
   swagger-ui:
-    enabled: false
+    enabled: true
+    path: /swagger-ui.html
   api-docs:
     enabled: true
-  packages-to-scan: com.lawfirm
-  paths-to-match: /**
+    path: /v3/api-docs
+  model-converters:
+    pageable-converter:
+      enabled: false
 
 # Knife4j配置
 knife4j:
   enable: true
   setting:
     language: zh_cn
-    enable-swagger-models: true
+    enable-swagger-models: false
     enable-document-manage: true
-    swagger-model-name: 实体类列表
+    swagger-model-name: 律师事务所API
     enable-version: false
-    enable-reload-cache-parameter: true
-    enable-after-script: true
+    enable-reload-cache-parameter: false
+    enable-after-script: false
     enable-filter-multipart-api-method-type: POST
     enable-filter-multipart-apis: false
-    enable-request-cache: true
+    enable-request-cache: false
     enable-host: true
+    enable-host-text: localhost:8080
+    enable-url-prefix: false
     enable-home-custom: false
     enable-search: true
     enable-footer: false
     enable-footer-custom: false
     enable-debug: true
     enable-open-api: true
-    enable-group: true
   production: false
   basic:
     enable: false
+  # 启用Knife4j增强
+  enhance: true
 
 # 安全配置
 security:

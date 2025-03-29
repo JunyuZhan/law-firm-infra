@@ -13,99 +13,42 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.config.Customizer;
+import org.springframework.context.annotation.Profile;
 
 /**
  * 开发环境安全配置
- * 简化安全规则，便于开发测试
+ * <p>用于在开发环境中简化安全配置，允许所有请求，避免因数据库表缺失导致的认证失败</p>
  */
 @Configuration
 @EnableWebSecurity
 @Order(80)  // 给予较高优先级，确保它在大多数安全配置之前执行
 @ConditionalOnProperty(name = "dev.auth.simplified-security", havingValue = "true")
+@Profile("dev-mysql")
 public class DevSecurityConfig {
 
     @Value("${server.servlet.context-path:/api}")
     private String contextPath;
 
     /**
-     * 开发环境下简化的安全配置
-     * 禁用大部分安全特性，仅提供最基本的安全控制
+     * 开发环境简化安全过滤链
+     * 允许所有请求，禁用CSRF保护
      */
     @Bean
-    @Primary  // 确保此SecurityFilterChain是主要的
+    @Primary
     public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
-        // 禁用 CSRF
-        http.csrf(AbstractHttpConfigurer::disable);
-        
-        // 禁用 CORS
-        http.cors(AbstractHttpConfigurer::disable);
-        
-        // 设置会话管理
-        http.sessionManagement(session -> 
-            session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-        );
-        
-        // 定义白名单路径，不需要认证
-        String[] AUTH_WHITELIST = {
-            // API文档相关路径
-            contextPath + "/doc.html",
-            contextPath + "/v3/api-docs/**",
-            contextPath + "/swagger-resources/**",
-            contextPath + "/swagger-ui/**",
-            contextPath + "/webjars/**",
-            
-            // 添加不带contextPath的文档路径，确保都能访问
-            "/doc.html",
-            "/v3/api-docs/**", 
-            "/swagger-resources/**",
-            "/swagger-ui/**",
-            "/webjars/**",
-            
-            // 明确添加Knife4j的相关路径
-            contextPath + "/swagger-resources/configuration/ui",
-            contextPath + "/swagger-resources/configuration/security",
-            
-            // 登录相关
-            contextPath + "/login",
-            contextPath + "/logout",
-            contextPath + "/register",
-            
-            // 其他公开路径
-            contextPath + "/direct/**",
-            contextPath + "/auth/**",
-            contextPath + "/actuator/**",
-            
-            // 所有静态资源
-            contextPath + "/*.html",
-            contextPath + "/*.js",
-            contextPath + "/*.css",
-            contextPath + "/*.ico",
-            contextPath + "/*.png"
-        };
-        
-        // 配置请求授权
-        http.authorizeHttpRequests(authorize -> {
-            // 白名单路径 - 全部放行
-            for (String path : AUTH_WHITELIST) {
-                authorize.requestMatchers(AntPathRequestMatcher.antMatcher(path)).permitAll();
-            }
-            
-            // 开发环境下允许所有请求通过，便于测试
-            authorize.anyRequest().permitAll();
-        });
-        
-        // 配置头部
-        http.headers(headers -> 
-            headers.frameOptions(frameOptions -> frameOptions.sameOrigin())  // 允许同源iframe
-        );
-        
-        // 表单登录配置
-        http.formLogin(form -> 
-            form.loginPage(contextPath + "/login")
-                .loginProcessingUrl(contextPath + "/login")
-                .defaultSuccessUrl(contextPath + "/index")
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/doc.html", "/doc.html/**", "/swagger-ui.html", "/swagger-ui/**", 
+                                "/v3/api-docs/**", "/v3/api-docs.yaml", "/webjars/**", 
+                                "/favicon.ico", "/swagger-resources/**")
                 .permitAll()
-        );
+                .anyRequest().permitAll()
+            )
+            .httpBasic(httpBasic -> httpBasic.disable()) // 禁用HTTP Basic认证
+            .formLogin(form -> form.disable()) // 禁用表单登录
+            .cors(Customizer.withDefaults());
         
         return http.build();
     }

@@ -46,20 +46,24 @@ VALUES (2, 'documents', 'LOCAL', 1, CURRENT_TIMESTAMP);
 INSERT INTO storage_bucket (id, bucket_name, storage_type, status, created_time)
 VALUES (3, 'temp', 'LOCAL', 1, CURRENT_TIMESTAMP);
 
--- 添加默认管理员用户 (密码: admin123)
-INSERT INTO sys_user (username, password, nickname, email, phone, status, avatar)
-VALUES ('admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '系统管理员', 'admin@lawfirm.com', '13800138000', 1, 'https://via.placeholder.com/150');
+-- 添加超级管理员用户
+INSERT INTO auth_user (username, password, email, mobile, status, employee_id, version, sort, deleted, create_time, create_by, update_time, update_by, remark)
+VALUES ('admin', '$2a$10$SQtKkAyoIkJg9gWzUxWR5OK4r2yoRhXKEZGNVB.kBnjqrFJ0DC/FG', 'admin@lawfirm.com', '13800138000', 1, NULL, 0, 0, 0, NOW(), 'system', NOW(), 'system', '系统超级管理员')
+ON DUPLICATE KEY UPDATE update_time = NOW();
 
 -- 添加默认角色
-INSERT INTO sys_role (role_name, role_code, description, status)
-VALUES ('系统管理员', 'ROLE_ADMIN', '系统最高权限角色', 1),
-       ('普通用户', 'ROLE_USER', '普通用户权限', 1),
-       ('律师', 'ROLE_LAWYER', '律师权限', 1),
-       ('财务人员', 'ROLE_FINANCE', '财务人员权限', 1);
+INSERT INTO auth_role (name, code, status, version, sort, deleted, create_time, create_by, update_time, update_by, remark)
+VALUES ('超级管理员', 'ROLE_ADMIN', 1, 0, 0, 0, NOW(), 'system', NOW(), 'system', '系统超级管理员角色')
+ON DUPLICATE KEY UPDATE update_time = NOW();
 
--- 添加用户角色关联 (假设admin用户id为1，ROLE_ADMIN角色id为1)
-INSERT INTO sys_user_role (user_id, role_id)
-VALUES (1, 1);
+-- 关联用户与角色
+INSERT INTO auth_user_role (user_id, role_id, create_time, create_by)
+SELECT 
+    (SELECT id FROM auth_user WHERE username = 'admin'), 
+    (SELECT id FROM auth_role WHERE code = 'ROLE_ADMIN'), 
+    NOW(), 
+    'system'
+ON DUPLICATE KEY UPDATE create_time = NOW();
 
 -- 添加系统权限
 INSERT INTO sys_permission (permission_name, permission_code, permission_type, parent_id, icon, path, component, sort)
@@ -104,4 +108,24 @@ INSERT INTO sys_role_permission (role_id, permission_id) VALUES (1, 12);
 INSERT INTO sys_role_permission (role_id, permission_id) VALUES (1, 13);
 INSERT INTO sys_role_permission (role_id, permission_id) VALUES (1, 14);
 INSERT INTO sys_role_permission (role_id, permission_id) VALUES (1, 15);
-INSERT INTO sys_role_permission (role_id, permission_id) VALUES (1, 16); 
+INSERT INTO sys_role_permission (role_id, permission_id) VALUES (1, 16);
+
+-- 初始化管理员用户
+-- 用户名: admin
+-- 密码: admin123 (BCrypt加密)
+INSERT INTO auth_user (id, username, password, email, mobile, status, deleted, create_time, create_by)
+SELECT 1, 'admin', '$2a$10$vXXfqH1iKJKvhBzUJKQLW.6QKxhOjc7aZWjvBhcj7ADYBRZAiLXvq', 'admin@lawfirm.com', '13800138000', 1, 0, NOW(), 'system'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_user WHERE username = 'admin');
+
+-- 初始化角色
+INSERT INTO auth_role (id, name, code, status, deleted, create_time, create_by)
+SELECT 1, '超级管理员', 'ADMIN', 1, 0, NOW(), 'system'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ADMIN');
+
+-- 将管理员用户分配超级管理员角色
+INSERT INTO auth_user_role (user_id, role_id, create_time)
+SELECT 1, 1, NOW()
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_user_role WHERE user_id = 1 AND role_id = 1); 

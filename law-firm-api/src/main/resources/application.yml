@@ -68,9 +68,10 @@ spring:
         enabled: false
   sql:
     init:
-      enabled: false
-      mode: never
-      platform: none
+      mode: always
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+      continue-on-error: true
   servlet:
     multipart:
       max-file-size: 50MB
@@ -173,16 +174,23 @@ springdoc:
     enabled: true
     path: /v3/api-docs
   swagger-ui:
-    enabled: false  # 禁用原生Swagger UI
-  packages-to-scan: 
-    - com.lawfirm
+    enabled: true
+    path: /swagger-ui.html
+  packages-to-scan: com.lawfirm
   paths-to-match: /**
+  show-actuator: true
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
 
 # Knife4j配置
 knife4j:
   enable: true
   setting:
     language: zh_cn
+    enable-swagger-models: false
+    enable-host: true
+    enable-host-text: localhost:8080
+    enable-url-prefix: false
   production: false
   basic:
     enable: false

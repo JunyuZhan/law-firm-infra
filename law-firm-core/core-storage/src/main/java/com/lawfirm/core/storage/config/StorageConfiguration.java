@@ -1,16 +1,22 @@
 package com.lawfirm.core.storage.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.context.annotation.Primary;
 
+import com.lawfirm.core.storage.strategy.StorageContext;
+import com.lawfirm.core.storage.strategy.StorageStrategy;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
 
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 存储配置类
@@ -23,6 +29,17 @@ public class StorageConfiguration {
 
     private final StorageProperties storageProperties;
     private final Environment environment;
+    
+    /**
+     * 配置StorageContext
+     * 当没有找到StorageContext时提供一个备用实现
+     */
+    @Bean
+    @ConditionalOnMissingBean(StorageContext.class)
+    public StorageContext storageContext(List<StorageStrategy> strategies) {
+        log.info("创建存储策略上下文 (备用实现)");
+        return new StorageContext(strategies != null ? strategies : new ArrayList<>());
+    }
     
     /**
      * 配置MinIO客户端

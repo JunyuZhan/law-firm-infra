@@ -1,57 +1,97 @@
 package com.lawfirm.document.manager.storage;
 
-import com.lawfirm.model.storage.entity.bucket.StorageBucket;
-import com.lawfirm.model.storage.entity.file.FileObject;
+import com.lawfirm.common.core.constant.ResultCode;
+import com.lawfirm.common.core.exception.BusinessException;
+import com.lawfirm.core.storage.strategy.StorageContext;
+import com.lawfirm.model.document.dto.DocumentUploadDTO;
+import com.lawfirm.model.document.vo.DocumentVO;
+import com.lawfirm.model.storage.vo.FileVO;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
- * 文档存储管理器空实现，当存储功能禁用时使用
+ * 存储服务的空实现管理器
+ * 在存储服务被禁用时使用，提供默认行为和必要的Bean
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = false)
+@Order(1)
+@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = true)
 public class NoOpStorageManager {
 
     /**
-     * 上传文档
-     *
-     * @param file 文件
-     * @param bucket 存储桶
-     * @return 文件对象
+     * 创建一个空的StorageContext实现
+     * 当存储服务禁用时，提供必要的依赖
      */
-    public FileObject uploadDocument(MultipartFile file, StorageBucket bucket) throws IOException {
-        log.warn("存储功能已禁用，忽略上传文档操作");
-        return null;
+    @Bean
+    @ConditionalOnMissingBean
+    public StorageContext storageContext() {
+        log.info("创建存储服务空实现的Context");
+        return new StorageContext(new ArrayList<>());
     }
 
     /**
-     * 下载文档
-     *
-     * @param fileObject 文件对象
-     * @param bucket 存储桶
-     * @return 文件输入流
+     * 上传文档（空实现）
      */
-    public InputStream downloadDocument(FileObject fileObject, StorageBucket bucket) {
-        log.warn("存储功能已禁用，忽略下载文档操作");
-        return new ByteArrayInputStream(new byte[0]);
+    public DocumentVO upload(DocumentUploadDTO uploadDTO, MultipartFile file) {
+        log.warn("存储服务已禁用，无法上传文档");
+        throw new BusinessException(ResultCode.ERROR, "存储服务已禁用，无法上传文档");
     }
 
     /**
-     * 删除文档
-     *
-     * @param fileObject 文件对象
-     * @param bucket 存储桶
-     * @return 是否删除成功
+     * 保存文档信息（空实现）
      */
-    public boolean deleteDocument(FileObject fileObject, StorageBucket bucket) {
-        log.warn("存储功能已禁用，忽略删除文档操作");
-        return true;
+    public DocumentVO save(Map<String, Object> saveDTO) {
+        log.warn("存储服务已禁用，无法保存文档信息");
+        throw new BusinessException(ResultCode.ERROR, "存储服务已禁用，无法保存文档信息");
+    }
+
+    /**
+     * 获取文档信息（空实现）
+     */
+    public DocumentVO getInfo(Long id) {
+        log.warn("存储服务已禁用，无法获取文档信息");
+        throw new BusinessException(ResultCode.ERROR, "存储服务已禁用，无法获取文档信息");
+    }
+
+    /**
+     * 下载文档（空实现）
+     */
+    public void download(Long id, HttpServletResponse response) {
+        log.warn("存储服务已禁用，无法下载文档");
+        throw new BusinessException(ResultCode.ERROR, "存储服务已禁用，无法下载文档");
+    }
+
+    /**
+     * 预览文档（空实现）
+     */
+    public String preview(Long id) {
+        log.warn("存储服务已禁用，无法预览文档");
+        throw new BusinessException(ResultCode.ERROR, "存储服务已禁用，无法预览文档");
+    }
+
+    /**
+     * 删除文档（空实现）
+     */
+    public boolean delete(Long id) {
+        log.warn("存储服务已禁用，无法删除文档");
+        throw new BusinessException(ResultCode.ERROR, "存储服务已禁用，无法删除文档");
+    }
+
+    /**
+     * 获取文件信息（空实现）
+     */
+    public FileVO getFileInfo(Long fileId) {
+        log.warn("存储服务已禁用，无法获取文件信息");
+        throw new BusinessException(ResultCode.ERROR, "存储服务已禁用，无法获取文件信息");
     }
 } 
