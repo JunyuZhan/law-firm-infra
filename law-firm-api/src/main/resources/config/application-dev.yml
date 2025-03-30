@@ -49,15 +49,4 @@ mybatis-plus:
     db-config:
       logic-delete-field: deleted
       logic-delete-value: 1
-      logic-not-delete-value: 0
-
-# Swagger配置
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-  api-docs:
-    path: /v3/api-docs
-  group-configs:
-    - group: default
-      paths-to-match: /**
-      packages-to-scan: com.lawfirm 
+      logic-not-delete-value: 0 

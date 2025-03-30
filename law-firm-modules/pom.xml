@@ -55,12 +55,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         
-        <!-- API文档 -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        </dependency>
-        
         <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

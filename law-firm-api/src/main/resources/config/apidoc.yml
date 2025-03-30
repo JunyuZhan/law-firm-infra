@@ -1,0 +1,97 @@
+# Springdoc OpenAPI和Knife4j配置
+springdoc:
+  # API文档配置
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+    resolve-schema-properties: true
+    safe-content: true
+    disable-content-encoding: true
+    # 强制指定openapi版本
+    version: OPENAPI_3_0
+    
+  # Swagger UI配置  
+  swagger-ui:
+    enabled: false  # 禁用默认Swagger UI
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    deep-linking: true
+    syntax-highlight:
+      activated: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+    default-models-expand-depth: 1
+    default-model-expand-depth: 1
+    disable-content-encoding: true
+    doc-expansion: none
+    # 使用静态定义文件
+    urls:
+      - name: 基础API定义
+        url: /openapi.json
+      - name: 认证相关接口
+        url: /v3/api-docs/auth
+      - name: 系统管理接口
+        url: /v3/api-docs/system
+      - name: 案件管理接口
+        url: /v3/api-docs/case
+      - name: 客户管理接口
+        url: /v3/api-docs/client
+      - name: 合同管理接口
+        url: /v3/api-docs/contract
+      - name: 文档管理接口
+        url: /v3/api-docs/document
+      - name: 知识库管理接口
+        url: /v3/api-docs/knowledge
+      - name: 所有接口
+        url: /v3/api-docs/public-api
+    
+  # 路径匹配配置
+  paths-to-match: 
+    - /api/**
+    - /**
+  # 组和包配置 - 移除，使用Java配置中的组定义
+  show-actuator: false
+
+# Knife4j配置 - 增强的Swagger UI
+knife4j:
+  enable: true
+  production: false
+  basic:
+    enable: false
+  # 启用Knife4j增强功能
+  openapi:
+    title: 律师事务所管理系统API
+    description: 律师事务所业务管理系统API文档
+    email: dev@lawfirm.com
+    concat: Law Firm Dev Team
+    url: https://lawfirm.com
+    version: 1.0.0
+    license: Apache 2.0
+    license-url: https://www.apache.org/licenses/LICENSE-2.0.html
+    terms-of-service-url: https://lawfirm.com/terms
+  # 文档管理
+  documents:
+    - name: 快速入门
+      locations: classpath:markdown/README.md
+    - name: 系统说明
+      locations: classpath:markdown/system.md
+  # 设置
+  setting:
+    language: zh-CN
+    enable-swagger-models: true
+    enable-document-manage: true
+    enable-version: true
+    enable-footer: false
+    swagger-model-name: 模型
+    enable-after-script: true
+    enable-home-custom: true
+    home-custom-path: classpath:static/doc/home.md
+    enable-search: true
+    enable-host-text: false
+    enable-filter-multipart-api-method-type: POST
+    enable-footer-custom: true
+    footer-custom-content: Law Firm API文档 | Copyright © 2024
+  # 禁用文档加密，开发环境使用
+  enable-website-encrypt: false  
+  enable-content-encrypt: false 

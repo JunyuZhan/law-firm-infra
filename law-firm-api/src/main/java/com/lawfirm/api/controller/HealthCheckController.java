@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 健康检查控制器
  * 用于验证API层能否正常启动及系统状态
  */
-@RestController("healthCheckController")
+@RestController("HealthCheckController")
 @RequestMapping("/health")
 public class HealthCheckController {
 

@@ -1,4 +1,4 @@
-package com.lawfirm.auth.config;
+package com.lawfirm.api.config.dev;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;

@@ -19,7 +19,6 @@
         <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
         <spring-cloud-alibaba-dubbo.version>2022.0.0.0-RC2</spring-cloud-alibaba-dubbo.version>
         <flowable.version>7.0.0</flowable.version>
-        <springdoc-openapi.version>2.3.0</springdoc-openapi.version>
         <flyway.version>9.22.3</flyway.version>
         <lombok.version>1.18.30</lombok.version>
         <junit-jupiter.version>5.10.1</junit-jupiter.version>
@@ -30,6 +29,7 @@
         <poi.version>5.2.3</poi.version>
         <caffeine.version>3.1.8</caffeine.version>
         <jasypt.version>3.0.5</jasypt.version>
+        <jansi.version>2.4.1</jansi.version>
         
         <!-- 新增版本变量 -->
         <easy-captcha.version>1.6.2</easy-captcha.version>
@@ -42,7 +42,6 @@
         <pagehelper.version>1.4.7</pagehelper.version>
         <hutool.version>5.8.25</hutool.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <knife4j.version>4.3.0</knife4j.version>
         <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
         <redisson.version>3.25.2</redisson.version>
@@ -73,7 +72,6 @@
         <tika.version>2.9.1</tika.version>
         <aliyun-dysmsapi.version>2.0.24</aliyun-dysmsapi.version>
         <aliyun-tea-openapi.version>0.2.8</aliyun-tea-openapi.version>
-        <swagger-annotations.version>1.6.11</swagger-annotations.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <batik-awt-util.version>1.14</batik-awt-util.version>
         <log4j2.version>2.22.1</log4j2.version>
@@ -81,6 +79,9 @@
         <postgresql.version>42.7.1</postgresql.version>
         <lucene.version>9.8.0</lucene.version>
         <mybatis-starter.version>3.0.3</mybatis-starter.version>
+        <!-- API文档相关 -->
+        <springdoc.version>2.3.0</springdoc.version>
+        <knife4j.version>4.3.0</knife4j.version>
     </properties>
 
     <dependencyManagement>
@@ -173,26 +174,11 @@
                 <version>${flowable.version}</version>
             </dependency>
             
-            <!-- API文档 -->
+            <!-- 日志增强 -->
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-                <version>${springdoc-openapi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-                <version>${springdoc-openapi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger-annotations.version}</version>
+                <groupId>org.fusesource.jansi</groupId>
+                <artifactId>jansi</artifactId>
+                <version>${jansi.version}</version>
             </dependency>
             
             <!-- 新增作用域声明 -->
@@ -835,6 +821,23 @@
                 <groupId>com.github.magese</groupId>
                 <artifactId>ik-analyzer</artifactId>
                 <version>8.5.0</version>
+            </dependency>
+            
+            <!-- API文档相关依赖 -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -47,7 +47,6 @@ public class SecurityConfig {
      * 配置密码编码器
      */
     @Bean("authPasswordEncoder")
-    @Primary
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -84,8 +83,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 // 允许匿名访问的接口
                 .requestMatchers("/auth/login", "/auth/captcha", "/auth/refresh").permitAll()
-                // Swagger相关接口
-                .requestMatchers("/doc.html", "/swagger-resources/**", "/v3/api-docs/**", "/webjars/**").permitAll()
                 // 健康检查接口
                 .requestMatchers("/actuator/**").permitAll()
                 // 其他所有请求需要认证

@@ -10,8 +10,6 @@ import com.lawfirm.model.auth.service.UserService;
 import com.lawfirm.model.auth.dto.auth.TokenDTO;
 import com.lawfirm.auth.utils.SecurityUtils;
 import com.lawfirm.model.system.service.MenuService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +23,6 @@ import java.util.Map;
  * 直接提供符合Vben期望格式的接口
  */
 @Slf4j
-@Tag(name = "Vue-Vben-Admin API")
 @RestController("vbenApiController")
 @RequestMapping("")
 @RequiredArgsConstructor
@@ -38,7 +35,6 @@ public class VbenApiController {
     /**
      * 登录接口
      */
-    @Operation(summary = "用户登录")
     @PostMapping("/login")
     public VbenResult<LoginVO> login(@RequestBody LoginDTO loginDTO) {
         LoginVO loginVO = authService.login(loginDTO);
@@ -48,7 +44,6 @@ public class VbenApiController {
     /**
      * 获取用户信息
      */
-    @Operation(summary = "获取用户信息")
     @GetMapping("/getUserInfo")
     public VbenResult<UserInfoVO> getUserInfo() {
         Long userId = SecurityUtils.getCurrentUserId();
@@ -59,7 +54,6 @@ public class VbenApiController {
     /**
      * 获取用户菜单
      */
-    @Operation(summary = "获取用户菜单")
     @GetMapping("/getMenuList")
     public VbenResult<List<MenuVO>> getMenuList() {
         List<MenuVO> menus = menuService.getUserMenus();
@@ -69,7 +63,6 @@ public class VbenApiController {
     /**
      * 获取权限代码
      */
-    @Operation(summary = "获取权限代码")
     @GetMapping("/getPermCode")
     public VbenResult<List<String>> getPermCode() {
         Long userId = SecurityUtils.getCurrentUserId();
@@ -80,7 +73,6 @@ public class VbenApiController {
     /**
      * 刷新Token
      */
-    @Operation(summary = "刷新Token")
     @PostMapping("/refreshToken")
     public VbenResult<Map<String, String>> refreshToken(@RequestBody Map<String, String> params) {
         String refreshToken = params.get("refreshToken");
@@ -96,7 +88,6 @@ public class VbenApiController {
     /**
      * 退出登录
      */
-    @Operation(summary = "退出登录")
     @GetMapping("/logout")
     public VbenResult<Boolean> logout() {
         String username = SecurityUtils.getCurrentUsername();

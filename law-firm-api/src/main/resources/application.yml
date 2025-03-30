@@ -1,6 +1,10 @@
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev-mysql}
+  config:
+    import:
+      - optional:classpath:/config/apidoc.yml
+      - optional:classpath:/config/knife4j.yml
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
@@ -34,6 +38,15 @@ spring:
     default-property-inclusion: non-null
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+    # 确保Jackson正确处理中文
+    property-naming-strategy: SNAKE_CASE
+    default-charset: UTF-8
+    # 强制编码设置
+    encoder:
+      non-unicode: false
+    parser:
+      allow-unquoted-control-chars: false
+      allow-backslash-escaping-any-character: false
   autoconfigure:
     exclude:
       - org.flowable.spring.boot.FlowableAutoConfiguration
@@ -48,6 +61,8 @@ spring:
       - org.flowable.spring.boot.idm.IdmEngineAutoConfiguration
       - org.flowable.spring.boot.idm.IdmEngineServicesAutoConfiguration
       - com.lawfirm.core.workflow.config.FlowableConfig
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   mybatis-plus:
     configuration:
       map-underscore-to-camel-case: true
@@ -70,6 +85,7 @@ spring:
       schema-locations: classpath:db/schema.sql
       data-locations: classpath:db/data.sql
       continue-on-error: true
+      encoding: UTF-8
   servlet:
     multipart:
       max-file-size: 50MB
@@ -77,29 +93,72 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations:
+        - classpath:/META-INF/resources/
+        - classpath:/resources/
+        - classpath:/static/
+        - classpath:/public/
+  # Spring Security配置 (从重复的spring节移至此处)
+  security:
+    user:
+      name: admin
+      password: admin123
+    filter:
+      dispatcher-types: REQUEST,FORWARD
+    # 显式允许匿名访问的路径
+    permitAll:
+      - "/doc.html"
+      - "/doc.html/**"
+      - "/v3/api-docs/**"
+      - "/swagger-ui/**"
+      - "/webjars/**"
 
 server:
   port: 8080
   tomcat:
     uri-encoding: UTF-8
+    # 增强Tomcat编码配置
+    relaxed-query-chars: <,>,|,[,],^,`,{,}
+    relaxed-path-chars: <,>,|,[,],^,`,{,}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
     encoding:
       charset: UTF-8
       force: true
       enabled: true
+      force-request: true
+      force-response: true
 
-# 安全配置
+# 使用临时措施完全禁用Spring Security
 security:
   enabled: false
+  basic:
+    enabled: false
+  ignore-paths:
+    - "/**"
 
+# 显式禁用方法安全
 method:
   security:
     enabled: false
 
+# 开发环境认证简化配置
 dev:
   auth:
     simplified-security: true
+    session-store: memory
+    disable-redis: true
+    # 允许的匿名访问路径
+    anonymous-urls:
+      - "/**" # 允许所有路径匿名访问
+      - "/doc.html"
+      - "/doc.html/**"
+      - "/v3/api-docs/**"
+      - "/swagger-ui/**"
+      - "/webjars/**"
 
 # 律师事务所功能模块开关
 lawfirm:
@@ -146,6 +205,8 @@ law:
       enableMethodLog: true
       enableRequestLog: true
       logStackTrace: true
+      # 添加中文支持
+      charset: UTF-8
 
 # API安全配置
 api:
@@ -156,6 +217,14 @@ api:
         - "/api/v1/auth/register"
         - "/api/v1/document/upload"
         - "/api/v1/knowledge/content"
+        # API文档路径
+        - "/doc.html"
+        - "/doc.html/**"
+        - "/swagger-ui.html" 
+        - "/swagger-ui/**"
+        - "/v3/api-docs/**"
+        - "/swagger-resources/**" 
+        - "/webjars/**"
   doc:
     filter:
       enabled: true
@@ -166,152 +235,11 @@ app:
   version: "1.0.0"
   description: "律师事务所管理系统API服务"
 
-# API文档配置 - 统一使用Knife4j
-springdoc:
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-    groups:
-      enabled: true
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-    display-request-duration: true
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-    urls-primary-name: default
-    urls:
-      - name: default
-        url: /v3/api-docs
-  packages-to-scan: com.lawfirm
-  paths-to-match: /**
-  show-actuator: true
-  default-produces-media-type: application/json
-  default-consumes-media-type: application/json
-  auto-tag-classes: true
-  writer-with-default-pretty-printer: true
-  model-and-view-allowed: true
-  cache:
-    disabled: true
-  override-with-generic-response: false
-  group-configs:
-    - group: all
-      display-name: "所有接口"
-      packages-to-scan: 
-        - com.lawfirm
-    - group: auth
-      display-name: "认证模块"
-      packages-to-scan: 
-        - com.lawfirm.auth.controller
-      paths-to-match: 
-        - /auth/**
-        - /role/**
-        - /permission/**
-        - /user/**
-    - group: personnel
-      display-name: "人事模块"
-      packages-to-scan: 
-        - com.lawfirm.personnel.controller
-      paths-to-match: 
-        - /personnel/**
-    - group: client
-      display-name: "客户模块"
-      packages-to-scan: 
-        - com.lawfirm.client.controller
-      paths-to-match: 
-        - /client/**
-    - group: case
-      display-name: "案件模块"
-      packages-to-scan: 
-        - com.lawfirm.cases.controller
-      paths-to-match: 
-        - /case/**
-        - /cases/**
-    - group: contract
-      display-name: "合同模块"
-      packages-to-scan: 
-        - com.lawfirm.contract.controller
-      paths-to-match: 
-        - /contract/**
-    - group: document
-      display-name: "文档模块"
-      packages-to-scan: 
-        - com.lawfirm.document.controller
-      paths-to-match: 
-        - /document/**
-    - group: knowledge
-      display-name: "知识模块"
-      packages-to-scan: 
-        - com.lawfirm.knowledge.controller
-      paths-to-match: 
-        - /knowledge/**
-    - group: finance
-      display-name: "财务模块"
-      packages-to-scan: 
-        - com.lawfirm.finance.controller
-      paths-to-match: 
-        - /finance/**
-    - group: system
-      display-name: "系统模块"
-      packages-to-scan: 
-        - com.lawfirm.system.controller
-      paths-to-match: 
-        - /system/**
-
-# Knife4j配置
-knife4j:
-  enable: true
-  setting:
-    language: zh_cn
-    enable-swagger-models: true
-    enable-document-manage: false
-    enable-host: false
-    enable-version: false
-    enable-footer: false
-    enable-home-custom: true
-    enable-after-script: true
-    custom-js: |
-      window.onload = function() {
-        // 解决Base64解析错误
-        const originalJSON = JSON.parse;
-        JSON.parse = function(text) {
-          if (text && typeof text === 'string' && text.startsWith('ey')) {
-            console.warn('检测到可能的Base64编码内容:', text.substring(0, 30) + '...');
-            try {
-              // 尝试正常解析
-              return originalJSON(text);
-            } catch (e) {
-              console.warn('JSON解析错误，尝试Base64解码', e);
-              try {
-                // 尝试先Base64解码
-                const decoded = atob(text);
-                console.log('Base64解码成功，解码后内容:', decoded.substring(0, 30) + '...');
-                return originalJSON(decoded);
-              } catch (e2) {
-                console.error('Base64解码也失败', e2);
-                throw e; // 使用原始错误
-              }
-            }
-          }
-          return originalJSON(text);
-        };
-      }
-  production: false
-  basic:
-    enable: false
-    username: admin
-    password: admin
-  # 启用Knife4j增强
-  enhance: true
-
 # 消息服务配置
 message:
   enabled: true
   async:
     enabled: true
-  rocketmq:
-    topic: law-firm-message
-    consumer-group: law-firm-consumer
 
 # RocketMQ配置
 rocketmq:
@@ -350,6 +278,24 @@ config:
     refresh-interval: 30000
     refresh-on-startup: true
     source-type: file
+
+# 添加API文档配置，确保内容不被加密
+springdoc:
+  api-docs:
+    safe-content: true
+    disable-content-encoding: true
+  swagger-ui:
+    disable-content-encoding: true
+    
+# knife4j专用配置，禁用加密
+knife4j:
+  enable: true
+  basic:
+    enable: false
+  production: false
+  # 禁用API文档加密
+  enable-website-encrypt: false  
+  enable-content-encrypt: false
 
 # Lucene搜索配置
 search:
@@ -421,3 +367,5 @@ law.firm.audit:
   logType: db
   includeRequestParams: true
   includeResponseBody: false
+
+# Springdoc和Knife4j配置已移动到apidoc.yml

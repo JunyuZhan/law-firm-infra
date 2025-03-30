@@ -25,12 +25,7 @@ import org.springframework.context.annotation.Import;
 @ConditionalOnWebApplication
 @ImportAutoConfiguration({
     SecurityConfig.class,
-    CorsConfig.class,
-    DevAuthConfig.class,
-    DevSecurityContextConfig.class,
-    DevSecurityFilterConfig.class
 })
-@Import({CustomBeanNameGenerator.class})
 @ComponentScan(basePackages = "com.lawfirm.auth")
 @RequiredArgsConstructor
 public class AuthAutoConfiguration {

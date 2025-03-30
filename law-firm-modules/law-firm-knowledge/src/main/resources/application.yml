@@ -16,13 +16,4 @@ logging:
     root: info
     com.lawfirm: debug
   file:
-    name: ${user.home}/logs/law-firm-knowledge.log
-    
-# Swagger配置
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-  packages-to-scan: com.lawfirm.knowledge.controller 
+    name: ${user.home}/logs/law-firm-knowledge.log 

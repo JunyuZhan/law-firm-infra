@@ -24,7 +24,8 @@ spring:
       encoding: UTF-8
       continue-on-error: true
       platform: mysql
-      
+      separator: ;;
+  
   # Redis配置
   data:
     redis:
@@ -103,6 +104,18 @@ dev:
     simplified-security: true
     disable-original-security: true
     token-expiration: 86400
+    # 匿名访问路径
+    anonymous-urls:
+      - "/swagger-ui/**"
+      - "/swagger-ui.html"
+      - "/swagger-ui/index.html"
+      - "/v3/api-docs/**"
+      - "/swagger-resources/**"
+      - "/webjars/**"
+      - "/doc.html"
+      - "/doc"
+      - "/docs"
+      - "/api-docs"
     
 # 搜索配置
 search:
@@ -133,57 +146,4 @@ management:
 app:
   name: "law-firm-api"
   version: "1.0.0"
-  description: "律师事务所管理系统API服务"
-
-# API文档配置
-springdoc:
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-  model-converters:
-    pageable-converter:
-      enabled: false
-
-# Knife4j配置
-knife4j:
-  enable: true
-  setting:
-    language: zh_cn
-    enable-swagger-models: false
-    enable-document-manage: true
-    swagger-model-name: 律师事务所API
-    enable-version: false
-    enable-reload-cache-parameter: false
-    enable-after-script: false
-    enable-filter-multipart-api-method-type: POST
-    enable-filter-multipart-apis: false
-    enable-request-cache: false
-    enable-host: true
-    enable-host-text: localhost:8080
-    enable-url-prefix: false
-    enable-home-custom: false
-    enable-search: true
-    enable-footer: false
-    enable-footer-custom: false
-    enable-debug: true
-    enable-open-api: true
-  production: false
-  basic:
-    enable: false
-  # 启用Knife4j增强
-  enhance: true
-
-# 安全配置
-security:
-  basic:
-    enabled: false
-    
-# 文档模块搜索配置
-lawfirm:
-  document:
-    search:
-      enabled: false
-      type: database 
+  description: "律师事务所管理系统API服务" 

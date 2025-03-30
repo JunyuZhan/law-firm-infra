@@ -31,13 +31,8 @@ org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfigura
 org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
 com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
 
-# Security配置
-org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration
-
 # 验证配置
 org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration
 
-# 文档配置
-org.springdoc.core.configuration.SpringDocConfiguration
-org.springdoc.core.configuration.SpringDocSecurityConfiguration 
+# 应用自定义配置
+com.lawfirm.api.config.dev.DevSecurityAutoConfiguration

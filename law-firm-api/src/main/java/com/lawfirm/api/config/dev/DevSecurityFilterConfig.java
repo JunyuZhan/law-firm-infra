@@ -1,4 +1,4 @@
-package com.lawfirm.auth.config;
+package com.lawfirm.api.config.dev;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -25,9 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@Order(80)  // 给予较高优先级，确保它在大多数安全配置之前执行
+@Order(70)  // 提高优先级，确保它在所有安全配置之前执行
 @ConditionalOnProperty(name = "dev.auth.simplified-security", havingValue = "true")
-@Profile("dev-mysql")
+@Profile({"dev", "dev-mysql"}) // 添加默认的dev环境
 public class DevSecurityFilterConfig {
 
     @Value("${server.servlet.context-path:/api}")
@@ -45,23 +45,65 @@ public class DevSecurityFilterConfig {
      */
     @Bean
     @Primary
+    @Order(50) // 提高优先级
     public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
-        log.info("配置开发环境简化安全过滤链，允许所有请求");
+        log.info("配置开发环境简化安全过滤链 - 最高优先级，允许所有请求，上下文路径: {}", contextPath);
         
-        http
+        return http
             .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/doc.html", "/doc.html/**", "/swagger-ui.html", "/swagger-ui/**", 
-                                "/v3/api-docs/**", "/v3/api-docs.yaml", "/webjars/**", 
-                                "/favicon.ico", "/swagger-resources/**")
-                .permitAll()
-                .anyRequest().permitAll()
-            )
-            .httpBasic(httpBasic -> httpBasic.disable()) // 禁用HTTP Basic认证
-            .formLogin(form -> form.disable()) // 禁用表单登录
-            .cors(Customizer.withDefaults());
+            .cors(Customizer.withDefaults())
+            // 禁用认证请求
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            // 禁用表单登录
+            .formLogin(form -> form.disable())
+            // 禁用基本认证
+            .httpBasic(basic -> basic.disable())
+            // 禁用登出
+            .logout(logout -> logout.disable())
+            // 禁用匿名过滤器
+            .anonymous(anon -> anon.disable())
+            // 禁用会话管理
+            .sessionManagement(session -> session.disable())
+            .build();
+    }
+    
+    /**
+     * API文档专用安全过滤链
+     */
+    @Bean
+    @Order(40) // 比常规过滤链更高优先级
+    public SecurityFilterChain apiDocSecurityFilterChain(HttpSecurity http) throws Exception {
+        // API文档相关的路径
+        String[] docPaths = {
+            // Swagger相关路径
+            "/doc.html", "/doc.html/**", "/doc/**",
+            "/swagger-ui.html", "/swagger-ui/**", 
+            "/v3/api-docs/**", "/swagger-resources/**",
+            "/webjars/**", "/swagger-config/**",
+            "/api-docs/**", "/api-docs",
+            "/v2/api-docs/**",
+            
+            // Knife4j专用路径
+            "/favicon.ico", 
+            "/v3/api-docs-ext/**",
+            "/configuration/ui",
+            "/configuration/security",
+            
+            // 新增Knife4j路径
+            "/knife4j/**",
+            "/markdown/**"
+        };
         
-        return http.build();
+        log.info("配置API文档专用安全过滤链 - 确保文档可匿名访问");
+        
+        return http
+            .securityMatcher(docPaths)
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults())
+            .httpBasic(basic -> basic.disable())
+            .formLogin(form -> form.disable())
+            .build();
     }
     
     /**
