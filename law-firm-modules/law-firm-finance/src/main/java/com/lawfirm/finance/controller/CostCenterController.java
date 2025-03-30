@@ -20,9 +20,9 @@ import java.util.List;
  */
 @Slf4j
 @RestController("costCenterController")
+@RequestMapping("/finance/cost-center")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/cost-center")
-@Tag(name = "成本中心管理", description = "成本中心相关接口")
+@Tag(name = "成本中心管理", description = "成本中心管理接口")
 public class CostCenterController {
 
     private final CostCenterService costCenterService;

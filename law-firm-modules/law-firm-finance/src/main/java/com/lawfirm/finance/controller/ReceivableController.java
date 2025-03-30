@@ -26,7 +26,7 @@ import java.util.Map;
 @Slf4j
 @RestController("receivableController")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/receivable")
+@RequestMapping("/finance/receivable")
 @Tag(name = "应收账款管理", description = "应收账款相关接口")
 public class ReceivableController {
 

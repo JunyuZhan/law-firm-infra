@@ -24,9 +24,9 @@ import com.lawfirm.auth.utils.SecurityUtils;
  * 适配Vue-Vben-Admin风格
  */
 @Slf4j
-@Tag(name = "用户管理", description = "用户相关接口")
+@Tag(name = "用户管理", description = "用户管理接口")
 @RestController("userController")
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     

@@ -1,4 +1,4 @@
-package com.lawfirm.api.config;
+package com.lawfirm.auth.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -10,33 +10,44 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.Customizer;
 import org.springframework.context.annotation.Profile;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * 开发环境安全配置
- * <p>用于在开发环境中简化安全配置，允许所有请求，避免因数据库表缺失导致的认证失败</p>
+ * 开发环境安全过滤器配置
+ * <p>
+ * 用于在开发环境中简化安全配置，允许所有请求，避免因数据库表缺失导致的认证失败
+ * </p>
  */
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @Order(80)  // 给予较高优先级，确保它在大多数安全配置之前执行
 @ConditionalOnProperty(name = "dev.auth.simplified-security", havingValue = "true")
 @Profile("dev-mysql")
-public class DevSecurityConfig {
+public class DevSecurityFilterConfig {
 
     @Value("${server.servlet.context-path:/api}")
     private String contextPath;
 
     /**
      * 开发环境简化安全过滤链
+     * <p>
      * 允许所有请求，禁用CSRF保护
+     * </p>
+     * 
+     * @param http HttpSecurity构建器
+     * @return 安全过滤链
+     * @throws Exception 配置异常
      */
     @Bean
     @Primary
     public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
+        log.info("配置开发环境简化安全过滤链，允许所有请求");
+        
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
@@ -55,7 +66,9 @@ public class DevSecurityConfig {
     
     /**
      * 禁用方法级别安全检查
+     * <p>
      * 用于开发测试环境
+     * </p>
      */
     @Configuration
     @Order(75)  // 高优先级

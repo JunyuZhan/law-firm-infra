@@ -1,0 +1,43 @@
+# Spring Boot自动配置导入清单
+# 这里只包含需要启用的自动配置
+
+# 常用自动配置
+org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
+org.springframework.boot.autoconfigure.aop.AopAutoConfiguration
+org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration
+org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration
+org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
+org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration
+org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration
+org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
+org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration
+org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+
+# 数据库相关配置
+org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration
+org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration
+org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration
+
+# Redis配置
+org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+# MyBatis配置
+org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
+com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
+
+# Security配置
+org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration
+
+# 验证配置
+org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration
+
+# 文档配置
+org.springdoc.core.configuration.SpringDocConfiguration
+org.springdoc.core.configuration.SpringDocSecurityConfiguration 

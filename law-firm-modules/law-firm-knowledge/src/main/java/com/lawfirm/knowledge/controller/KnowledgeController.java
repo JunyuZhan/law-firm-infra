@@ -20,9 +20,9 @@ import java.util.List;
  * 知识文档控制器
  */
 @Slf4j
-@Tag(name = "知识文档管理", description = "知识文档的增删改查接口")
-@RestController("knowledgeController")
-@RequestMapping("/api/knowledge")
+@Tag(name = "知识库", description = "知识库管理接口")
+@RestController
+@RequestMapping("/knowledge")
 public class KnowledgeController {
 
     @Autowired

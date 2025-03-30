@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
  * 处理职位的创建、更新、删除等操作
  */
 @Slf4j
-@Tag(name = "职位管理", description = "管理职位的创建、更新、删除等操作")
+@Tag(name = "职位管理", description = "提供职位管理相关接口")
 @RestController("positionController")
-@RequestMapping("/api/personnel/position")
+@RequestMapping("/personnel/position")
 @Validated
 public class PositionController {
 

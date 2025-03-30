@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController("clientController")
 @RequiredArgsConstructor
-@RequestMapping("/api/client")
+@RequestMapping("/client")
 public class ClientController extends BaseController {
 
     private final ClientServiceImpl clientService;

@@ -19,9 +19,9 @@ import java.util.List;
  * 知识分类控制器
  */
 @Slf4j
-@Tag(name = "知识分类管理", description = "知识文档分类的增删改查接口")
-@RestController("knowledgeCategoryController")
-@RequestMapping("/api/knowledge/category")
+@Tag(name = "知识分类", description = "知识分类管理接口")
+@RestController
+@RequestMapping("/knowledge/category")
 public class KnowledgeCategoryController {
 
     @Autowired

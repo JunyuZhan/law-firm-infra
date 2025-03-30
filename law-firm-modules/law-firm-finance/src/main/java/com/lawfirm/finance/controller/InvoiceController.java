@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController("invoiceController")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/invoice")
+@RequestMapping("/finance/invoice")
 @Tag(name = "发票管理", description = "发票相关接口")
 public class InvoiceController {
 

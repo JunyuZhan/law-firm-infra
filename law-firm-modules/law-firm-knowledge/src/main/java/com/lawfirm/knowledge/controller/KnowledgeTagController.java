@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "知识标签管理", description = "知识标签的增删改查接口")
 @RestController("knowledgeTagController")
-@RequestMapping("/api/knowledge/tag")
+@RequestMapping("/knowledge/tag")
 public class KnowledgeTagController {
 
     @Autowired

@@ -3,10 +3,10 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev-mysql}
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
     allow-missing-beans: true
     banner-mode: off
     log-startup-info: false
-    allow-circular-references: false
     lazy-initialization: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
@@ -47,9 +47,7 @@ spring:
       - org.flowable.spring.boot.FlowableSecurityAutoConfiguration
       - org.flowable.spring.boot.idm.IdmEngineAutoConfiguration
       - org.flowable.spring.boot.idm.IdmEngineServicesAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration
+      - com.lawfirm.core.workflow.config.FlowableConfig
   mybatis-plus:
     configuration:
       map-underscore-to-camel-case: true
@@ -120,7 +118,7 @@ lawfirm:
       enabled: true
   search:
     enabled: true
-    type: lucene
+    type: database
   storage:
     enabled: true
     defaultType: LOCAL
@@ -160,7 +158,7 @@ api:
         - "/api/v1/knowledge/content"
   doc:
     filter:
-      enabled: false
+      enabled: true
 
 # 应用信息配置
 app:
@@ -173,27 +171,136 @@ springdoc:
   api-docs:
     enabled: true
     path: /v3/api-docs
+    groups:
+      enabled: true
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
+    display-request-duration: true
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+    urls-primary-name: default
+    urls:
+      - name: default
+        url: /v3/api-docs
   packages-to-scan: com.lawfirm
   paths-to-match: /**
   show-actuator: true
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+  auto-tag-classes: true
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: true
+  cache:
+    disabled: true
+  override-with-generic-response: false
+  group-configs:
+    - group: all
+      display-name: "所有接口"
+      packages-to-scan: 
+        - com.lawfirm
+    - group: auth
+      display-name: "认证模块"
+      packages-to-scan: 
+        - com.lawfirm.auth.controller
+      paths-to-match: 
+        - /auth/**
+        - /role/**
+        - /permission/**
+        - /user/**
+    - group: personnel
+      display-name: "人事模块"
+      packages-to-scan: 
+        - com.lawfirm.personnel.controller
+      paths-to-match: 
+        - /personnel/**
+    - group: client
+      display-name: "客户模块"
+      packages-to-scan: 
+        - com.lawfirm.client.controller
+      paths-to-match: 
+        - /client/**
+    - group: case
+      display-name: "案件模块"
+      packages-to-scan: 
+        - com.lawfirm.cases.controller
+      paths-to-match: 
+        - /case/**
+        - /cases/**
+    - group: contract
+      display-name: "合同模块"
+      packages-to-scan: 
+        - com.lawfirm.contract.controller
+      paths-to-match: 
+        - /contract/**
+    - group: document
+      display-name: "文档模块"
+      packages-to-scan: 
+        - com.lawfirm.document.controller
+      paths-to-match: 
+        - /document/**
+    - group: knowledge
+      display-name: "知识模块"
+      packages-to-scan: 
+        - com.lawfirm.knowledge.controller
+      paths-to-match: 
+        - /knowledge/**
+    - group: finance
+      display-name: "财务模块"
+      packages-to-scan: 
+        - com.lawfirm.finance.controller
+      paths-to-match: 
+        - /finance/**
+    - group: system
+      display-name: "系统模块"
+      packages-to-scan: 
+        - com.lawfirm.system.controller
+      paths-to-match: 
+        - /system/**
 
 # Knife4j配置
 knife4j:
   enable: true
   setting:
     language: zh_cn
-    enable-swagger-models: false
-    enable-host: true
-    enable-host-text: localhost:8080
-    enable-url-prefix: false
+    enable-swagger-models: true
+    enable-document-manage: false
+    enable-host: false
+    enable-version: false
+    enable-footer: false
+    enable-home-custom: true
+    enable-after-script: true
+    custom-js: |
+      window.onload = function() {
+        // 解决Base64解析错误
+        const originalJSON = JSON.parse;
+        JSON.parse = function(text) {
+          if (text && typeof text === 'string' && text.startsWith('ey')) {
+            console.warn('检测到可能的Base64编码内容:', text.substring(0, 30) + '...');
+            try {
+              // 尝试正常解析
+              return originalJSON(text);
+            } catch (e) {
+              console.warn('JSON解析错误，尝试Base64解码', e);
+              try {
+                // 尝试先Base64解码
+                const decoded = atob(text);
+                console.log('Base64解码成功，解码后内容:', decoded.substring(0, 30) + '...');
+                return originalJSON(decoded);
+              } catch (e2) {
+                console.error('Base64解码也失败', e2);
+                throw e; // 使用原始错误
+              }
+            }
+          }
+          return originalJSON(text);
+        };
+      }
   production: false
   basic:
     enable: false
+    username: admin
+    password: admin
   # 启用Knife4j增强
   enhance: true
 

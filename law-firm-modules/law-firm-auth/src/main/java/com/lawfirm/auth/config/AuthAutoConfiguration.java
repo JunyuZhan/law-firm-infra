@@ -11,11 +11,26 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.annotation.Import;
 
 /**
  * 认证模块自动配置类
+ * <p>
+ * 统一导入所有认证相关配置
+ * </p>
  */
 @Configuration
+@ConditionalOnWebApplication
+@ImportAutoConfiguration({
+    SecurityConfig.class,
+    CorsConfig.class,
+    DevAuthConfig.class,
+    DevSecurityContextConfig.class,
+    DevSecurityFilterConfig.class
+})
+@Import({CustomBeanNameGenerator.class})
 @ComponentScan(basePackages = "com.lawfirm.auth")
 @RequiredArgsConstructor
 public class AuthAutoConfiguration {

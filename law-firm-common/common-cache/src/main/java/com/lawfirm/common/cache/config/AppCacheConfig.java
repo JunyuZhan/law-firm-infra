@@ -1,6 +1,5 @@
-package com.lawfirm.api.config;
+package com.lawfirm.common.cache.config;
 
-import com.lawfirm.common.cache.config.CacheProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -20,23 +19,24 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 
 /**
- * 缓存统一配置类
- * 提供本地缓存和Redis缓存的配置
+ * 应用缓存配置类
+ * <p>
+ * 提供API层和业务模块使用的缓存配置和管理器
+ * </p>
  */
-@Configuration("apiCacheConfig")
+@Configuration
 @EnableCaching
-public class CacheConfig {
+public class AppCacheConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(CacheConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(AppCacheConfig.class);
 
     /**
      * 提供缓存属性Bean
-     * 用于配置应用的缓存行为
      */
     @Bean
     @Primary
     public CacheProperties cacheProperties() {
-        log.info("初始化缓存配置：开发环境默认使用本地缓存");
+        log.info("初始化缓存配置：默认使用本地缓存");
         CacheProperties props = new CacheProperties();
         props.setEnabled(true);
         props.setType(CacheProperties.CacheType.LOCAL); // 默认使用本地缓存
@@ -47,11 +47,10 @@ public class CacheConfig {
     
     /**
      * 配置Redis缓存管理器
-     * 当Redis可用时使用
      */
-    @Bean("redisCacheManager")
+    @Bean("appRedisCacheManager")
     @ConditionalOnProperty(name = "spring.data.redis.enabled", havingValue = "true", matchIfMissing = false)
-    @ConditionalOnMissingBean(name = "redisCacheManager")
+    @ConditionalOnMissingBean(name = "appRedisCacheManager")
     public CacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
         log.info("初始化Redis缓存管理器");
         // 默认配置
@@ -73,12 +72,12 @@ public class CacheConfig {
     }
 
     /**
-     * 创建API模块的缓存管理器
+     * 创建应用层的缓存管理器
      */
-    @Bean("apiCacheManager")
+    @Bean("appCacheManager")
     @Primary
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        log.info("初始化API模块的Redis缓存管理器");
+        log.info("初始化应用层的Redis缓存管理器");
         
         // 默认的Redis缓存配置
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
@@ -91,7 +90,7 @@ public class CacheConfig {
                 )
                 .disableCachingNullValues();  // 不缓存空值
         
-        log.info("API缓存默认过期时间: 2小时");
+        log.info("应用缓存默认过期时间: 2小时");
         
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(defaultCacheConfig)

@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("caseFeeController")
-@RequestMapping("/api/case/fee")
+@RequestMapping("/case/fee")
 @RequiredArgsConstructor
 @Tag(name = "案件费用管理", description = "提供案件费用管理功能，包括费用记录、结算、统计报表等操作")
 public class FeeController {

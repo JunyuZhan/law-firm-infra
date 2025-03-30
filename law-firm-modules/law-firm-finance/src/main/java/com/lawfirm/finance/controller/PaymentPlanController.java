@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController("paymentPlanController")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/payment-plan")
+@RequestMapping("/finance/payment-plan")
 @Tag(name = "付款计划管理", description = "付款计划相关接口")
 public class PaymentPlanController {
 

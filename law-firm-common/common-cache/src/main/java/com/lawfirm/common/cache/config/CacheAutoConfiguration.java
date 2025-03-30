@@ -9,6 +9,10 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @ComponentScan(basePackages = "com.lawfirm.common.cache")
-@Import(CacheConfig.class)
+@Import({
+    CacheConfig.class,
+    CacheResolverConfig.class,
+    AppCacheConfig.class
+})
 public class CacheAutoConfiguration {
-} 
+}

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController("clientImportExportController")
 @RequiredArgsConstructor
-@RequestMapping("/api/client/import-export")
+@RequestMapping("/client/import-export")
 public class ImportExportController extends BaseController {
 
     private final List<ImportStrategy> importStrategies;

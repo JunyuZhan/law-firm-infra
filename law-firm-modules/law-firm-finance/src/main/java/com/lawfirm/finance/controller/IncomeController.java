@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 @RestController("incomeController")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/income")
+@RequestMapping("/finance/income")
 @Tag(name = "收入管理", description = "收入相关接口")
 public class IncomeController {
 

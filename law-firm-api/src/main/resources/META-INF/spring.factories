@@ -1,2 +1,28 @@
 org.springframework.boot.env.EnvironmentPostProcessor=\
-com.lawfirm.api.config.ApplicationConfig 
+com.lawfirm.api.config.ApplicationConfig
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration,\
+org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\
+org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration
+
+# 禁用Flowable和JPA自动配置
+org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
+org.springframework.boot.autoconfigure.condition.OnClassCondition
+
+# 排除特定配置类
+spring.autoconfigure.exclude=\
+com.lawfirm.core.workflow.config.FlowableConfig,\
+org.flowable.spring.boot.FlowableAutoConfiguration,\
+org.flowable.spring.boot.ProcessEngineServicesAutoConfiguration,\
+org.flowable.spring.boot.actuate.endpoint.ProcessEngineEndpointAutoConfiguration,\
+org.flowable.spring.boot.actuate.info.FlowableInfoAutoConfiguration,\
+org.flowable.spring.boot.app.AppEngineAutoConfiguration,\
+org.flowable.spring.boot.app.AppEngineServicesAutoConfiguration,\
+org.flowable.spring.boot.engine.FlowableEngineAutoConfiguration,\
+org.flowable.spring.boot.EndpointAutoConfiguration,\
+org.flowable.spring.boot.FlowableSecurityAutoConfiguration,\
+org.flowable.spring.boot.idm.IdmEngineAutoConfiguration,\
+org.flowable.spring.boot.idm.IdmEngineServicesAutoConfiguration,\
+org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,\
+org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration 

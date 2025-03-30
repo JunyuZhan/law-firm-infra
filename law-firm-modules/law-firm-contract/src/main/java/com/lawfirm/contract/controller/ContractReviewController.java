@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("contractReviewController")
-@RequestMapping("/api/contract/review")
+@RequestMapping("/contract/review")
 @RequiredArgsConstructor
 @Tag(name = "合同审批管理", description = "提供合同审批相关功能，包括提交审批、审批流程查询等")
 public class ContractReviewController {

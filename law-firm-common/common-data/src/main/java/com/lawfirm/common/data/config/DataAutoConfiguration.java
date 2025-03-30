@@ -10,10 +10,12 @@ import org.springframework.context.annotation.Import;
 @Import({
     DataSourceConfig.class,
     MybatisPlusConfig.class,
+    SessionFactoryConfig.class,
     JacksonConfig.class,
     RedisConfig.class,
     DynamicDataSourceConfig.class,
-    StorageConfig.class
+    StorageConfig.class,
+    SqlInitDisableConfig.class
 })
 public class DataAutoConfiguration {
-} 
+}

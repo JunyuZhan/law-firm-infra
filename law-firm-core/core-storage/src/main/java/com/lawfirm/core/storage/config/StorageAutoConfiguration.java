@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * 存储服务自动配置
@@ -12,6 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 @ComponentScan(basePackages = {"com.lawfirm.core.storage"})
+@Import({
+    StorageConfiguration.class
+})
 @ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class StorageAutoConfiguration {
 
@@ -21,4 +25,4 @@ public class StorageAutoConfiguration {
     public StorageAutoConfiguration() {
         log.info("初始化存储服务自动配置");
     }
-} 
+}

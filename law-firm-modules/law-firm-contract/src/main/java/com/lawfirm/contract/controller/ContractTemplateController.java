@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController("contractTemplateController")
-@RequestMapping("/api/contract/template")
+@RequestMapping("/contract/template")
 @RequiredArgsConstructor
 @Tag(name = "合同模板管理", description = "提供合同模板的创建、查询、修改、删除等功能")
 public class ContractTemplateController {

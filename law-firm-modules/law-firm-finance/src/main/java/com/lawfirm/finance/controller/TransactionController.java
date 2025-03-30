@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController("transactionController")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/transaction")
+@RequestMapping("/finance/transaction")
 @Tag(name = "交易管理", description = "交易管理相关API")
 public class TransactionController {
 

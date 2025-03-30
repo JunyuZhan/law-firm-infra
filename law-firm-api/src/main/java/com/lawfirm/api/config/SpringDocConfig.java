@@ -9,6 +9,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  * <p>配置API文档生成</p>
  */
 @Configuration
+@ConditionalOnProperty(name = "use.legacy.springdoc", havingValue = "true", matchIfMissing = false)
 public class SpringDocConfig {
 
     @Value("${server.servlet.context-path:/api}")

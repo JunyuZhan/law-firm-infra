@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
  * 整合了原律师和行政人员的API接口
  */
 @Slf4j
-@Tag(name = "员工管理", description = "员工信息管理，包括律师和行政人员")
+@Tag(name = "员工管理", description = "提供员工管理相关接口")
 @RestController("employeeController")
-@RequestMapping("/api/personnel/employee")
+@RequestMapping("/personnel/employee")
 @Validated
 public class EmployeeController {
 

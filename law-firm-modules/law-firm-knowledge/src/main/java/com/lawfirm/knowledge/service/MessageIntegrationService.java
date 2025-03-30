@@ -1,7 +1,7 @@
 package com.lawfirm.knowledge.service;
 
 import com.lawfirm.core.message.service.MessageTemplateService;
-import com.lawfirm.knowledge.config.MessageServiceConfig.MessageSendingService;
+import com.lawfirm.knowledge.config.KnowledgeMessageServiceConfig.MessageSendingService;
 import com.lawfirm.model.knowledge.entity.Knowledge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class MessageIntegrationService {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
-    @Qualifier("messageServiceImpl")
+    @Qualifier("knowledgeMessageServiceImpl")
     private MessageSendingService messageService;
 
     @Autowired

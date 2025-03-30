@@ -24,10 +24,10 @@ import java.util.List;
  * 文档管理控制器
  */
 @Slf4j
+@Tag(name = "文档管理", description = "文档管理接口")
 @RestController("documentAdminController")
+@RequestMapping("/document/admin")
 @RequiredArgsConstructor
-@RequestMapping("/api/document/admin")
-@Tag(name = "文档管理", description = "文档管理相关接口")
 public class DocumentController {
 
     private final DocumentService documentService;

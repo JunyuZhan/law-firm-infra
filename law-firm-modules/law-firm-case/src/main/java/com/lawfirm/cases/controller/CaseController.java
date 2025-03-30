@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
  * 案件基本控制器
  */
 @Slf4j
+@Tag(name = "案件管理", description = "案件管理接口")
 @RestController("caseController")
-@RequestMapping("/api/cases")
+@RequestMapping("/cases")
 @RequiredArgsConstructor
-@Tag(name = "案件管理", description = "提供案件的基本信息管理功能，包括案件的创建、更新、删除、查询等基础操作，以及案件状态流转、审批、归档等高级功能，支持案件全生命周期管理")
 public class CaseController {
 
     private final CaseService caseService;

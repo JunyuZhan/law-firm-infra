@@ -14,7 +14,8 @@ import org.springframework.context.annotation.Import;
 @Import({
     FlowableConfig.class,
     WorkflowConfig.class,
-    CacheConfig.class
+    CacheConfig.class,
+    WorkflowDisableConfig.class
 })
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class WorkflowAutoConfiguration {

@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("caseProcessController")
-@RequestMapping("/api/case/process")
+@RequestMapping("/case/process")
 @RequiredArgsConstructor
 @Tag(name = "案件流程管理", description = "提供案件流程管理功能，包括流程定义、实例创建、任务处理等功能")
 public class ProcessController {

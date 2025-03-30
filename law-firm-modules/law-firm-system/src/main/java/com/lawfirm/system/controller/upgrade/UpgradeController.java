@@ -37,7 +37,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @Tag(name = "系统升级管理", description = "管理系统升级，包括版本升级、脚本执行等操作")
 @RestController("upgradeController")
-@RequestMapping("/api/system/upgrade")
+@RequestMapping("/system/upgrade")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UpgradeController extends BaseController {

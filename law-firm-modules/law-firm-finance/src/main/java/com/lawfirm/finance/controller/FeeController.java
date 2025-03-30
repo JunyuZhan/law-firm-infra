@@ -20,11 +20,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 费用管理控制器
+ */
 @Slf4j
+@Tag(name = "费用管理", description = "费用管理接口")
 @RestController("financeFeeController")
+@RequestMapping("/finance/fee")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/fee")
-@Tag(name = "费用管理", description = "费用相关接口")
 public class FeeController {
 
     private final FeeService feeService;

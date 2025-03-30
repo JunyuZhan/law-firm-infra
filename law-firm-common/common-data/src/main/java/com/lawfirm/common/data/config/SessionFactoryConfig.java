@@ -1,4 +1,4 @@
-package com.lawfirm.api.config;
+package com.lawfirm.common.data.config;
 
 import javax.sql.DataSource;
 
@@ -12,42 +12,41 @@ import org.slf4j.LoggerFactory;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
- * MyBatis和MyBatis-Plus统一配置类
- * 配置SqlSessionFactory、拦截器等
+ * MyBatis会话工厂配置
+ * <p>
+ * 负责创建和配置SqlSessionFactory
+ * </p>
  */
 @Configuration
 @MapperScan(basePackages = {"com.lawfirm.model.**.mapper"})
-public class MyBatisConfig {
+public class SessionFactoryConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(MyBatisConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(SessionFactoryConfig.class);
 
     /**
      * 创建SqlSessionFactory
-     * 使用common-data模块提供的MybatisPlusInterceptor
+     * 使用MybatisPlusConfig提供的MybatisPlusInterceptor
      */
     @Bean
     @Primary
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource, 
-                                              @Qualifier("commonMybatisPlusInterceptor") MybatisPlusInterceptor interceptor) throws Exception {
+                                             @Qualifier("commonMybatisPlusInterceptor") MybatisPlusInterceptor interceptor) throws Exception {
         log.info("初始化MyBatis和MyBatis-Plus配置");
         
         MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         
         // 不使用自动扫描别名方式，避免别名冲突
-        // factoryBean.setTypeAliasesPackage("com.lawfirm.model.*.entity");
         log.info("禁用自动别名扫描，避免别名冲突问题");
         
         // 不设置XML映射文件位置，完全使用注解方式
         log.info("使用注解方式配置MyBatis映射，不加载XML映射文件");
         
-        // 使用common-data模块提供的拦截器，避免重复创建
+        // 使用MybatisPlusConfig提供的拦截器
         log.info("使用common-data模块提供的MybatisPlusInterceptor");
         factoryBean.setPlugins(interceptor);
         
@@ -56,27 +55,8 @@ public class MyBatisConfig {
         configuration.setMapUnderscoreToCamelCase(true);
         configuration.setCacheEnabled(false);
         
-        // 使用configuration手动注册需要的类型处理器
-        // configuration.getTypeHandlerRegistry().register(YourTypeHandler.class);
-        
         factoryBean.setConfiguration(configuration);
         
         return factoryBean.getObject();
-    }
-    
-    /**
-     * 备用MyBatis-Plus拦截器
-     * 当common-data模块未提供时使用
-     */
-    @Bean
-    @Qualifier("backupMybatisPlusInterceptor")
-    public MybatisPlusInterceptor backupMybatisPlusInterceptor() {
-        log.info("创建备用MybatisPlusInterceptor");
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        // 添加分页插件
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
-        // 添加乐观锁插件
-        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        return interceptor;
     }
 } 

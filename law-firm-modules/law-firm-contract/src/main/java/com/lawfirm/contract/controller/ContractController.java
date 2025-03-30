@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("contractController")
-@RequestMapping("/api/contract")
+@RequestMapping("/contract")
 @RequiredArgsConstructor
 @Tag(name = "合同管理接口", description = "提供合同的创建、查询、修改、删除等功能，支持合同全生命周期管理")
 public class ContractController {

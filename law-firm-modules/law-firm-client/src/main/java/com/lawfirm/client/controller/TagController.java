@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController("clientTagController")
 @RequiredArgsConstructor
-@RequestMapping("/api/client/tag")
+@RequestMapping("/client/tag")
 public class TagController extends BaseController {
 
     private final TagServiceImpl tagService;

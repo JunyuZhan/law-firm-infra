@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
  * 处理组织结构与人员的关联关系
  */
 @Slf4j
-@Tag(name = "组织架构管理", description = "管理组织结构与人员的关联关系")
+@Tag(name = "组织机构管理", description = "提供组织机构管理相关接口")
 @RestController("organizationController")
-@RequestMapping("/api/personnel/organization")
+@RequestMapping("/personnel/organization")
 @Validated
 public class OrganizationController {
 

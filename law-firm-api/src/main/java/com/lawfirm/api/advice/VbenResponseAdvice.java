@@ -20,36 +20,66 @@ import java.util.List;
 @RestControllerAdvice
 public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
 
-    // 排除路径列表
+    // 排除路径列表 - 更加完整的排除列表
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
         "/v3/api-docs",
         "/swagger-ui",
         "/doc.html",
         "/swagger-resources",
         "/webjars/",
-        "/raw-json"
+        "/raw-json",
+        "/api-docs",
+        "/swagger-config",
+        "/swagger",
+        "/api/v3/api-docs",
+        "/api/swagger-ui",
+        "/api/doc.html",
+        "/api/swagger-resources"
     );
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        // 排除Swagger/Knife4j相关的包和类
+        // 如果路径或类名包含API文档关键字，直接返回false不进行处理
+        if (returnType == null || returnType.getContainingClass() == null) {
+            return false;
+        }
+        
         String className = returnType.getContainingClass().getName();
-        return !(className.contains("springdoc") || 
+        // 如果类名包含以下关键字，不进行处理
+        if (className.contains("springdoc") || 
             className.contains("swagger") || 
             className.contains("knife4j") ||
             className.contains("springfox") ||
-            className.contains("SwaggerConfigController"));
+            className.contains("OpenAPI") ||
+            className.contains("Swagger") ||
+            className.contains("ApiResource") ||
+            className.contains("ApiDoc")) {
+            return false;
+        }
+        
+        return true;
     }
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
-        // 如果请求路径包含API文档相关路径，不进行处理
+        // 检查请求路径                         
         String path = request.getURI().getPath();
         
-        // 检查是否应该排除当前路径
-        if (EXCLUDE_PATHS.stream().anyMatch(path::contains)) {
+        // 对于API文档相关的请求，直接返回原始内容
+        for (String excludePath : EXCLUDE_PATHS) {
+            if (path.contains(excludePath)) {
+                return body;
+            }
+        }
+        
+        // 如果是API文档相关内容类型，直接返回
+        String contentType = selectedContentType.toString().toLowerCase();
+        if (contentType.contains("swagger") || 
+            contentType.contains("api-docs") || 
+            contentType.contains("openapi") ||
+            contentType.contains("application/yaml")) {
             return body;
         }
                                       

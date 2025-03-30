@@ -16,9 +16,9 @@ import java.util.List;
  * 知识附件控制器
  */
 @Slf4j
-@Tag(name = "知识附件管理", description = "知识文档附件的上传与管理")
-@RestController("knowledgeAttachmentController")
-@RequestMapping("/api/knowledge/attachment")
+@Tag(name = "知识附件", description = "知识附件管理接口")
+@RestController
+@RequestMapping("/knowledge/attachment")
 public class KnowledgeAttachmentController {
 
     @Autowired

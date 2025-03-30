@@ -24,7 +24,7 @@ import java.util.Map;
 @Slf4j
 @RestController("financialReportController")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/report")
+@RequestMapping("/finance/report")
 @Tag(name = "财务报表", description = "财务报表相关接口")
 public class FinancialReportController {
 

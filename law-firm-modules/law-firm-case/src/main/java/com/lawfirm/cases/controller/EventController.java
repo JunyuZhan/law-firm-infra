@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("caseEventController")
-@RequestMapping("/api/case/event")
+@RequestMapping("/case/event")
 @RequiredArgsConstructor
 @Tag(name = "案件事件管理", description = "提供案件事件管理功能，包括事件的创建、更新、查询等操作")
 public class EventController {

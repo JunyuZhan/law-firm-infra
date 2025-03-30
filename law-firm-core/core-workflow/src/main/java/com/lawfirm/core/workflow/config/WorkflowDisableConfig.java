@@ -1,13 +1,16 @@
-package com.lawfirm.api.config;
+package com.lawfirm.core.workflow.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 工作流排除配置
+ * 工作流禁用配置
+ * <p>
  * 负责处理工作流相关的类型依赖缺失情况
+ * </p>
  */
 @Slf4j
 @Configuration
@@ -15,7 +18,8 @@ import lombok.extern.slf4j.Slf4j;
     "org.flowable.spring.boot.EngineConfigurationConfigurer",
     "org.flowable.engine.ProcessEngine"
 })
-public class WorkflowExclusionConfig {
+@ConditionalOnProperty(name = "lawfirm.workflow.enabled", havingValue = "false", matchIfMissing = false)
+public class WorkflowDisableConfig {
     
     /**
      * 配置工作流禁用标志
@@ -31,6 +35,7 @@ public class WorkflowExclusionConfig {
      */
     @Bean("workflowPackagePath")
     public String workflowPackagePath() {
-        return "com.lawfirm.api.workflow.disabled";
+        log.info("工作流包路径设置为禁用路径");
+        return "com.lawfirm.core.workflow.disabled";
     }
 } 

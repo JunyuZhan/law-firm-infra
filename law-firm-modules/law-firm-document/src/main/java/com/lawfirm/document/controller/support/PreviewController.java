@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 @RestController("documentPreviewController")
 @RequiredArgsConstructor
-@RequestMapping("/api/document/preview")
+@RequestMapping("/document/preview")
 @Tag(name = "文档预览", description = "文档在线预览相关接口")
 public class PreviewController {
 

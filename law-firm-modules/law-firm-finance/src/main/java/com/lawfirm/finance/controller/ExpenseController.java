@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController("expenseController")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/expense")
+@RequestMapping("/finance/expense")
 @Tag(name = "支出管理", description = "支出相关接口")
 public class ExpenseController {
 

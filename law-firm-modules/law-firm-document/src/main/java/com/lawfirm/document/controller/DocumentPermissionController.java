@@ -16,11 +16,11 @@ import java.util.List;
  * 文档权限管理控制器
  */
 @Slf4j
+@Tag(name = "文档权限", description = "文档权限管理接口")
 @RestController("documentPermissionController")
-@RequestMapping("/api/document/permission")
+@RequestMapping("/document/permission")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "文档权限管理", description = "文档权限相关接口")
 public class DocumentPermissionController {
 
     private final DocumentPermissionService documentPermissionService;

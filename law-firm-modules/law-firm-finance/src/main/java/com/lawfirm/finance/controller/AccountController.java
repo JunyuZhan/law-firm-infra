@@ -21,10 +21,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
+@Tag(name = "账户管理", description = "账户管理接口")
 @RestController("accountController")
+@RequestMapping("/finance/account")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/account")
-@Tag(name = "账户管理", description = "账户相关接口")
 public class AccountController {
     
     private final AccountService accountService;

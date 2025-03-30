@@ -1,1 +1,2 @@
-com.lawfirm.core.workflow.config.WorkflowAutoConfiguration 
+com.lawfirm.core.workflow.config.WorkflowAutoConfiguration
+com.lawfirm.core.workflow.config.WorkflowDisableAutoConfiguration 

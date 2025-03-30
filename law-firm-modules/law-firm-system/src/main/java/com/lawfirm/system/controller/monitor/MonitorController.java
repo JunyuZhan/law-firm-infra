@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "系统监控", description = "提供系统监控指标和相关接口")
 @RestController("monitorController")
-@RequestMapping("/api/system/monitor")
+@RequestMapping("/system/monitor")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class MonitorController extends BaseController {

@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("caseTaskController")
-@RequestMapping("/api/case/task")
+@RequestMapping("/case/task")
 @RequiredArgsConstructor
 @Tag(name = "案件任务管理", description = "提供案件任务管理功能，包括任务的创建、分配、完成、跟进等操作")
 public class TaskController {

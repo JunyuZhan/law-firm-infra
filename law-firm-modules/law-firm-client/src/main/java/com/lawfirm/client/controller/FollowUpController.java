@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @RestController("clientFollowUpController")
 @RequiredArgsConstructor
-@RequestMapping("/api/client/followup")
+@RequestMapping("/client/followup")
 public class FollowUpController extends BaseController {
 
     private final FollowUpServiceImpl followUpService;

@@ -19,6 +19,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -137,7 +139,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public GroupedOpenApi clientApis() {
         return GroupedOpenApi.builder()
                 .group("客户管理")
-                .pathsToMatch("/api/client/**")
+                .pathsToMatch("/client/**")
                 .packagesToScan("com.lawfirm.client.controller")
                 .build();
     }
@@ -149,7 +151,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public GroupedOpenApi caseApis() {
         return GroupedOpenApi.builder()
                 .group("案件管理")
-                .pathsToMatch("/api/cases/**")
+                .pathsToMatch("/cases/**")
                 .packagesToScan("com.lawfirm.cases.controller")
                 .build();
     }
@@ -161,7 +163,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public GroupedOpenApi contractApis() {
         return GroupedOpenApi.builder()
                 .group("合同管理")
-                .pathsToMatch("/api/contract/**")
+                .pathsToMatch("/contract/**")
                 .packagesToScan("com.lawfirm.contract.controller")
                 .build();
     }
@@ -173,7 +175,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public GroupedOpenApi knowledgeApis() {
         return GroupedOpenApi.builder()
                 .group("知识管理")
-                .pathsToMatch("/api/knowledge/**")
+                .pathsToMatch("/knowledge/**")
                 .packagesToScan("com.lawfirm.knowledge.controller")
                 .build();
     }
@@ -185,7 +187,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public GroupedOpenApi documentApis() {
         return GroupedOpenApi.builder()
                 .group("文档管理")
-                .pathsToMatch("/api/document/**")
+                .pathsToMatch("/document/**")
                 .packagesToScan("com.lawfirm.document.controller")
                 .build();
     }
@@ -197,7 +199,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public GroupedOpenApi financeApis() {
         return GroupedOpenApi.builder()
                 .group("财务管理")
-                .pathsToMatch("/api/finance/**")
+                .pathsToMatch("/finance/**")
                 .packagesToScan("com.lawfirm.finance.controller")
                 .build();
     }
@@ -209,7 +211,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public GroupedOpenApi personnelApis() {
         return GroupedOpenApi.builder()
                 .group("人事管理")
-                .pathsToMatch("/api/personnel/**")
+                .pathsToMatch("/personnel/**")
                 .packagesToScan("com.lawfirm.personnel.controller")
                 .build();
     }
@@ -221,7 +223,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public GroupedOpenApi systemApis() {
         return GroupedOpenApi.builder()
                 .group("系统管理")
-                .pathsToMatch("/api/system/**")
+                .pathsToMatch("/system/**")
                 .packagesToScan("com.lawfirm.system.controller")
                 .build();
     }
@@ -251,16 +253,39 @@ public class OpenApiConfig implements WebMvcConfigurer {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // 添加doc.html视图映射
-        registry.addViewController("/doc").setViewName("redirect:/doc.html");
-        registry.addViewController("/swagger").setViewName("redirect:/doc.html");
-        registry.addViewController("/api-docs").setViewName("redirect:/doc.html");
-        
-        // 添加带context-path的路径
+        registry.addRedirectViewController("/doc", "/doc.html");
         if (contextPath != null && !"/".equals(contextPath)) {
-            registry.addViewController(contextPath + "/doc").setViewName("redirect:" + contextPath + "/doc.html");
-            registry.addViewController(contextPath + "/swagger").setViewName("redirect:" + contextPath + "/doc.html");
-            registry.addViewController(contextPath + "/api-docs").setViewName("redirect:" + contextPath + "/doc.html");
+            registry.addRedirectViewController(contextPath + "/doc", contextPath + "/doc.html");
         }
+    }
+    
+    /**
+     * 配置内容协商，确保API文档始终以JSON格式返回
+     */
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer
+            .defaultContentType(MediaType.APPLICATION_JSON)
+            .mediaType("json", MediaType.APPLICATION_JSON);
+    }
+    
+    /**
+     * 添加专门针对API文档的响应体处理
+     */
+    @Bean
+    public OpenApiCustomizer apiDocContentOpenApiCustomizer() {
+        return openApi -> {
+            // 确保所有API文档响应格式正确
+            openApi.getPaths().values().forEach(pathItem -> {
+                pathItem.readOperations().forEach(operation -> {
+                    // 添加OpenAPI生产内容类型
+                    if (operation.getResponses().get("200") != null) {
+                        operation.getResponses().get("200").getContent()
+                            .put(MediaType.APPLICATION_JSON_VALUE, 
+                                new io.swagger.v3.oas.models.media.MediaType());
+                    }
+                });
+            });
+        };
     }
 } 

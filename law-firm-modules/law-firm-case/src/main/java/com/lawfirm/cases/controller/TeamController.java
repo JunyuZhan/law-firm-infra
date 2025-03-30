@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("caseTeamController")
-@RequestMapping("/api/case/team")
+@RequestMapping("/case/team")
 @RequiredArgsConstructor
 @Tag(name = "案件团队管理", description = "提供案件团队管理功能，包括团队成员的添加、移除、角色分配等操作")
 public class TeamController {

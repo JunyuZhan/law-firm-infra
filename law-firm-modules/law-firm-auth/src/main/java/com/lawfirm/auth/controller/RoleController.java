@@ -21,9 +21,9 @@ import java.util.List;
  * 适配Vue-Vben-Admin风格
  */
 @Slf4j
-@Tag(name = "角色管理", description = "角色相关接口")
+@Tag(name = "角色管理", description = "角色管理接口")
 @RestController("roleController")
-@RequestMapping("/api/role")
+@RequestMapping("/role")
 @RequiredArgsConstructor
 public class RoleController {
     

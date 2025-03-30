@@ -22,9 +22,9 @@ import jakarta.validation.constraints.NotBlank;
  * 适配Vue-Vben-Admin风格
  */
 @Slf4j
-@Tag(name = "认证服务", description = "用户登录、注册、登出等操作")
+@Tag(name = "认证管理", description = "认证相关接口")
 @RestController("authController")
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
     

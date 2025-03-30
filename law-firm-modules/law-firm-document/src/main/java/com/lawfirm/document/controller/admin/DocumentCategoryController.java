@@ -22,10 +22,10 @@ import java.util.List;
  * 文档分类管理控制器
  */
 @Slf4j
+@Tag(name = "文档分类", description = "文档分类管理接口")
 @RestController("documentCategoryController")
+@RequestMapping("/document/category")
 @RequiredArgsConstructor
-@RequestMapping("/api/document/category")
-@Tag(name = "文档分类管理", description = "文档分类管理相关接口")
 public class DocumentCategoryController {
 
     @Qualifier("documentCategoryServiceImpl")

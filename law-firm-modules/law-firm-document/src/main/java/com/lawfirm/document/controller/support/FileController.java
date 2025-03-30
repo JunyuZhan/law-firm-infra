@@ -27,10 +27,10 @@ import java.nio.charset.StandardCharsets;
  * 文档文件处理控制器
  */
 @Slf4j
-@RestController("documentFileController")
+@Tag(name = "文件操作", description = "文件上传下载接口")
+@RestController
+@RequestMapping("/document/files")
 @RequiredArgsConstructor
-@RequestMapping("/api/document/files")
-@Tag(name = "文档文件处理", description = "文档文件上传下载等操作")
 public class FileController {
 
     private final DocumentService documentService;

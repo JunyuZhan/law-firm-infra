@@ -27,7 +27,7 @@ import java.util.Map;
 @Slf4j
 @Tag(name = "Vue-Vben-Admin API")
 @RestController("vbenApiController")
-@RequestMapping("/api")
+@RequestMapping("")
 @RequiredArgsConstructor
 public class VbenApiController {
 

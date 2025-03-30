@@ -26,7 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @EnableConfigurationProperties(AuditProperties.class)
 @ConditionalOnProperty(prefix = "law.firm.audit", name = "enabled", havingValue = "true", matchIfMissing = true)
-@Import(AuditAsyncConfig.class)
+@Import({
+    AuditAsyncConfig.class,
+    DevLogConfig.class
+})
 public class AuditAutoConfiguration {
 
     @Bean

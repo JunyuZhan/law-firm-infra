@@ -20,10 +20,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
+@Tag(name = "预算管理", description = "预算管理接口")
 @RestController("budgetController")
+@RequestMapping("/finance/budget")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/budget")
-@Tag(name = "预算管理", description = "预算相关接口")
 public class BudgetController {
 
     private final BudgetService budgetService;

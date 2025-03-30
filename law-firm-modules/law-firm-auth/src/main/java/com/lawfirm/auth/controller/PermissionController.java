@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "权限管理", description = "权限相关接口")
 @RestController("permissionController")
-@RequestMapping("/api/permission")
+@RequestMapping("/permission")
 @RequiredArgsConstructor
 public class PermissionController {
     

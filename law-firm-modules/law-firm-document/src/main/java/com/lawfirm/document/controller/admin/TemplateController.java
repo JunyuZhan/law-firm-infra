@@ -24,10 +24,10 @@ import java.util.Map;
  * 模板管理控制器
  */
 @Slf4j
-@RestController("documentTemplateController")
+@Tag(name = "文档模板", description = "文档模板管理接口")
+@RestController
+@RequestMapping("/document/admin/template")
 @RequiredArgsConstructor
-@RequestMapping("/api/document/admin/template")
-@Tag(name = "文档模板管理", description = "文档模板相关接口")
 public class TemplateController {
 
     private final TemplateService templateService;

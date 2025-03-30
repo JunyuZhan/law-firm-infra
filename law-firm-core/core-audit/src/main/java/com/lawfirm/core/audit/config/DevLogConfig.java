@@ -1,27 +1,35 @@
-package com.lawfirm.api.config;
+package com.lawfirm.core.audit.config;
 
-import com.lawfirm.common.log.config.LogAutoConfiguration;
 import com.lawfirm.common.log.properties.LogProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * 日志配置类
- * 为开发环境提供日志配置
+ * 开发环境日志配置类
+ * <p>
+ * 为开发环境提供简化的日志配置
+ * </p>
  */
+@Slf4j
 @Configuration
-@Import(LogAutoConfiguration.class)
-public class LogConfig {
+@ConditionalOnProperty(name = "spring.profiles.active", havingValue = "dev", matchIfMissing = true)
+public class DevLogConfig {
 
     /**
-     * 提供日志属性Bean
-     * 用于配置文档模块的日志行为
+     * 提供开发环境日志属性Bean
+     * <p>
+     * 用于简化开发环境的日志配置，禁用复杂日志功能
+     * </p>
+     * 
+     * @return 日志属性配置
      */
     @Bean
     @Primary
-    public LogProperties logProperties() {
+    public LogProperties devLogProperties() {
+        log.info("初始化开发环境日志配置");
         LogProperties props = new LogProperties();
         // 开发环境禁用复杂日志功能
         props.setEnableMethodLog(false);

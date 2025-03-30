@@ -24,10 +24,10 @@ import java.util.List;
  * 合同财务管理控制器
  */
 @Slf4j
+@Tag(name = "合同财务管理", description = "合同财务管理接口")
 @RestController("contractFinanceController")
+@RequestMapping("/finance/contract")
 @RequiredArgsConstructor
-@RequestMapping("/api/finance/contract")
-@Tag(name = "合同财务管理", description = "合同财务相关接口")
 public class ContractFinanceController {
 
     private final ContractFinanceService contractFinanceService;

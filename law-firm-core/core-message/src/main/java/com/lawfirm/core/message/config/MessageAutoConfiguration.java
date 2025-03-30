@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +18,8 @@ import lombok.extern.slf4j.Slf4j;
     MessageConfig.class,
     MessageSecurityConfig.class,
     MessageRedisConfig.class,
-    RetryConfig.class
+    RetryConfig.class,
+    MessageServiceConfig.class
 })
 public class MessageAutoConfiguration {
 
@@ -37,10 +39,8 @@ public class MessageAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(MessagePropertiesProvider.class)
-    public MessagePropertiesProvider defaultMessagePropertiesProvider() {
+    public MessagePropertiesProvider defaultMessagePropertiesProvider(MessageProperties messageProperties) {
         log.info("创建默认消息配置提供者");
-        MessageProperties properties = new MessageProperties();
-        properties.setEnabled(true);
-        return () -> properties;
+        return () -> messageProperties;
     }
 } 
