@@ -48,7 +48,7 @@ public class CacheConfig {
         this.environment = environment;
     }
 
-    @Bean
+    @Bean(name = "commonRedissonClient")
     @ConditionalOnProperty(prefix = "spring.redis", name = "host")
     public RedissonClient redissonClient() {
         Config config = new Config();

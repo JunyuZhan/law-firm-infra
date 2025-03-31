@@ -4,7 +4,9 @@ import com.lawfirm.auth.security.filter.JwtAuthenticationFilter;
 import com.lawfirm.auth.security.handler.LoginFailureHandler;
 import com.lawfirm.auth.security.handler.LoginSuccessHandler;
 import com.lawfirm.auth.security.provider.JwtTokenProvider;
+import com.lawfirm.common.security.config.BaseSecurityConfig;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -37,16 +39,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Order(90)  // 确保此配置在通用安全配置之前加载
-public class SecurityConfig {
+public class SecurityConfig extends BaseSecurityConfig {
     
     private final JwtTokenProvider tokenProvider;
     private final LoginSuccessHandler loginSuccessHandler;
     private final LoginFailureHandler loginFailureHandler;
     
     /**
-     * 配置密码编码器
+     * 配置密码编码器，覆盖父类方法
+     * 
+     * 注意：此Bean只有在缺少passwordEncoder Bean时才会创建
+     * 在API模块中，会由PasswordEncoderConfig提供主要的passwordEncoder
      */
     @Bean("authPasswordEncoder")
+    @ConditionalOnMissingBean(name = "passwordEncoder")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -55,7 +61,6 @@ public class SecurityConfig {
      * 配置认证管理器
      */
     @Bean("authAuthenticationManager")
-    @Primary
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
@@ -69,31 +74,29 @@ public class SecurityConfig {
     }
     
     /**
-     * 配置安全过滤链
+     * 配置安全过滤链，覆盖父类方法
      */
     @Bean("authFilterChain")
-    @Order(95)  // 确保此过滤链在通用过滤链之前加载
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            // 禁用CSRF
-            .csrf(csrf -> csrf.disable())
-            // 基于Token，不需要Session
+        // 先配置基础安全设置
+        http.csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // 请求授权配置
-            .authorizeHttpRequests(authorize -> authorize
-                // 允许匿名访问的接口
-                .requestMatchers("/auth/login", "/auth/captcha", "/auth/refresh").permitAll()
-                // 健康检查接口
-                .requestMatchers("/actuator/**").permitAll()
-                // 其他所有请求需要认证
-                .anyRequest().authenticated()
-            )
             // 添加JWT过滤器
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             // 配置登录成功处理器
             .formLogin(form -> form
                 .successHandler(loginSuccessHandler)
                 .failureHandler(loginFailureHandler)
+            )
+            // 配置路径权限
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/login", "/auth/register").permitAll()
+                .requestMatchers("/doc.html", "/doc.html/**").permitAll()
+                .requestMatchers("/webjars/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-resources/**", "/swagger-ui/**").permitAll()
+                .requestMatchers("/knife4j/**").permitAll()
+                .anyRequest().authenticated()
             );
         
         return http.build();

@@ -1,51 +1,28 @@
+# =============================================
+# API文档配置 - 简化版本避免冲突
+# =============================================
+
 # Springdoc OpenAPI配置
 springdoc:
   # API文档配置
   api-docs:
     enabled: true
     path: /v3/api-docs
-    resolve-schema-properties: true
-    version: OPENAPI_3_0
-    
-  # Swagger UI配置 - 完全禁用  
+    groups:
+      enabled: true
+  # Swagger UI配置
   swagger-ui:
-    enabled: false
+    enabled: true
     path: /swagger-ui.html
-    
-  # 简化路径匹配
-  paths-to-match: 
-    - /**
-  show-actuator: false
+  # 扫描包配置
   packages-to-scan: com.lawfirm
-  cache:
-    disabled: false
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
 
-# 启用Knife4j配置 - 加强配置
+# Knife4j配置
 knife4j:
   enable: true
   production: false
-  basic:
-    enable: false
   setting:
     language: zh-CN
-    enable-swagger-models: true
-    enable-document-manage: true
-    swagger-model-name: 实体类列表
-    enable-version: false
-    enable-footer: false
-    enable-debug: true
-    enable-host: true
-    enable-host-text: http://localhost:8080
-    enable-request-cache: true
-    enable-filter-multipart: false
-    enable-dynamic-parameter: true
-    
-  # 文档扩展配置
-  documents:
-    - name: 法律系统
-      locations: classpath:markdown/*
-      group: default
-      
-  # 显式指定只使用Knife4j的UI
-  enable-open-api: true
-  enable-swagger-ui: false 
+    enableDebug: true 

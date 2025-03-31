@@ -193,4 +193,21 @@ CREATE TABLE IF NOT EXISTS sys_permission_request (
     expire_time DATETIME COMMENT '权限过期时间',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='权限申请表'; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='权限申请表';
+
+-- 系统配置表
+CREATE TABLE IF NOT EXISTS sys_config (
+  id bigint AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+  config_name varchar(100) NOT NULL COMMENT '配置名称',
+  config_key varchar(100) NOT NULL COMMENT '配置键',
+  config_value varchar(500) NOT NULL COMMENT '配置值',
+  config_type varchar(20) NOT NULL DEFAULT 'SYSTEM' COMMENT '配置类型（SYSTEM系统配置/BUSINESS业务配置）',
+  is_system tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否系统内置（0否/1是）',
+  remark varchar(500) DEFAULT NULL COMMENT '备注说明',
+  create_by varchar(64) NOT NULL COMMENT '创建人',
+  create_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  update_by varchar(64) DEFAULT NULL COMMENT '更新人',
+  update_time datetime DEFAULT NULL COMMENT '更新时间',
+  deleted tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除（0否/1是）',
+  UNIQUE KEY uk_config_key (config_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表'; 

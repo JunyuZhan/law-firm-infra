@@ -22,7 +22,7 @@ public class DocumentSecurityConfig {
      * @param authorization 授权服务
      * @return 文档安全上下文
      */
-    @Bean
+    @Bean(name = "documentSecurityContext")
     public SecurityContext documentSecurityContext(@Qualifier("jdbcAuthorization") Authorization authorization) {
         return new SecurityContext(authorization);
     }

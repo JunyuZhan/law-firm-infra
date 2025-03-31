@@ -14,7 +14,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @Configuration
 public class MessageRedisConfig {
 
-    @Bean
+    @Bean(name = "messageRedisTemplate")
     public RedisTemplate<String, Object> messageRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);

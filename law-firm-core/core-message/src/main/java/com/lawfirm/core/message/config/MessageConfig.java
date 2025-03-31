@@ -65,7 +65,7 @@ public class MessageConfig {
         private String ttl = "7d";
     }
 
-    @Bean
+    @Bean(name = "messageTaskExecutor")
     public ThreadPoolTaskExecutor messageTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(sender.getAsyncPoolSize());

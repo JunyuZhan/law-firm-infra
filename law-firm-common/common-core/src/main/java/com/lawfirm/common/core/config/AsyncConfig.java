@@ -28,7 +28,7 @@ public class AsyncConfig {
      * 
      * @return 应用任务执行器
      */
-    @Bean
+    @Bean(name = "applicationTaskExecutor")
     @ConditionalOnMissingBean(name = "applicationTaskExecutor")
     public TaskExecutor applicationTaskExecutor() {
         log.info("创建默认应用任务执行器");
@@ -45,7 +45,7 @@ public class AsyncConfig {
      * 
      * @return 异步任务执行器
      */
-    @Bean
+    @Bean(name = "asyncTaskExecutor")
     @ConditionalOnMissingBean(AsyncTaskExecutor.class)
     public AsyncTaskExecutor asyncTaskExecutor() {
         log.info("创建默认异步任务执行器");

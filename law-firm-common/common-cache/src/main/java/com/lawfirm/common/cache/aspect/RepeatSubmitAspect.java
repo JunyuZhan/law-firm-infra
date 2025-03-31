@@ -2,13 +2,13 @@ package com.lawfirm.common.cache.aspect;
 
 import com.lawfirm.common.cache.annotation.RepeatSubmit;
 import com.lawfirm.common.cache.constant.CacheConstants;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
@@ -23,10 +23,13 @@ import java.util.Collections;
 @Slf4j
 @Aspect
 @Component
-@RequiredArgsConstructor
 public class RepeatSubmitAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    
+    public RepeatSubmitAspect(@Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
     
     // Lua脚本：如果key不存在则设置并返回1，否则返回0
     private static final String LOCK_SCRIPT = 

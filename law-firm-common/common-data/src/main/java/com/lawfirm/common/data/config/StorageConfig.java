@@ -29,7 +29,7 @@ public class StorageConfig {
         private String secretKey;
         private String bucketName;
 
-        @Bean
+        @Bean(name = "minioClient")
         public MinioClient minioClient() {
             return MinioClient.builder()
                     .endpoint(endpoint)
@@ -51,7 +51,7 @@ public class StorageConfig {
         private String accessKeySecret;
         private String bucketName;
 
-        @Bean
+        @Bean(name = "aliyunOssClient")
         public OSS ossClient() {
             return new OSSClientBuilder()
                     .build(endpoint, accessKeyId, accessKeySecret);

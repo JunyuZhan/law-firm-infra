@@ -32,7 +32,7 @@ public class LogAutoConfiguration {
     /**
      * 配置MDC过滤器，用于添加traceId
      */
-    @Bean
+    @Bean(name = "mdcTraceIdFilter")
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public MdcTraceIdFilter mdcTraceIdFilter() {
         return new MdcTraceIdFilter();

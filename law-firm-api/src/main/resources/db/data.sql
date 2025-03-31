@@ -1,11 +1,12 @@
 -- 请注意这是API模块的基础数据初始化，auth相关数据已迁移到auth模块
 
 -- 系统配置
-INSERT INTO sys_config (id, config_key, config_value, config_name, remark, status, create_time, update_time, deleted)
-VALUES (1, 'system.name', '律师事务所管理系统', '系统名称', '系统名称配置', 1, NOW(), NOW(), 0),
-       (2, 'system.version', '1.0.0', '系统版本', '当前系统版本', 1, NOW(), NOW(), 0),
-       (3, 'system.notice', '欢迎使用律师事务所管理系统', '系统公告', '登录页面显示的公告', 1, NOW(), NOW(), 0),
-       (4, 'system.logo', '/logo.png', '系统Logo', '系统Logo图片路径', 1, NOW(), NOW(), 0)
+INSERT INTO sys_config (id, config_key, config_value, config_name, remark, status, create_time, update_time, deleted, config_type, is_system, create_by)
+VALUES (1, 'system.name', '律师事务所管理系统', '系统名称', '系统名称配置', 1, NOW(), NOW(), 0, 'SYSTEM', 1, 'admin'),
+       (2, 'system.version', '1.0.0', '系统版本', '系统版本配置', 1, NOW(), NOW(), 0, 'SYSTEM', 1, 'admin'),
+       (3, 'system.notice', '欢迎使用律师事务所管理系统', '系统公告', '登录页面显示的公告', 1, NOW(), NOW(), 0, 'SYSTEM', 1, 'admin'),
+       (4, 'system.logo', '/logo.png', '系统Logo', '系统Logo图片路径', 1, NOW(), NOW(), 0, 'SYSTEM', 1, 'admin'),
+       (5, 'storage.strategy', 'LOCAL', '存储策略', '文件存储策略: LOCAL-本地存储, ALIYUN_OSS-阿里云OSS, AWS_S3-AWS S3', 1, NOW(), NOW(), 0, 'SYSTEM', 1, 'admin')
 ON DUPLICATE KEY UPDATE update_time = NOW();
 
 -- 字典类型

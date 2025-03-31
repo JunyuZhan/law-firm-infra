@@ -46,7 +46,7 @@ public class CaseSecurityConfiguration {
      * 配置案件权限提供者
      * 集成认证模块提供的权限框架
      */
-    @Bean
+    @Bean(name = "casePermissionConfigurer")
     public CasePermissionConfigurer casePermissionConfigurer() {
         log.info("初始化案件权限配置");
         return new CasePermissionConfigurer(securityService, securityAudit);
@@ -55,7 +55,7 @@ public class CaseSecurityConfiguration {
     /**
      * 配置案件数据权限过滤器
      */
-    @Bean
+    @Bean(name = "caseDataPermissionFilter")
     public CaseDataPermissionFilter caseDataPermissionFilter() {
         log.info("初始化案件数据权限过滤器");
         return new CaseDataPermissionFilter(securityService);

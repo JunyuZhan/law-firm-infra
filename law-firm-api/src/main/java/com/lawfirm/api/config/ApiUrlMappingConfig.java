@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * API URL映射配置
- * 提供URL映射转发，确保各种路径格式都能正确访问API
+ * 专门处理API文档的URL映射
  */
 @Slf4j
 @Configuration
@@ -17,46 +17,21 @@ public class ApiUrlMappingConfig implements WebMvcConfigurer {
     @Value("${server.servlet.context-path:/api}")
     private String contextPath;
 
+    /**
+     * 添加API文档相关的视图控制器映射
+     * 确保根路径映射到API文档，简化访问
+     */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        log.info("配置API URL映射, context-path: {}", contextPath);
+        log.info("配置API文档URL映射, 上下文路径: {}", contextPath);
         
-        String prefix = "";
-        if (contextPath != null && !contextPath.isEmpty() && !"/".equals(contextPath)) {
-            if (contextPath.startsWith("/")) {
-                prefix = contextPath.substring(1);
-            } else {
-                prefix = contextPath;
-            }
-        }
+        // 配置根路径到文档的转发
+        registry.addViewController("/").setViewName("forward:/doc.html");
         
-        // 认证相关
-        registry.addViewController("/auth/login").setViewName("forward:/login");
-        registry.addViewController("/api/auth/login").setViewName("forward:/login");
-        registry.addViewController("/auth/refresh").setViewName("forward:/refreshToken");
-        registry.addViewController("/api/auth/refresh").setViewName("forward:/refreshToken");
+        // 确保knife4j文档可访问
+        registry.addViewController("/doc").setViewName("forward:/doc.html");
         
-        // 用户信息相关
-        registry.addViewController("/users/info").setViewName("forward:/getUserInfo");
-        registry.addViewController("/api/users/info").setViewName("forward:/getUserInfo");
-        registry.addViewController("/auth/logout").setViewName("forward:/logout");
-        registry.addViewController("/api/auth/logout").setViewName("forward:/logout");
-        
-        // 菜单相关
-        registry.addViewController("/permissions/user/menus").setViewName("forward:/getMenuList");
-        registry.addViewController("/api/permissions/user/menus").setViewName("forward:/getMenuList");
-        registry.addViewController("/api/menu/list").setViewName("forward:/getMenuList");
-        
-        // 权限相关
-        registry.addViewController("/api/permissions").setViewName("forward:/getPermCode");
-        
-        // API文档相关 - 确保所有路径格式都能访问
-        registry.addViewController("/doc").setViewName("forward:/knife4j/doc.html");
-        registry.addViewController("/docs").setViewName("forward:/knife4j/doc.html");
-        registry.addViewController("/api-docs").setViewName("forward:/knife4j/doc.html");
-        registry.addViewController("/swagger").setViewName("forward:/knife4j/doc.html");
-        registry.addViewController("/swagger-ui").setViewName("forward:/knife4j/doc.html");
-        
-        log.info("API URL映射配置完成");
+        // 确保swagger-ui可访问
+        registry.addViewController("/swagger").setViewName("forward:/swagger-ui.html");
     }
 } 

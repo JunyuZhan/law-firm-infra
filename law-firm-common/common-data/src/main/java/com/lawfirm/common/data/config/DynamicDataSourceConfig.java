@@ -30,13 +30,13 @@ public class DynamicDataSourceConfig {
     @Autowired
     private DynamicDataSourceProperties properties;
 
-    @Bean
+    @Bean(name = "defaultDataSourceCreator")
     @ConditionalOnMissingBean
     public DefaultDataSourceCreator defaultDataSourceCreator() {
         return new DefaultDataSourceCreator();
     }
 
-    @Bean
+    @Bean(name = "dynamicDataSourceProvider")
     @ConditionalOnMissingBean(name = "dynamicDataSourceProvider")
     public DynamicDataSourceProvider dynamicDataSourceProvider(
             @Qualifier("masterDataSource") DataSource masterDataSource,
@@ -51,7 +51,7 @@ public class DynamicDataSourceConfig {
         };
     }
 
-    @Bean
+    @Bean(name = "dataSource")
     @Primary
     @ConditionalOnMissingBean(name = "dataSource")
     public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {

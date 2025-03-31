@@ -45,7 +45,7 @@ public class AuditConfig {
     /**
      * 初始化审计配置
      */
-    @Bean
+    @Bean(name = "personnelAuditConfig")
     public Object initAuditConfig() {
         log.info("初始化人事模块审计配置");
         

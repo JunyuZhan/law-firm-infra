@@ -45,7 +45,7 @@ public class SysConfig extends ModelBaseEntity {
     /**
      * 配置描述
      */
-    @TableField("description")
+    @TableField("remark")
     private String description;
 
     /**
@@ -53,4 +53,16 @@ public class SysConfig extends ModelBaseEntity {
      */
     @TableField("is_system")
     private Integer isSystem;
+    
+    /**
+     * 创建人
+     */
+    @TableField("create_by")
+    private String createBy;
+    
+    /**
+     * 更新人
+     */
+    @TableField("update_by")
+    private String updateBy;
 } 

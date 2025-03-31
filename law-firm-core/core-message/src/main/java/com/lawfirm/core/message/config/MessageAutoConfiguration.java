@@ -26,7 +26,7 @@ public class MessageAutoConfiguration {
     /**
      * 创建消息配置Bean，如果业务层没有提供
      */
-    @Bean
+    @Bean(name = "messageProperties")
     @ConditionalOnMissingBean(MessageProperties.class)
     @ConditionalOnBean(MessagePropertiesProvider.class)
     public MessageProperties messageProperties(MessagePropertiesProvider provider) {
@@ -37,7 +37,7 @@ public class MessageAutoConfiguration {
     /**
      * 提供默认消息配置提供者实现
      */
-    @Bean
+    @Bean(name = "defaultMessagePropertiesProvider")
     @ConditionalOnMissingBean(MessagePropertiesProvider.class)
     public MessagePropertiesProvider defaultMessagePropertiesProvider(MessageProperties messageProperties) {
         log.info("创建默认消息配置提供者");

@@ -21,7 +21,7 @@ public class SearchServiceConfig {
     /**
      * 搜索服务空实现
      */
-    @Bean
+    @Bean(name = "knowledgeSearchServiceImpl")
     @ConditionalOnMissingBean(name = "searchServiceImpl")
     public Object searchServiceImpl() {
         log.warn("未检测到搜索服务实现，使用默认空实现");
@@ -37,7 +37,7 @@ public class SearchServiceConfig {
     /**
      * 索引服务空实现
      */
-    @Bean
+    @Bean(name = "knowledgeIndexServiceImpl")
     @ConditionalOnMissingBean(name = "indexServiceImpl")
     public Object indexServiceImpl() {
         log.warn("未检测到索引服务实现，使用默认空实现");

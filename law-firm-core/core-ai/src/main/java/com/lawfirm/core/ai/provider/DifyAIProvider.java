@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class DifyAIProvider implements AIProvider {
     @Value("${lawfirm.ai.providers.dify.timeout:30000}")
     private int timeout;
 
-    public DifyAIProvider(RestTemplate restTemplate) {
+    public DifyAIProvider(@Qualifier("aiRestTemplate") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

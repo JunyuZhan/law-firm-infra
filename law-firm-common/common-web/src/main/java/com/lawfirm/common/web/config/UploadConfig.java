@@ -16,7 +16,7 @@ public class UploadConfig {
     /**
      * 文件上传配置
      */
-    @Bean
+    @Bean(name = "multipartConfigElement")
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         // 单个文件最大

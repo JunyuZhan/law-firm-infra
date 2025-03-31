@@ -25,7 +25,7 @@ public class AIAutoConfiguration {
     /**
      * 创建AI核心配置
      */
-    @Bean
+    @Bean(name = "aiConfig")
     public AIConfig aiConfig() {
         log.info("创建AI核心配置");
         return new AIConfig();
@@ -34,7 +34,7 @@ public class AIAutoConfiguration {
     /**
      * 创建AI模型配置
      */
-    @Bean
+    @Bean(name = "modelConfig")
     public ModelConfig modelConfig() {
         log.info("创建AI模型配置");
         return new ModelConfig();
@@ -43,7 +43,7 @@ public class AIAutoConfiguration {
     /**
      * 当没有AIPropertiesProvider实现类时提供默认实现
      */
-    @Bean
+    @Bean(name = "defaultAIPropertiesProvider")
     @ConditionalOnMissingBean(AIPropertiesProvider.class)
     public AIPropertiesProvider defaultAIPropertiesProvider(AIConfig aiConfig) {
         log.info("创建默认AI配置提供者");
@@ -53,7 +53,7 @@ public class AIAutoConfiguration {
     /**
      * 创建RestTemplate
      */
-    @Bean
+    @Bean(name = "aiRestTemplate")
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         log.info("创建AI模块RestTemplate");
         return builder

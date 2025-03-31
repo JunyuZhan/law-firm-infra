@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.client.RestTemplate;
@@ -34,10 +35,29 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     /**
+     * 配置静态资源映射
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Knife4j 资源映射
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/")
+                .resourceChain(false);
+                
+        registry.addResourceHandler("/doc.html", "/swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/")
+                .resourceChain(false);
+                
+        registry.addResourceHandler("/swagger-resources/**", "/v3/api-docs/**", "/knife4j/**")
+                .addResourceLocations("classpath:/META-INF/resources/")
+                .resourceChain(false);
+    }
+
+    /**
      * RestTemplate Bean提供方法
      * 供各模块使用的标准HTTP客户端
      */
-    @Bean
+    @Bean(name = "commonRestTemplate")
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }

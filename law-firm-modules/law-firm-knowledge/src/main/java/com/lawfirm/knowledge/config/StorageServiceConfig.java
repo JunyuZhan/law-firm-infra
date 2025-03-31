@@ -30,7 +30,7 @@ public class StorageServiceConfig {
     /**
      * 文件服务空实现
      */
-    @Bean
+    @Bean(name = "knowledgeFileServiceImpl")
     @ConditionalOnMissingBean(name = "fileServiceImpl")
     public Object fileServiceImpl() {
         log.warn("未检测到文件服务实现，使用默认本地文件系统实现");
@@ -97,7 +97,7 @@ public class StorageServiceConfig {
     /**
      * 存储桶服务空实现
      */
-    @Bean
+    @Bean(name = "knowledgeBucketServiceImpl")
     @ConditionalOnMissingBean(name = "bucketServiceImpl")
     public Object bucketServiceImpl() {
         log.warn("未检测到存储桶服务实现，使用默认空实现");

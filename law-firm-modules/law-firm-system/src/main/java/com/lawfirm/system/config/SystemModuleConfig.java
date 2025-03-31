@@ -28,7 +28,7 @@ public class SystemModuleConfig {
     /**
      * 系统监控配置
      */
-    @Bean
+    @Bean(name = "systemMonitorProperties")
     @ConfigurationProperties(prefix = "system.monitor")
     public MonitorProperties monitorProperties() {
         return new MonitorProperties();
@@ -37,7 +37,7 @@ public class SystemModuleConfig {
     /**
      * 系统升级配置
      */
-    @Bean
+    @Bean(name = "systemUpgradeProperties")
     @ConfigurationProperties(prefix = "system.upgrade")
     public UpgradeProperties upgradeProperties() {
         return new UpgradeProperties();
@@ -45,10 +45,12 @@ public class SystemModuleConfig {
 
     /**
      * 系统日志配置
+     * 
+     * 注意：Bean名称已更改为systemLogProperties，避免与common-log模块冲突
      */
-    @Bean
+    @Bean("systemLogProperties")
     @ConfigurationProperties(prefix = "system.log")
-    public LogProperties logProperties() {
+    public LogProperties systemLogProperties() {
         return new LogProperties();
     }
 

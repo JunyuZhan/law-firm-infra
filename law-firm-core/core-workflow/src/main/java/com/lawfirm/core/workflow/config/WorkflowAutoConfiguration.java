@@ -25,7 +25,7 @@ public class WorkflowAutoConfiguration {
      * @param provider 工作流配置提供者
      * @return 工作流配置属性
      */
-    @Bean
+    @Bean(name = "workflowProperties")
     @ConditionalOnBean(WorkflowPropertiesProvider.class)
     public WorkflowProperties workflowProperties(WorkflowPropertiesProvider provider) {
         return provider.getWorkflowProperties();
@@ -36,7 +36,7 @@ public class WorkflowAutoConfiguration {
      * 
      * @return 默认的工作流配置属性
      */
-    @Bean
+    @Bean(name = "defaultWorkflowProperties")
     @ConditionalOnMissingBean(WorkflowPropertiesProvider.class)
     public WorkflowProperties defaultWorkflowProperties() {
         WorkflowProperties properties = new WorkflowProperties();

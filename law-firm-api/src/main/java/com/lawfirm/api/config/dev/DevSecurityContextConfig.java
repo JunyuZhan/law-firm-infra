@@ -37,7 +37,6 @@ public class DevSecurityContextConfig {
      * 主要用于开发测试环境
      */
     @Bean("authenticationManager")
-    @Primary
     @Order(80)
     public AuthenticationManager devAuthenticationManager() {
         log.info("配置开发环境测试认证管理器");
@@ -81,7 +80,7 @@ public class DevSecurityContextConfig {
     /**
      * 开发环境密码编码器
      */
-    @Bean("passwordEncoder")
+    @Bean("devTestPasswordEncoder")
     public PasswordEncoder devPasswordEncoder() {
         log.info("配置开发环境测试密码编码器");
         return new PasswordEncoder() {

@@ -33,7 +33,7 @@ public class AppCacheConfig {
     /**
      * 提供缓存属性Bean
      */
-    @Bean
+    @Bean(name = "appCacheProperties")
     @Primary
     public CacheProperties cacheProperties() {
         log.info("初始化缓存配置：默认使用本地缓存");

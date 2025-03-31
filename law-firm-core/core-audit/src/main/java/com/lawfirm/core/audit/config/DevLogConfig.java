@@ -26,7 +26,7 @@ public class DevLogConfig {
      * 
      * @return 日志属性配置
      */
-    @Bean
+    @Bean(name = "devLogProperties")
     @Primary
     public LogProperties devLogProperties() {
         log.info("初始化开发环境日志配置");

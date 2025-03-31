@@ -24,7 +24,7 @@ public class MessageServiceConfig {
     /**
      * 加密服务Bean
      */
-    @Bean
+    @Bean(name = "cryptoService")
     @ConditionalOnProperty(name = "message.crypto.enabled", havingValue = "true", matchIfMissing = true)
     public CryptoService cryptoService() {
         log.info("创建加密服务");
@@ -91,7 +91,7 @@ public class MessageServiceConfig {
     /**
      * RocketMQ功能禁用标记
      */
-    @Bean
+    @Bean(name = "rocketMQDisabledChecker")
     @ConditionalOnProperty(name = "rocketmq.enabled", havingValue = "false", matchIfMissing = true)
     public Object rocketMQDisabledChecker() {
         log.info("RocketMQ功能已禁用");

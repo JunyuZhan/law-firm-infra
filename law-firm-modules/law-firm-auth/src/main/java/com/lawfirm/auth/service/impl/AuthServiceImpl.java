@@ -7,8 +7,8 @@ import com.lawfirm.model.auth.dto.auth.LoginDTO;
 import com.lawfirm.model.auth.dto.auth.TokenDTO;
 import com.lawfirm.model.auth.service.AuthService;
 import com.lawfirm.model.auth.vo.LoginVO;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,12 +25,20 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Service("authServiceImpl")
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
+    
+    public AuthServiceImpl(
+            AuthenticationManager authenticationManager,
+            JwtTokenProvider tokenProvider,
+            @Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        this.authenticationManager = authenticationManager;
+        this.tokenProvider = tokenProvider;
+        this.redisTemplate = redisTemplate;
+    }
     
     private static final String CAPTCHA_KEY_PREFIX = "auth:captcha:";
     private static final String TOKEN_KEY_PREFIX = "auth:token:";

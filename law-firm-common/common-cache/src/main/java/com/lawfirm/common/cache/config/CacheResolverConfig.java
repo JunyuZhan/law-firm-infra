@@ -38,7 +38,7 @@ public class CacheResolverConfig implements CachingConfigurer {
      * 
      * @return 缓存解析器
      */
-    @Bean
+    @Bean(name = "cacheResolver")
     @Primary
     @Override
     public CacheResolver cacheResolver() {

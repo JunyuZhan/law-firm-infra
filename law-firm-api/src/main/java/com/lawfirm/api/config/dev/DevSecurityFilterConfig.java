@@ -43,8 +43,7 @@ public class DevSecurityFilterConfig {
      * @return 安全过滤链
      * @throws Exception 配置异常
      */
-    @Bean
-    @Primary
+    @Bean(name = "devSecurityFilterChain")
     @Order(50) // 提高优先级
     public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
         log.info("配置开发环境简化安全过滤链 - 最高优先级，允许所有请求，上下文路径: {}", contextPath);
@@ -68,12 +67,14 @@ public class DevSecurityFilterConfig {
     }
     
     /**
-     * API文档专用安全过滤链
+     * API文档专用安全过滤链(开发环境专用)
+     * 
+     * 注意：修改了方法名以避免与ApiDocSecurityConfig中的Bean冲突
      */
-    @Bean
+    @Bean(name = "devApiDocSecurityFilterChain")
     @Order(40) // 比常规过滤链更高优先级
-    public SecurityFilterChain apiDocSecurityFilterChain(HttpSecurity http) throws Exception {
-        // API文档相关的路径
+    public SecurityFilterChain devApiDocSecurityFilterChain(HttpSecurity http) throws Exception {
+        // API文档相关的路径，这里不需要添加上下文路径前缀，Spring Security会自动处理
         String[] docPaths = {
             // Swagger相关路径
             "/doc.html", "/doc.html/**", "/doc/**",
@@ -94,16 +95,19 @@ public class DevSecurityFilterConfig {
             "/markdown/**"
         };
         
-        log.info("配置API文档专用安全过滤链 - 确保文档可匿名访问");
+        log.info("配置API文档专用安全过滤链(开发环境) - 确保文档可匿名访问 - 上下文路径: {}", contextPath);
         
-        return http
+        // 创建包含上下文路径的完整路径
+        http
             .securityMatcher(docPaths)
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
             .httpBasic(basic -> basic.disable())
-            .formLogin(form -> form.disable())
-            .build();
+            .formLogin(form -> form.disable());
+            // 默认情况下，匿名访问是启用的，不需要特别配置
+        
+        return http.build();
     }
     
     /**

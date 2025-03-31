@@ -7,11 +7,11 @@ spring:
       - optional:classpath:/config/security-config.yml
   main:
     allow-bean-definition-overriding: true
-    allow-circular-references: true
+    allow-circular-references: false
     allow-missing-beans: true
     banner-mode: off
-    log-startup-info: false
-    lazy-initialization: true
+    log-startup-info: true
+    lazy-initialization: false
   # 编码配置（使用新属性名）
   servlet:
     encoding:
@@ -25,8 +25,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:}
+    username: root
+    password: Zjy-1314
     hikari:
       minimum-idle: 5
       maximum-pool-size: 15
@@ -94,11 +94,17 @@ spring:
     resources:
       static-locations:
         - classpath:/META-INF/resources/
+        - classpath:/META-INF/resources/webjars/
         - classpath:/resources/
         - classpath:/static/
         - classpath:/public/
         - classpath:/markdown/
-  # Spring Security配置 (从重复的spring节移至此处)
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /**
+  # Spring Security配置
   security:
     user:
       name: ${ADMIN_USERNAME:admin}
@@ -112,6 +118,8 @@ spring:
       - "/v3/api-docs/**"
       - "/swagger-ui/**"
       - "/webjars/**"
+      - "/swagger-resources/**"
+      - "/knife4j/**"
 
 server:
   port: 8080
@@ -129,19 +137,6 @@ server:
       force-request: true
       force-response: true
 
-# 使用临时措施完全禁用Spring Security
-security:
-  enabled: false
-  basic:
-    enabled: false
-  ignore-paths:
-    - "/**"
-
-# 显式禁用方法安全
-method:
-  security:
-    enabled: false
-
 # 开发环境认证简化配置
 dev:
   auth:
@@ -150,12 +145,13 @@ dev:
     disable-redis: true
     # 允许的匿名访问路径
     anonymous-urls:
-      - "/**" # 允许所有路径匿名访问
       - "/doc.html"
       - "/doc.html/**"
       - "/v3/api-docs/**"
       - "/swagger-ui/**"
       - "/webjars/**"
+      - "/swagger-resources/**"
+      - "/knife4j/**"
 
 # 律师事务所功能模块开关
 lawfirm:
@@ -207,7 +203,32 @@ law:
 
 # API安全配置
 api:
+  doc:
+    # 明确启用API文档
+    enabled: true
+    # 明确禁用任何过滤
+    filter:
+      enabled: false
+    # 明确禁用API文档加密
+    encrypt:
+      enabled: false
+    # 明确配置API文档路径
+    paths:
+      - /doc.html
+      - /doc.html/**
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /swagger-resources/**
+      - /webjars/**
+      - /knife4j/**
+
   security:
+    # 明确禁用API文档安全过滤
+    enabled: false
+    # 显式配置优先级
+    api-doc-order: -200
+    global-order: -100
     xss:
       exclude-urls:
         - "/api/v1/auth/login"
@@ -218,9 +239,6 @@ api:
         - "/knife4j/**"
         - "/v3/api-docs/**"
         - "/webjars/**"
-  doc:
-    filter:
-      enabled: true
 
 # 应用信息配置
 app:
@@ -259,10 +277,14 @@ config:
 # 添加API文档配置，确保内容不被加密
 springdoc:
   api-docs:
-    safe-content: true
-    disable-content-encoding: true
+    enabled: true
+    charset: UTF-8
   swagger-ui:
-    disable-content-encoding: true
+    enabled: true
+    path: /swagger-ui.html
+    supported-submit-methods: ["get", "post", "put", "delete", "options"]
+  default-produces-media-type: application/json;charset=UTF-8
+  default-consumes-media-type: application/json;charset=UTF-8
     
 # knife4j专用配置，禁用加密
 knife4j:
@@ -273,6 +295,8 @@ knife4j:
   # 禁用API文档加密
   enable-website-encrypt: false  
   enable-content-encrypt: false
+  # 开启跨域支持
+  cors: true
 
 # Lucene搜索配置
 search:
@@ -354,3 +378,8 @@ system:
   jvm:
     security:
       egd: file:/dev/./urandom
+
+# 显式禁用引起冲突的模块
+method:
+  security:
+    enabled: false

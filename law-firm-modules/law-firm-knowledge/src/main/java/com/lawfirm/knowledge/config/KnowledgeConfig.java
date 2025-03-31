@@ -69,7 +69,7 @@ public class KnowledgeConfig {
     /**
      * 知识模块初始化配置
      */
-    @Bean
+    @Bean(name = "knowledgeModuleInitializer")
     public KnowledgeModuleInitializer knowledgeModuleInitializer() {
         return new KnowledgeModuleInitializer();
     }

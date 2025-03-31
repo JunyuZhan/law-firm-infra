@@ -2,12 +2,12 @@ package com.lawfirm.document.config.aspect;
 
 import com.lawfirm.common.cache.annotation.SimpleCache;
 import com.lawfirm.common.cache.config.CacheProperties;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -22,11 +22,17 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Aspect
 @Component
-@RequiredArgsConstructor
 public class CacheAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final CacheProperties cacheProperties;
+    
+    public CacheAspect(
+            @Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate,
+            CacheProperties cacheProperties) {
+        this.redisTemplate = redisTemplate;
+        this.cacheProperties = cacheProperties;
+    }
 
     /**
      * 配置切入点

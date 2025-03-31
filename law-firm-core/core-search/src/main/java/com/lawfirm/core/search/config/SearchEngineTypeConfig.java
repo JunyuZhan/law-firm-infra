@@ -24,7 +24,7 @@ public class SearchEngineTypeConfig {
      * 初始化搜索引擎类型
      * 将类型存储在系统属性中，以便其他组件使用
      */
-    @Bean
+    @Bean(name = "searchEngineType")
     public String searchEngineType() {
         log.info("核心搜索模块初始化, 使用搜索类型: {}", searchType);
         

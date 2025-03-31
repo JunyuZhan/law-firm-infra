@@ -23,7 +23,7 @@ public class DocumentLogConfig {
      * @param logProperties 日志属性配置
      * @return 文档日志切面实例
      */
-    @Bean
+    @Bean(name = "documentLogConfigAspect")
     @ConditionalOnProperty(name = "law.firm.log.enabled", havingValue = "true", matchIfMissing = true)
     public DocumentLogAspect documentLogAspect(LogProperties logProperties) {
         log.info("初始化文档模块日志切面");

@@ -32,7 +32,7 @@ public class NoOpStorageManager {
      * 创建一个空的StorageContext实现
      * 当存储服务禁用时，提供必要的依赖
      */
-    @Bean
+    @Bean(name = "noOpStorageContext")
     @ConditionalOnMissingBean
     public StorageContext storageContext() {
         log.info("创建存储服务空实现的Context");

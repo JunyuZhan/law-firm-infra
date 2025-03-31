@@ -12,7 +12,8 @@ import org.springframework.context.annotation.Import;
 @Import({
     WebConfig.class,
     UploadConfig.class,
-    SecurityConfig.class
+    SecurityConfig.class,
+    OpenApiAutoConfiguration.class
 })
 public class WebAutoConfiguration {
 } 

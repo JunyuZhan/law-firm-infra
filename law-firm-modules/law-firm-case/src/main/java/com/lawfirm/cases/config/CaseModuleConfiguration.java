@@ -40,7 +40,7 @@ public class CaseModuleConfiguration {
     /**
      * 配置模块初始化完成日志记录器
      */
-    @Bean
+    @Bean(name = "caseModuleInitializer")
     public String caseModuleInitializer() {
         log.info("案件管理模块初始化完成");
         return "caseModuleInitializer";
@@ -49,7 +49,7 @@ public class CaseModuleConfiguration {
     /**
      * 配置案件业务处理器
      */
-    @Bean
+    @Bean(name = "caseModuleProcessor")
     public CaseModuleProcessor caseModuleProcessor() {
         return new CaseModuleProcessor();
     }
@@ -162,7 +162,7 @@ public class CaseModuleConfiguration {
     /**
      * 案件服务配置
      */
-    @Bean
+    @Bean(name = "caseServiceConfig")
     @ConditionalOnProperty(name = "lawfirm.case.enabled", havingValue = "true", matchIfMissing = true)
     public CaseServiceConfig caseServiceConfig(CaseProperties properties) {
         log.info("案件服务配置初始化，编号前缀：{}，状态流转：{}", 

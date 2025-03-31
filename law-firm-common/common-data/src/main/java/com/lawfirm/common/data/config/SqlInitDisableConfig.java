@@ -32,7 +32,7 @@ public class SqlInitDisableConfig {
      * @param dataSource 数据源
      * @return 禁用的SQL数据源脚本初始化器
      */
-    @Bean
+    @Bean(name = "disabledSqlDataSourceScriptDatabaseInitializer")
     @Order(1)
     @ConditionalOnMissingBean(SqlDataSourceScriptDatabaseInitializer.class)
     public SqlDataSourceScriptDatabaseInitializer disabledSqlDataSourceScriptDatabaseInitializer(DataSource dataSource) {

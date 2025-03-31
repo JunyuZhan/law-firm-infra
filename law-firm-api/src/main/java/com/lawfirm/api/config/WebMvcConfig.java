@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * WebMvc配置类
- * 处理全局编码设置
+ * 处理全局编码设置，但避免与API文档配置冲突
  */
 @Slf4j
 @Configuration
@@ -32,7 +32,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * 配置字符编码过滤器
      * 确保所有请求和响应使用UTF-8编码
      */
-    @Bean
+    @Bean(name = "customCharacterEncodingFilter")
     public FilterRegistrationBean<CharacterEncodingFilter> characterEncodingFilter() {
         FilterRegistrationBean<CharacterEncodingFilter> registrationBean = new FilterRegistrationBean<>();
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
@@ -48,7 +48,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * 配置字符串消息转换器
      * 确保字符串转换使用UTF-8编码
      */
-    @Bean
+    @Bean(name = "responseBodyConverter")
     public HttpMessageConverter<String> responseBodyConverter() {
         return new StringHttpMessageConverter(StandardCharsets.UTF_8);
     }
@@ -57,7 +57,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * 配置JSON消息转换器
      * 确保JSON响应使用UTF-8编码
      */
-    @Bean
+    @Bean(name = "jsonConverter")
     public MappingJackson2HttpMessageConverter jsonConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setDefaultCharset(StandardCharsets.UTF_8);
@@ -74,44 +74,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 配置静态资源路径
+     * 配置静态资源路径 - 避免配置API文档相关路径
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        log.info("配置资源处理器，上下文路径: {}", contextPath);
+        log.info("配置静态资源处理器，避免干扰API文档路径");
         
-        // 1. 基本静态资源
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/", 
-                                     "classpath:/META-INF/resources/", 
-                                     "classpath:/public/");
-                
-        // 2. 所有API文档相关资源 - 确保优先加载
-        registry.addResourceHandler("/knife4j/**", "/webjars/**", "/v3/api-docs/**")
-                .addResourceLocations("classpath:/META-INF/resources/", 
-                                     "classpath:/META-INF/resources/webjars/");
+        // 只配置非文档相关的静态资源
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/", "classpath:/public/")
+                .resourceChain(false);
     }
     
-    /**
-     * 简化视图控制器，统一入口为knife4j文档
-     */
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        // 统一使用knife4j作为文档入口
-        String docPath = "/knife4j/doc.html";
-        
-        // 根路径重定向到knife4j文档
-        registry.addRedirectViewController("/", docPath);
-        registry.addRedirectViewController("/doc.html", docPath);
-        registry.addRedirectViewController("/swagger-ui.html", docPath);
-        registry.addRedirectViewController("/docs", docPath);
-        
-        // 上下文路径重定向
-        if (contextPath != null && !contextPath.isEmpty() && !"/".equals(contextPath)) {
-            registry.addRedirectViewController(contextPath, contextPath + docPath);
-            registry.addRedirectViewController(contextPath + "/", contextPath + docPath);
-            registry.addRedirectViewController(contextPath + "/doc.html", contextPath + docPath);
-            registry.addRedirectViewController(contextPath + "/swagger-ui.html", contextPath + docPath);
-        }
-    }
+    // 删除视图控制器配置，避免与API文档路径冲突
 } 

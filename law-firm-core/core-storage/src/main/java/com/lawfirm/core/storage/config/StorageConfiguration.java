@@ -34,7 +34,7 @@ public class StorageConfiguration {
      * 配置StorageContext
      * 当没有找到StorageContext时提供一个备用实现
      */
-    @Bean
+    @Bean(name = "storageContext")
     @ConditionalOnMissingBean(StorageContext.class)
     public StorageContext storageContext(List<StorageStrategy> strategies) {
         log.info("创建存储策略上下文 (备用实现)");
@@ -45,7 +45,7 @@ public class StorageConfiguration {
      * 配置MinIO客户端
      * 注意：这里复用common-data模块中的配置，如果已经存在则不需要重复配置
      */
-    @Bean
+    @Bean(name = "minioClient")
     public MinioClient minioClient() {
         StorageProperties.MinioConfig minioConfig = storageProperties.getMinio();
         
@@ -70,7 +70,7 @@ public class StorageConfiguration {
      * 配置阿里云OSS客户端
      * 注意：实际生产中应该复用common-data模块中的OSS客户端配置
      */
-    @Bean
+    @Bean(name = "aliyunOssClient")
     public Object aliyunOssClient() {
         StorageProperties.AliyunOssConfig ossConfig = storageProperties.getAliyunOss();
         
@@ -91,7 +91,7 @@ public class StorageConfiguration {
      * 配置腾讯云COS客户端
      * 注意：实际生产中应该复用common-data模块中的COS客户端配置
      */
-    @Bean
+    @Bean(name = "tencentCosClient")
     public Object tencentCosClient() {
         StorageProperties.TencentCosConfig cosConfig = storageProperties.getTencentCos();
         

@@ -21,8 +21,10 @@ public class SystemSecurityConfig {
 
     /**
      * 配置安全过滤链
+     * 
+     * 使用唯一Bean名称"systemSecurityFilterChain"，避免与auth模块的securityFilterChain冲突
      */
-    @Bean
+    @Bean("systemSecurityFilterChain")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // 获取IP白名单
         String ipWhitelist = securityProperties.getIpWhitelist();

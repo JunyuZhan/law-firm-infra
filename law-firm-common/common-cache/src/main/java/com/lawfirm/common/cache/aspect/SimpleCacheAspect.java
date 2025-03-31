@@ -2,13 +2,13 @@ package com.lawfirm.common.cache.aspect;
 
 import com.lawfirm.common.cache.annotation.SimpleCache;
 import com.lawfirm.common.cache.constant.CacheConstants;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -23,10 +23,13 @@ import java.util.Arrays;
 @Slf4j
 @Aspect
 @Component
-@RequiredArgsConstructor
 public class SimpleCacheAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    
+    public SimpleCacheAspect(@Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Pointcut("@annotation(com.lawfirm.common.cache.annotation.SimpleCache)")
     public void simpleCachePointcut() {

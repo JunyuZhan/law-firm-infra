@@ -31,7 +31,7 @@ public class SessionFactoryConfig {
      * 创建SqlSessionFactory
      * 使用MybatisPlusConfig提供的MybatisPlusInterceptor
      */
-    @Bean
+    @Bean(name = "sqlSessionFactory")
     @Primary
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource, 
                                              @Qualifier("commonMybatisPlusInterceptor") MybatisPlusInterceptor interceptor) throws Exception {

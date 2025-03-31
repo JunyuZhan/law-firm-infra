@@ -29,7 +29,7 @@ public class DevAuthConfig {
     /**
      * 密码编码器
      */
-    @Bean("simplePasswordEncoder")
+    @Bean("devSimplePasswordEncoder")
     public PasswordEncoder passwordEncoder() {
         log.info("初始化开发环境简单密码编码器");
         return new BCryptPasswordEncoder();

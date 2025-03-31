@@ -1,5 +1,6 @@
 package com.lawfirm.client.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -16,16 +17,20 @@ public class ClientConfig {
     
     /**
      * 方法参数验证处理器
+     * 
+     * 注意：Bean名称已修改为clientMethodValidator以避免与Spring Boot内置Bean冲突
+     * 添加条件注解，防止与ValidationAutoConfiguration冲突
      */
-    @Bean
-    public MethodValidationPostProcessor methodValidationPostProcessor() {
+    @Bean("clientMethodValidator")
+    @ConditionalOnMissingBean(MethodValidationPostProcessor.class)
+    public MethodValidationPostProcessor clientMethodValidator() {
         return new MethodValidationPostProcessor();
     }
     
     /**
      * 客户编号生成器
      */
-    @Bean
+    @Bean(name = "clientNoGenerator")
     public ClientNoGenerator clientNoGenerator() {
         return new ClientNoGenerator();
     }

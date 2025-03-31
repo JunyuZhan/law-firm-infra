@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 
 import com.lawfirm.document.config.properties.SearchProperties;
 import com.lawfirm.document.service.strategy.search.DatabaseSearchStrategy;
@@ -28,7 +29,8 @@ public class DocumentSearchConfig {
     /**
      * 创建数据库搜索策略
      */
-    @Bean
+    @Bean(name = "configDatabaseSearchStrategy")
+    @ConditionalOnMissingBean(name = "databaseSearchStrategy")
     public SearchStrategy databaseSearchStrategy() {
         log.info("注册数据库搜索策略");
         return new DatabaseSearchStrategy(documentMapper);

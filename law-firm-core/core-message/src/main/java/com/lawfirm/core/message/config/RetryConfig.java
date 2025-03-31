@@ -10,7 +10,7 @@ import org.springframework.retry.support.RetryTemplate;
 @Configuration
 public class RetryConfig {
 
-    @Bean
+    @Bean(name = "messageRetryTemplate")
     public RetryTemplate retryTemplate() {
         return RetryTemplate.builder()
                 .maxAttempts(3)

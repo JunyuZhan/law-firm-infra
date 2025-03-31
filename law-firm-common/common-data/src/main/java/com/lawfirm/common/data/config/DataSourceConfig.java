@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
-    @Bean
+    @Bean(name = "masterDataSource")
     @Primary
     @ConditionalOnMissingBean(name = "masterDataSource")
     @ConfigurationProperties(prefix = "spring.datasource")

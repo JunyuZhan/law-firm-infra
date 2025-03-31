@@ -1,5 +1,6 @@
 package com.lawfirm.api.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -20,7 +21,7 @@ public class MinimalApiConfig {
     /**
      * 配置跨域支持
      */
-    @Bean
+    @Bean(name = "apiCorsConfigurer")
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
@@ -35,9 +36,13 @@ public class MinimalApiConfig {
     
     /**
      * 配置Jackson序列化
+     * 
+     * 注意：Bean名称已改为apiObjectMapper，避免与JacksonConfig冲突
+     * 且仅在没有ObjectMapper Bean时创建
      */
-    @Bean
-    public ObjectMapper objectMapper() {
+    @Bean("apiObjectMapper")
+    @ConditionalOnMissingBean(ObjectMapper.class)
+    public ObjectMapper apiObjectMapper() {
         return Jackson2ObjectMapperBuilder.json()
             .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .modules(new JavaTimeModule())

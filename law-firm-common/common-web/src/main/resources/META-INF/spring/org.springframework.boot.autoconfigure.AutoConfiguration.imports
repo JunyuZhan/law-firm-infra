@@ -1,0 +1,2 @@
+com.lawfirm.common.web.config.WebAutoConfiguration
+com.lawfirm.common.web.config.OpenApiAutoConfiguration 

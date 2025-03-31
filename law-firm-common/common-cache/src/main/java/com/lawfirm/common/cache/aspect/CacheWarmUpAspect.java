@@ -1,13 +1,13 @@
 package com.lawfirm.common.cache.aspect;
 
 import com.lawfirm.common.cache.annotation.CacheWarmUp;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +22,15 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Aspect
 @Component
-@RequiredArgsConstructor
 public class CacheWarmUpAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private static final long DEFAULT_CACHE_TIME = 24;
     private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.HOURS;
+    
+    public CacheWarmUpAspect(@Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Pointcut("@annotation(com.lawfirm.common.cache.annotation.CacheWarmUp)")
     public void warmUpPointcut() {

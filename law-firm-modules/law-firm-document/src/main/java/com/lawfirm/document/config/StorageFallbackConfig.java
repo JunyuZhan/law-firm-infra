@@ -21,7 +21,7 @@ public class StorageFallbackConfig {
     /**
      * 创建一个空的StorageContext实现
      */
-    @Bean
+    @Bean(name = "documentStorageContext")
     @ConditionalOnMissingBean
     public StorageContext storageContext() {
         log.info("创建存储服务空实现的Context");

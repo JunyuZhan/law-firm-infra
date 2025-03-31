@@ -30,7 +30,7 @@ public class CustomRedissonConfig {
      * 自定义RedissonClient配置
      * 明确指定不使用密码
      */
-    @Bean
+    @Bean(name = "apiRedissonClient")
     @Primary
     public RedissonClient redisson() {
         Config config = new Config();

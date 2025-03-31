@@ -31,7 +31,7 @@ public class SecurityEnhancementConfig {
     /**
      * 生产环境的安全过滤链配置
      */
-    @Bean
+    @Bean(name = "productionSecurityFilterChain")
     public SecurityFilterChain productionSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             // 启用CSRF保护

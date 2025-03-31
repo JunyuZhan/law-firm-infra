@@ -6,7 +6,7 @@ spring:
     jdbcUrl: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:}
+    password: ${MYSQL_PASSWORD:Zjy-1314}
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -18,7 +18,8 @@ spring:
   # SQL初始化配置
   sql:
     init:
-      mode: always
+      mode: never
+      # 以下配置在mode=never时不会使用，但保留为文档目的
       schema-locations: classpath:db/schema.sql
       data-locations: classpath:db/data.sql
       encoding: UTF-8
@@ -44,12 +45,13 @@ spring:
   # Flyway配置
   flyway:
     enabled: false
-    # 如需启用，请先解决模块间迁移脚本版本冲突问题
+    # 以下配置在enabled=false时不会使用，但保留为文档目的
     # baseline-on-migrate: true
+    # group: true
     # locations: classpath:db/migration
     # url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     # user: root
-    # password: ${MYSQL_PASSWORD:}
+    # password: ${MYSQL_PASSWORD:Zjy-1314}
 
 # Jasypt加密配置
 jasypt:
