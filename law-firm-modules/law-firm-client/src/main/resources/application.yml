@@ -1,0 +1,31 @@
+# 客户模块配置
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_client
+  
+  # 数据源配置继承自主应用
+
+# 客户模块自定义配置
+client:
+  follow:
+    auto-remind: true
+    remind-days: 3
+    max-history-records: 100
+  
+  # 客户导入导出配置
+  import:
+    allowed-types: xlsx,xls,csv
+    max-file-size: 10MB
+  export:
+    default-columns: client_name,client_type,contact_person,contact_phone,principal_name
+  
+  # 跟进记录配置
+  follow-record:
+    enable-auto-follow: true
+    follow-interval-days: 30 

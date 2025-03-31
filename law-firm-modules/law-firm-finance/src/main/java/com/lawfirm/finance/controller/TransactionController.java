@@ -2,7 +2,7 @@ package com.lawfirm.finance.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.core.response.ResponseResult;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.finance.entity.Transaction;
 import com.lawfirm.model.finance.enums.TransactionTypeEnum;
 import com.lawfirm.model.finance.service.TransactionService;

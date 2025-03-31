@@ -3,6 +3,7 @@ package com.lawfirm.core.audit.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -16,6 +17,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 @Configuration
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "lawfirm.audit.async.enabled", havingValue = "true", matchIfMissing = true)
 public class AuditAsyncConfig {
 
     private final AuditProperties auditProperties;

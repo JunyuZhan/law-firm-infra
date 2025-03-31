@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.client.entity.base.ClientRelation;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public interface RelationMapper extends BaseMapper<ClientRelation> {
      * @param clientId 客户ID
      * @return 关系列表
      */
+    @Select("SELECT * FROM client_relation WHERE client_id = #{clientId} AND deleted = 0")
     List<ClientRelation> selectByClientId(@Param("clientId") Long clientId);
     
     /**
@@ -27,5 +29,6 @@ public interface RelationMapper extends BaseMapper<ClientRelation> {
      * @param relationType 关系类型
      * @return 关系列表
      */
+    @Select("SELECT * FROM client_relation WHERE business_id = #{businessId} AND relation_type = #{relationType} AND deleted = 0")
     List<ClientRelation> selectByBusiness(@Param("businessId") Long businessId, @Param("relationType") String relationType);
 } 

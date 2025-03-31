@@ -74,25 +74,44 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 添加静态资源处理器 - 简化配置
+     * 配置静态资源路径
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String apiPrefix = contextPath.startsWith("/") ? contextPath : "/" + contextPath;
-        log.info("配置静态资源映射，上下文路径: {}", apiPrefix);
+        log.info("配置资源处理器，上下文路径: {}", contextPath);
+        
+        // 1. 基本静态资源
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/", 
+                                     "classpath:/META-INF/resources/", 
+                                     "classpath:/public/");
                 
-        // 通用静态资源
-        registry.addResourceHandler(apiPrefix + "/**")
-                .addResourceLocations("classpath:/static/")
-                .addResourceLocations("classpath:/META-INF/resources/")
-                .addResourceLocations("classpath:/public/");
+        // 2. 所有API文档相关资源 - 确保优先加载
+        registry.addResourceHandler("/knife4j/**", "/webjars/**", "/v3/api-docs/**")
+                .addResourceLocations("classpath:/META-INF/resources/", 
+                                     "classpath:/META-INF/resources/webjars/");
     }
     
     /**
-     * 添加视图控制器映射 - 简化配置
+     * 简化视图控制器，统一入口为knife4j文档
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // API文档页面的重定向配置将在专门的API文档配置类中实现
+        // 统一使用knife4j作为文档入口
+        String docPath = "/knife4j/doc.html";
+        
+        // 根路径重定向到knife4j文档
+        registry.addRedirectViewController("/", docPath);
+        registry.addRedirectViewController("/doc.html", docPath);
+        registry.addRedirectViewController("/swagger-ui.html", docPath);
+        registry.addRedirectViewController("/docs", docPath);
+        
+        // 上下文路径重定向
+        if (contextPath != null && !contextPath.isEmpty() && !"/".equals(contextPath)) {
+            registry.addRedirectViewController(contextPath, contextPath + docPath);
+            registry.addRedirectViewController(contextPath + "/", contextPath + docPath);
+            registry.addRedirectViewController(contextPath + "/doc.html", contextPath + docPath);
+            registry.addRedirectViewController(contextPath + "/swagger-ui.html", contextPath + docPath);
+        }
     }
 } 

@@ -30,104 +30,27 @@ import lombok.extern.slf4j.Slf4j;
  * 律师事务所API应用启动类
  */
 @Slf4j
-@SpringBootApplication(
-    scanBasePackages = "com.lawfirm"
-)
-@ConfigurationPropertiesScan("com.lawfirm")
-@Import({
-    AuthAutoConfiguration.class, 
-    WorkflowDisableAutoConfiguration.class,
-    DevSecurityAutoConfiguration.class // 导入开发环境安全自动配置
-})
-@ComponentScan(
-    basePackages = {"com.lawfirm"},
-    excludeFilters = {
-        // 排除所有工作流相关的类
-        @ComponentScan.Filter(
-            type = FilterType.REGEX, 
-            pattern = "com\\.lawfirm\\.core\\.workflow\\..*"
-        ),
-        // 排除所有Flowable相关的配置类
-        @ComponentScan.Filter(
-            type = FilterType.REGEX,
-            pattern = ".*FlowableConfig"
-        ),
-        // 排除与Flowable相关的自动配置
-        @ComponentScan.Filter(
-            type = FilterType.REGEX,
-            pattern = "org\\.flowable\\.spring\\.boot\\..*"
-        ),
-        // 排除auth模块中的Dev开头的配置类
-        @ComponentScan.Filter(
-            type = FilterType.REGEX,
-            pattern = "com\\.lawfirm\\.auth\\.config\\.Dev.*"
-        )
-    }
-)
 @EnableScheduling
-@EnableWebSecurity
-@EnableMethodSecurity
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.lawfirm"})
+@Import({
+    DevSecurityAutoConfiguration.class,
+    AuthAutoConfiguration.class,
+    WorkflowDisableAutoConfiguration.class
+})
+@ConfigurationPropertiesScan("com.lawfirm")
 public class LawFirmApiApplication {
 
-    static {
-        // 强制设置字符编码为UTF-8，解决中文乱码问题
-        System.setProperty("file.encoding", "UTF-8");
-        System.setProperty("sun.jnu.encoding", "UTF-8");
-        System.setProperty("spring.http.encoding.charset", "UTF-8");
-        System.setProperty("spring.http.encoding.enabled", "true");
-        System.setProperty("spring.http.encoding.force", "true");
-        
-        // 1. 禁用Flowable和工作流
-        System.setProperty("flowable.enabled", "false");
-        System.setProperty("lawfirm.workflow.enabled", "false");
-        System.setProperty("flowable.check-process-definitions", "false");
-        System.setProperty("flowable.database-schema-update", "false");
-        
-        // 2. 启用存储服务
-        System.setProperty("lawfirm.storage.enabled", "true");
-        
-        // 3. 系统排除配置
-        System.setProperty("spring.autoconfigure.exclude", 
-            "org.flowable.spring.boot.FlowableAutoConfiguration," +
-            "org.flowable.spring.boot.ProcessEngineServicesAutoConfiguration," +
-            "org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration," +
-            "org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration," +
-            "com.lawfirm.core.workflow.config.FlowableConfig");
-            
-        // 4. 明确设置profile和简化安全配置
-        System.setProperty("spring.profiles.active", "dev-mysql");
-        System.setProperty("dev.auth.simplified-security", "true");
-        System.setProperty("security.enable", "false");
-        System.setProperty("spring.security.enabled", "false");
-        System.setProperty("security.basic.enabled", "false");
-        
-        // 5. 添加JVM内存参数
-        if (System.getProperty("java.vm.name") != null && System.getProperty("java.vm.name").contains("OpenJDK")) {
-            // 如果是OpenJDK，添加特殊编码参数
-            System.setProperty("sun.stdout.encoding", "UTF-8");
-            System.setProperty("sun.stderr.encoding", "UTF-8");
-        }
-        
-        // 6. 添加API文档相关属性
-        System.setProperty("springdoc.api-docs.enabled", "true");
-        System.setProperty("springdoc.swagger-ui.enabled", "true");
-        System.setProperty("knife4j.enable", "true");
-        System.setProperty("knife4j.production", "false");
-        System.setProperty("springdoc.swagger-ui.path", "/doc.html");
-        System.setProperty("springdoc.api-docs.path", "/v3/api-docs");
+    /**
+     * 为密码编码器提供BCrypt实现
+     */
+    @Bean
+    @Primary
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
-    
+
     public static void main(String[] args) {
-        // 验证环境默认编码
-        if (!StandardCharsets.UTF_8.name().equals(System.getProperty("file.encoding"))) {
-            log.warn("系统默认编码不是UTF-8，当前编码: {}", System.getProperty("file.encoding"));
-            log.warn("这可能导致中文乱码问题，尝试强制设置UTF-8编码");
-            System.setProperty("file.encoding", "UTF-8");
-        }
-        
-        // 设置系统属性
-        setupSystemProperties();
-        
         try {
             SpringApplication application = new SpringApplication(LawFirmApiApplication.class);
             application.setLazyInitialization(true);
@@ -141,31 +64,14 @@ public class LawFirmApiApplication {
             Environment env = ctx.getEnvironment();
             printEnvironmentInfo(env);
         } catch (Exception e) {
-            System.err.println("应用启动失败: " + e.getMessage());
-            e.printStackTrace();
+            log.error("应用启动失败: {}", e.getMessage(), e);
             // 打印更详细的根因
             Throwable cause = e.getCause();
             while (cause != null) {
-                System.err.println("故障原因: " + cause.getMessage());
+                log.error("故障原因: {}", cause.getMessage());
                 cause = cause.getCause();
             }
         }
-    }
-    
-    /**
-     * 设置系统级属性，用于确保应用在各环境中表现一致
-     */
-    private static void setupSystemProperties() {
-        // 文件和UTF-8编码相关设置
-        System.setProperty("file.encoding", "UTF-8");
-        System.setProperty("spring.mandatory-file-encoding", "UTF-8");
-        System.setProperty("sun.jnu.encoding", "UTF-8");
-        
-        // 设置时区
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        
-        // 增强JVM安全性设置
-        System.setProperty("java.security.egd", "file:/dev/./urandom");
     }
     
     /**
@@ -193,15 +99,7 @@ public class LawFirmApiApplication {
                 
         // 检查是否为生产环境，提供额外警告
         if (Arrays.asList(activeProfiles).contains("prod")) {
-            log.info("\n----------------------------------------------------------\n" +
-                    "应用正在生产环境运行\n" +
-                    "请确保已完成所有安全检查和性能调优\n" +
-                    "----------------------------------------------------------");
+            log.warn("应用正在生产环境运行！请确保所有安全配置已完成并启用。");
         }
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

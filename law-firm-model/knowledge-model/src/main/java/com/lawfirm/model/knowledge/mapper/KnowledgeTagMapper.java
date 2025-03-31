@@ -2,6 +2,7 @@ package com.lawfirm.model.knowledge.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.knowledge.entity.KnowledgeTag;
+import com.lawfirm.model.knowledge.constant.KnowledgeSqlConstants;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -15,14 +16,14 @@ import java.util.List;
 public interface KnowledgeTagMapper extends BaseMapper<KnowledgeTag> {
 
     /**
-     * 根据标签编码查询标签
+     * 根据编码查询标签
      */
-    @Select("SELECT * FROM knowledge_tag WHERE code = #{code}")
+    @Select(KnowledgeSqlConstants.Tag.SELECT_BY_CODE)
     KnowledgeTag selectByCode(@Param("code") String code);
 
     /**
-     * 根据标签名称模糊查询标签列表
+     * 根据名称模糊查询标签
      */
-    @Select("SELECT * FROM knowledge_tag WHERE name LIKE CONCAT('%', #{name}, '%') ORDER BY sort")
+    @Select(KnowledgeSqlConstants.Tag.SELECT_BY_NAME)
     List<KnowledgeTag> selectByName(@Param("name") String name);
-} 
+}

@@ -11,11 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 自定义Runner配置
  * 使用反射动态创建ddlApplicationRunner满足Spring Boot 3.2.3的启动需求
  */
+@Slf4j
 @Configuration
 public class CustomRunnerConfig {
     
@@ -39,7 +41,7 @@ public class CustomRunnerConfig {
                     
                     // 创建一个空的ApplicationRunner
                     ApplicationRunner emptyRunner = args -> 
-                        System.out.println("动态创建的ddlApplicationRunner执行完成");
+                        log.info("动态创建的ddlApplicationRunner执行完成");
                     
                     // 使用桥接工厂创建兼容的Runner
                     Object runnerBridge = RunnerBridgeFactory.createRunnerBridge(emptyRunner);
@@ -52,7 +54,7 @@ public class CustomRunnerConfig {
                     // 注册Bean定义
                     registry.registerBeanDefinition("ddlApplicationRunner", beanDefinition);
                     
-                    System.out.println("已注册自定义ddlApplicationRunner");
+                    log.info("已注册自定义ddlApplicationRunner");
                 }
             }
         };
@@ -65,7 +67,7 @@ public class CustomRunnerConfig {
     @Order(Ordered.LOWEST_PRECEDENCE)
     public ApplicationRunner backupDdlApplicationRunner() {
         return args -> {
-            System.out.println("后备DDL应用Runner已执行");
+            log.info("后备DDL应用Runner已执行");
         };
     }
 } 

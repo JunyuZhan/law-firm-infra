@@ -4,7 +4,7 @@ spring:
   config:
     import:
       - optional:classpath:/config/apidoc.yml
-      - optional:classpath:/config/knife4j.yml
+      - optional:classpath:/config/security-config.yml
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
@@ -12,6 +12,15 @@ spring:
     banner-mode: off
     log-startup-info: false
     lazy-initialization: true
+  # 编码配置（使用新属性名）
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -47,22 +56,13 @@ spring:
     parser:
       allow-unquoted-control-chars: false
       allow-backslash-escaping-any-character: false
+  # 自动配置排除
   autoconfigure:
     exclude:
       - org.flowable.spring.boot.FlowableAutoConfiguration
       - org.flowable.spring.boot.ProcessEngineServicesAutoConfiguration
-      - org.flowable.spring.boot.actuate.endpoint.ProcessEngineEndpointAutoConfiguration
-      - org.flowable.spring.boot.actuate.info.FlowableInfoAutoConfiguration
       - org.flowable.spring.boot.app.AppEngineAutoConfiguration
-      - org.flowable.spring.boot.app.AppEngineServicesAutoConfiguration
-      - org.flowable.spring.boot.engine.FlowableEngineAutoConfiguration
-      - org.flowable.spring.boot.EndpointAutoConfiguration
-      - org.flowable.spring.boot.FlowableSecurityAutoConfiguration
-      - org.flowable.spring.boot.idm.IdmEngineAutoConfiguration
-      - org.flowable.spring.boot.idm.IdmEngineServicesAutoConfiguration
       - com.lawfirm.core.workflow.config.FlowableConfig
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   mybatis-plus:
     configuration:
       map-underscore-to-camel-case: true
@@ -86,10 +86,6 @@ spring:
       data-locations: classpath:db/data.sql
       continue-on-error: true
       encoding: UTF-8
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 100MB
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -101,11 +97,12 @@ spring:
         - classpath:/resources/
         - classpath:/static/
         - classpath:/public/
+        - classpath:/markdown/
   # Spring Security配置 (从重复的spring节移至此处)
   security:
     user:
-      name: admin
-      password: admin123
+      name: ${ADMIN_USERNAME:admin}
+      password: ${ADMIN_PASSWORD:${random.uuid}}
     filter:
       dispatcher-types: REQUEST,FORWARD
     # 显式允许匿名访问的路径
@@ -194,8 +191,8 @@ lawfirm:
       enabled: false
       endpoint: http://minio.example.com
       port: 9000
-      accessKey: minioadmin
-      secretKey: minioadmin
+      accessKey: ${MINIO_ACCESS_KEY:miniouser}
+      secretKey: ${MINIO_SECRET_KEY:${random.uuid}}
       useSsl: false
 
 # 日志配置
@@ -217,13 +214,9 @@ api:
         - "/api/v1/auth/register"
         - "/api/v1/document/upload"
         - "/api/v1/knowledge/content"
-        # API文档路径
-        - "/doc.html"
-        - "/doc.html/**"
-        - "/swagger-ui.html" 
-        - "/swagger-ui/**"
+        # Knife4j文档路径
+        - "/knife4j/**"
         - "/v3/api-docs/**"
-        - "/swagger-resources/**" 
         - "/webjars/**"
   doc:
     filter:
@@ -252,24 +245,8 @@ rocketmq:
 # Flowable配置
 flowable:
   enabled: false
-  process-engine:
-    enable: false
-  dmn-engine:
-    enable: false
-  idm-engine:
-    enable: false
-  form-engine:
-    enable: false
-  content-engine:
-    enable: false
-  event-registry-engine:
-    enable: false
-  rest:
-    enabled: false
-  actuator:
-    enabled: false
-  database-schema-update: false
   check-process-definitions: false
+  database-schema-update: false
 
 # 配置刷新相关设置
 config:
@@ -369,3 +346,11 @@ law.firm.audit:
   includeResponseBody: false
 
 # Springdoc和Knife4j配置已移动到apidoc.yml
+
+# 系统默认属性配置
+system:
+  timezone: Asia/Shanghai
+  encoding: UTF-8
+  jvm:
+    security:
+      egd: file:/dev/./urandom

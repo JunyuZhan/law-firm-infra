@@ -1,0 +1,68 @@
+# 文档模块配置
+spring:
+  # 激活document配置文件
+  profiles:
+    active: document
+    
+  # Flyway配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_document
+  
+  # 数据源配置继承自主应用
+
+# 文档模块自定义配置
+document:
+  # 文档存储配置
+  storage:
+    # 本地存储配置
+    local:
+      base-path: ${user.home}/.law-firm/documents
+      temp-path: ${user.home}/.law-firm/documents/temp
+    # 对象存储配置
+    oss:
+      enabled: false
+      endpoint: oss-cn-beijing.aliyuncs.com
+      bucket-name: law-firm-documents
+      access-key: ${OSS_ACCESS_KEY:}
+      secret-key: ${OSS_SECRET_KEY:}
+  
+  # 文件上传配置
+  upload:
+    max-file-size: 50MB
+    allowed-extensions: doc,docx,xls,xlsx,ppt,pptx,pdf,jpg,jpeg,png,gif,zip,rar,txt
+    scan-virus: true
+    content-review: true
+  
+  # 文档版本控制
+  version:
+    enabled: true
+    max-versions: 10
+    auto-clean: true
+  
+  # 文档预览配置
+  preview:
+    enabled: true
+    # 支持的文件类型
+    support-types: pdf,jpg,jpeg,png,gif
+    # 预览转换配置
+    converter:
+      office-to-pdf: true
+      timeout-seconds: 30
+      max-convert-size: 10MB
+  
+  # 文档共享配置
+  share:
+    # 分享链接有效期(天)
+    default-expire-days: 7
+    # 默认最大访问次数
+    default-max-count: 100
+    # 是否默认允许下载
+    default-allow-download: false
+    # 是否启用密码保护
+    password-protection: true 

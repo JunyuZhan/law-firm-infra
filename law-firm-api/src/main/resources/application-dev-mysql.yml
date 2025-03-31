@@ -5,8 +5,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     jdbcUrl: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: Zjy-1314
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:}
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -49,12 +49,12 @@ spring:
     # locations: classpath:db/migration
     # url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     # user: root
-    # password: Zjy-1314
+    # password: ${MYSQL_PASSWORD:}
 
 # Jasypt加密配置
 jasypt:
   encryptor:
-    password: lawfirm-secret-key
+    password: ${JASYPT_PASSWORD:}
     algorithm: PBEWithMD5AndDES
     provider-name: SunJCE
 

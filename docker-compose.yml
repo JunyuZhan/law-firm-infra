@@ -15,8 +15,8 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       # 数据库配置
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/law_firm?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Zjy-1314
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME:-root}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD:-lawfirm_default}
       # Redis配置
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
@@ -45,7 +45,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=Zjy-1314
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD:-lawfirm_default}
       - MYSQL_DATABASE=law_firm
       - TZ=Asia/Shanghai
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

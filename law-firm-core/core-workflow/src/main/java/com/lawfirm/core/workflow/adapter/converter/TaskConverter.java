@@ -8,6 +8,7 @@ import com.lawfirm.model.workflow.enums.TaskTypeEnum;
 import com.lawfirm.model.workflow.vo.TaskVO;
 import lombok.RequiredArgsConstructor;
 import org.flowable.task.api.TaskInfo;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.util.Date;
  */
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class TaskConverter {
 
     /**

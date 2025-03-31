@@ -64,100 +64,34 @@ public class OpenApiConfig {
     }
 
     /**
-     * 认证API分组
+     * 认证和系统API分组
      */
     @Bean
-    public GroupedOpenApi authApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("auth")
-                .displayName("认证相关接口")
-                .pathsToMatch("/auth/**", "/login", "/logout", "/refreshToken", "/user/**")
-                .packagesToScan("com.lawfirm.api.controller")
-                .addOpenApiCustomizer(openApi -> openApi.openapi("3.0.1"))
-                .build();
-    }
-
-    /**
-     * 系统管理API分组
-     */
-    @Bean
-    public GroupedOpenApi systemApiGroup() {
+    public GroupedOpenApi authAndSystemApiGroup() {
         return GroupedOpenApi.builder()
                 .group("system")
-                .displayName("系统管理接口")
-                .pathsToMatch("/system/**", "/menu/**", "/role/**", "/dept/**", "/dict/**", "/config/**")
-                .packagesToScan("com.lawfirm.api.controller", "com.lawfirm.system.controller")
-                .addOpenApiCustomizer(openApi -> openApi.openapi("3.0.1"))
+                .displayName("系统接口")
+                .pathsToMatch("/auth/**", "/login", "/logout", "/refreshToken", 
+                             "/user/**", "/system/**", "/menu/**", "/role/**", 
+                             "/dept/**", "/dict/**", "/config/**")
+                .packagesToScan("com.lawfirm.api.controller", "com.lawfirm.system.controller", 
+                               "com.lawfirm.auth.controller")
                 .build();
     }
 
     /**
-     * 案件管理API分组
+     * 业务API分组
      */
     @Bean
-    public GroupedOpenApi caseApiGroup() {
+    public GroupedOpenApi businessApiGroup() {
         return GroupedOpenApi.builder()
-                .group("case")
-                .displayName("案件管理接口")
-                .pathsToMatch("/case/**", "/cases/**")
-                .packagesToScan("com.lawfirm.api.controller", "com.lawfirm.cases.controller")
-                .addOpenApiCustomizer(openApi -> openApi.openapi("3.0.1"))
-                .build();
-    }
-
-    /**
-     * 客户管理API分组
-     */
-    @Bean
-    public GroupedOpenApi clientApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("client")
-                .displayName("客户管理接口")
-                .pathsToMatch("/client/**", "/clients/**")
-                .packagesToScan("com.lawfirm.api.controller", "com.lawfirm.client.controller")
-                .addOpenApiCustomizer(openApi -> openApi.openapi("3.0.1"))
-                .build();
-    }
-
-    /**
-     * 合同管理API分组
-     */
-    @Bean
-    public GroupedOpenApi contractApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("contract")
-                .displayName("合同管理接口")
-                .pathsToMatch("/contract/**", "/contracts/**")
-                .packagesToScan("com.lawfirm.api.controller", "com.lawfirm.contract.controller")
-                .addOpenApiCustomizer(openApi -> openApi.openapi("3.0.1"))
-                .build();
-    }
-
-    /**
-     * 文档管理API分组
-     */
-    @Bean
-    public GroupedOpenApi documentApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("document")
-                .displayName("文档管理接口")
-                .pathsToMatch("/document/**", "/documents/**", "/files/**")
-                .packagesToScan("com.lawfirm.api.controller", "com.lawfirm.document.controller")
-                .addOpenApiCustomizer(openApi -> openApi.openapi("3.0.1"))
-                .build();
-    }
-
-    /**
-     * 知识库API分组
-     */
-    @Bean
-    public GroupedOpenApi knowledgeApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("knowledge")
-                .displayName("知识库管理接口")
-                .pathsToMatch("/knowledge/**")
-                .packagesToScan("com.lawfirm.api.controller", "com.lawfirm.knowledge.controller")
-                .addOpenApiCustomizer(openApi -> openApi.openapi("3.0.1"))
+                .group("business")
+                .displayName("业务接口")
+                .pathsToMatch("/case/**", "/client/**", "/contract/**", 
+                             "/document/**", "/knowledge/**")
+                .packagesToScan("com.lawfirm.api.controller", "com.lawfirm.cases.controller",
+                               "com.lawfirm.client.controller", "com.lawfirm.contract.controller",
+                               "com.lawfirm.document.controller", "com.lawfirm.knowledge.controller")
                 .build();
     }
     
@@ -167,11 +101,9 @@ public class OpenApiConfig {
     @Bean
     public GroupedOpenApi allApisGroup() {
         return GroupedOpenApi.builder()
-                .group("public-api")
+                .group("all")
                 .displayName("所有接口")
                 .pathsToMatch("/**")
-                .packagesToScan("com.lawfirm.api.controller")
-                .addOpenApiCustomizer(openApi -> openApi.openapi("3.0.1"))
                 .build();
     }
 } 

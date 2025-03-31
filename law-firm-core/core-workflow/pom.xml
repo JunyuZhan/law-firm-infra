@@ -82,48 +82,6 @@
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
 
-        <!-- Flowable -->
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-spring-boot-starter-process</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-engine-common-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-variable-service-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-event-registry-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-process-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-bpmn-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-bpmn-converter</artifactId>
-        </dependency>
-
         <!-- Redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -187,6 +145,43 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <!-- 使用Maven Profiles进行条件依赖管理 -->
+    <profiles>
+        <!-- 禁用工作流配置 -->
+        <profile>
+            <id>no-workflow</id>
+            <activation>
+                <property>
+                    <name>lawfirm.workflow.enabled</name>
+                    <value>false</value>
+                </property>
+            </activation>
+        </profile>
+        
+        <!-- 启用工作流配置（默认激活） -->
+        <profile>
+            <id>with-workflow</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>lawfirm.workflow.enabled</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <dependencies>
+                <!-- Flowable - 使用starter包代替细粒度依赖 -->
+                <dependency>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>flowable-spring-boot-starter-process</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>flowable-spring-boot-starter-actuator</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

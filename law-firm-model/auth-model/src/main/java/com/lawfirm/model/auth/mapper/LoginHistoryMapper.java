@@ -2,6 +2,7 @@ package com.lawfirm.model.auth.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.LoginHistory;
+import com.lawfirm.model.auth.constant.AuthSqlConstants;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -23,7 +24,7 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param userId 用户ID
      * @return 登录历史列表
      */
-    @Select("SELECT * FROM auth_login_history WHERE user_id = #{userId} AND deleted = 0 ORDER BY login_time DESC")
+    @Select(AuthSqlConstants.LoginHistory.SELECT_BY_USER_ID)
     List<LoginHistory> selectByUserId(Long userId);
     
     /**
@@ -32,7 +33,7 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param ipAddress IP地址
      * @return 登录历史列表
      */
-    @Select("SELECT * FROM auth_login_history WHERE ip_address = #{ipAddress} AND deleted = 0 ORDER BY login_time DESC")
+    @Select(AuthSqlConstants.LoginHistory.SELECT_BY_IP_ADDRESS)
     List<LoginHistory> selectByIpAddress(String ipAddress);
     
     /**
@@ -47,18 +48,7 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param endTime 结束时间（可选）
      * @return 登录历史列表
      */
-    @Select("<script>SELECT * FROM auth_login_history " +
-            "<where>" +
-            "  deleted = 0" +
-            "  <if test='userId != null'>AND user_id = #{userId}</if>" +
-            "  <if test='loginType != null'>AND login_type = #{loginType}</if>" +
-            "  <if test='status != null'>AND status = #{status}</if>" +
-            "  <if test='startTime != null'>AND login_time &gt;= #{startTime}</if>" +
-            "  <if test='endTime != null'>AND login_time &lt;= #{endTime}</if>" +
-            "</where>" +
-            "ORDER BY login_time DESC " +
-            "<if test='pageNum != null and pageSize != null'>LIMIT #{pageNum}, #{pageSize}</if>" +
-            "</script>")
+    @Select(AuthSqlConstants.LoginHistory.SELECT_PAGE)
     List<LoginHistory> selectPage(@Param("pageNum") Integer pageNum, 
                                 @Param("pageSize") Integer pageSize,
                                 @Param("userId") Long userId,
@@ -77,16 +67,7 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param endTime 结束时间（可选）
      * @return 登录历史总数
      */
-    @Select("<script>SELECT COUNT(*) FROM auth_login_history " +
-            "<where>" +
-            "  deleted = 0" +
-            "  <if test='userId != null'>AND user_id = #{userId}</if>" +
-            "  <if test='loginType != null'>AND login_type = #{loginType}</if>" +
-            "  <if test='status != null'>AND status = #{status}</if>" +
-            "  <if test='startTime != null'>AND login_time &gt;= #{startTime}</if>" +
-            "  <if test='endTime != null'>AND login_time &lt;= #{endTime}</if>" +
-            "</where>" +
-            "</script>")
+    @Select(AuthSqlConstants.LoginHistory.SELECT_COUNT)
     int selectCount(@Param("userId") Long userId,
                    @Param("loginType") Integer loginType,
                    @Param("status") Integer status,
@@ -99,7 +80,7 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param userId 用户ID
      * @return 影响行数
      */
-    @Select("UPDATE auth_login_history SET deleted = 1 WHERE user_id = #{userId}")
+    @Select(AuthSqlConstants.LoginHistory.DELETE_BY_USER_ID)
     int deleteByUserId(Long userId);
     
     /**
@@ -108,7 +89,7 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param date 日期
      * @return 影响行数
      */
-    @Select("UPDATE auth_login_history SET deleted = 1 WHERE login_time < #{date}")
+    @Select(AuthSqlConstants.LoginHistory.DELETE_BEFORE_DATE)
     int deleteBeforeDate(Date date);
     
     /**
@@ -117,6 +98,6 @@ public interface LoginHistoryMapper extends BaseMapper<LoginHistory> {
      * @param userId 用户ID
      * @return 登录历史实体
      */
-    @Select("SELECT * FROM auth_login_history WHERE user_id = #{userId} AND deleted = 0 ORDER BY login_time DESC LIMIT 1")
+    @Select(AuthSqlConstants.LoginHistory.SELECT_LAST_LOGIN_BY_USER_ID)
     LoginHistory selectLastLoginByUserId(Long userId);
 } 

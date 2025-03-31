@@ -62,6 +62,11 @@
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
             <artifactId>common-security</artifactId>
             <version>${project.version}</version>
         </dependency>

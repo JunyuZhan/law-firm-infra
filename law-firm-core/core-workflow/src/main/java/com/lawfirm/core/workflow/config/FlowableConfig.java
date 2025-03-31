@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@ConditionalOnBean(WorkflowProperties.class)
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class FlowableConfig implements EngineConfigurationConfigurer<SpringProcessEngineConfiguration> {
 
     private final WorkflowProperties workflowProperties;
@@ -81,6 +81,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 流程运行时服务
      */
     @Bean
+    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public RuntimeService runtimeService(ProcessEngine processEngine) {
         return processEngine.getRuntimeService();
     }
@@ -89,6 +90,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 任务服务
      */
     @Bean
+    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public TaskService taskService(ProcessEngine processEngine) {
         return processEngine.getTaskService();
     }
@@ -97,6 +99,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 表单服务
      */
     @Bean
+    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public FormService formService(ProcessEngine processEngine) {
         return processEngine.getFormService();
     }
@@ -105,6 +108,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 历史服务
      */
     @Bean
+    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public HistoryService historyService(ProcessEngine processEngine) {
         return processEngine.getHistoryService();
     }
@@ -113,6 +117,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 存储库服务
      */
     @Bean
+    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public RepositoryService repositoryService(ProcessEngine processEngine) {
         return processEngine.getRepositoryService();
     }
@@ -121,6 +126,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 管理服务
      */
     @Bean
+    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public ManagementService managementService(ProcessEngine processEngine) {
         return processEngine.getManagementService();
     }
@@ -129,6 +135,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 动态表单服务
      */
     @Bean
+    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public DynamicBpmnService dynamicBpmnService(ProcessEngine processEngine) {
         return processEngine.getDynamicBpmnService();
     }

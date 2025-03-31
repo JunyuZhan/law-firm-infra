@@ -1,7 +1,7 @@
 package com.lawfirm.document.controller;
 
 import com.lawfirm.model.document.service.DocumentPermissionService;
-import com.lawfirm.common.core.response.ResponseResult;
+import com.lawfirm.common.core.api.CommonResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,12 +30,12 @@ public class DocumentPermissionController {
         description = "将业务系统中的文档权限同步到文档系统，支持批量设置用户的文档访问权限"
     )
     @PostMapping("/sync")
-    public ResponseResult<Void> syncBusinessDocumentsPermission(
+    public CommonResult<Void> syncBusinessDocumentsPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,
             @Parameter(description = "业务ID") @RequestParam Long businessId,
             @Parameter(description = "用户权限列表") @RequestBody List<DocumentPermissionService.UserPermission> userPermissions) {
         documentPermissionService.syncBusinessDocumentsPermission(businessType, businessId, userPermissions);
-        return ResponseResult.success();
+        return CommonResult.success();
     }
 
     @Operation(
@@ -43,13 +43,13 @@ public class DocumentPermissionController {
         description = "为指定用户添加文档的访问权限，可以设置不同级别的权限类型（如：只读、编辑等）"
     )
     @PostMapping("/user")
-    public ResponseResult<Void> addUserPermission(
+    public CommonResult<Void> addUserPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,
             @Parameter(description = "业务ID") @RequestParam Long businessId,
             @Parameter(description = "用户ID") @RequestParam Long userId,
             @Parameter(description = "权限类型") @RequestParam String permission) {
         documentPermissionService.addUserPermission(businessType, businessId, userId, permission);
-        return ResponseResult.success();
+        return CommonResult.success();
     }
 
     @Operation(
@@ -57,11 +57,11 @@ public class DocumentPermissionController {
         description = "移除指定用户对文档的所有访问权限"
     )
     @DeleteMapping("/user")
-    public ResponseResult<Void> removeUserPermission(
+    public CommonResult<Void> removeUserPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,
             @Parameter(description = "业务ID") @RequestParam Long businessId,
             @Parameter(description = "用户ID") @RequestParam Long userId) {
         documentPermissionService.removeUserPermission(businessType, businessId, userId);
-        return ResponseResult.success();
+        return CommonResult.success();
     }
 } 

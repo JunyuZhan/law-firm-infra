@@ -3,6 +3,7 @@ package com.lawfirm.model.storage.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
+import com.lawfirm.model.storage.constant.StorageSqlConstants;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -19,7 +20,7 @@ public interface StorageBucketMapper extends BaseMapper<StorageBucket> {
      * @param bucketName 桶名称
      * @return 数量
      */
-    @Select("SELECT COUNT(*) FROM storage_bucket WHERE bucket_name = #{bucketName}")
+    @Select(StorageSqlConstants.COUNT_BY_BUCKET_NAME)
     long countByBucketName(@Param("bucketName") String bucketName);
     
     /**
@@ -28,7 +29,7 @@ public interface StorageBucketMapper extends BaseMapper<StorageBucket> {
      * @param bucketName 桶名称
      * @return 存储桶
      */
-    @Select("SELECT * FROM storage_bucket WHERE bucket_name = #{bucketName} LIMIT 1")
+    @Select(StorageSqlConstants.FIND_BY_BUCKET_NAME)
     StorageBucket findByBucketName(@Param("bucketName") String bucketName);
     
     /**
@@ -37,7 +38,7 @@ public interface StorageBucketMapper extends BaseMapper<StorageBucket> {
      * @param storageType 存储类型
      * @return 存储桶列表
      */
-    @Select("SELECT * FROM storage_bucket WHERE storage_type = #{storageType} AND status = 1")
+    @Select(StorageSqlConstants.FIND_BY_STORAGE_TYPE)
     List<StorageBucket> findByStorageType(@Param("storageType") StorageTypeEnum storageType);
     
     /**
@@ -46,7 +47,7 @@ public interface StorageBucketMapper extends BaseMapper<StorageBucket> {
      * @param bucketId 桶ID
      * @return 文件总大小
      */
-    @Select("SELECT SUM(file_size) FROM file_object WHERE bucket_id = #{bucketId}")
+    @Select(StorageSqlConstants.SUM_FILE_SIZE_BY_BUCKET_ID)
     Long sumFileSizeByBucketId(@Param("bucketId") Long bucketId);
     
     /**
@@ -55,6 +56,6 @@ public interface StorageBucketMapper extends BaseMapper<StorageBucket> {
      * @param id 桶ID
      * @return 存储桶
      */
-    @Select("SELECT * FROM storage_bucket WHERE id = #{id} LIMIT 1")
+    @Select(StorageSqlConstants.FIND_BY_ID)
     StorageBucket findById(@Param("id") Long id);
 } 

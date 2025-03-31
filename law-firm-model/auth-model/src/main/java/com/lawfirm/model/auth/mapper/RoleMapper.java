@@ -2,7 +2,9 @@ package com.lawfirm.model.auth.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.Role;
+import com.lawfirm.model.auth.constant.AuthSqlConstants;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param code 角色编码
      * @return 角色实体
      */
+    @Select(AuthSqlConstants.Role.SELECT_BY_CODE)
     Role selectByCode(String code);
     
     /**
@@ -29,6 +32,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param name 角色名称（可选）
      * @return 角色列表
      */
+    @Select(AuthSqlConstants.Role.SELECT_PAGE)
     List<Role> selectPage(@Param("pageNum") Integer pageNum, 
                          @Param("pageSize") Integer pageSize,
                          @Param("name") String name);
@@ -39,6 +43,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param name 角色名称（可选）
      * @return 角色总数
      */
+    @Select(AuthSqlConstants.Role.SELECT_COUNT)
     int selectCount(@Param("name") String name);
     
     /**
@@ -46,6 +51,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * 
      * @return 角色列表
      */
+    @Select(AuthSqlConstants.Role.SELECT_ALL)
     List<Role> selectAll();
     
     /**
@@ -62,5 +68,6 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param userId 用户ID
      * @return 角色列表
      */
+    @Select(AuthSqlConstants.Role.SELECT_ROLES_BY_USER_ID)
     List<Role> selectRolesByUserId(Long userId);
 } 

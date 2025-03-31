@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.lawfirm.client.constant.CacheConstant;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -28,12 +30,14 @@ import java.util.Map;
  */
 @Configuration("clientCacheConfig")
 @EnableCaching
+@ConditionalOnProperty(name = "lawfirm.client.cache.enabled", havingValue = "true", matchIfMissing = false)
 public class CacheConfig {
 
     /**
      * 配置Redis缓存管理器
      */
     @Bean("clientCacheManager")
+    @ConditionalOnMissingBean(name = "commonCacheManager")
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         // 配置Redis缓存管理器
         RedisCacheManager cacheManager = RedisCacheManager.builder(factory)

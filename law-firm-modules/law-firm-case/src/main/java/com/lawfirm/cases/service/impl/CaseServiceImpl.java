@@ -10,6 +10,7 @@ import com.lawfirm.cases.core.search.CaseSearchManager;
 import com.lawfirm.cases.core.workflow.CaseWorkflowManager;
 import com.lawfirm.cases.integration.client.ClientComponent;
 import com.lawfirm.model.cases.mapper.base.CaseMapper;
+import com.lawfirm.model.cases.mapper.team.CaseTeamMemberMapper;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.cases.dto.base.CaseBaseDTO;
 import com.lawfirm.model.cases.dto.base.CaseCreateDTO;
@@ -45,6 +46,7 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
     private final CaseSearchManager searchManager;
     private final CaseMessageManager messageManager;
     private final ClientComponent clientComponent;
+    private final CaseTeamMemberMapper caseTeamMemberMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -575,8 +577,8 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
     }
 
     /**
-     * 获取用户相关的案件列表
-     *
+     * 获取用户相关的全部案件
+     * 
      * @param userId 用户ID
      * @return 案件列表
      */
@@ -584,12 +586,14 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
     public List<Case> getUserCases(Long userId) {
         log.info("获取用户{}相关的案件列表", userId);
         
-        // 查询用户参与的所有案件
+        // 先查询用户参与的所有案件ID
+        List<Long> teamCaseIds = caseTeamMemberMapper.selectCaseIdsByMemberId(userId);
+        
+        // 再使用ID列表查询完整案件信息
         return lambdaQuery()
                 .eq(Case::getLeaderId, userId)
                 .or()
-                .inSql(Case::getId, 
-                    "SELECT case_id FROM case_team_member WHERE member_id = " + userId)
+                .in(teamCaseIds != null && !teamCaseIds.isEmpty(), Case::getId, teamCaseIds)
                 .list();
     }
 }

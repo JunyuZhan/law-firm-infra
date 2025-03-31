@@ -2,19 +2,21 @@ package com.lawfirm.model.knowledge.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.model.base.entity.ModelBaseEntity;
-import lombok.Data;
+import com.lawfirm.model.base.entity.TenantEntity;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * 知识附件实体
+ * 知识文档附件实体
  */
-@Data
+@Getter
+@Setter
 @TableName("knowledge_attachment")
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class KnowledgeAttachment extends ModelBaseEntity {
+public class KnowledgeAttachment extends TenantEntity {
 
     private static final long serialVersionUID = 1L;
 

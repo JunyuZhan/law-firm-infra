@@ -1,5 +1,6 @@
 package com.lawfirm.core.workflow.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -15,6 +16,7 @@ import java.util.Arrays;
  */
 @Configuration("workflowCacheConfig")
 @EnableCaching
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class CacheConfig {
     
     /**

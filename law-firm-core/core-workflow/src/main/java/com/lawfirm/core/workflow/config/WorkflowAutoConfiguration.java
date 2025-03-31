@@ -14,8 +14,7 @@ import org.springframework.context.annotation.Import;
 @Import({
     FlowableConfig.class,
     WorkflowConfig.class,
-    CacheConfig.class,
-    WorkflowDisableConfig.class
+    CacheConfig.class
 })
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class WorkflowAutoConfiguration {
@@ -40,6 +39,8 @@ public class WorkflowAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(WorkflowPropertiesProvider.class)
     public WorkflowProperties defaultWorkflowProperties() {
-        return new WorkflowProperties();
+        WorkflowProperties properties = new WorkflowProperties();
+        properties.setEnabled(false); // 确保默认禁用
+        return properties;
     }
 }

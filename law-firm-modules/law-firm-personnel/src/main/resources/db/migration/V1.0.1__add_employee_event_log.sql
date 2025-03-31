@@ -1,5 +1,5 @@
 -- 创建员工事件日志表
-CREATE TABLE IF NOT EXISTS `employee_event_log` (
+CREATE TABLE IF NOT EXISTS `personnel_employee_event_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `employee_id` bigint(20) NOT NULL COMMENT '员工ID',
   `event_type` varchar(50) NOT NULL COMMENT '事件类型: CREATED-创建, STATUS_CHANGED-状态变更, POSITION_CHANGED-职位变更, etc',
@@ -18,11 +18,12 @@ CREATE TABLE IF NOT EXISTS `employee_event_log` (
   PRIMARY KEY (`id`),
   KEY `idx_employee_id` (`employee_id`),
   KEY `idx_event_type` (`event_type`),
-  KEY `idx_event_time` (`event_time`)
+  KEY `idx_event_time` (`event_time`),
+  CONSTRAINT `fk_event_log_employee` FOREIGN KEY (`employee_id`) REFERENCES `personnel_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='员工事件日志表';
 
 -- 创建员工通知记录表
-CREATE TABLE IF NOT EXISTS `employee_notification` (
+CREATE TABLE IF NOT EXISTS `personnel_employee_notification` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `employee_id` bigint(20) NOT NULL COMMENT '员工ID',
   `notification_type` varchar(50) NOT NULL COMMENT '通知类型: WELCOME-入职欢迎, BIRTHDAY-生日祝福, CONTRACT_EXPIRY-合同到期, RESIGN-离职',
@@ -44,5 +45,6 @@ CREATE TABLE IF NOT EXISTS `employee_notification` (
   KEY `idx_employee_id` (`employee_id`),
   KEY `idx_notification_type` (`notification_type`),
   KEY `idx_status` (`status`),
-  KEY `idx_send_time` (`send_time`)
+  KEY `idx_send_time` (`send_time`),
+  CONSTRAINT `fk_notification_employee` FOREIGN KEY (`employee_id`) REFERENCES `personnel_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='员工通知记录表'; 

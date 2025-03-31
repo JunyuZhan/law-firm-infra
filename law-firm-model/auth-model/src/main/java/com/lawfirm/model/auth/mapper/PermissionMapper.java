@@ -2,6 +2,7 @@ package com.lawfirm.model.auth.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.Permission;
+import com.lawfirm.model.auth.constant.AuthSqlConstants;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -71,19 +72,12 @@ public interface PermissionMapper extends BaseMapper<Permission> {
     /**
      * 查询员工权限编码列表
      */
-    @Select("SELECT DISTINCT p.code FROM auth_permission p " +
-            "INNER JOIN auth_role_permission rp ON p.id = rp.permission_id " +
-            "INNER JOIN auth_user_role ur ON rp.role_id = ur.role_id " +
-            "WHERE ur.user_id = #{userId}")
+    @Select(AuthSqlConstants.Permission.SELECT_EMPLOYEE_PERMISSION_CODES)
     List<String> selectEmployeePermissionCodes(Long userId);
 
     /**
      * 查询用户菜单列表
      */
-    @Select("SELECT DISTINCT p.* FROM auth_permission p " +
-            "INNER JOIN auth_role_permission rp ON p.id = rp.permission_id " +
-            "INNER JOIN auth_user_role ur ON rp.role_id = ur.role_id " +
-            "WHERE ur.user_id = #{userId} AND p.type = 0 " +
-            "ORDER BY p.sort")
+    @Select(AuthSqlConstants.Permission.SELECT_MENUS_BY_USER_ID)
     List<Permission> selectMenusByUserId(@Param("userId") Long userId);
 } 

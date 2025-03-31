@@ -4,8 +4,12 @@ import lombok.Data;
 
 /**
  * 统一响应结果
+ * 
+ * @deprecated 请使用 {@link com.lawfirm.common.core.api.CommonResult} 代替，
+ * 以保持API响应格式一致性
  */
 @Data
+@Deprecated
 public class ResponseResult<T> {
 
     /**
@@ -25,14 +29,20 @@ public class ResponseResult<T> {
 
     /**
      * 成功
+     * 
+     * @deprecated 请使用 {@link com.lawfirm.common.core.api.CommonResult#success()} 代替
      */
+    @Deprecated
     public static <T> ResponseResult<T> success() {
         return success(null);
     }
 
     /**
      * 成功
+     * 
+     * @deprecated 请使用 {@link com.lawfirm.common.core.api.CommonResult#success(Object)} 代替
      */
+    @Deprecated
     public static <T> ResponseResult<T> success(T data) {
         ResponseResult<T> result = new ResponseResult<>();
         result.setCode(200);

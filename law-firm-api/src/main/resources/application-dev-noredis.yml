@@ -65,8 +65,8 @@ spring:
   # 简化安全设置
   security:
     user:
-      name: admin
-      password: admin
+      name: ${ADMIN_USERNAME:admin}
+      password: ${ADMIN_PASSWORD:${random.uuid}}
       roles: ADMIN
     filter:
       dispatcher-types: REQUEST,ASYNC

@@ -1,0 +1,45 @@
+# 归档模块配置
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_archive
+  
+  # 数据源配置继承自主应用
+
+# 归档模块自定义配置
+archive:
+  # 档案存储配置
+  storage:
+    # 物理档案位置前缀
+    location-prefix: "A-"
+    # 电子档案存储路径
+    file-storage-path: ${user.home}/.law-firm/archive-files
+    # 允许的文件类型
+    allowed-file-types: pdf,doc,docx,xls,xlsx,jpg,png,zip,rar
+    # 最大文件大小
+    max-file-size: 50MB
+  
+  # 档案借阅配置
+  borrow:
+    # 是否开启借阅审批
+    approval-required: true
+    # 默认最长借阅时间(天)
+    default-borrow-days: 7
+    # 是否开启逾期提醒
+    overdue-reminder: true
+    # 逾期前提醒时间(天)
+    remind-before-days: 1
+  
+  # 档案安全配置
+  security:
+    # 是否开启档案访问日志
+    access-logging: true
+    # 敏感操作二次认证
+    require-second-auth: true
+    # 档案下载水印
+    enable-watermark: true 

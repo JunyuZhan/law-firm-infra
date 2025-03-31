@@ -2,6 +2,10 @@ package com.lawfirm.model.organization.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.organization.entity.department.Department;
+import com.lawfirm.model.organization.constant.OrganizationSqlConstants;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 
 /**
@@ -15,7 +19,8 @@ public interface DepartmentMapper extends BaseMapper<Department> {
      * @param code 部门编码
      * @return 部门信息
      */
-    Department selectByCode(String code);
+    @Select(OrganizationSqlConstants.Department.SELECT_BY_CODE)
+    Department selectByCode(@Param("code") String code);
 
     /**
      * 查询子部门列表
@@ -23,7 +28,8 @@ public interface DepartmentMapper extends BaseMapper<Department> {
      * @param parentId 父部门ID
      * @return 子部门列表
      */
-    List<Department> selectByParentId(Long parentId);
+    @Select(OrganizationSqlConstants.Department.SELECT_BY_PARENT_ID)
+    List<Department> selectByParentId(@Param("parentId") Long parentId);
 
     /**
      * 根据部门类型查询
@@ -31,7 +37,8 @@ public interface DepartmentMapper extends BaseMapper<Department> {
      * @param type 部门类型
      * @return 部门列表
      */
-    List<Department> selectByType(String type);
+    @Select(OrganizationSqlConstants.Department.SELECT_BY_TYPE)
+    List<Department> selectByType(@Param("type") String type);
 
     /**
      * 根据律所ID查询部门列表
@@ -39,5 +46,6 @@ public interface DepartmentMapper extends BaseMapper<Department> {
      * @param firmId 律所ID
      * @return 部门列表
      */
-    List<Department> selectByFirmId(Long firmId);
+    @Select(OrganizationSqlConstants.Department.SELECT_BY_FIRM_ID)
+    List<Department> selectByFirmId(@Param("firmId") Long firmId);
 } 

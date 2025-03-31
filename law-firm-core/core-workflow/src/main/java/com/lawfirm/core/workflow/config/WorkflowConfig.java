@@ -1,6 +1,7 @@
 package com.lawfirm.core.workflow.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
     "com.lawfirm.core.workflow.listener",
     "com.lawfirm.core.workflow.service"
 })
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class WorkflowConfig {
     
     public WorkflowConfig() {

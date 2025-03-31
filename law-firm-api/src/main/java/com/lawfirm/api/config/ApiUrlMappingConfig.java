@@ -50,6 +50,13 @@ public class ApiUrlMappingConfig implements WebMvcConfigurer {
         // 权限相关
         registry.addViewController("/api/permissions").setViewName("forward:/getPermCode");
         
+        // API文档相关 - 确保所有路径格式都能访问
+        registry.addViewController("/doc").setViewName("forward:/knife4j/doc.html");
+        registry.addViewController("/docs").setViewName("forward:/knife4j/doc.html");
+        registry.addViewController("/api-docs").setViewName("forward:/knife4j/doc.html");
+        registry.addViewController("/swagger").setViewName("forward:/knife4j/doc.html");
+        registry.addViewController("/swagger-ui").setViewName("forward:/knife4j/doc.html");
+        
         log.info("API URL映射配置完成");
     }
 } 

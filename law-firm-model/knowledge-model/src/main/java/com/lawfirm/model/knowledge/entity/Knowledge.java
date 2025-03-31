@@ -2,9 +2,10 @@ package com.lawfirm.model.knowledge.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.model.base.entity.ModelBaseEntity;
+import com.lawfirm.model.base.entity.TenantEntity;
 import com.lawfirm.model.knowledge.enums.KnowledgeTypeEnum;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
@@ -14,11 +15,12 @@ import java.util.List;
 /**
  * 知识库实体
  */
-@Data
-@TableName("knowledge")
+@Getter
+@Setter
+@TableName("knowledge_document")
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class Knowledge extends ModelBaseEntity {
+public class Knowledge extends TenantEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -81,6 +83,18 @@ public class Knowledge extends ModelBaseEntity {
      */
     @TableField("author_name")
     private String authorName;
+
+    /**
+     * 状态（0-草稿 1-已发布 2-已归档）
+     */
+    @TableField("status")
+    private Integer status;
+
+    /**
+     * 点赞次数
+     */
+    @TableField("like_count")
+    private Integer likeCount = 0;
 
     /**
      * 备注

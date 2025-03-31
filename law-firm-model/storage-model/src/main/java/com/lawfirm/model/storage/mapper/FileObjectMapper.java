@@ -2,6 +2,7 @@ package com.lawfirm.model.storage.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.storage.entity.file.FileObject;
+import com.lawfirm.model.storage.constant.StorageSqlConstants;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -19,7 +20,7 @@ public interface FileObjectMapper extends BaseMapper<FileObject> {
      * @param identifier 文件标识
      * @return 文件对象
      */
-    @Select("SELECT * FROM file_object WHERE identifier = #{identifier} LIMIT 1")
+    @Select(StorageSqlConstants.FileObject.FIND_BY_IDENTIFIER)
     FileObject findByIdentifier(@Param("identifier") String identifier);
     
     /**
@@ -29,7 +30,7 @@ public interface FileObjectMapper extends BaseMapper<FileObject> {
      * @param bucketId 桶ID
      * @return 文件对象
      */
-    @Select("SELECT * FROM file_object WHERE identifier = #{identifier} AND bucket_id = #{bucketId} LIMIT 1")
+    @Select(StorageSqlConstants.FileObject.FIND_BY_IDENTIFIER_AND_BUCKET_ID)
     FileObject findByIdentifierAndBucketId(@Param("identifier") String identifier, @Param("bucketId") Long bucketId);
     
     /**
@@ -38,7 +39,7 @@ public interface FileObjectMapper extends BaseMapper<FileObject> {
      * @param bucketId 桶ID
      * @return 文件对象列表
      */
-    @Select("SELECT * FROM file_object WHERE bucket_id = #{bucketId}")
+    @Select(StorageSqlConstants.FileObject.FIND_BY_BUCKET_ID)
     List<FileObject> findByBucketId(@Param("bucketId") Long bucketId);
     
     /**
@@ -48,7 +49,7 @@ public interface FileObjectMapper extends BaseMapper<FileObject> {
      * @param filePath 文件路径
      * @return 文件对象
      */
-    @Select("SELECT * FROM file_object WHERE bucket_id = #{bucketId} AND file_path = #{filePath} LIMIT 1")
+    @Select(StorageSqlConstants.FileObject.FIND_BY_BUCKET_ID_AND_FILE_PATH)
     FileObject findByBucketIdAndFilePath(@Param("bucketId") Long bucketId, @Param("filePath") String filePath);
     
     /**
@@ -58,7 +59,7 @@ public interface FileObjectMapper extends BaseMapper<FileObject> {
      * @param status 状态
      * @return 更新结果
      */
-    @Update("UPDATE file_object SET status = #{status} WHERE id = #{id}")
+    @Update(StorageSqlConstants.FileObject.UPDATE_STATUS)
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
     
     /**
@@ -68,6 +69,6 @@ public interface FileObjectMapper extends BaseMapper<FileObject> {
      * @param fileSize 文件大小
      * @return 更新结果
      */
-    @Update("UPDATE file_object SET file_size = #{fileSize} WHERE id = #{id}")
+    @Update(StorageSqlConstants.FileObject.UPDATE_FILE_SIZE)
     int updateFileSize(@Param("id") Long id, @Param("fileSize") Long fileSize);
 } 

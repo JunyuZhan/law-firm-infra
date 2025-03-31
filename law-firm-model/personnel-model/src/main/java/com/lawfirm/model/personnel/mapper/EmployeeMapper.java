@@ -3,6 +3,7 @@ package com.lawfirm.model.personnel.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.personnel.entity.Employee;
 import com.lawfirm.model.personnel.enums.EmployeeTypeEnum;
+import com.lawfirm.model.personnel.constant.EmployeeSqlConstants;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -20,6 +21,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param workNumber 工号
      * @return 员工信息
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_WORK_NUMBER)
     Employee selectByWorkNumber(String workNumber);
 
     /**
@@ -28,6 +30,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param email 邮箱
      * @return 员工信息
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_EMAIL)
     Employee selectByEmail(String email);
 
     /**
@@ -36,27 +39,34 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param mobile 手机号
      * @return 员工信息
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_PHONE)
     Employee selectByMobile(String mobile);
 
     /**
      * 根据工号查询员工
+     * 
+     * @param username 用户名/工号（需预先过滤特殊字符防止SQL注入）
+     * @return 员工信息
      */
-    @Select("SELECT * FROM employee WHERE work_number = #{username}")
+    @Select(EmployeeSqlConstants.SELECT_BY_USERNAME)
     Employee selectByUsername(String username);
 
     /**
      * 根据手机号查询员工
+     * 
+     * @param phone 手机号（需预先验证格式）
+     * @return 员工信息
      */
-    @Select("SELECT * FROM employee WHERE mobile = #{phone}")
+    @Select(EmployeeSqlConstants.SELECT_BY_PHONE)
     Employee selectByPhone(String phone);
     
     /**
      * 根据律师执业证号查询员工
      *
-     * @param licenseNumber 执业证号
+     * @param licenseNumber 执业证号（需预先验证格式）
      * @return 员工信息
      */
-    @Select("SELECT * FROM employee WHERE license_number = #{licenseNumber} AND employee_type = 1")
+    @Select(EmployeeSqlConstants.SELECT_BY_LICENSE_NUMBER)
     Employee selectByLicenseNumber(String licenseNumber);
 
     /**
@@ -65,6 +75,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param practiceArea 专业领域
      * @return 律师列表
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_PRACTICE_AREA)
     List<Employee> selectByPracticeArea(String practiceArea);
     
     /**
@@ -73,6 +84,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param employeeType 员工类型
      * @return 员工列表
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_EMPLOYEE_TYPE)
     List<Employee> selectByEmployeeType(@Param("employeeType") EmployeeTypeEnum employeeType);
 
     /**
@@ -82,6 +94,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param employeeType 员工类型
      * @return 员工列表
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_DEPT_AND_TYPE)
     List<Employee> selectByDepartmentIdAndType(@Param("departmentId") Long departmentId, 
                                                @Param("employeeType") EmployeeTypeEnum employeeType);
 
@@ -92,6 +105,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param employeeType 员工类型
      * @return 员工列表
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_POSITION_AND_TYPE)
     List<Employee> selectByPositionIdAndType(@Param("positionId") Long positionId, 
                                              @Param("employeeType") EmployeeTypeEnum employeeType);
     
@@ -101,6 +115,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param lawyerLevel 律师职级
      * @return 律师列表
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_LAWYER_LEVEL)
     List<Employee> selectByLawyerLevel(@Param("lawyerLevel") Integer lawyerLevel);
     
     /**
@@ -109,5 +124,6 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param functionType 职能类型
      * @return 行政人员列表
      */
+    @Select(EmployeeSqlConstants.SELECT_BY_FUNCTION_TYPE)
     List<Employee> selectByFunctionType(@Param("functionType") Integer functionType);
 } 

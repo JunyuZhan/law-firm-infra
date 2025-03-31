@@ -42,7 +42,7 @@ public class CaseModuleConfiguration {
      */
     @Bean
     public String caseModuleInitializer() {
-        System.out.println("案件管理模块初始化完成");
+        log.info("案件管理模块初始化完成");
         return "caseModuleInitializer";
     }
     

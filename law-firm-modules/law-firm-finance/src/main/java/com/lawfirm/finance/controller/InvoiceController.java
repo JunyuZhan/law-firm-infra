@@ -2,7 +2,7 @@ package com.lawfirm.finance.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lawfirm.common.core.response.ResponseResult;
+import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.finance.entity.Invoice;
 import com.lawfirm.model.finance.enums.InvoiceStatusEnum;
 import com.lawfirm.model.finance.enums.InvoiceTypeEnum;
@@ -30,72 +30,72 @@ public class InvoiceController {
 
     @PostMapping
     @Operation(summary = "创建发票")
-    public ResponseResult<Long> createInvoice(@Valid @RequestBody Invoice invoice) {
-        return ResponseResult.success(invoiceService.createInvoice(invoice));
+    public CommonResult<Long> createInvoice(@Valid @RequestBody Invoice invoice) {
+        return CommonResult.success(invoiceService.createInvoice(invoice));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新发票")
-    public ResponseResult<Boolean> updateInvoice(@PathVariable("id") Long id, 
+    public CommonResult<Boolean> updateInvoice(@PathVariable("id") Long id, 
                                             @Valid @RequestBody Invoice invoice) {
         invoice.setId(id);
-        return ResponseResult.success(invoiceService.updateInvoice(invoice));
+        return CommonResult.success(invoiceService.updateInvoice(invoice));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除发票")
-    public ResponseResult<Boolean> deleteInvoice(@PathVariable("id") Long id) {
-        return ResponseResult.success(invoiceService.deleteInvoice(id));
+    public CommonResult<Boolean> deleteInvoice(@PathVariable("id") Long id) {
+        return CommonResult.success(invoiceService.deleteInvoice(id));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取发票详情")
-    public ResponseResult<Invoice> getInvoice(@PathVariable("id") Long id) {
-        return ResponseResult.success(invoiceService.getInvoiceById(id));
+    public CommonResult<Invoice> getInvoice(@PathVariable("id") Long id) {
+        return CommonResult.success(invoiceService.getInvoiceById(id));
     }
 
     @PutMapping("/{id}/status")
     @Operation(summary = "更新发票状态")
-    public ResponseResult<Boolean> updateInvoiceStatus(
+    public CommonResult<Boolean> updateInvoiceStatus(
             @PathVariable("id") Long id,
             @Parameter(description = "发票状态") @RequestParam InvoiceStatusEnum status,
             @Parameter(description = "备注") @RequestParam(required = false) String remark) {
-        return ResponseResult.success(invoiceService.updateInvoiceStatus(id, status, remark));
+        return CommonResult.success(invoiceService.updateInvoiceStatus(id, status, remark));
     }
 
     @PutMapping("/{id}/confirm")
     @Operation(summary = "确认开票")
-    public ResponseResult<Boolean> confirmInvoice(
+    public CommonResult<Boolean> confirmInvoice(
             @PathVariable("id") Long id,
             @Parameter(description = "发票号码") @RequestParam String invoiceNo,
             @Parameter(description = "开票日期") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime invoiceDate,
             @Parameter(description = "操作人ID") @RequestParam Long operatorId,
             @Parameter(description = "备注") @RequestParam(required = false) String remark) {
-        return ResponseResult.success(invoiceService.confirmInvoice(id, invoiceNo, invoiceDate, operatorId, remark));
+        return CommonResult.success(invoiceService.confirmInvoice(id, invoiceNo, invoiceDate, operatorId, remark));
     }
 
     @PutMapping("/{id}/cancel")
     @Operation(summary = "取消发票")
-    public ResponseResult<Boolean> cancelInvoice(
+    public CommonResult<Boolean> cancelInvoice(
             @PathVariable("id") Long id,
             @Parameter(description = "取消原因") @RequestParam String reason) {
-        return ResponseResult.success(invoiceService.cancelInvoice(id, reason));
+        return CommonResult.success(invoiceService.cancelInvoice(id, reason));
     }
 
     @GetMapping("/list")
     @Operation(summary = "查询发票列表")
-    public ResponseResult<List<Invoice>> listInvoices(
+    public CommonResult<List<Invoice>> listInvoices(
             @Parameter(description = "发票类型") @RequestParam(required = false) InvoiceTypeEnum invoiceType,
             @Parameter(description = "发票状态") @RequestParam(required = false) InvoiceStatusEnum status,
             @Parameter(description = "合同ID") @RequestParam(required = false) Long contractId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @Parameter(description = "结束时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
-        return ResponseResult.success(invoiceService.listInvoices(invoiceType, status, contractId, startTime, endTime));
+        return CommonResult.success(invoiceService.listInvoices(invoiceType, status, contractId, startTime, endTime));
     }
 
     @GetMapping("/page")
     @Operation(summary = "分页查询发票")
-    public ResponseResult<IPage<Invoice>> pageInvoices(
+    public CommonResult<IPage<Invoice>> pageInvoices(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") long size,
             @Parameter(description = "发票类型") @RequestParam(required = false) InvoiceTypeEnum invoiceType,
@@ -104,27 +104,27 @@ public class InvoiceController {
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @Parameter(description = "结束时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
         Page<Invoice> page = new Page<>(current, size);
-        return ResponseResult.success(invoiceService.pageInvoices(page, invoiceType, status, contractId, startTime, endTime));
+        return CommonResult.success(invoiceService.pageInvoices(page, invoiceType, status, contractId, startTime, endTime));
     }
 
     @GetMapping("/contract/{contractId}")
     @Operation(summary = "按合同查询发票")
-    public ResponseResult<List<Invoice>> listInvoicesByContract(@PathVariable("contractId") Long contractId) {
-        return ResponseResult.success(invoiceService.listInvoicesByContract(contractId));
+    public CommonResult<List<Invoice>> listInvoicesByContract(@PathVariable("contractId") Long contractId) {
+        return CommonResult.success(invoiceService.listInvoicesByContract(contractId));
     }
 
     @GetMapping("/client/{clientId}")
     @Operation(summary = "按客户查询发票")
-    public ResponseResult<List<Invoice>> listInvoicesByClient(
+    public CommonResult<List<Invoice>> listInvoicesByClient(
             @PathVariable("clientId") Long clientId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @Parameter(description = "结束时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
-        return ResponseResult.success(invoiceService.listInvoicesByClient(clientId, startTime, endTime));
+        return CommonResult.success(invoiceService.listInvoicesByClient(clientId, startTime, endTime));
     }
 
     @GetMapping("/export")
     @Operation(summary = "导出发票")
-    public ResponseResult<String> exportInvoices(@Parameter(description = "发票ID列表") @RequestParam List<Long> invoiceIds) {
-        return ResponseResult.success(invoiceService.exportInvoices(invoiceIds));
+    public CommonResult<String> exportInvoices(@Parameter(description = "发票ID列表") @RequestParam List<Long> invoiceIds) {
+        return CommonResult.success(invoiceService.exportInvoices(invoiceIds));
     }
 }

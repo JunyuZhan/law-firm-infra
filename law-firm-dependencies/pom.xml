@@ -18,7 +18,7 @@
         <spring-cloud.version>2022.0.4</spring-cloud.version>
         <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
         <spring-cloud-alibaba-dubbo.version>2022.0.0.0-RC2</spring-cloud-alibaba-dubbo.version>
-        <flowable.version>7.0.0</flowable.version>
+        <flowable.version>6.8.0</flowable.version>
         <flyway.version>9.22.3</flyway.version>
         <lombok.version>1.18.30</lombok.version>
         <junit-jupiter.version>5.10.1</junit-jupiter.version>
@@ -66,6 +66,7 @@
         <pdf2dom.version>2.0.1</pdf2dom.version>
         <javassist.version>3.29.2-GA</javassist.version>
         <xdocreport.version>2.0.3</xdocreport.version>
+        <batik-awt-util.version>1.14</batik-awt-util.version>
         <jakarta-jakartaee-api.version>10.0.0</jakarta-jakartaee-api.version>
         <h2.version>2.2.224</h2.version>
         <tencent-cos.version>5.6.97</tencent-cos.version>
@@ -82,6 +83,7 @@
         <!-- API文档相关 -->
         <springdoc.version>2.3.0</springdoc.version>
         <knife4j.version>4.3.0</knife4j.version>
+        <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -173,6 +175,11 @@
                 <artifactId>flowable-bpmn-converter</artifactId>
                 <version>${flowable.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.flowable</groupId>
+                <artifactId>flowable-task-api</artifactId>
+                <version>${flowable.version}</version>
+            </dependency>
             
             <!-- 日志增强 -->
             <dependency>
@@ -241,6 +248,18 @@
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>
                 <version>${pdfbox.version}</version>
+            </dependency>
+            
+            <!-- 文档转换工具 -->
+            <dependency>
+                <groupId>fr.opensagres.xdocreport</groupId>
+                <artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
+                <version>${xdocreport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-awt-util</artifactId>
+                <version>${batik-awt-util.version}</version>
             </dependency>
             
             <!-- Office文档处理 -->
@@ -651,13 +670,6 @@
                 <version>${pdf2dom.version}</version>
             </dependency>
             
-            <!-- Word转PDF工具 -->
-            <dependency>
-                <groupId>fr.opensagres.xdocreport</groupId>
-                <artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
-                <version>${xdocreport.version}</version>
-            </dependency>
-            
             <!-- Javassist -->
             <dependency>
                 <groupId>org.javassist</groupId>
@@ -733,13 +745,6 @@
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
                 <version>${tika.version}</version>
-            </dependency>
-
-            <!-- Batik SVG 工具 -->
-            <dependency>
-                <groupId>org.apache.xmlgraphics</groupId>
-                <artifactId>batik-awt-util</artifactId>
-                <version>${batik-awt-util.version}</version>
             </dependency>
 
             <!-- Validation -->
@@ -842,12 +847,70 @@
         </dependencies>
     </dependencyManagement>
     
+    <!-- 添加Flowable官方仓库 -->
+    <repositories>
+        <repository>
+            <id>flowable</id>
+            <name>Flowable Repository</name>
+            <url>https://maven.flowable.com/artifactory/flowable-releases</url>
+        </repository>
+    </repositories>
+    
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.6.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.2.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>1.5.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.5.0</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>

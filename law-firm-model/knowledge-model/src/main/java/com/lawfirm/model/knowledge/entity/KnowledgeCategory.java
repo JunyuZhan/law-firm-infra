@@ -2,8 +2,9 @@ package com.lawfirm.model.knowledge.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lawfirm.model.base.entity.ModelBaseEntity;
-import lombok.Data;
+import com.lawfirm.model.base.entity.TenantEntity;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
@@ -13,11 +14,12 @@ import java.util.List;
 /**
  * 知识分类实体
  */
-@Data
+@Getter
+@Setter
 @TableName("knowledge_category")
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class KnowledgeCategory extends ModelBaseEntity {
+public class KnowledgeCategory extends TenantEntity {
 
     private static final long serialVersionUID = 1L;
 

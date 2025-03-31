@@ -16,11 +16,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 空DDL处理器配置
  * 解决启动时缺少ddlApplicationRunner导致的异常问题
  */
+@Slf4j
 @Configuration
 @ConditionalOnProperty(name = "spring.sql.init.enabled", havingValue = "false", matchIfMissing = true)
 public class NullDdlHandler implements ApplicationListener<ContextRefreshedEvent> {
@@ -31,7 +33,7 @@ public class NullDdlHandler implements ApplicationListener<ContextRefreshedEvent
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         ApplicationContext context = event.getApplicationContext();
-        System.out.println("应用上下文刷新完成，拦截Runner执行");
+        log.info("应用上下文刷新完成，拦截Runner执行");
         
         try {
             // 通过反射访问SpringApplication.callRunners方法内的runners列表
@@ -52,12 +54,12 @@ public class NullDdlHandler implements ApplicationListener<ContextRefreshedEvent
                     Object runner = it.next();
                     if (runner != null && runner.toString().contains("ddlApplicationRunner")) {
                         it.remove();
-                        System.out.println("已移除ddlApplicationRunner");
+                        log.info("已移除ddlApplicationRunner");
                     }
                 }
             }
         } catch (Exception e) {
-            System.out.println("无法拦截Runner执行: " + e.getMessage());
+            log.warn("无法拦截Runner执行: {}", e.getMessage());
         }
     }
     
@@ -69,7 +71,7 @@ public class NullDdlHandler implements ApplicationListener<ContextRefreshedEvent
     @ConditionalOnMissingBean(name = "ddlApplicationRunner")
     public CommandLineRunner ddlApplicationRunner() {
         return args -> {
-            System.out.println("空DDL Runner执行");
+            log.debug("空DDL Runner执行");
         };
     }
 }

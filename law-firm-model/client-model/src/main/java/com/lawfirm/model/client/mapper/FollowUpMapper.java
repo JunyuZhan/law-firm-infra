@@ -2,8 +2,10 @@ package com.lawfirm.model.client.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.client.entity.follow.ClientFollowUp;
+import com.lawfirm.model.client.constant.ClientSqlConstants;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,7 @@ public interface FollowUpMapper extends BaseMapper<ClientFollowUp> {
      * @param clientId 客户ID
      * @return 跟进记录列表
      */
+    @Select(ClientSqlConstants.FollowUp.SELECT_BY_CLIENT_ID)
     List<ClientFollowUp> selectByClientId(@Param("clientId") Long clientId);
     
     /**
@@ -30,6 +33,7 @@ public interface FollowUpMapper extends BaseMapper<ClientFollowUp> {
      * @param endTime 结束时间
      * @return 跟进记录列表
      */
+    @Select(ClientSqlConstants.FollowUp.SELECT_BY_TIME_RANGE)
     List<ClientFollowUp> selectByTimeRange(
             @Param("clientId") Long clientId, 
             @Param("startTime") Date startTime, 
@@ -42,6 +46,7 @@ public interface FollowUpMapper extends BaseMapper<ClientFollowUp> {
      * @param followUpType 跟进类型
      * @return 跟进记录列表
      */
+    @Select(ClientSqlConstants.FollowUp.SELECT_BY_TYPE)
     List<ClientFollowUp> selectByType(
             @Param("clientId") Long clientId, 
             @Param("followUpType") String followUpType);
@@ -52,6 +57,7 @@ public interface FollowUpMapper extends BaseMapper<ClientFollowUp> {
      * @param userId 用户ID
      * @return 跟进记录列表
      */
+    @Select(ClientSqlConstants.FollowUp.SELECT_BY_USER_ID)
     List<ClientFollowUp> selectByUserId(@Param("userId") Long userId);
     
     /**
@@ -60,5 +66,6 @@ public interface FollowUpMapper extends BaseMapper<ClientFollowUp> {
      * @param remindTime 提醒时间
      * @return 跟进记录列表
      */
+    @Select(ClientSqlConstants.FollowUp.SELECT_REMINDERS)
     List<ClientFollowUp> selectReminders(@Param("remindTime") Date remindTime);
 } 

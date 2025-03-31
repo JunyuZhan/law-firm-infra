@@ -2,6 +2,7 @@ package com.lawfirm.model.auth.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.User;
+import com.lawfirm.model.auth.constant.AuthSqlConstants;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -22,6 +23,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param username 用户名
      * @return 用户实体
      */
+    @Select(AuthSqlConstants.User.SELECT_BY_USERNAME)
     User selectByUsername(String username);
     
     /**
@@ -30,6 +32,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param phone 手机号
      * @return 用户实体
      */
+    @Select(AuthSqlConstants.User.SELECT_BY_PHONE)
     User selectByPhone(String phone);
     
     /**
@@ -38,6 +41,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param email 邮箱
      * @return 用户实体
      */
+    @Select(AuthSqlConstants.User.SELECT_BY_EMAIL)
     User selectByEmail(String email);
     
     /**
@@ -159,23 +163,18 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * 删除用户角色关联
      */
-    @Delete("DELETE FROM auth_user_role WHERE user_id = #{userId}")
+    @Delete(AuthSqlConstants.User.DELETE_USER_ROLES)
     int deleteUserRoles(@Param("userId") Long userId);
     
     /**
      * 批量插入用户角色关联
      */
-    @Insert("<script>" +
-            "INSERT INTO auth_user_role (user_id, role_id) VALUES " +
-            "<foreach collection='roleIds' item='roleId' separator=','>" +
-            "(#{userId}, #{roleId})" +
-            "</foreach>" +
-            "</script>")
+    @Insert(AuthSqlConstants.User.INSERT_USER_ROLES)
     int insertUserRoles(@Param("userId") Long userId, @Param("roleIds") List<Long> roleIds);
     
     /**
      * 查询用户角色ID列表
      */
-    @Select("SELECT role_id FROM auth_user_role WHERE user_id = #{userId}")
+    @Select(AuthSqlConstants.User.SELECT_USER_ROLE_IDS)
     List<Long> selectUserRoleIds(@Param("userId") Long userId);
 }

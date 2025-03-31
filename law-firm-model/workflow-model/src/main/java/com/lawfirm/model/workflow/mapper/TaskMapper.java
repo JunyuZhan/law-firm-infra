@@ -2,6 +2,7 @@ package com.lawfirm.model.workflow.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.workflow.entity.base.ProcessTask;
+import com.lawfirm.model.workflow.constant.WorkflowSqlConstants;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -18,6 +19,6 @@ public interface TaskMapper extends BaseMapper<ProcessTask> {
      * @param userId 用户ID
      * @return 任务数量
      */
-    @Select("SELECT COUNT(*) FROM workflow_task WHERE handler_id = #{userId} AND status = 0")
+    @Select(WorkflowSqlConstants.Task.SELECT_USER_TASK_COUNT)
     int selectUserTaskCount(Long userId);
 } 

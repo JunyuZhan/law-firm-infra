@@ -2,6 +2,7 @@ package com.lawfirm.model.knowledge.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.knowledge.entity.KnowledgeTagRelation;
+import com.lawfirm.model.knowledge.constant.KnowledgeSqlConstants;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,32 +11,32 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * 知识标签关联Mapper接口
+ * 知识标签关系Mapper接口
  */
 @Mapper
 public interface KnowledgeTagRelationMapper extends BaseMapper<KnowledgeTagRelation> {
 
     /**
-     * 获取知识的标签ID列表
+     * 查询知识对应的标签ID列表
      */
-    @Select("SELECT tag_id FROM knowledge_tag_relation WHERE knowledge_id = #{knowledgeId}")
+    @Select(KnowledgeSqlConstants.TagRelation.SELECT_TAG_IDS_BY_KNOWLEDGE_ID)
     List<Long> selectTagIdsByKnowledgeId(@Param("knowledgeId") Long knowledgeId);
 
     /**
-     * 获取标签关联的知识ID列表
+     * 查询标签对应的知识ID列表
      */
-    @Select("SELECT knowledge_id FROM knowledge_tag_relation WHERE tag_id = #{tagId}")
+    @Select(KnowledgeSqlConstants.TagRelation.SELECT_KNOWLEDGE_IDS_BY_TAG_ID)
     List<Long> selectKnowledgeIdsByTagId(@Param("tagId") Long tagId);
-    
+
     /**
-     * 删除知识的所有标签关联
+     * 删除知识的所有标签关系
      */
-    @Delete("DELETE FROM knowledge_tag_relation WHERE knowledge_id = #{knowledgeId}")
+    @Delete(KnowledgeSqlConstants.TagRelation.DELETE_BY_KNOWLEDGE_ID)
     int deleteByKnowledgeId(@Param("knowledgeId") Long knowledgeId);
-    
+
     /**
-     * 删除标签的所有知识关联
+     * 删除标签的所有知识关系
      */
-    @Delete("DELETE FROM knowledge_tag_relation WHERE tag_id = #{tagId}")
+    @Delete(KnowledgeSqlConstants.TagRelation.DELETE_BY_TAG_ID)
     int deleteByTagId(@Param("tagId") Long tagId);
 } 

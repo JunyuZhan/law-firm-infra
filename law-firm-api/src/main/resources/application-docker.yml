@@ -53,9 +53,10 @@ spring:
   
   # MinIO配置
   minio:
-    endpoint: http://minio:9000
-    access-key: ${MINIO_ACCESS_KEY:minioadmin}
-    secret-key: ${MINIO_SECRET_KEY:minioadmin}
+    enabled: true
+    endpoint: http://${MINIO_HOST:minio}:${MINIO_PORT:9000}
+    access-key: ${MINIO_ACCESS_KEY:miniouser}
+    secret-key: ${MINIO_SECRET_KEY:${random.uuid}}
     bucket: law-firm-bucket
 
 # RocketMQ配置（使用自定义属性）

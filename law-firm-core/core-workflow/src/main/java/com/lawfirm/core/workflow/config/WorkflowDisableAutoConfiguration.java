@@ -1,6 +1,7 @@
 package com.lawfirm.core.workflow.config;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Import;
 
@@ -13,6 +14,11 @@ import org.springframework.context.annotation.Import;
 @AutoConfiguration
 @Import({
     WorkflowDisableConfig.class
+})
+@AutoConfigureBefore(name = {
+    "org.flowable.spring.boot.FlowableAutoConfiguration",
+    "org.flowable.spring.boot.app.AppEngineAutoConfiguration",
+    "org.flowable.spring.boot.ProcessEngineServicesAutoConfiguration"
 })
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
 public class WorkflowDisableAutoConfiguration {

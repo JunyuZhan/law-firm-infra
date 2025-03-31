@@ -16,11 +16,6 @@ class CommonResultTest {
         CommonResult<String> result = CommonResult.success(data, ResultCode.SUCCESS.getMessage());
         
         // then
-        System.out.println("Result: " + result);
-        System.out.println("Data: " + result.getData());
-        System.out.println("Message: " + result.getMessage());
-        System.out.println("Code: " + result.getCode());
-        
         assertTrue(result.isSuccess());
         assertEquals(ResultCode.SUCCESS.getCode(), result.getCode());
         assertEquals(data, result.getData());

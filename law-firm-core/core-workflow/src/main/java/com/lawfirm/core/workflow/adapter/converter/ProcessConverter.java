@@ -11,6 +11,7 @@ import com.lawfirm.model.workflow.enums.TaskPriorityEnum;
 import com.lawfirm.core.workflow.vo.ProcessDefinitionVO;
 import org.flowable.engine.repository.ProcessDefinition;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessConverter {
 
     /**
