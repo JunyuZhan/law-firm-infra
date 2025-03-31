@@ -1,28 +1,104 @@
 # =============================================
-# API文档配置 - 简化版本避免冲突
+# API文档统一配置
 # =============================================
 
-# Springdoc OpenAPI配置
+# API文档主开关
+api:
+  doc:
+    # 是否启用API文档
+    enabled: true
+    # 文档标题
+    title: 律师事务所管理系统API
+    # 文档描述
+    description: 提供律师事务所业务管理所需的各种API接口
+    # 文档版本
+    version: 1.0.0
+    # 联系人信息
+    contact:
+      name: 律师事务所开发团队
+      email: dev@lawfirm.com
+      url: https://lawfirm.com
+    # 许可证信息
+    license:
+      name: Apache 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+# SpringDoc配置
 springdoc:
-  # API文档配置
+  # 是否启用API文档生成
   api-docs:
     enabled: true
+    # API文档路径
     path: /v3/api-docs
+    # 是否启用分组
     groups:
       enabled: true
+  
   # Swagger UI配置
   swagger-ui:
+    # 是否启用Swagger UI
     enabled: true
+    # Swagger UI路径
     path: /swagger-ui.html
-  # 扫描包配置
-  packages-to-scan: com.lawfirm
+    # 文档扩展设置
+    operations-sorter: alpha
+    tags-sorter: alpha
+    doc-expansion: none
+    disable-swagger-default-url: true
+    display-request-duration: true
+  
+  # 默认媒体类型
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+  
+  # 默认包含的路径模式
+  paths-to-match:
+    - /api/**
+    - /v1/**
+    - /auth/**
+    - /case/**
+    - /client/**
+    - /document/**
+    - /system/**
+    - /user/**
 
 # Knife4j配置
 knife4j:
+  # 是否启用Knife4j
   enable: true
+  # 是否开启生产环境保护
   production: false
+  # 基础认证
+  basic:
+    enable: false
+  # Knife4j增强配置
   setting:
+    # 界面语言，支持zh-CN和en-US
     language: zh-CN
-    enableDebug: true 
+    # 是否启用调试
+    enableDebug: true
+    # 是否启用主页自定义元素
+    enableHomeCustom: false
+    # 是否启用请求参数缓存
+    enableRequestCache: true
+    # 是否启用响应状态过滤器
+    enableFilterMultipartApis: false
+    # 启用OpenApi规范全局过滤器
+    enableOpenApi: true
+    # 是否启用动态参数调试
+    enableDynamicParameter: true
+
+# 安全访问配置
+security:
+  # API文档安全配置
+  doc:
+    # 是否启用文档访问保护
+    protected: false
+    # 访问文档的用户名
+    username: admin
+    # 访问文档的密码
+    password: admin123
+    # 允许访问的IP地址，多个以逗号分隔
+    allowed-ips: 127.0.0.1,192.168.1.0/24
+    # 文档安全提示
+    message: 该API文档仅供内部使用，请勿外泄 

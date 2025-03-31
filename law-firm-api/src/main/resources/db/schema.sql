@@ -210,4 +210,4 @@ CREATE TABLE IF NOT EXISTS sys_config (
   update_time datetime DEFAULT NULL COMMENT '更新时间',
   deleted tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除（0否/1是）',
   UNIQUE KEY uk_config_key (config_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表'; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表';

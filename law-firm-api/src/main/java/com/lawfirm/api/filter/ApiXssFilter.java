@@ -1,5 +1,6 @@
 package com.lawfirm.api.filter;
 
+import com.lawfirm.api.util.ApiDocPathHelper;
 import com.lawfirm.common.web.filter.XssFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -7,6 +8,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.Ordered;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,13 +31,16 @@ public class ApiXssFilter extends XssFilter {
 
     private final List<String> excludeUrls;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private final ApiDocPathHelper apiDocPathHelper;
 
     /**
      * 从配置文件中读取排除URL列表
      */
     public ApiXssFilter(@Value("${api.security.xss.exclude-urls:}") List<String> excludeUrls,
-                        @Value("${server.servlet.context-path:/api}") String contextPath) {
+                        @Value("${server.servlet.context-path:/api}") String contextPath,
+                        ApiDocPathHelper apiDocPathHelper) {
         this.excludeUrls = new ArrayList<>(excludeUrls);
+        this.apiDocPathHelper = apiDocPathHelper;
         
         // 处理上下文路径前缀
         String pathPrefix = "";
@@ -43,35 +48,27 @@ public class ApiXssFilter extends XssFilter {
             pathPrefix = contextPath.startsWith("/") ? contextPath : "/" + contextPath;
         }
         
-        // 默认排除路径
+        // 添加默认排除的路径 - 业务相关路径
         addExcludeUrlIfNotExist(pathPrefix + "/v1/auth/login");
         addExcludeUrlIfNotExist(pathPrefix + "/v1/auth/register");
         addExcludeUrlIfNotExist(pathPrefix + "/v1/document/upload");
         addExcludeUrlIfNotExist(pathPrefix + "/v1/knowledge/content");
         
-        // 添加默认的排除URL
-        String pathPrefixDefault = StringUtils.hasText(contextPath) && !"/".equals(contextPath) ? contextPath : "";
+        // 添加API文档路径到排除列表
+        for (String docPath : apiDocPathHelper.getApiDocPathsWithContext()) {
+            addExcludeUrlIfNotExist(docPath);
+        }
         
-        // 排除常见静态资源
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/static/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/resources/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/public/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/assets/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/css/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/js/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/images/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/fonts/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/favicon.ico");
+        // 添加其他常见排除URL
+        addExcludeUrlIfNotExist(pathPrefix + "/error");
+        addExcludeUrlIfNotExist(pathPrefix + "/actuator/**");
+        addExcludeUrlIfNotExist(pathPrefix + "/health/**");
         
-        // 排除健康检查端点
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/actuator/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/health/**");
-        
-        // 排除文件上传和下载请求
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/files/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/file/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/download/**");
-        addExcludeUrlIfNotExist(pathPrefixDefault + "/upload/**");
+        // 添加文件上传和下载请求
+        addExcludeUrlIfNotExist(pathPrefix + "/files/**");
+        addExcludeUrlIfNotExist(pathPrefix + "/file/**");
+        addExcludeUrlIfNotExist(pathPrefix + "/download/**");
+        addExcludeUrlIfNotExist(pathPrefix + "/upload/**");
         
         log.info("XSS过滤器排除路径: {}", excludeUrls);
     }
@@ -118,10 +115,14 @@ public class ApiXssFilter extends XssFilter {
             return true;
         }
         
+        // 检查是否为API文档路径
+        if (apiDocPathHelper.isApiDocPath(requestURI)) {
+            return true;
+        }
+        
         // 检查排除的URL
         for (String pattern : excludeUrls) {
-            AntPathMatcher matcher = new AntPathMatcher();
-            if (matcher.match(pattern, requestURI)) {
+            if (pathMatcher.match(pattern, requestURI)) {
                 log.debug("XSS过滤器排除路径: {}", requestURI);
                 return true;
             }

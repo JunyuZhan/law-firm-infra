@@ -44,14 +44,14 @@ spring:
   
   # Flyway配置
   flyway:
-    enabled: false
-    # 以下配置在enabled=false时不会使用，但保留为文档目的
-    # baseline-on-migrate: true
-    # group: true
-    # locations: classpath:db/migration
-    # url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-    # user: root
-    # password: ${MYSQL_PASSWORD:Zjy-1314}
+    enabled: true
+    baseline-on-migrate: true
+    group: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
+    out-of-order: true
+    schemas: law_firm
+    fail-on-missing-locations: false
 
 # Jasypt加密配置
 jasypt:

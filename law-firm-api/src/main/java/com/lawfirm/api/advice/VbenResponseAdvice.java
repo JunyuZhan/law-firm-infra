@@ -1,6 +1,7 @@
 package com.lawfirm.api.advice;
 
 import com.lawfirm.api.VbenResult;
+import com.lawfirm.api.util.ApiDocPathHelper;
 import com.lawfirm.common.core.api.CommonResult;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -18,12 +19,13 @@ import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 统一响应格式转换器
  * 将所有响应转换为前端期望的格式
  * 
- * 注意：此类已明确排除对API文档路径的处理！
+ * 与ApiDocConfiguration配合，排除API文档路径
  */
 @RestControllerAdvice(basePackages = {"com.lawfirm.api.controller"})
 public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
@@ -33,17 +35,8 @@ public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
     @Value("${server.servlet.context-path:/api}")
     private String contextPath;
     
-    // 不带上下文路径的API文档路径
-    private static final List<String> API_DOC_BASE_PATHS = Arrays.asList(
-        "/v3/api-docs",
-        "/swagger-ui",
-        "/doc.html",
-        "/swagger-resources", 
-        "/webjars", 
-        "/swagger-config", 
-        "/swagger",
-        "/knife4j"
-    );
+    @Autowired
+    private ApiDocPathHelper apiDocPathHelper;
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -56,49 +49,14 @@ public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
             // 记录请求路径，方便调试
             log.debug("VbenResponseAdvice检查请求: {}", path);
             
-            // API文档路径直接排除 - 考虑上下文路径
-            if (isApiDocPath(path)) {
-                log.info("排除API文档路径: {}", path);
+            // API文档路径直接排除
+            if (apiDocPathHelper.isApiDocPath(path)) {
+                log.debug("排除API文档路径: {}", path);
                 return false;
             }
         }
         
         return true;
-    }
-    
-    /**
-     * 判断是否为API文档相关路径 - 处理各种上下文路径情况
-     */
-    private boolean isApiDocPath(String uri) {
-        if (uri == null) {
-            return false;
-        }
-        
-        // 移除上下文路径前缀（如果存在）
-        String pathToCheck = uri;
-        if (contextPath != null && !contextPath.isEmpty() && uri.startsWith(contextPath)) {
-            pathToCheck = uri.substring(contextPath.length());
-        }
-        
-        // 确保路径以/开头
-        if (!pathToCheck.startsWith("/")) {
-            pathToCheck = "/" + pathToCheck;
-        }
-        
-        // 检查是否匹配基本路径
-        for (String docPath : API_DOC_BASE_PATHS) {
-            if (pathToCheck.equals(docPath) || 
-                pathToCheck.startsWith(docPath + "/") || 
-                pathToCheck.startsWith(docPath)) {
-                return true;
-            }
-        }
-        
-        // 关键字检查（更广泛的匹配）
-        return pathToCheck.contains("/v3/api-docs") || 
-               pathToCheck.contains("/swagger-ui") || 
-               pathToCheck.contains("/openapi") ||
-               pathToCheck.contains("/knife4j");
     }
 
     @Override
@@ -109,8 +67,8 @@ public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
         String path = request.getURI().getPath();
         
         // API文档路径直接返回原始响应
-        if (isApiDocPath(path)) {
-            log.info("放行API文档响应: {}", path);
+        if (apiDocPathHelper.isApiDocPath(path)) {
+            log.debug("放行API文档响应: {}", path);
             return body;
         }
         
