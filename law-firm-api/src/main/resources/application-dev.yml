@@ -20,6 +20,11 @@ spring:
           max-wait: -1
           max-idle: 8
           min-idle: 0
+  
+  # 允许Bean覆盖和循环引用
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
 
 # 数据库初始化配置
 sql:
@@ -52,6 +57,10 @@ logging:
     org.mybatis: INFO
     com.baomidou.mybatisplus: INFO
     org.springframework.jdbc: DEBUG
+    org.springframework: INFO
+    org.springframework.boot.autoconfigure: DEBUG
+    org.springframework.context: DEBUG
+    org.springframework.beans: DEBUG
 
 # AI模块配置
 law.firm.ai:
@@ -87,10 +96,6 @@ mybatis-plus:
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
-
-# 禁止覆盖Bean定义，确保Bean冲突时抛出异常而不是静默替换
-main:
-  allow-bean-definition-overriding: false
 
 # 简化安全设置
 security:

@@ -5,15 +5,19 @@
     "description": "提供律师事务所业务管理所需的各种API接口",
     "version": "1.0.0",
     "contact": {
-      "name": "Law Firm Dev Team",
+      "name": "律师事务所开发团队",
       "email": "dev@lawfirm.com",
       "url": "https://lawfirm.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
   "servers": [
     {
       "url": "/api",
-      "description": "默认服务器"
+      "description": "API服务器"
     }
   ],
   "tags": [
@@ -51,7 +55,8 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "description": "JWT Token认证"
       }
     }
   },

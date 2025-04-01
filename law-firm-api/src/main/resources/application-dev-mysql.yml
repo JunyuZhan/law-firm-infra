@@ -19,7 +19,6 @@ spring:
   sql:
     init:
       mode: never
-      # 以下配置在mode=never时不会使用，但保留为文档目的
       schema-locations: classpath:db/schema.sql
       data-locations: classpath:db/data.sql
       encoding: UTF-8
@@ -44,7 +43,7 @@ spring:
   
   # Flyway配置
   flyway:
-    enabled: true
+    enabled: false
     baseline-on-migrate: true
     group: true
     locations: classpath:db/migration
@@ -52,6 +51,19 @@ spring:
     out-of-order: true
     schemas: law_firm
     fail-on-missing-locations: false
+    
+  # 禁止覆盖Bean定义
+  main:
+    allow-bean-definition-overriding: true
+    
+  # 编码配置
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      force-request: true
+      force-response: true
 
 # Jasypt加密配置
 jasypt:
@@ -106,7 +118,6 @@ dev:
     simplified-security: true
     disable-original-security: true
     token-expiration: 86400
-    # 匿名访问路径
     anonymous-urls:
       - "/swagger-ui/**"
       - "/swagger-ui.html"
@@ -129,9 +140,6 @@ law.firm.ai:
   enabled: true
   defaultProvider: openai
   timeout: 30
-  
-# 禁止覆盖Bean定义
-spring.main.allow-bean-definition-overriding: true
 
 # 禁用原始安全配置
 auth:
@@ -148,4 +156,22 @@ management:
 app:
   name: "law-firm-api"
   version: "1.0.0"
-  description: "律师事务所管理系统API服务" 
+  description: "律师事务所管理系统API服务"
+
+# 禁用响应压缩，确保API文档正常显示
+server:
+  compression:
+    enabled: false
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      force-request: true
+      force-response: true
+
+# SpringDoc文档配置
+springdoc:
+  api-docs:
+    compression:
+      enabled: false 

@@ -106,4 +106,9 @@
         </root>
         <logger name="com.lawfirm" level="DEBUG"/>
     </springProfile>
+    
+    <logger name="com.lawfirm.api.config" level="DEBUG" />
+    <logger name="com.lawfirm.common.web.config" level="DEBUG" />
+    <logger name="org.springframework.beans.factory.support" level="DEBUG" />
+    <logger name="com.fasterxml.jackson" level="DEBUG" />
 </configuration> 

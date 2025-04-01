@@ -10,11 +10,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基础安全配置类
  * 提供通用的安全配置，可被各模块继承和扩展
  */
+@Configuration
+@Slf4j
 public class BaseSecurityConfig {
 
     /**
@@ -36,27 +39,18 @@ public class BaseSecurityConfig {
      * 避免与模块中定义的Bean冲突
      */
     @Bean("baseSecurityFilterChain")
-    @ConditionalOnMissingBean(name = {"securityFilterChain", "apiDocSecurityFilterChain"})
+    @ConditionalOnMissingBean(name = {"securityFilterChain", "apiDocSecurityFilterChain"}) 
     public SecurityFilterChain baseSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
+        log.info("配置基础安全过滤链 - 默认配置");
+        
+        return http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/error", "/actuator/**", "/favicon.ico").permitAll()
+                .anyRequest().authenticated())
             .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> {})
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(requests -> requests
-                .requestMatchers("/auth/**").permitAll()
-                // Knife4j 和 Swagger 相关路径
-                .requestMatchers("/doc.html", "/doc.html/**").permitAll()
-                .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
-                .requestMatchers("/v3/api-docs/**").permitAll()
-                .requestMatchers("/swagger-resources/**").permitAll()
-                .requestMatchers("/webjars/**").permitAll()
-                .requestMatchers("/knife4j/**").permitAll()
-                .requestMatchers("/v3/api-docs-ext/**").permitAll()
-                .requestMatchers("/swagger-config/**").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                .anyRequest().authenticated()
-            );
-                
-        return http.build();
+            .cors(cors -> cors.disable())
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .build();
     }
 } 

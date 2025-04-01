@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  * </p>
  */
 @Slf4j
+// @Configuration // Temporarily disable this entire configuration
 @Configuration
 @EnableWebSecurity
 @Order(70)  // 提高优先级，确保它在所有安全配置之前执行
@@ -64,50 +65,6 @@ public class DevSecurityFilterConfig {
             // 禁用会话管理
             .sessionManagement(session -> session.disable())
             .build();
-    }
-    
-    /**
-     * API文档专用安全过滤链(开发环境专用)
-     * 
-     * 注意：修改了方法名以避免与ApiDocSecurityConfig中的Bean冲突
-     */
-    @Bean(name = "devApiDocSecurityFilterChain")
-    @Order(40) // 比常规过滤链更高优先级
-    public SecurityFilterChain devApiDocSecurityFilterChain(HttpSecurity http) throws Exception {
-        // API文档相关的路径，这里不需要添加上下文路径前缀，Spring Security会自动处理
-        String[] docPaths = {
-            // Swagger相关路径
-            "/doc.html", "/doc.html/**", "/doc/**",
-            "/swagger-ui.html", "/swagger-ui/**", 
-            "/v3/api-docs/**", "/swagger-resources/**",
-            "/webjars/**", "/swagger-config/**",
-            "/api-docs/**", "/api-docs",
-            "/v2/api-docs/**",
-            
-            // Knife4j专用路径
-            "/favicon.ico", 
-            "/v3/api-docs-ext/**",
-            "/configuration/ui",
-            "/configuration/security",
-            
-            // 新增Knife4j路径
-            "/knife4j/**",
-            "/markdown/**"
-        };
-        
-        log.info("配置API文档专用安全过滤链(开发环境) - 确保文档可匿名访问 - 上下文路径: {}", contextPath);
-        
-        // 创建包含上下文路径的完整路径
-        http
-            .securityMatcher(docPaths)
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults())
-            .httpBasic(basic -> basic.disable())
-            .formLogin(form -> form.disable());
-            // 默认情况下，匿名访问是启用的，不需要特别配置
-        
-        return http.build();
     }
     
     /**

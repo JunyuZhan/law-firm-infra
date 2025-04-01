@@ -1,7 +1,8 @@
 com.lawfirm.common.data.config.DataAutoConfiguration
 com.lawfirm.common.data.config.DataSourceConfig
 com.lawfirm.common.data.config.MybatisPlusConfig
-com.lawfirm.common.data.config.JacksonConfig
+# JacksonConfig已迁移到common-web模块
+# com.lawfirm.common.data.config.JacksonConfig
 com.lawfirm.common.data.config.RedisConfig
 com.lawfirm.common.data.config.DynamicDataSourceConfig
 com.lawfirm.common.data.config.StorageConfig 

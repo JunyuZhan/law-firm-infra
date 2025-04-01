@@ -31,10 +31,10 @@ Authorization: Bearer {你的JWT Token}
 
 ```json
 {
-  "code": 0,  // 0表示成功，非0表示错误
-  "result": {}, // 实际数据
-  "message": "success", // 消息
-  "type": "success" // 类型：success / error
+  "code": 0,
+  "result": {},
+  "message": "success",
+  "type": "success"
 }
 ```
 
@@ -46,4 +46,4 @@ Authorization: Bearer {你的JWT Token}
 ## 版本信息
 
 - 当前版本：v1.0
-- 更新日期：2024-06-01 
+- 更新日期：2024-06-01

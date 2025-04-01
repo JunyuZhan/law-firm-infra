@@ -21,6 +21,10 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>common-util</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-web</artifactId>
+        </dependency>
         
         <!-- 数据库相关依赖 -->
         <dependency>

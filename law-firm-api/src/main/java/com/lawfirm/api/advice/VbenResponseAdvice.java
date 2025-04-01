@@ -40,7 +40,7 @@ public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        // API文档路径完全不处理
+        // If the advice is disabled, this method won't be called, but keep the logic for reference
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes != null) {
             HttpServletRequest request = attributes.getRequest();
@@ -63,7 +63,7 @@ public class VbenResponseAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
-        // 直接检查路径
+        // If the advice is disabled, this method won't be called, but keep the logic for reference
         String path = request.getURI().getPath();
         
         // API文档路径直接返回原始响应

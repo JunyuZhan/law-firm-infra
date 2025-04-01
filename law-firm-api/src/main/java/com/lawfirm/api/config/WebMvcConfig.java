@@ -32,46 +32,46 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * 配置字符编码过滤器
      * 确保所有请求和响应使用UTF-8编码
      */
-    @Bean(name = "customCharacterEncodingFilter")
-    public FilterRegistrationBean<CharacterEncodingFilter> characterEncodingFilter() {
-        FilterRegistrationBean<CharacterEncodingFilter> registrationBean = new FilterRegistrationBean<>();
-        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-        characterEncodingFilter.setEncoding("UTF-8");
-        characterEncodingFilter.setForceEncoding(true);
-        registrationBean.setFilter(characterEncodingFilter);
-        registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(0);  // 最高优先级
-        return registrationBean;
-    }
+//    @Bean(name = "customCharacterEncodingFilter")
+//    public FilterRegistrationBean<CharacterEncodingFilter> characterEncodingFilter() {
+//        FilterRegistrationBean<CharacterEncodingFilter> registrationBean = new FilterRegistrationBean<>();
+//        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+//        characterEncodingFilter.setEncoding("UTF-8");
+//        characterEncodingFilter.setForceEncoding(true);
+//        registrationBean.setFilter(characterEncodingFilter);
+//        registrationBean.addUrlPatterns("/*");
+//        registrationBean.setOrder(0);  // 最高优先级
+//        return registrationBean;
+//    }
 
     /**
      * 配置字符串消息转换器
      * 确保字符串转换使用UTF-8编码
      */
-    @Bean(name = "responseBodyConverter")
-    public HttpMessageConverter<String> responseBodyConverter() {
-        return new StringHttpMessageConverter(StandardCharsets.UTF_8);
-    }
-    
-    /**
-     * 配置JSON消息转换器
-     * 确保JSON响应使用UTF-8编码
-     */
-    @Bean(name = "jsonConverter")
-    public MappingJackson2HttpMessageConverter jsonConverter() {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setDefaultCharset(StandardCharsets.UTF_8);
-        return converter;
-    }
-
-    /**
-     * 添加自定义的消息转换器到转换器列表
-     */
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(responseBodyConverter());
-        converters.add(jsonConverter());
-    }
+//    @Bean(name = "responseBodyConverter")
+//    public HttpMessageConverter<String> responseBodyConverter() {
+//        return new StringHttpMessageConverter(StandardCharsets.UTF_8);
+//    }
+//    
+//    /**
+//     * 配置JSON消息转换器
+//     * 确保JSON响应使用UTF-8编码
+//     */
+//    @Bean(name = "jsonConverter")
+//    public MappingJackson2HttpMessageConverter jsonConverter() {
+//        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+//        converter.setDefaultCharset(StandardCharsets.UTF_8);
+//        return converter;
+//    }
+//
+//    /**
+//     * 添加自定义的消息转换器到转换器列表
+//     */
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        converters.add(responseBodyConverter());
+//        converters.add(jsonConverter());
+//    }
 
     /**
      * 配置静态资源路径 - 避免配置API文档相关路径

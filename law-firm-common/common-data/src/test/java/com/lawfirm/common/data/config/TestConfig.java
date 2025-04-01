@@ -1,6 +1,7 @@
 package com.lawfirm.common.data.config;
 
 import com.lawfirm.common.core.config.BaseConfig;
+import com.lawfirm.common.web.config.JacksonConfig;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;

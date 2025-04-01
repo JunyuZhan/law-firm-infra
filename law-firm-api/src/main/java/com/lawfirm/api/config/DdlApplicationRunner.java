@@ -1,10 +1,14 @@
 package com.lawfirm.api.config;
 
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.springframework.boot.ApplicationRunner;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,22 +19,19 @@ import lombok.extern.slf4j.Slf4j;
  * </p>
  */
 @Slf4j
-@Configuration
-public class DdlApplicationRunner {
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class DdlApplicationRunner implements ApplicationRunner {
 
     /**
      * 创建DDL应用运行器
      * 
-     * @return CommandLineRunner实例
+     * @param args 应用程序参数
      */
-    @Bean(name = "ddlApplicationRunner")
-    @Primary
-    @Order(1)
-    public CommandLineRunner ddlApplicationRunner() {
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
         log.info("创建DDL应用运行器");
         
-        return args -> {
-            log.info("DDL应用运行器执行完成");
-        };
+        log.info("DDL应用运行器执行完成");
     }
 } 

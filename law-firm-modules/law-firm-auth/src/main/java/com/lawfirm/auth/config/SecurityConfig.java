@@ -5,6 +5,7 @@ import com.lawfirm.auth.security.handler.LoginFailureHandler;
 import com.lawfirm.auth.security.handler.LoginSuccessHandler;
 import com.lawfirm.auth.security.provider.JwtTokenProvider;
 import com.lawfirm.common.security.config.BaseSecurityConfig;
+import com.lawfirm.common.security.constants.SecurityConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -16,11 +17,15 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.AntPathMatcher;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 认证模块安全配置类
@@ -34,6 +39,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * 
  * 注意: 该配置类优先级高于通用安全配置，Bean名称唯一，避免与其他安全配置冲突
  */
+// @Configuration("authSecurityConfig") // Temporarily disable this configuration
 @Configuration("authSecurityConfig")
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -44,6 +50,13 @@ public class SecurityConfig extends BaseSecurityConfig {
     private final JwtTokenProvider tokenProvider;
     private final LoginSuccessHandler loginSuccessHandler;
     private final LoginFailureHandler loginFailureHandler;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    
+    // 公开路径列表
+    private static final String[] PERMIT_ALL_PATHS = {
+        "/auth/login", "/auth/register", "/auth/refreshToken", 
+        "/error", "/actuator/**", "/favicon.ico"
+    };
     
     /**
      * 配置密码编码器，覆盖父类方法
@@ -68,6 +81,7 @@ public class SecurityConfig extends BaseSecurityConfig {
     /**
      * 配置JWT认证过滤器
      */
+    // @Bean("jwtAuthFilter") // Temporarily disable the creation of this specific filter bean
     @Bean("jwtAuthFilter")
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(tokenProvider);
@@ -76,30 +90,54 @@ public class SecurityConfig extends BaseSecurityConfig {
     /**
      * 配置安全过滤链，覆盖父类方法
      */
+    // @Bean("authFilterChain") // Temporarily disable this bean
     @Bean("authFilterChain")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // 先配置基础安全设置
-        http.csrf(csrf -> csrf.disable())
+        return http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(request -> {
+                    String uri = request.getRequestURI();
+                    // 检查是否是API文档路径
+                    for (String pattern : SecurityConstants.API_DOC_PATHS) {
+                        if (pathMatcher.match(pattern, uri)) {
+                            return true;
+                        }
+                    }
+                    // 检查是否是公开路径
+                    for (String pattern : PERMIT_ALL_PATHS) {
+                        if (pathMatcher.match(pattern, uri)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }).permitAll()
+                .anyRequest().authenticated()
+            )
+            .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // 添加JWT过滤器
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            // 配置登录成功处理器
+            .httpBasic(basic -> basic.disable())
             .formLogin(form -> form
+                .loginProcessingUrl("/auth/login")
                 .successHandler(loginSuccessHandler)
                 .failureHandler(loginFailureHandler)
             )
-            // 配置路径权限
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/auth/register").permitAll()
-                .requestMatchers("/doc.html", "/doc.html/**").permitAll()
-                .requestMatchers("/webjars/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/swagger-resources/**", "/swagger-ui/**").permitAll()
-                .requestMatchers("/knife4j/**").permitAll()
-                .anyRequest().authenticated()
-            );
-        
-        return http.build();
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("{\"code\":401,\"message\":\"未授权访问\"}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().write("{\"code\":403,\"message\":\"访问被拒绝\"}");
+                })
+            )
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 }
 

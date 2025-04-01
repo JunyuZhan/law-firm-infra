@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -21,13 +22,16 @@ import java.util.List;
 @Configuration(value = "commonWebConfig")
 public class WebConfig implements WebMvcConfigurer {
     
+    @Value("${cors.allowed-origins:*}") // 从配置读取，默认为*
+    private String[] allowedOrigins;
+    
     /**
      * 配置跨域
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("*")
+                .allowedOriginPatterns(allowedOrigins) // 使用配置值
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
