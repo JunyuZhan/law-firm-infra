@@ -44,12 +44,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lawfirm.common.security.constants.SecurityConstants;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 /**
  * API文档统一配置类
@@ -63,6 +63,7 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 @Slf4j
 @Configuration
+@EnableWebSecurity
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiDocConfiguration implements WebMvcConfigurer {
 
@@ -171,11 +172,9 @@ public class ApiDocConfiguration implements WebMvcConfigurer {
     /**
      * API文档安全过滤链
      */
-    @Bean("apiDocSecurityFilterChain")
-    @Primary
-    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Bean("apiDocWebSecurityFilterChain")
     public SecurityFilterChain apiDocSecurityFilterChain(HttpSecurity http) throws Exception {
-        log.info("配置API文档安全访问 - 最高优先级");
+        log.info("开始配置API文档安全访问 - 最高优先级");
         
         // 规范化上下文路径
         String pathPrefix = "";
@@ -196,43 +195,62 @@ public class ApiDocConfiguration implements WebMvcConfigurer {
         }
         
         // 添加直接路径 - 不附加上下文路径
-        matchers.add(new AntPathRequestMatcher("/swagger-ui/**"));
-        matchers.add(new AntPathRequestMatcher("/v3/api-docs/**"));
-        matchers.add(new AntPathRequestMatcher("/v3/api-docs/swagger-config"));
-        matchers.add(new AntPathRequestMatcher("/v3/api-docs/all"));
-        matchers.add(new AntPathRequestMatcher("/v3/api-docs/business"));
-        matchers.add(new AntPathRequestMatcher("/v3/api-docs/system"));
+        String[] directPaths = {
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs/swagger-config",
+            "/v3/api-docs/all",
+            "/v3/api-docs/business",
+            "/v3/api-docs/system",
+            "/webjars/**",
+            "/doc.html",
+            "/doc.html/**",
+            "/knife4j/**"
+        };
+        
+        for (String path : directPaths) {
+            log.debug("添加直接路径匹配: {}", path);
+            matchers.add(new AntPathRequestMatcher(path));
+        }
         
         // 添加根路径匹配器，确保首页可访问
-        matchers.add(new AntPathRequestMatcher(pathPrefix + "/"));
+        String rootPath = pathPrefix + "/";
+        log.debug("添加根路径匹配: {}", rootPath);
+        matchers.add(new AntPathRequestMatcher(rootPath));
+        
         // 如果 contextPath 不为空，也需要匹配 contextPath 本身
         if (StringUtils.hasText(pathPrefix)) {
-             matchers.add(new AntPathRequestMatcher(pathPrefix));
+            log.debug("添加上下文路径匹配: {}", pathPrefix);
+            matchers.add(new AntPathRequestMatcher(pathPrefix));
         }
         
         // 添加缺失的路径匹配
-        matchers.add(new AntPathRequestMatcher("/favicon.ico"));
-        matchers.add(new AntPathRequestMatcher("/error"));
-        matchers.add(new AntPathRequestMatcher("/actuator/health"));
+        String[] additionalPaths = {
+            "/favicon.ico",
+            "/error",
+            "/actuator/health"
+        };
+        
+        for (String path : additionalPaths) {
+            log.debug("添加额外路径匹配: {}", path);
+            matchers.add(new AntPathRequestMatcher(path));
+        }
         
         // 输出调试信息
-        log.debug("最终安全匹配路径列表：");
-        matchers.forEach(m -> log.debug(" - {}", ((AntPathRequestMatcher)m).getPattern()));
+        log.info("最终安全匹配路径列表：");
+        matchers.forEach(m -> {
+            if (m instanceof AntPathRequestMatcher) {
+                log.info(" - {}", ((AntPathRequestMatcher)m).getPattern());
+            } else {
+                log.info(" - {}", m);
+            }
+        });
         
         // 创建组合匹配器
         RequestMatcher docMatcher = new OrRequestMatcher(matchers);
         
-        // 输出所有放行的API文档路径
-        log.info("API文档安全过滤链将放行所有匹配以下模式的请求：");
-        matchers.forEach(matcher -> {
-            if (matcher instanceof AntPathRequestMatcher) {
-                log.info(" - {}", ((AntPathRequestMatcher) matcher).getPattern());
-            } else {
-                log.info(" - {}", matcher);
-            }
-        });
-        
-        return http
+        log.info("开始构建SecurityFilterChain");
+        SecurityFilterChain chain = http
             .securityMatcher(docMatcher)
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)
@@ -241,10 +259,13 @@ public class ApiDocConfiguration implements WebMvcConfigurer {
             .formLogin(form -> form.disable())
             .sessionManagement(session -> session.disable())
             .headers(headers -> headers
-                .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
+                .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:"))
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
             )
             .build();
+        
+        log.info("SecurityFilterChain构建完成");
+        return chain;
     }
     
     /**

@@ -77,8 +77,9 @@
         <lucene.version>9.8.0</lucene.version>
         <mybatis-starter.version>3.0.3</mybatis-starter.version>
         <!-- API文档相关 -->
-        <springdoc.version>2.1.0</springdoc.version>
+        <springdoc.version>2.3.0</springdoc.version>
         <knife4j.version>4.3.0</knife4j.version>
+        <swagger.version>2.2.20</swagger.version>
         <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
     </properties>
 
@@ -819,6 +820,21 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations-jakarta</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-models-jakarta</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-core-jakarta</artifactId>
+                <version>${swagger.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
