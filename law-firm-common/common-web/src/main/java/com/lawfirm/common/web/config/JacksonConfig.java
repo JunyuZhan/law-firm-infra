@@ -19,7 +19,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.time.LocalDate;
@@ -49,7 +48,6 @@ public class JacksonConfig {
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
     @Bean(name = "jacksonObjectMapper")
-    @Primary
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
         // 使用JsonMapper.builder()替代原来的方式，以支持更多高级特性
         JsonMapper.Builder mapperBuilder = JsonMapper.builder()

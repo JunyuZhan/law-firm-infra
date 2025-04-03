@@ -5,13 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 
 /**
  * 文档安全上下文，管理文档相关的安全配置和权限
  */
 @Slf4j
-@Component
 @ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityContext {
     

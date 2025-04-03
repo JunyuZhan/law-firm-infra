@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
  * 基于数据库的搜索服务实现
  */
 @Slf4j
-@Service("databaseSearchService")
-@ConditionalOnProperty(prefix = "search", name = "engine", havingValue = "database", matchIfMissing = true)
+@Service("databaseSearchServiceImpl")
+@ConditionalOnProperty(prefix = "lawfirm.search", name = "type", havingValue = "database", matchIfMissing = true)
 @Transactional(rollbackFor = Exception.class)
 public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 

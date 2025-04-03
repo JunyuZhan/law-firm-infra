@@ -65,6 +65,7 @@ public class SecurityConfig extends BaseSecurityConfig {
      * 在API模块中，会由PasswordEncoderConfig提供主要的passwordEncoder
      */
     @Bean("authPasswordEncoder")
+    @Primary
     @ConditionalOnMissingBean(name = "passwordEncoder")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

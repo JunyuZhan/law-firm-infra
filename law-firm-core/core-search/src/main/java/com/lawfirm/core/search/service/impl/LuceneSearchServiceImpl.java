@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service("luceneSearchService")
-@ConditionalOnProperty(prefix = "search", name = "engine", havingValue = "lucene")
+@ConditionalOnProperty(prefix = "lawfirm.search", name = "type", havingValue = "lucene")
 public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 
     @Autowired

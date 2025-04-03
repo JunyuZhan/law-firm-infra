@@ -12,8 +12,8 @@ import org.springframework.validation.annotation.Validated;
  */
 @Data
 @Validated
-@Component("coreSearchProperties")
-@ConfigurationProperties(prefix = "search")
+// @Component("coreSearchProperties")
+@ConfigurationProperties(prefix = "lawfirm.search")
 public class SearchProperties {
     /**
      * 是否启用搜索功能
@@ -23,7 +23,7 @@ public class SearchProperties {
     /**
      * 搜索引擎类型: lucene, database
      */
-    private String engine = "lucene";
+    private String type = "database";
 
     /**
      * Lucene配置

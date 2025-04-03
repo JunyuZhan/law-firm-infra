@@ -41,18 +41,6 @@
             <artifactId>common-data</artifactId>
         </dependency>
 
-        <!-- Spring Data JPA -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-        </dependency>
-
-        <!-- JPA API -->
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-        </dependency>
-
         <!-- Validation API -->
         <dependency>
             <groupId>jakarta.validation</groupId>

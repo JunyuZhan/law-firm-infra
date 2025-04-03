@@ -56,21 +56,18 @@
             </exclusions>
         </dependency>
         
-        <!-- 显式指定Swagger依赖版本，确保兼容性 -->
+        <!-- Swagger依赖 -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations-jakarta</artifactId>
-            <version>2.2.9</version>
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-models-jakarta</artifactId>
-            <version>2.2.9</version>
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-core-jakarta</artifactId>
-            <version>2.2.9</version>
         </dependency>
         
         <!-- 工具类库 -->

@@ -1,45 +1,35 @@
 package com.lawfirm.api.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 /**
- * 健康检查控制器
- * 用于验证API层能否正常启动及系统状态
+ * 简单的健康检查控制器
  */
-@RestController("HealthCheckController")
-@RequestMapping("/health")
+@RestController
 public class HealthCheckController {
 
     /**
      * 健康检查接口
-     * 返回服务基本信息
      */
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> healthCheck() {
+    @GetMapping("/health")
+    public Map<String, Object> health() {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "UP");
-        response.put("message", "服务正常运行");
-        response.put("timestamp", System.currentTimeMillis());
-        
-        return ResponseEntity.ok(response);
+        response.put("message", "服务运行正常");
+        return response;
     }
     
     /**
-     * 认证系统状态检查
+     * 版本信息接口
      */
-    @GetMapping("/auth")
-    public ResponseEntity<Map<String, Object>> authStatus() {
+    @GetMapping("/version")
+    public Map<String, Object> version() {
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "UP");
-        response.put("message", "认证系统正常运行");
-        response.put("timestamp", System.currentTimeMillis());
-        
-        return ResponseEntity.ok(response);
+        response.put("version", "1.0.0");
+        response.put("name", "律师事务所管理系统");
+        return response;
     }
 } 

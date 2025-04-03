@@ -27,12 +27,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * 负责创建、更新、删除索引以及执行搜索操作
  */
 @Slf4j
-@Component
-@ConditionalOnProperty(prefix = "search", name = "engine", havingValue = "lucene")
+@ConditionalOnProperty(prefix = "lawfirm.search", name = "type", havingValue = "lucene")
 public class LuceneManager {
 
-    @Autowired
-    private SearchProperties searchProperties;
+    private final SearchProperties searchProperties;
 
     /**
      * 索引写入器缓存
@@ -48,6 +46,14 @@ public class LuceneManager {
      * 索引读取器缓存
      */
     private final Map<String, DirectoryReader> directoryReaderMap = new ConcurrentHashMap<>();
+
+    /**
+     * 构造函数，注入 SearchProperties
+     */
+    @Autowired
+    public LuceneManager(SearchProperties searchProperties) {
+        this.searchProperties = searchProperties;
+    }
 
     /**
      * 获取分析器

@@ -13,7 +13,6 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.Map;
  * 文档处理接口的Lucene实现
  */
 @Slf4j
-@Component
 public class LuceneDocumentHandler implements DocumentHandler {
 
     private final LuceneManager luceneManager;

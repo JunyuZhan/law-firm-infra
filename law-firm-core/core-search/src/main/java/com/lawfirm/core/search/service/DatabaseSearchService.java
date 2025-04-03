@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service("databaseSearchService")
-@ConditionalOnProperty(prefix = "search", name = "engine", havingValue = "database", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "lawfirm.search", name = "type", havingValue = "database", matchIfMissing = true)
 public class DatabaseSearchService extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 
     @Override

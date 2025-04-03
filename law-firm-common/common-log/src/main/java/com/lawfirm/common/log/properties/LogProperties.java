@@ -2,13 +2,11 @@ package com.lawfirm.common.log.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * 日志配置属性
  */
 @Data
-@Component
 @ConfigurationProperties(prefix = "law.firm.log")
 public class LogProperties {
 

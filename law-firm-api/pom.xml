@@ -54,109 +54,46 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-system</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-auth</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-document</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-personnel</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-client</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-case</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-contract</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-finance</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-knowledge</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <!-- 排除Flowable相关依赖 -->
-                <exclusion>
-                    <groupId>org.flowable</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         
         <!-- 通用组件依赖 -->
@@ -195,13 +132,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <!-- 排除commons-logging，避免重复加载警告 -->
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         
         <!-- Spring Boot Validation -->
@@ -226,10 +156,6 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
         
         <!-- Servlet API -->
         <dependency>
@@ -245,30 +171,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- API文档依赖 -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-        </dependency>
-        
-        <!-- 显式指定Swagger依赖版本，确保兼容性 -->
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations-jakarta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-models-jakarta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-core-jakarta</artifactId>
-        </dependency>
-        
         <!-- 内存数据库，用于开发测试 -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -283,48 +185,16 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- 配置加密 -->
-        <dependency>
-            <groupId>com.github.ulisesbocchio</groupId>
-            <artifactId>jasypt-spring-boot-starter</artifactId>
-        </dependency>
-
         <!-- MyBatis -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- 安全依赖 -->
+        <!-- MyBatis Plus -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!-- 生产环境安全增强依赖 -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-resource-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-jose</artifactId>
-        </dependency>
-
-        <!-- 监控和健康检查 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-
-        <!-- 日志增强 -->
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
     </dependencies>
 
@@ -340,6 +210,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <mainClass>com.lawfirm.api.LawFirmApiApplication</mainClass>
                 </configuration>
             </plugin>
             <plugin>

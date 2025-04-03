@@ -33,6 +33,3 @@ com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
 
 # 验证配置
 org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration
-
-# 应用自定义配置
-com.lawfirm.api.config.dev.DevSecurityAutoConfiguration

@@ -14,8 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
     "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
     "spring.datasource.username=sa",
     "spring.datasource.password=",
-    "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
-    "spring.jpa.hibernate.ddl-auto=create-drop",
     "spring.data.redis.host=localhost",
     "spring.data.redis.port=6379",
     "spring.data.redis.database=0",

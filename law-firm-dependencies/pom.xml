@@ -369,6 +369,28 @@
                 <version>${mybatis-starter.version}</version>
             </dependency>
             
+            <!-- API文档相关 -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.magese</groupId>
+                <artifactId>ik-analyzer</artifactId>
+                <version>8.5.0</version>
+            </dependency>
+            
             <!-- 存储服务 -->
             <dependency>
                 <groupId>io.minio</groupId>
@@ -794,33 +816,8 @@
                 <artifactId>lucene-highlighter</artifactId>
                 <version>${lucene.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.github.magese</groupId>
-                <artifactId>ik-analyzer</artifactId>
-                <version>8.5.0</version>
-            </dependency>
-            
-            <!-- API文档相关依赖 -->
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-                <version>${springdoc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-                <version>${springdoc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-starter-common</artifactId>
-                <version>${springdoc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
+
+            <!-- Swagger Core -->
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations-jakarta</artifactId>

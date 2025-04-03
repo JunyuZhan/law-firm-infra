@@ -1,20 +1,19 @@
 package com.lawfirm.core.search.config;
 
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 
 /**
  * 搜索模块自动配置类
  */
 @Configuration
+@EnableConfigurationProperties(SearchProperties.class)
 @ImportAutoConfiguration({
     // 不再导入接口类型，只导入具体配置类
     // SearchPropertiesProvider.class,
     DatabaseSearchConfig.class,
     LuceneSearchConfig.class,
-    SearchProperties.class,
     SearchEngineTypeConfig.class,
     SearchPropertiesProviderImpl.class
 })

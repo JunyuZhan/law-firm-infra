@@ -1,242 +1,98 @@
 spring:
+  application:
+    name: law-firm-management
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev-mysql}
-  config:
-    import:
-      # Imports removed as core config is present or handled by auto-configuration
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
-    allow-missing-beans: true
-    banner-mode: off
-    log-startup-info: true
     lazy-initialization: false
-  # 编码配置（使用新属性名）
+    banner-mode: off
+  # 禁用JPA自动配置
+  jpa:
+    open-in-view: false
+    enabled: false
+  data:
+    jpa:
+      repositories:
+        enabled: false
   servlet:
     encoding:
       charset: UTF-8
       enabled: true
       force: true
-      force-request: true
-      force-response: true
     multipart:
       max-file-size: 50MB
       max-request-size: 100MB
+  security:
+    enabled: true
+    ignore-urls:
+      - "/favicon.ico"
+      - "/error"
+      - "/health"
+      - "/version"
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    jdbc-url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
     username: root
     password: Zjy-1314
     hikari:
       minimum-idle: 5
       maximum-pool-size: 15
       idle-timeout: 30000
-      pool-name: LawFirmHikariCP
-      max-lifetime: 1800000
       connection-timeout: 30000
       connection-test-query: SELECT 1
   flyway:
-    enabled: true
-    locations: classpath:db/migration
-    table: flyway_schema_history
-    baseline-on-migrate: true
-    validate-on-migrate: true
-    out-of-order: true
-    placeholders:
-      schema_name: law_firm
-    schemas: law_firm
-    validate-migration-naming: true
-    fail-on-missing-locations: false
-  liquibase:
-    enabled: false
-  jmx:
     enabled: false
   jackson:
-    # 简化Jackson配置，避免冲突
     serialization:
-      indent-output: false # 禁用缩进输出，减少响应体积
       write-dates-as-timestamps: false
       fail-on-empty-beans: false
     deserialization:
       fail-on-unknown-properties: false
     default-property-inclusion: NON_NULL
-    # 明确指定日期格式和时区，避免歧义
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-    # 启用UTF-8编码
-    default-charset: UTF-8
-    property-naming-strategy: SNAKE_CASE
-  # 自动配置排除
-  autoconfigure:
-    exclude:
-      - org.flowable.spring.boot.FlowableAutoConfiguration
-      - org.flowable.spring.boot.ProcessEngineServicesAutoConfiguration
-      - org.flowable.spring.boot.app.AppEngineAutoConfiguration
-      - com.lawfirm.core.workflow.config.FlowableConfig
   mybatis-plus:
     configuration:
       map-underscore-to-camel-case: true
-      log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
     global-config:
       db-config:
         logic-delete-field: deleted
         logic-not-delete-value: 0
         logic-delete-value: 1
-  data:
-    jpa:
-      repositories:
-        enabled: false
-    ldap:
-      repositories:
-        enabled: false
   sql:
     init:
       mode: never
-      schema-locations: classpath:db/schema.sql
-      data-locations: classpath:db/data.sql
-      continue-on-error: true
-      encoding: UTF-8
   mvc:
     static-path-pattern: /**
-    contentnegotiation:
-      favor-parameter: false
-      media-types:
-        json: application/json
   web:
     resources:
       static-locations:
-        - classpath:/META-INF/resources/
-        - classpath:/META-INF/resources/webjars/
-        - classpath:/resources/
         - classpath:/static/
-        - classpath:/public/
-        - classpath:/markdown/
-        - classpath:/webjars/
-      chain:
-        strategy:
-          content:
-            enabled: true
-            paths: /**
 
 server:
   port: 8080
   tomcat:
     uri-encoding: UTF-8
-    # 增强Tomcat编码配置
-    relaxed-query-chars: <,>,|,[,],^,`,{,}
-    relaxed-path-chars: <,>,|,[,],^,`,{,}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
     encoding:
       charset: UTF-8
       force: true
       enabled: true
-      force-request: true
-      force-response: true
   compression:
     enabled: false
-    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json,application/xml,application/xml+rss,image/*
-    min-response-size: 1024
 
-# SpringDoc配置
-springdoc:
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-    resolve-schema-properties: true
-    use-management-port: false
-    default-produces-media-type: application/json
-    encoding: UTF-8
-    version: OPENAPI_3_1
-  swagger-ui:
-    path: /swagger-ui.html
-    display-request-duration: true
-    disable-swagger-default-url: true
-    csrf:
-      enabled: false
-    tags-sorter: alpha
-    operations-sorter: alpha
-    doc-expansion: none
-    default-models-expand-depth: -1
-  default-consumes-media-type: application/json
-  paths-to-match: /**
-  model-and-view-allowed: false
-  override-with-generic-response: false
-  writer-with-default-pretty-printer: true
-  cache:
-    disabled: true
-  show-actuator: false
-  packages-to-scan: com.lawfirm
-  paths-to-exclude: /error, /actuator/**
+# 添加应用基本配置
+app:
+  name: "法律事务管理系统"
+  version: "1.0.0"
+  description: "专业法律事务管理平台"
 
-# Knife4j配置
-knife4j:
-  enable: true
-  setting:
-    language: zh-CN
-    enable-swagger-models: true
-    enable-document-manage: true
-    swagger-model-name: 模型
-    enable-version: false
-    enable-request-cache: false
-    enable-filter-multipart-apis: true
-    enable-footer: false
-    enable-footer-custom: true
-    enable-debug: true
-    enable-home-custom: true
-    enable-host: false
-    enable-host-text: ''
-    enable-dynamic-parameter: false
-    enable-after-script: false
-    footer-custom-content: Apache License 2.0 | Copyright © 2022-2025
-  cors: false
-  basic:
-    enable: false
-  production: false
-  openapi:
-    title: 律师事务所管理系统API
-    description: 提供律师事务所业务管理所需的各种API接口
-    email: dev@lawfirm.com
-    concat: 律师事务所开发团队
-    url: https://lawfirm.com
-    version: 1.0.0
-    license: Apache 2.0
-    license-url: https://www.apache.org/licenses/LICENSE-2.0.html
-    terms-of-service-url: https://lawfirm.com/terms
-    group:
-      default:
-        group-name: 默认分组
-        api-rule: package
-        api-rule-resources:
-          - com.lawfirm
-
-# 开发环境认证简化配置
-dev:
-  auth:
-    simplified-security: true # Keep this for now, controls the disabled DevSecurityFilterConfig
-    session-store: memory
-    disable-redis: true
-    # 允许的匿名访问路径 - REMOVE OR COMMENT OUT, handled by Java Config
-    # anonymous-urls:
-    #   - "/doc.html"
-    #   - "/doc.html/**"
-    #   - "/v3/api-docs/**"
-    #   - "/swagger-ui/**"
-    #   - "/webjars/**"
-    #   - "/swagger-resources/**"
-    #   - "/knife4j/**"
-
-# 律师事务所功能模块开关
+# 简化的模块配置
 lawfirm:
-  audit:
-    enabled: true
-  workflow:
-    enabled: false
-  client:
-    enabled: true
-  auth:
-    enabled: true
   module:
     case: true
     contract: true
@@ -244,167 +100,19 @@ lawfirm:
       enabled: true
   search:
     enabled: true
-    type: database
+    type: lucene
   storage:
     enabled: true
     defaultType: LOCAL
-    defaultBucketId: 1
     path:
       baseDir: ${user.home}/.law-firm/storage
       tempDir: ${user.home}/.law-firm/storage/temp
-      urlPrefix: http://localhost:8080/api/files
     local:
       enabled: true
       basePath: ${user.home}/.law-firm/storage
-      urlPrefix: http://localhost:8080/api/files
-    minio:
-      enabled: false
-      endpoint: http://minio.example.com
-      port: 9000
-      accessKey: ${MINIO_ACCESS_KEY:miniouser}
-      secretKey: ${MINIO_SECRET_KEY:${random.uuid}}
-      useSsl: false
 
 # 日志配置
-law:
-  firm:
-    log:
-      enableMethodLog: true
-      enableRequestLog: true
-      logStackTrace: true
-      # 添加中文支持
-      charset: UTF-8
-
-# API安全配置
-api:
-  doc:
-    enabled: true # Keep this if needed by springdoc/knife4j, but core config is in apidoc.yml
-
-  security:
-    xss:
-      # Review ApiXssFilter logic before removing completely.
-      exclude-urls:
-        - "/v1/auth/login" # Keep business-related exclusions
-        - "/v1/auth/register"
-        - "/v1/document/upload"
-        - "/v1/knowledge/content"
-
-# 应用信息配置
-app:
-  name: "law-firm-api"
-  version: "1.0.0"
-  description: "律师事务所管理系统API服务"
-
-# 消息服务配置
-message:
-  enabled: true
-  async:
-    enabled: true
-
-# RocketMQ配置
-rocketmq:
-  enabled: false
-  producer:
-    enabled: false
-  consumer:
-    enabled: false
-
-# Flowable配置
-flowable:
-  enabled: false
-  check-process-definitions: false
-  database-schema-update: false
-
-# 配置刷新相关设置
-config:
-  refresh:
-    enabled: false
-    refresh-interval: 30000
-    refresh-on-startup: true
-    source-type: file
-
-# Lucene搜索配置
-search:
-  engine: lucene
-  enabled: true
-  lucene:
-    index-dir: ${user.home}/.law-firm/lucene-index
-    ram-buffer-size-mb: 32
-    max-results: 1000
-    highlight-enabled: true
-    highlight-pre-tag: <em>
-    highlight-post-tag: </em>
-
-# AI模块配置
-law.firm.ai:
-  enabled: true
-  defaultProvider: openai
-  timeout: 30
-  maxConcurrentRequests: 10
-  enableCache: true
-  enableSensitiveFilter: true
-  enableRiskAssessment: true
-  debug: false
-law.firm.ai.model:
-  openai:
-    apiKey: ${AI_OPENAI_API_KEY:sk-demo-key}
-    baseUrl: https://api.openai.com/v1
-    defaultModel: gpt-4
-  baidu:
-    apiKey: ${AI_BAIDU_API_KEY:}
-    secretKey: ${AI_BAIDU_SECRET_KEY:}
-    baseUrl: https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop
-    defaultModel: ERNIE-Bot-4
-
-# 健康检查配置
-management:
-  health:
-    elasticsearch:
-      enabled: false
-
-# 知识库模块配置
-knowledge:
-  storage:
-    basePath: ${user.home}/.law-firm/knowledge
-    tempPath: ${user.home}/.law-firm/knowledge/temp
-  document:
-    maxSize: 10MB
-    allowedExtensions: .doc,.docx,.pdf,.md,.txt
-  attachment:
-    maxSize: 20MB
-    maxCountPerKnowledge: 10
-    allowedExtensions: .doc,.docx,.pdf,.jpg,.png,.zip
-  category:
-    maxDepth: 3
-  search:
-    enableHighlight: true
-    maxResultCount: 100
-    minKeywordLength: 2
-  statistic:
-    cron: 0 0 1 * * ?
-
-# 审计模块配置
-law.firm.audit:
-  enabled: true
-  async:
-    enabled: true
-    poolSize: 4
-    queueCapacity: 1000
-  logType: db
-  includeRequestParams: true
-  includeResponseBody: false
-
-# Springdoc和Knife4j配置已移动到apidoc.yml
-
-# 系统默认属性配置
-system:
-  timezone: Asia/Shanghai
-  encoding: UTF-8
-  jvm:
-    security:
-      egd: file:/dev/./urandom
-
-# 显式禁用引起冲突的模块
-method:
-  security:
-    enabled: false
+logging:
+  level:
+    root: INFO
+    com.lawfirm: INFO

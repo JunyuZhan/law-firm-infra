@@ -1,8 +1,14 @@
 package com.lawfirm.core.search.config;
 
+import com.lawfirm.core.search.handler.DocumentHandler;
+import com.lawfirm.core.search.handler.IndexHandler;
+import com.lawfirm.core.search.handler.LuceneManager;
+import com.lawfirm.core.search.handler.impl.LuceneDocumentHandler;
+import com.lawfirm.core.search.handler.LuceneIndexHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +19,7 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(prefix = "search", name = "engine", havingValue = "lucene")
+@ConditionalOnProperty(prefix = "lawfirm.search", name = "type", havingValue = "lucene")
 public class LuceneSearchConfig {
 
     /**
@@ -38,5 +44,33 @@ public class LuceneSearchConfig {
     @Bean(name = "ikAnalyzer")
     public Analyzer ikAnalyzer() {
         return new IKAnalyzer(true);
+    }
+
+    /**
+     * 创建 LuceneManager Bean
+     * 需要注入 SearchProperties
+     */
+    @Bean
+    public LuceneManager luceneManager(SearchProperties searchProperties) {
+        return new LuceneManager(searchProperties);
+    }
+
+    /**
+     * 创建 LuceneDocumentHandler Bean
+     * 需要注入 LuceneManager
+     */
+    @Bean
+    public DocumentHandler luceneDocumentHandler(LuceneManager luceneManager) {
+        return new LuceneDocumentHandler(luceneManager);
+    }
+    
+    /**
+     * 创建 LuceneIndexHandler Bean
+     * 需要注入 SearchProperties 和 Analyzer (使用 @Qualifier 指定 ikAnalyzer)
+     * 注意 Bean 的名称与之前 @Component 中定义的一致 ("luceneIndexHandler")
+     */
+    @Bean(name = "luceneIndexHandler")
+    public IndexHandler luceneIndexHandler(SearchProperties searchProperties, @Qualifier("ikAnalyzer") Analyzer analyzer) {
+        return new LuceneIndexHandler(searchProperties, analyzer);
     }
 } 

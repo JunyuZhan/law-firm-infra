@@ -2,7 +2,6 @@ package com.lawfirm.core.workflow.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -15,10 +14,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Slf4j
 @Configuration
 @EnableAsync
-@EntityScan(basePackages = {
-    "com.lawfirm.core.workflow.entity",
-    "com.lawfirm.model.workflow.entity"
-})
 @ComponentScan(basePackages = {
     "com.lawfirm.core.workflow.adapter",
     "com.lawfirm.core.workflow.handler",

@@ -1,44 +1,49 @@
 package com.lawfirm.api.config;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanNameGenerator;
+import org.springframework.context.annotation.AnnotationBeanNameGenerator;
+
+import java.beans.Introspector;
 
 /**
- * 自定义Bean名称生成器，用于解决多模块扫描时的Bean名称冲突
- * 为Mapper接口Bean名称添加模块前缀，确保唯一性
+ * 自定义Bean名称生成器
+ * 根据包路径为Bean添加模块前缀，避免Bean名称冲突
  */
-public class CustomBeanNameGenerator implements BeanNameGenerator {
-
-    private final String modulePrefix;
+public class CustomBeanNameGenerator extends AnnotationBeanNameGenerator {
     
-    /**
-     * 构造方法
-     * @param modulePrefix 模块前缀，例如"auth"、"system"等
-     */
-    public CustomBeanNameGenerator(String modulePrefix) {
-        this.modulePrefix = modulePrefix;
-    }
-    
-    /**
-     * 默认构造方法，不添加前缀
-     */
-    public CustomBeanNameGenerator() {
-        this.modulePrefix = "";
-    }
-
     @Override
-    public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+    protected String buildDefaultBeanName(BeanDefinition definition) {
         String beanClassName = definition.getBeanClassName();
-        if (beanClassName != null && beanClassName.contains("mapper")) {
-            if (modulePrefix != null && !modulePrefix.isEmpty()) {
-                // 为Mapper接口Bean名称添加模块前缀
-                return modulePrefix + beanClassName.substring(beanClassName.lastIndexOf('.') + 1);
-            } else {
-                // 使用完整的类名作为Bean名称
-                return beanClassName;
-            }
+        if (beanClassName == null) {
+            return null;
         }
-        return beanClassName;
+        
+        String shortClassName = beanClassName.substring(beanClassName.lastIndexOf('.') + 1);
+        
+        // 添加模块前缀
+        if (beanClassName.contains(".core.")) {
+            return "core" + shortClassName;
+        } else if (beanClassName.contains(".common.")) {
+            return "common" + shortClassName;
+        } else if (beanClassName.contains(".client.")) {
+            return "client" + shortClassName;
+        } else if (beanClassName.contains(".auth.")) {
+            return "auth" + shortClassName;
+        } else if (beanClassName.contains(".system.")) {
+            return "system" + shortClassName;
+        } else if (beanClassName.contains(".cases.")) {
+            return "case" + shortClassName;
+        } else if (beanClassName.contains(".contract.")) {
+            return "contract" + shortClassName;
+        } else if (beanClassName.contains(".document.")) {
+            return "doc" + shortClassName;
+        } else if (beanClassName.contains(".knowledge.")) {
+            return "knowledge" + shortClassName;
+        } else if (beanClassName.contains(".api.")) {
+            return "api" + shortClassName;
+        }
+        
+        // 默认情况下使用类名首字母小写作为Bean名称
+        return Introspector.decapitalize(shortClassName);
     }
 } 

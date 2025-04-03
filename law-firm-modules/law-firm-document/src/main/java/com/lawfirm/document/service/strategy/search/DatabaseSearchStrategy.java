@@ -15,7 +15,7 @@ import java.util.Map;
  * 数据库搜索策略实现
  */
 @Slf4j
-@Component("databaseSearchStrategy")
+@Component("databaseSearchStrategyImpl")
 @RequiredArgsConstructor
 public class DatabaseSearchStrategy implements SearchStrategy {
 
