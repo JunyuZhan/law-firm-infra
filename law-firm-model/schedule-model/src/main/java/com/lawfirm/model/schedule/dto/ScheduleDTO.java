@@ -71,6 +71,11 @@ public class ScheduleDTO {
     private ScheduleStatus status;
     
     /**
+     * 所有者用户ID
+     */
+    private Long ownerId;
+    
+    /**
      * 是否私密日程
      */
     private Boolean isPrivate;
@@ -91,9 +96,19 @@ public class ScheduleDTO {
     private List<Long> caseIds;
     
     /**
+     * 关联的单个案件ID（便于单个关联操作）
+     */
+    private Long caseId;
+    
+    /**
      * 关联的任务ID列表
      */
     private List<Long> taskIds;
+    
+    /**
+     * 关联的单个任务ID（便于单个关联操作）
+     */
+    private Long taskId;
     
     /**
      * 会议室ID（如果是会议类型）

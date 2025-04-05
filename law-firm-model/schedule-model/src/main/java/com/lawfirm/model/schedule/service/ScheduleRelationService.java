@@ -83,6 +83,22 @@ public interface ScheduleRelationService {
     List<ScheduleTaskRelationVO> listSchedulesByTaskId(Long taskId);
     
     /**
+     * 获取案件关联的日程关系列表
+     *
+     * @param caseId 案件ID
+     * @return 案件关联VO列表
+     */
+    List<ScheduleCaseRelationVO> listCaseRelationsByCaseId(Long caseId);
+    
+    /**
+     * 获取任务关联的日程关系列表
+     *
+     * @param taskId 任务ID
+     * @return 任务关联VO列表
+     */
+    List<ScheduleTaskRelationVO> listTaskRelationsByTaskId(Long taskId);
+    
+    /**
      * 批量关联案件
      *
      * @param relationDTOs 关联DTO列表

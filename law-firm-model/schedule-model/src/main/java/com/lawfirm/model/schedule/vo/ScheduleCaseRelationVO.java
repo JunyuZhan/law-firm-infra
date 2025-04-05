@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * 日程与案件关联VO
@@ -49,4 +50,11 @@ public class ScheduleCaseRelationVO implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
+    
+    /**
+     * 案件详细信息
+     * 存储从案件模块获取的数据
+     * 不参与序列化过程
+     */
+    private transient Map<String, Object> caseInfo;
 } 

@@ -391,3 +391,122 @@ docker-compose up -d
 
 - [系统使用教程](docs/user-guide.md) - 详细的系统使用说明
 - [模块文档](docs/modules.md) - 模块结构和依赖关系
+
+# 重构服务实现类的修复总结（更新）
+
+## 修复问题概述
+
+在对法律事务管理系统的日程模块进行重构过程中，我们发现并修复了以下问题：
+
+1. **Service实现类继承关系错误**：
+   - 原先某些Service实现类错误地从`BaseServiceImpl`继承，导致类型不匹配问题
+   - 已经将相关实现类修改回正确的`ServiceImpl`继承，同时手动实现`BaseService`接口方法
+
+2. **方法签名问题**：
+   - 解决了实体类getter/setter方法不匹配的问题
+   - 修复了`ScheduleEvent`、`ScheduleReminder`等实体类的字段访问方法
+
+3. **类型转换错误**：
+   - 解决了泛型类型转换问题，特别是`Page<>`类型的转换
+   - 修复了枚举类型与整数类型之间的转换
+
+## 具体修复方法
+
+1. **Services实现类修复**：
+   - `ScheduleReminderServiceImpl` - 从`BaseServiceImpl`改为继承`ServiceImpl`
+   - `ScheduleEventServiceImpl` - 添加缺失的`checkConflict`方法实现，修复类型问题
+   - `ScheduleCalendarServiceImpl` - 添加`unshareCalendar`方法，实现所有必要的接口方法
+
+2. **Mapper接口创建**：
+   - 创建`ScheduleCalendarMapper`接口，包含基本的CRUD方法和自定义查询方法
+
+3. **实体类字段补充**：
+   - 为`ScheduleEvent`实体类添加`startTime`和`endTime`字段
+   - 为统计方法添加枚举类型处理，解决类型转换问题
+
+4. **枚举值处理**：
+   - 修复`countByProperty`方法，处理ScheduleType和ScheduleStatus枚举到Integer的转换
+
+## 已修复问题
+
+我们已经成功修复了以下问题：
+
+1. 创建了缺失的 `ScheduleCalendarMapper` 接口
+2. 为 `ScheduleEvent` 实体类添加了 `startTime` 和 `endTime` 字段
+3. 修复了 `ScheduleEventDTO` 中添加缺失的 `startTime` 和 `endTime` 字段
+4. 为 `MeetingRoomBookingDTO` 添加了 `creatorId` 字段
+5. 为 `MeetingRoomDTO` 添加了 `facilities` 字段
+6. 解决了 `ScheduleCalendarServiceImpl` 中的枚举类型转换问题
+7. 修复了 `ScheduleEventServiceImpl` 中的 `checkConflict` 方法
+8. 修复了 `reminderService.getPendingReminders` 方法的参数不匹配问题
+9. 在 `MeetingRoomConvert` 中添加了 `List<String>` 和 `String` 之间的类型转换方法
+10. 修复了 `MeetingRoomController` 中 `IPage` 和 `Page` 类型不匹配问题
+11. 优化了 `MeetingRoomController` 使用 `MeetingRoomConvert` 进行DTO和实体转换
+12. 在 `MeetingRoomVO` 中添加了缺失的 `facilities` 字段
+13. 创建了 `TimeConverter` 工具类以处理 `LocalDateTime` 与 `long` 之间的转换
+
+## 仍需修复的问题
+
+以下问题需要进一步处理：
+
+1. 其他控制器中的 `IPage` 和 `Page` 类型转换问题：
+   - 需要检查其他Controller类中对Service返回的IPage类型处理
+
+2. 服务接口方法缺失问题：
+   - 一些Service接口缺少必要的方法，导致实现类中的方法无法正确覆盖接口
+   - 需要检查每个Service接口和实现类的方法签名
+
+3. 现有代码需使用 `TimeConverter` 工具类：
+   - 在需要在 `LocalDateTime` 和 `long` 之间转换的地方使用新增的工具类方法
+   - 修复现有代码中的类型转换错误
+
+## 下一步计划
+
+1. 完成编译并进行完整测试
+2. 修复其他Controller层对Service层方法的调用问题
+3. 修复剩余的`IPage`和`Page`类型不匹配的问题
+4. 补充缺失的接口方法定义
+5. 使用`TimeConverter`工具类解决日期时间类型转换问题
+
+# 修复进度更新（2023-04-13）
+
+## 已修复问题
+
+我们已经成功修复了以下问题：
+
+1. 创建了缺失的 `ScheduleCalendarMapper` 接口
+2. 为 `ScheduleEvent` 实体类添加了 `startTime` 和 `endTime` 字段
+3. 修复了 `ScheduleEventDTO` 中添加缺失的 `startTime` 和 `endTime` 字段
+4. 为 `MeetingRoomBookingDTO` 添加了 `creatorId` 字段
+5. 为 `MeetingRoomDTO` 添加了 `facilities` 字段
+6. 解决了 `ScheduleCalendarServiceImpl` 中的枚举类型转换问题
+7. 修复了 `ScheduleEventServiceImpl` 中的 `checkConflict` 方法
+8. 修复了 `reminderService.getPendingReminders` 方法的参数不匹配问题
+9. 在 `MeetingRoomConvert` 中添加了 `List<String>` 和 `String` 之间的类型转换方法
+10. 修复了 `MeetingRoomController` 中 `IPage` 和 `Page` 类型不匹配问题
+11. 优化了 `MeetingRoomController` 使用 `MeetingRoomConvert` 进行DTO和实体转换
+12. 在 `MeetingRoomVO` 中添加了缺失的 `facilities` 字段
+13. 创建了 `TimeConverter` 工具类以处理 `LocalDateTime` 与 `long` 之间的转换
+
+## 仍需修复的问题
+
+以下问题需要进一步处理：
+
+1. 其他控制器中的 `IPage` 和 `Page` 类型转换问题：
+   - 需要检查其他Controller类中对Service返回的IPage类型处理
+
+2. 服务接口方法缺失问题：
+   - 一些Service接口缺少必要的方法，导致实现类中的方法无法正确覆盖接口
+   - 需要检查每个Service接口和实现类的方法签名
+
+3. 现有代码需使用 `TimeConverter` 工具类：
+   - 在需要在 `LocalDateTime` 和 `long` 之间转换的地方使用新增的工具类方法
+   - 修复现有代码中的类型转换错误
+
+## 下一步计划
+
+1. 完成编译并进行完整测试
+2. 修复其他Controller层对Service层方法的调用问题
+3. 修复剩余的`IPage`和`Page`类型不匹配的问题
+4. 补充缺失的接口方法定义
+5. 使用`TimeConverter`工具类解决日期时间类型转换问题

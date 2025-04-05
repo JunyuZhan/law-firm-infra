@@ -36,13 +36,13 @@ public class ScheduleParticipant extends ModelBaseEntity {
      * 参与者类型（组织者、必要参与者、可选参与者）
      */
     @TableField("participant_type")
-    private ParticipantType participantType;
+    private Integer participantType;
     
     /**
      * 响应状态（接受、拒绝、未回复）
      */
     @TableField("response_status")
-    private ResponseStatus responseStatus;
+    private Integer responseStatus;
     
     /**
      * 回复意见

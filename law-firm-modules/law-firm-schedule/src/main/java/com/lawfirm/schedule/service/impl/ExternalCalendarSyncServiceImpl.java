@@ -3,6 +3,7 @@ package com.lawfirm.schedule.service.impl;
 import com.lawfirm.model.schedule.dto.ScheduleDTO;
 import com.lawfirm.model.schedule.service.ExternalCalendarSyncService;
 import com.lawfirm.model.schedule.service.ScheduleService;
+import com.lawfirm.model.schedule.vo.ExternalCalendarAccountVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -83,6 +85,62 @@ public class ExternalCalendarSyncServiceImpl implements ExternalCalendarSyncServ
         }
         
         return new ArrayList<>(accounts.keySet());
+    }
+    
+    @Override
+    public List<ExternalCalendarAccountVO> getConnectedAccounts(Long userId) {
+        log.info("获取已连接的日历账号详情，用户ID：{}", userId);
+        
+        // 从用户日历账号映射中获取账号列表
+        Map<String, Map<String, Object>> accounts = userCalendarAccounts.get(userId);
+        if (accounts == null || accounts.isEmpty()) {
+            return Collections.emptyList();
+        }
+        
+        List<ExternalCalendarAccountVO> result = new ArrayList<>();
+        
+        // 遍历账号信息创建VO对象
+        accounts.forEach((type, accountInfo) -> {
+            ExternalCalendarAccountVO vo = new ExternalCalendarAccountVO();
+            vo.setUserId(userId);
+            vo.setType(type);
+            
+            // 设置账号类型名称
+            if ("google".equalsIgnoreCase(type)) {
+                vo.setTypeName("Google日历");
+                vo.setAccountEmail("google@example.com");
+            } else if ("outlook".equalsIgnoreCase(type)) {
+                vo.setTypeName("Outlook日历");
+                vo.setAccountEmail("outlook@example.com");
+            } else {
+                vo.setTypeName(type);
+                vo.setAccountEmail(type + "@example.com");
+            }
+            
+            // 设置状态
+            Object expireTimeObj = accountInfo.get("expireTime");
+            long expireTime = expireTimeObj instanceof Number ? ((Number) expireTimeObj).longValue() : 0L;
+            long now = System.currentTimeMillis();
+            
+            if (expireTime > now) {
+                vo.setStatus(1); // 正常
+                vo.setStatusName("正常");
+            } else {
+                vo.setStatus(2); // 授权过期
+                vo.setStatusName("授权过期");
+            }
+            
+            // 设置其他信息
+            vo.setCalendarCount(5); // 模拟日历数量
+            vo.setAutoSync(true);
+            vo.setLastSyncTime(LocalDateTime.now().minusHours(1)); // 模拟上次同步时间
+            vo.setCreateTime(LocalDateTime.now().minusDays(7)); // 模拟创建时间
+            vo.setUpdateTime(LocalDateTime.now().minusHours(1)); // 模拟更新时间
+            
+            result.add(vo);
+        });
+        
+        return result;
     }
     
     @Override

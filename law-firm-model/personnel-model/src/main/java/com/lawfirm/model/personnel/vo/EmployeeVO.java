@@ -63,6 +63,21 @@ public class EmployeeVO extends PersonVO {
     private String positionName;
 
     /**
+     * 头像URL
+     */
+    private String avatar;
+    
+    /**
+     * 获取头像URL
+     * 
+     * @return 头像URL
+     */
+    public String getAvatar() {
+        // 如果头像为空，则返回照片URL作为备选
+        return avatar != null ? avatar : getPhotoUrl();
+    }
+
+    /**
      * 入职日期
      */
     private LocalDate entryDate;

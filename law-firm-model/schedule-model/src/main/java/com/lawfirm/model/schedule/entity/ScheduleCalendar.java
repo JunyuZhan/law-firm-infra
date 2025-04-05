@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
@@ -12,14 +14,11 @@ import java.time.LocalDateTime;
  * 日历实体类
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @TableName("schedule_calendar")
-public class ScheduleCalendar {
+public class ScheduleCalendar extends ModelBaseEntity {
 
-    /**
-     * 主键ID
-     */
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 日历名称
@@ -55,20 +54,4 @@ public class ScheduleCalendar {
      * 是否默认日历
      */
     private Boolean isDefault;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
-
-    /**
-     * 是否删除
-     */
-    @TableLogic
-    private Boolean deleted;
 } 

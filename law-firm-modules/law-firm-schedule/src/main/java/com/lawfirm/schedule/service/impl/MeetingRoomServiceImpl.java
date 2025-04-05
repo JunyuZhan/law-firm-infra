@@ -155,4 +155,61 @@ public class MeetingRoomServiceImpl extends ServiceImpl<MeetingRoomMapper, Meeti
         // 这里简化处理，假设所有会议室都可用
         return true;
     }
-} 
+    
+    // 以下是实现BaseService接口的方法
+    
+    @Override
+    public MeetingRoom getById(Long id) {
+        return super.getById(id);
+    }
+    
+    @Override
+    public List<MeetingRoom> list(QueryWrapper<MeetingRoom> wrapper) {
+        return super.list(wrapper);
+    }
+    
+    @Override
+    public Page<MeetingRoom> page(Page<MeetingRoom> page, QueryWrapper<MeetingRoom> wrapper) {
+        return super.page(page, wrapper);
+    }
+    
+    @Override
+    public long count(QueryWrapper<MeetingRoom> wrapper) {
+        return super.count(wrapper);
+    }
+    
+    @Override
+    public boolean save(MeetingRoom entity) {
+        return super.save(entity);
+    }
+    
+    @Override
+    public boolean saveBatch(List<MeetingRoom> entities) {
+        return super.saveBatch(entities);
+    }
+    
+    @Override
+    public boolean update(MeetingRoom entity) {
+        return super.updateById(entity);
+    }
+    
+    @Override
+    public boolean updateBatch(List<MeetingRoom> entities) {
+        return super.updateBatchById(entities);
+    }
+    
+    @Override
+    public boolean remove(Long id) {
+        return super.removeById(id);
+    }
+    
+    @Override
+    public boolean removeBatch(List<Long> ids) {
+        return super.removeByIds(ids);
+    }
+    
+    @Override
+    public boolean exists(QueryWrapper<MeetingRoom> wrapper) {
+        return count(wrapper) > 0;
+    }
+}

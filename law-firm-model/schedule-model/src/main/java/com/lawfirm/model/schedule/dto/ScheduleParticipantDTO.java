@@ -48,4 +48,27 @@ public class ScheduleParticipantDTO {
      * 回复意见
      */
     private String comments;
+
+    /**
+     * 兼容getUserId方法，与旧代码兼容
+     */
+    public Long getUserId() {
+        return this.participantId;
+    }
+    
+    /**
+     * 兼容getRole方法，与旧代码兼容
+     * @return 参与者类型的代码值
+     */
+    public Integer getRole() {
+        return this.participantType != null ? this.participantType.getCode() : null;
+    }
+    
+    /**
+     * 兼容getStatus方法，与旧代码兼容
+     * @return 响应状态的代码值
+     */
+    public Integer getStatus() {
+        return this.responseStatus != null ? this.responseStatus.getCode() : null;
+    }
 } 

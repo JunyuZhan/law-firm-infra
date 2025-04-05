@@ -1,6 +1,7 @@
 package com.lawfirm.model.schedule.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.schedule.entity.ScheduleCalendar;
 import com.lawfirm.model.schedule.vo.ScheduleCalendarVO;
 import com.lawfirm.model.schedule.vo.ScheduleCalendarDayVO;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * 日历服务接口
  */
-public interface ScheduleCalendarService {
+public interface ScheduleCalendarService extends BaseService<ScheduleCalendar> {
 
     /**
      * 创建日历

@@ -1,11 +1,13 @@
 package com.lawfirm.schedule.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.schedule.dto.MeetingRoomDTO;
 import com.lawfirm.model.schedule.entity.MeetingRoom;
 import com.lawfirm.model.schedule.service.MeetingRoomService;
 import com.lawfirm.model.schedule.vo.MeetingRoomVO;
+import com.lawfirm.schedule.converter.MeetingRoomConvert;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 会议室管理控制器
@@ -30,20 +33,15 @@ import java.util.List;
 public class MeetingRoomController {
     
     private final MeetingRoomService meetingRoomService;
+    private final MeetingRoomConvert meetingRoomConvert;
     
     @Operation(summary = "创建会议室")
     @PostMapping
     @PreAuthorize("hasAuthority('schedule:meeting:admin')")
     public CommonResult<Long> createMeetingRoom(@Valid @RequestBody MeetingRoomDTO roomDTO) {
         log.info("创建会议室：{}", roomDTO.getName());
-        // 将DTO转换为实体
-        MeetingRoom meetingRoom = new MeetingRoom();
-        meetingRoom.setName(roomDTO.getName());
-        meetingRoom.setLocation(roomDTO.getLocation());
-        meetingRoom.setCapacity(roomDTO.getCapacity());
-        meetingRoom.setFacilities(roomDTO.getFacilities());
-        meetingRoom.setStatus(roomDTO.getStatus());
-        meetingRoom.setDescription(roomDTO.getDescription());
+        // 使用转换器将DTO转换为实体
+        MeetingRoom meetingRoom = meetingRoomConvert.toEntity(roomDTO);
         
         Long id = meetingRoomService.createMeetingRoom(meetingRoom);
         return CommonResult.success(id, "创建会议室成功");
@@ -56,16 +54,16 @@ public class MeetingRoomController {
             @Parameter(description = "会议室ID") @PathVariable Long id,
             @Valid @RequestBody MeetingRoomDTO roomDTO) {
         log.info("更新会议室：{}", id);
-        // 将DTO转换为实体
-        MeetingRoom meetingRoom = new MeetingRoom();
-        meetingRoom.setName(roomDTO.getName());
-        meetingRoom.setLocation(roomDTO.getLocation());
-        meetingRoom.setCapacity(roomDTO.getCapacity());
-        meetingRoom.setFacilities(roomDTO.getFacilities());
-        meetingRoom.setStatus(roomDTO.getStatus());
-        meetingRoom.setDescription(roomDTO.getDescription());
+        // 获取现有会议室
+        MeetingRoom existingRoom = meetingRoomService.getById(id);
+        if (existingRoom == null) {
+            return CommonResult.error("会议室不存在");
+        }
         
-        boolean success = meetingRoomService.updateMeetingRoom(id, meetingRoom);
+        // 使用转换器更新实体
+        meetingRoomConvert.updateEntity(roomDTO, existingRoom);
+        
+        boolean success = meetingRoomService.updateMeetingRoom(id, existingRoom);
         return success ? CommonResult.success(true, "更新会议室成功") : CommonResult.error("更新会议室失败");
     }
     
@@ -94,8 +92,8 @@ public class MeetingRoomController {
         log.info("获取所有会议室");
         // 简单实现，获取所有会议室
         Page<MeetingRoom> page = new Page<>(1, 1000);
-        Page<MeetingRoomVO> result = meetingRoomService.pageMeetingRooms(page, null);
-        return CommonResult.success(result.getRecords());
+        IPage<MeetingRoomVO> iPage = meetingRoomService.pageMeetingRooms(page, null);
+        return CommonResult.success(iPage.getRecords());
     }
     
     @Operation(summary = "分页查询会议室")
@@ -108,7 +106,10 @@ public class MeetingRoomController {
             @Parameter(description = "状态") @RequestParam(required = false) Integer status) {
         log.info("分页查询会议室，页码：{}，每页大小：{}", pageNum, pageSize);
         Page<MeetingRoom> page = new Page<>(pageNum, pageSize);
-        Page<MeetingRoomVO> result = meetingRoomService.pageMeetingRooms(page, status);
+        IPage<MeetingRoomVO> iPage = meetingRoomService.pageMeetingRooms(page, status);
+        // 将IPage转换为Page
+        Page<MeetingRoomVO> result = new Page<>(iPage.getCurrent(), iPage.getSize(), iPage.getTotal());
+        result.setRecords(iPage.getRecords());
         return CommonResult.success(result);
     }
     
@@ -130,7 +131,7 @@ public class MeetingRoomController {
         log.info("获取可用会议室");
         // 简单实现，获取状态为可用的会议室
         Page<MeetingRoom> page = new Page<>(1, 1000);
-        Page<MeetingRoomVO> result = meetingRoomService.pageMeetingRooms(page, 1); // 假设 1 表示可用状态
-        return CommonResult.success(result.getRecords());
+        IPage<MeetingRoomVO> iPage = meetingRoomService.pageMeetingRooms(page, 1); // 假设 1 表示可用状态
+        return CommonResult.success(iPage.getRecords());
     }
 } 

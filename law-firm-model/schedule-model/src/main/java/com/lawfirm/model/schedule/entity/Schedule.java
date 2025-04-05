@@ -63,19 +63,19 @@ public class Schedule extends ModelBaseEntity {
      * 日程类型（会议、任务、约见、法庭出庭等）
      */
     @TableField("type")
-    private ScheduleType type;
+    private Integer type;
     
     /**
      * 优先级（高、中、低）
      */
     @TableField("priority")
-    private PriorityLevel priority;
+    private Integer priority;
     
     /**
      * 状态（计划中、进行中、已完成、已取消）
      */
     @TableField("schedule_status")
-    private ScheduleStatus scheduleStatus;
+    private Integer status;
     
     /**
      * 所有者用户ID

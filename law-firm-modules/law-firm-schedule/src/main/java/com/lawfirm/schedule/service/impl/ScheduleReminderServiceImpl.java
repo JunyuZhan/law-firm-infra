@@ -64,7 +64,7 @@ public class ScheduleReminderServiceImpl extends ServiceImpl<ScheduleReminderMap
             return false;
         }
         
-        reminder = reminderConvert.updateEntity(reminder, reminderDTO);
+        reminderConvert.updateEntity(reminder, reminderDTO);
         return updateById(reminder);
     }
 
@@ -173,6 +173,26 @@ public class ScheduleReminderServiceImpl extends ServiceImpl<ScheduleReminderMap
     // 以下是实现BaseService接口的方法
     
     @Override
+    public ScheduleReminder getById(Long id) {
+        return super.getById(id);
+    }
+    
+    @Override
+    public List<ScheduleReminder> list(QueryWrapper<ScheduleReminder> wrapper) {
+        return super.list(wrapper);
+    }
+    
+    @Override
+    public Page<ScheduleReminder> page(Page<ScheduleReminder> page, QueryWrapper<ScheduleReminder> wrapper) {
+        return super.page(page, wrapper);
+    }
+    
+    @Override
+    public long count(QueryWrapper<ScheduleReminder> wrapper) {
+        return super.count(wrapper);
+    }
+    
+    @Override
     public boolean save(ScheduleReminder entity) {
         return super.save(entity);
     }
@@ -203,27 +223,7 @@ public class ScheduleReminderServiceImpl extends ServiceImpl<ScheduleReminderMap
     }
     
     @Override
-    public ScheduleReminder getById(Long id) {
-        return super.getById(id);
-    }
-    
-    @Override
-    public List<ScheduleReminder> list(QueryWrapper<ScheduleReminder> wrapper) {
-        return super.list(wrapper);
-    }
-    
-    @Override
-    public Page<ScheduleReminder> page(Page<ScheduleReminder> page, QueryWrapper<ScheduleReminder> wrapper) {
-        return super.page(page, wrapper);
-    }
-    
-    @Override
-    public long count(QueryWrapper<ScheduleReminder> wrapper) {
-        return super.count(wrapper);
-    }
-    
-    @Override
     public boolean exists(QueryWrapper<ScheduleReminder> wrapper) {
-        return super.count(wrapper) > 0;
+        return count(wrapper) > 0;
     }
 } 

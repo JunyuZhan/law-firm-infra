@@ -30,6 +30,11 @@ public class MeetingRoomBookingDTO implements Serializable {
     private Long scheduleId;
     
     /**
+     * 创建者ID
+     */
+    private Long creatorId;
+    
+    /**
      * 开始时间
      */
     @NotNull(message = "开始时间不能为空")

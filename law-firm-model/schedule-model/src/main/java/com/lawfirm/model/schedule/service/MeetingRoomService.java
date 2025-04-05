@@ -2,7 +2,7 @@ package com.lawfirm.model.schedule.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.schedule.entity.MeetingRoom;
 import com.lawfirm.model.schedule.vo.MeetingRoomVO;
 
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 会议室服务接口
  */
-public interface MeetingRoomService extends IService<MeetingRoom> {
+public interface MeetingRoomService extends BaseService<MeetingRoom> {
     
     /**
      * 创建会议室

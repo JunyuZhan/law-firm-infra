@@ -1,5 +1,6 @@
 package com.lawfirm.model.schedule.service;
 
+import com.lawfirm.model.schedule.vo.ExternalCalendarAccountVO;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -57,6 +58,14 @@ public interface ExternalCalendarSyncService {
      * @return 外部日历账号列表
      */
     List<String> getConnectedCalendarAccounts(Long userId);
+    
+    /**
+     * 获取用户已连接的外部日历账号详情
+     * 
+     * @param userId 用户ID
+     * @return 外部日历账号详情列表
+     */
+    List<ExternalCalendarAccountVO> getConnectedAccounts(Long userId);
     
     /**
      * 添加外部日历账号

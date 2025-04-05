@@ -90,6 +90,16 @@ public class ScheduleVO {
     private String ownerName;
     
     /**
+     * 所有者头像
+     */
+    private String ownerAvatar;
+    
+    /**
+     * 所有者部门
+     */
+    private String ownerDepartment;
+    
+    /**
      * 是否私密日程
      */
     private Boolean isPrivate;
@@ -128,6 +138,16 @@ public class ScheduleVO {
      * 会议室信息（如果是会议类型）
      */
     private MeetingRoomVO meetingRoom;
+    
+    /**
+     * 案件关联列表
+     */
+    private List<ScheduleCaseRelationVO> caseRelations;
+    
+    /**
+     * 任务关联列表
+     */
+    private List<ScheduleTaskRelationVO> taskRelations;
     
     /**
      * 案件信息VO

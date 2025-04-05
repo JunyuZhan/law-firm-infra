@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 外部日历控制器
@@ -210,9 +212,10 @@ public class ExternalCalendarController {
     public CommonResult<Boolean> addCalendarAccount(@Valid @RequestBody ExternalCalendarAccountDTO accountDTO) {
         log.info("添加外部日历账号：{}", accountDTO.getType());
         Long userId = SecurityUtils.getUserId();
+        long expireTimeMillis = accountDTO.getExpireTime().toInstant(java.time.ZoneOffset.UTC).toEpochMilli();
         boolean success = externalCalendarSyncService.addCalendarAccount(
                 userId, accountDTO.getType(), accountDTO.getAccessToken(), 
-                accountDTO.getRefreshToken(), accountDTO.getExpireTime());
+                accountDTO.getRefreshToken(), expireTimeMillis);
         return success ? CommonResult.success(true, "添加成功") : CommonResult.error("添加失败");
     }
     
@@ -234,8 +237,11 @@ public class ExternalCalendarController {
             @Valid @RequestBody CalendarSyncConfigDTO configDTO) {
         log.info("设置同步配置：{}", type);
         Long userId = SecurityUtils.getUserId();
+        List<Integer> syncCategories = configDTO.getSyncCategories().stream()
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
         boolean success = externalCalendarSyncService.setCalendarSyncConfig(
-                userId, type, configDTO.getSyncDirection(), configDTO.getSyncInterval(), configDTO.getSyncCategories());
+                userId, type, configDTO.getSyncDirection(), configDTO.getSyncInterval(), syncCategories);
         return success ? CommonResult.success(true, "设置成功") : CommonResult.error("设置失败");
     }
     

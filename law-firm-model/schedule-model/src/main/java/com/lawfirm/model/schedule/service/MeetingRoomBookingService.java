@@ -2,7 +2,7 @@ package com.lawfirm.model.schedule.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.schedule.entity.MeetingRoomBooking;
 import com.lawfirm.model.schedule.vo.MeetingRoomBookingVO;
 
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 会议室预订服务接口
  */
-public interface MeetingRoomBookingService extends IService<MeetingRoomBooking> {
+public interface MeetingRoomBookingService extends BaseService<MeetingRoomBooking> {
     
     /**
      * 创建会议室预订
@@ -61,6 +61,14 @@ public interface MeetingRoomBookingService extends IService<MeetingRoomBooking> 
      * @return 是否成功
      */
     boolean confirmBooking(Long id);
+    
+    /**
+     * 完成预订
+     *
+     * @param id 预订ID
+     * @return 是否成功
+     */
+    boolean completeBooking(Long id);
     
     /**
      * 获取会议室在指定时间段的预订
@@ -112,4 +120,15 @@ public interface MeetingRoomBookingService extends IService<MeetingRoomBooking> 
      * @return 是否存在冲突
      */
     boolean checkTimeConflict(Long roomId, LocalDateTime startTime, LocalDateTime endTime, Long currentBookingId);
+    
+    /**
+     * 检查会议室预订冲突
+     *
+     * @param meetingRoomId 会议室ID
+     * @param startTime     开始时间
+     * @param endTime       结束时间
+     * @param excludeId     排除的预订ID
+     * @return 是否存在冲突
+     */
+    boolean checkConflict(Long meetingRoomId, LocalDateTime startTime, LocalDateTime endTime, Long excludeId);
 } 

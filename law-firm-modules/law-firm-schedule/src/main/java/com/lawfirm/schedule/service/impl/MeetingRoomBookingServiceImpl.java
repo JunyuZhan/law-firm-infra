@@ -3,8 +3,9 @@ package com.lawfirm.schedule.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.schedule.entity.MeetingRoomBooking;
+import com.lawfirm.model.schedule.entity.enums.BookingStatus;
 import com.lawfirm.model.schedule.mapper.MeetingRoomBookingMapper;
 import com.lawfirm.model.schedule.service.MeetingRoomBookingService;
 import com.lawfirm.model.schedule.service.MeetingRoomService;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Service("meetingRoomBookingService")
 @RequiredArgsConstructor
 @Slf4j
-public class MeetingRoomBookingServiceImpl extends ServiceImpl<MeetingRoomBookingMapper, MeetingRoomBooking> implements MeetingRoomBookingService {
+public class MeetingRoomBookingServiceImpl extends BaseServiceImpl<MeetingRoomBookingMapper, MeetingRoomBooking> implements MeetingRoomBookingService {
 
     private final MeetingRoomBookingConvert bookingConvert;
     private final MeetingRoomService meetingRoomService;
@@ -291,5 +292,51 @@ public class MeetingRoomBookingServiceImpl extends ServiceImpl<MeetingRoomBookin
         
         List<MeetingRoomBooking> conflicts = baseMapper.findConflicts(roomId, startTime, endTime, excludeBookingId);
         return !conflicts.isEmpty();
+    }
+
+    /**
+     * 检查会议室预定冲突
+     *
+     * @param meetingRoomId 会议室ID
+     * @param startTime     开始时间
+     * @param endTime       结束时间
+     * @param excludeId     排除的预定ID
+     * @return true表示有冲突，false表示无冲突
+     */
+    @Override
+    public boolean checkConflict(Long meetingRoomId, LocalDateTime startTime, LocalDateTime endTime, Long excludeId) {
+        log.info("检查会议室预定冲突，会议室ID：{}，时间范围：{} - {}", meetingRoomId, startTime, endTime);
+        
+        // 验证参数
+        if (meetingRoomId == null || startTime == null || endTime == null) {
+            return false;
+        }
+        
+        // 构建查询条件
+        LambdaQueryWrapper<MeetingRoomBooking> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(MeetingRoomBooking::getMeetingRoomId, meetingRoomId)
+                .eq(MeetingRoomBooking::getStatus, BookingStatus.CONFIRMED.getCode());
+        
+        // 排除指定ID
+        if (excludeId != null) {
+            queryWrapper.ne(MeetingRoomBooking::getId, excludeId);
+        }
+        
+        // 查询时间冲突的预定
+        // 1. 新预定开始时间在已有预定时间范围内
+        // 2. 新预定结束时间在已有预定时间范围内
+        // 3. 新预定时间范围完全包含已有预定
+        queryWrapper.and(w -> w
+                .between(MeetingRoomBooking::getStartTime, startTime, endTime)
+                .or()
+                .between(MeetingRoomBooking::getEndTime, startTime, endTime)
+                .or()
+                .nested(n -> n
+                        .le(MeetingRoomBooking::getStartTime, startTime)
+                        .ge(MeetingRoomBooking::getEndTime, endTime)
+                )
+        );
+        
+        return count(queryWrapper) > 0;
     }
 } 

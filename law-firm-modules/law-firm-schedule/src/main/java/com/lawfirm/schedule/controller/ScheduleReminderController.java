@@ -1,5 +1,6 @@
 package com.lawfirm.schedule.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.security.utils.SecurityUtils;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 日程提醒控制器
@@ -42,12 +44,11 @@ public class ScheduleReminderController {
         ScheduleReminder reminder = new ScheduleReminder();
         reminder.setScheduleId(reminderDTO.getScheduleId());
         reminder.setUserId(SecurityUtils.getUserId());
-        reminder.setRemindTime(reminderDTO.getRemindTime());
-        reminder.setRemindType(reminderDTO.getRemindType());
-        reminder.setRemindMethod(reminderDTO.getRemindMethod());
+        reminder.setReminderTime(reminderDTO.getReminderTime());
+        reminder.setReminderType(reminderDTO.getReminderType().ordinal());
         reminder.setContent(reminderDTO.getContent());
         
-        Long id = reminderService.createReminder(reminder);
+        Long id = reminderService.addReminder(reminderDTO.getScheduleId(), reminderDTO);
         return CommonResult.success(id, "创建提醒成功");
     }
     
@@ -58,13 +59,7 @@ public class ScheduleReminderController {
             @Parameter(description = "提醒ID") @PathVariable Long id,
             @Valid @RequestBody ScheduleReminderDTO reminderDTO) {
         log.info("更新日程提醒：{}", id);
-        ScheduleReminder reminder = new ScheduleReminder();
-        reminder.setRemindTime(reminderDTO.getRemindTime());
-        reminder.setRemindType(reminderDTO.getRemindType());
-        reminder.setRemindMethod(reminderDTO.getRemindMethod());
-        reminder.setContent(reminderDTO.getContent());
-        
-        boolean success = reminderService.updateReminder(id, reminder);
+        boolean success = reminderService.updateReminder(id, reminderDTO);
         return success ? CommonResult.success(true, "更新提醒成功") : CommonResult.error("更新提醒失败");
     }
     
@@ -73,7 +68,7 @@ public class ScheduleReminderController {
     @PreAuthorize("hasAuthority('schedule:reminder:delete')")
     public CommonResult<Boolean> deleteReminder(@Parameter(description = "提醒ID") @PathVariable Long id) {
         log.info("删除日程提醒：{}", id);
-        boolean success = reminderService.deleteReminder(id);
+        boolean success = reminderService.removeReminder(id);
         return success ? CommonResult.success(true, "删除提醒成功") : CommonResult.error("删除提醒失败");
     }
     
@@ -100,8 +95,24 @@ public class ScheduleReminderController {
     @PreAuthorize("hasAuthority('schedule:reminder:view')")
     public CommonResult<List<ScheduleReminderVO>> listByUserId(@Parameter(description = "用户ID") @PathVariable Long userId) {
         log.info("获取用户的所有提醒，用户ID：{}", userId);
-        List<ScheduleReminderVO> reminders = reminderService.listByUserId(userId);
-        return CommonResult.success(reminders);
+        // 使用查询条件获取用户的所有提醒
+        QueryWrapper<ScheduleReminder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(ScheduleReminder::getUserId, userId);
+        List<ScheduleReminder> reminders = reminderService.list(queryWrapper);
+        List<ScheduleReminderVO> reminderVOs = reminders.stream()
+                .map(reminder -> {
+                    ScheduleReminderVO vo = new ScheduleReminderVO();
+                    // 设置VO属性
+                    vo.setId(reminder.getId());
+                    vo.setScheduleId(reminder.getScheduleId());
+                    vo.setReminderTime(reminder.getReminderTime());
+                    vo.setContent(reminder.getContent());
+                    vo.setUserId(reminder.getUserId());
+                    // 其他属性设置...
+                    return vo;
+                })
+                .collect(Collectors.toList());
+        return CommonResult.success(reminderVOs);
     }
     
     @Operation(summary = "获取我的所有提醒")
@@ -110,8 +121,24 @@ public class ScheduleReminderController {
     public CommonResult<List<ScheduleReminderVO>> listMyReminders() {
         log.info("获取我的所有提醒");
         Long userId = SecurityUtils.getUserId();
-        List<ScheduleReminderVO> reminders = reminderService.listByUserId(userId);
-        return CommonResult.success(reminders);
+        // 使用查询条件获取用户的所有提醒
+        QueryWrapper<ScheduleReminder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(ScheduleReminder::getUserId, userId);
+        List<ScheduleReminder> reminders = reminderService.list(queryWrapper);
+        List<ScheduleReminderVO> reminderVOs = reminders.stream()
+                .map(reminder -> {
+                    ScheduleReminderVO vo = new ScheduleReminderVO();
+                    // 设置VO属性
+                    vo.setId(reminder.getId());
+                    vo.setScheduleId(reminder.getScheduleId());
+                    vo.setReminderTime(reminder.getReminderTime());
+                    vo.setContent(reminder.getContent());
+                    vo.setUserId(reminder.getUserId());
+                    // 其他属性设置...
+                    return vo;
+                })
+                .collect(Collectors.toList());
+        return CommonResult.success(reminderVOs);
     }
     
     @Operation(summary = "分页查询提醒")
@@ -127,8 +154,42 @@ public class ScheduleReminderController {
             @Parameter(description = "结束时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
         log.info("分页查询提醒，页码：{}，每页大小：{}", pageNum, pageSize);
         Page<ScheduleReminder> page = new Page<>(pageNum, pageSize);
-        Page<ScheduleReminderVO> result = reminderService.pageReminders(page, scheduleId, userId, remindType, startTime, endTime);
-        return CommonResult.success(result);
+        // 构建查询条件
+        QueryWrapper<ScheduleReminder> queryWrapper = new QueryWrapper<>();
+        if (scheduleId != null) {
+            queryWrapper.lambda().eq(ScheduleReminder::getScheduleId, scheduleId);
+        }
+        if (userId != null) {
+            queryWrapper.lambda().eq(ScheduleReminder::getUserId, userId);
+        }
+        if (remindType != null) {
+            queryWrapper.lambda().eq(ScheduleReminder::getReminderType, remindType);
+        }
+        if (startTime != null) {
+            queryWrapper.lambda().ge(ScheduleReminder::getReminderTime, startTime);
+        }
+        if (endTime != null) {
+            queryWrapper.lambda().le(ScheduleReminder::getReminderTime, endTime);
+        }
+        
+        Page<ScheduleReminder> result = reminderService.page(page, queryWrapper);
+        // 转换为VO
+        Page<ScheduleReminderVO> voPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+        List<ScheduleReminderVO> voList = result.getRecords().stream()
+                .map(reminder -> {
+                    ScheduleReminderVO vo = new ScheduleReminderVO();
+                    // 设置VO属性
+                    vo.setId(reminder.getId());
+                    vo.setScheduleId(reminder.getScheduleId());
+                    vo.setReminderTime(reminder.getReminderTime());
+                    vo.setContent(reminder.getContent());
+                    vo.setUserId(reminder.getUserId());
+                    // 其他属性设置...
+                    return vo;
+                })
+                .collect(Collectors.toList());
+        voPage.setRecords(voList);
+        return CommonResult.success(voPage);
     }
     
     @Operation(summary = "标记提醒为已处理")
@@ -136,20 +197,25 @@ public class ScheduleReminderController {
     @PreAuthorize("hasAuthority('schedule:reminder:update')")
     public CommonResult<Boolean> markAsProcessed(@Parameter(description = "提醒ID") @PathVariable Long id) {
         log.info("标记提醒为已处理：{}", id);
-        boolean success = reminderService.markAsProcessed(id);
+        boolean success = reminderService.markAsReminded(id);  // 使用已有的方法
         return success ? CommonResult.success(true, "标记成功") : CommonResult.error("标记失败");
     }
     
     @Operation(summary = "获取待处理提醒")
     @GetMapping("/pending")
     @PreAuthorize("hasAuthority('schedule:reminder:view')")
-    public CommonResult<Page<ScheduleReminderVO>> getPendingReminders(
-            @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
-            @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize) {
-        log.info("获取待处理提醒，页码：{}，每页大小：{}", pageNum, pageSize);
-        Long userId = SecurityUtils.getUserId();
-        Page<ScheduleReminder> page = new Page<>(pageNum, pageSize);
-        Page<ScheduleReminderVO> result = reminderService.getPendingReminders(page, userId);
-        return CommonResult.success(result);
+    public CommonResult<List<ScheduleReminderVO>> getPendingReminders(
+            @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @Parameter(description = "结束时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
+        log.info("获取待处理提醒");
+        if (startTime == null) {
+            startTime = LocalDateTime.now();
+        }
+        if (endTime == null) {
+            endTime = startTime.plusDays(7);  // 默认查询一周内的提醒
+        }
+        
+        List<ScheduleReminderVO> reminders = reminderService.getPendingReminders(startTime, endTime);
+        return CommonResult.success(reminders);
     }
 } 

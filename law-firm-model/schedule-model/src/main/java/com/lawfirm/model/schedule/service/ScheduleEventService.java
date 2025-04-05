@@ -1,6 +1,7 @@
 package com.lawfirm.model.schedule.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.schedule.dto.ScheduleEventDTO;
 import com.lawfirm.model.schedule.entity.Schedule;
 import com.lawfirm.model.schedule.entity.MeetingRoomBooking;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * 日程事件服务接口
  */
-public interface ScheduleEventService {
+public interface ScheduleEventService extends BaseService<ScheduleEvent> {
     
     /**
      * 添加日程事件

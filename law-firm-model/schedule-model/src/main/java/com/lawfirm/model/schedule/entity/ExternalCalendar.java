@@ -3,8 +3,11 @@ package com.lawfirm.model.schedule.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
@@ -12,14 +15,11 @@ import java.time.LocalDateTime;
  * 外部日历实体类
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @TableName("schedule_external_calendar")
-public class ExternalCalendar {
+public class ExternalCalendar extends ModelBaseEntity {
 
-    /**
-     * 主键ID
-     */
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 日历名称
@@ -74,21 +74,6 @@ public class ExternalCalendar {
     /**
      * 状态：1-正常, 2-同步失败, 3-授权过期, 4-已暂停
      */
-    private Integer status;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
-
-    /**
-     * 是否删除
-     */
-    @TableLogic
-    private Boolean deleted;
+    @TableField("status")
+    private Integer providerStatus;
 } 

@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * 日程与任务关联VO
@@ -36,6 +37,11 @@ public class ScheduleTaskRelationVO implements Serializable {
     private String taskTitle;
     
     /**
+     * 任务编号
+     */
+    private String taskNumber;
+    
+    /**
      * 任务优先级
      */
     private Integer taskPriority;
@@ -54,4 +60,11 @@ public class ScheduleTaskRelationVO implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
+    
+    /**
+     * 任务详细信息
+     * 存储从任务模块获取的数据
+     * 不参与序列化过程
+     */
+    private transient Map<String, Object> taskInfo;
 } 

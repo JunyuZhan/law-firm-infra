@@ -6,7 +6,12 @@ import lombok.experimental.Accessors;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 会议室数据传输对象
@@ -49,6 +54,12 @@ public class MeetingRoomDTO implements Serializable {
     private String equipments;
     
     /**
+     * 会议室设施
+     * 使用transient关键字标记，避免序列化问题
+     */
+    private transient List<String> facilities;
+    
+    /**
      * 会议室状态
      * 0: 未启用
      * 1: 启用
@@ -67,4 +78,48 @@ public class MeetingRoomDTO implements Serializable {
      */
     @Size(max = 255, message = "备注不能超过255个字符")
     private String remarks;
+
+    /**
+     * 兼容getLocation方法，与旧代码兼容
+     */
+    public String getLocation() {
+        return this.address;
+    }
+    
+    /**
+     * 兼容getFacilities方法，与旧代码兼容
+     */
+    public List<String> getFacilities() {
+        return this.facilities;
+    }
+    
+    /**
+     * 自定义序列化方法
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        // 将facilities转换为字符串数组后序列化
+        if (facilities != null) {
+            out.writeObject(facilities.toArray(new String[0]));
+        } else {
+            out.writeObject(null);
+        }
+    }
+    
+    /**
+     * 自定义反序列化方法
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // 读取字符串数组并转换回List
+        String[] facilitiesArray = (String[]) in.readObject();
+        if (facilitiesArray != null) {
+            facilities = new ArrayList<>(facilitiesArray.length);
+            for (String facility : facilitiesArray) {
+                facilities.add(facility);
+            }
+        } else {
+            facilities = new ArrayList<>();
+        }
+    }
 } 

@@ -3,19 +3,21 @@ package com.lawfirm.model.schedule.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * 日程事件实体类
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("schedule_event")
-public class ScheduleEvent implements Serializable {
+public class ScheduleEvent extends ModelBaseEntity {
     
     private static final long serialVersionUID = 1L;
     
@@ -64,6 +66,16 @@ public class ScheduleEvent implements Serializable {
      * 事件备注
      */
     private String remarks;
+    
+    /**
+     * 开始时间
+     */
+    private LocalDateTime startTime;
+    
+    /**
+     * 结束时间
+     */
+    private LocalDateTime endTime;
     
     /**
      * 是否通知

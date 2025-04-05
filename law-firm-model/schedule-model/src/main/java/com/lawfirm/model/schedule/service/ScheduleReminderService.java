@@ -1,6 +1,6 @@
 package com.lawfirm.model.schedule.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.schedule.dto.ScheduleReminderDTO;
 import com.lawfirm.model.schedule.entity.ScheduleReminder;
 import com.lawfirm.model.schedule.vo.ScheduleReminderVO;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 日程提醒服务接口
  */
-public interface ScheduleReminderService extends IService<ScheduleReminder> {
+public interface ScheduleReminderService extends BaseService<ScheduleReminder> {
     
     /**
      * 添加提醒

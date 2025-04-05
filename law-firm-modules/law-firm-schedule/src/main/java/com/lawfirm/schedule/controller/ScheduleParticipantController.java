@@ -36,13 +36,16 @@ public class ScheduleParticipantController {
     @PostMapping
     @PreAuthorize("hasAuthority('schedule:participant:add')")
     public CommonResult<Long> addParticipant(@Valid @RequestBody ScheduleParticipantDTO participantDTO) {
-        log.info("添加日程参与人，日程ID：{}，参与人：{}", participantDTO.getScheduleId(), participantDTO.getUserId());
-        Long id = participantService.addParticipant(
-                participantDTO.getScheduleId(),
-                participantDTO.getUserId(),
-                participantDTO.getRole(),
-                participantDTO.getStatus());
-        return CommonResult.success(id, "添加参与人成功");
+        log.info("添加日程参与人，日程ID：{}，参与人：{}", participantDTO.getScheduleId(), participantDTO.getParticipantId());
+        
+        // 按照接口定义调用方法
+        boolean success = participantService.addParticipant(participantDTO.getScheduleId(), participantDTO);
+        
+        if (success) {
+            return CommonResult.success(participantDTO.getId(), "添加参与人成功");
+        } else {
+            return CommonResult.error("添加参与人失败");
+        }
     }
     
     @Operation(summary = "批量添加参与人")

@@ -34,6 +34,7 @@
         <module>law-firm-contract</module>
         <module>law-firm-finance</module>
         <module>law-firm-knowledge</module>
+        <module>law-firm-schedule</module>
     </modules>
 
     <dependencyManagement>

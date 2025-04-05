@@ -1,10 +1,12 @@
 package com.lawfirm.schedule.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.security.utils.SecurityUtils;
 import com.lawfirm.model.schedule.dto.ScheduleCalendarDTO;
 import com.lawfirm.model.schedule.entity.ScheduleCalendar;
+import com.lawfirm.model.schedule.entity.ScheduleEvent;
 import com.lawfirm.model.schedule.service.ScheduleCalendarService;
 import com.lawfirm.model.schedule.vo.ScheduleCalendarVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**

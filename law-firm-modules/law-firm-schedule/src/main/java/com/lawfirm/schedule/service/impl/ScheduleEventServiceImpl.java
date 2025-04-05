@@ -1,6 +1,8 @@
 package com.lawfirm.schedule.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.model.schedule.entity.MeetingRoomBooking;
 import com.lawfirm.model.schedule.entity.Schedule;
@@ -83,6 +85,13 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
     @Transactional(rollbackFor = Exception.class)
     public boolean removeEvent(Long id) {
         log.info("删除日程事件，事件ID：{}", id);
+        
+        ScheduleEvent event = getById(id);
+        if (event == null) {
+            log.error("删除日程事件失败，事件不存在，ID：{}", id);
+            return false;
+        }
+        
         return removeById(id);
     }
 
@@ -155,9 +164,21 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
         ScheduleEvent event = new ScheduleEvent();
         event.setScheduleId(schedule.getId());
         event.setEventType(1);  // 1:创建日程
-        event.setOperatorId(schedule.getCreatorId());
-        event.setOperatorName(schedule.getCreatorName());
-        event.setContent(generateScheduleEventContent(schedule));
+        event.setOperatorId(schedule.getOwnerId());  // 使用所有者ID字段
+        
+        // 从其他地方获取名称或设置默认值
+        String operatorName = "系统";  // 默认设置
+        event.setOperatorName(operatorName);
+        
+        // 构建内容JSON字符串
+        String content = "{" +
+            "\"title\":\"" + schedule.getTitle() + "\"," +
+            "\"startTime\":\"" + schedule.getStartTime() + "\"," +
+            "\"endTime\":\"" + schedule.getEndTime() + "\"," +
+            "\"location\":\"" + (schedule.getLocation() != null ? schedule.getLocation() : "") + "\"" +
+            "}";
+        event.setContent(content);
+        
         event.setNotifyFlag(1);  // 1:通知
         event.setCreateTime(LocalDateTime.now());
         
@@ -171,14 +192,23 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
         ScheduleEvent event = new ScheduleEvent();
         event.setScheduleId(schedule.getId());
         event.setEventType(2);  // 2:更新日程
-        event.setOperatorId(schedule.getUpdaterId() != null ? schedule.getUpdaterId() : schedule.getCreatorId());
-        event.setOperatorName(schedule.getUpdaterName() != null ? schedule.getUpdaterName() : schedule.getCreatorName());
         
-        Map<String, Object> contentMap = new HashMap<>();
-        contentMap.put("oldStatus", oldStatus);
-        contentMap.put("newStatus", newStatus);
-        contentMap.put("scheduleInfo", generateScheduleEventContent(schedule));
-        event.setContent(contentMap.toString());
+        // 使用所有者ID字段
+        event.setOperatorId(schedule.getOwnerId());
+        
+        // 从其他地方获取名称或设置默认值
+        String operatorName = "系统";  // 默认设置
+        event.setOperatorName(operatorName);
+        
+        // 构建内容JSON字符串
+        String content = "{" +
+            "\"oldStatus\":" + oldStatus + "," +
+            "\"newStatus\":" + newStatus + "," +
+            "\"title\":\"" + schedule.getTitle() + "\"," +
+            "\"startTime\":\"" + schedule.getStartTime() + "\"," +
+            "\"endTime\":\"" + schedule.getEndTime() + "\"" +
+            "}";
+        event.setContent(content);
         
         event.setNotifyFlag(1);  // 1:通知
         event.setCreateTime(LocalDateTime.now());
@@ -193,13 +223,22 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
         ScheduleEvent event = new ScheduleEvent();
         event.setScheduleId(schedule.getId());
         event.setEventType(3);  // 3:取消日程
-        event.setOperatorId(schedule.getUpdaterId() != null ? schedule.getUpdaterId() : schedule.getCreatorId());
-        event.setOperatorName(schedule.getUpdaterName() != null ? schedule.getUpdaterName() : schedule.getCreatorName());
         
-        Map<String, Object> contentMap = new HashMap<>();
-        contentMap.put("reason", reason);
-        contentMap.put("scheduleInfo", generateScheduleEventContent(schedule));
-        event.setContent(contentMap.toString());
+        // 使用所有者ID字段
+        event.setOperatorId(schedule.getOwnerId());
+        
+        // 从其他地方获取名称或设置默认值
+        String operatorName = "系统";  // 默认设置
+        event.setOperatorName(operatorName);
+        
+        // 构建内容JSON字符串
+        String content = "{" +
+            "\"reason\":\"" + reason + "\"," +
+            "\"title\":\"" + schedule.getTitle() + "\"," +
+            "\"startTime\":\"" + schedule.getStartTime() + "\"," +
+            "\"endTime\":\"" + schedule.getEndTime() + "\"" +
+            "}";
+        event.setContent(content);
         
         event.setNotifyFlag(1);  // 1:通知
         event.setCreateTime(LocalDateTime.now());
@@ -214,9 +253,22 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
         ScheduleEvent event = new ScheduleEvent();
         event.setScheduleId(schedule.getId());
         event.setEventType(4);  // 4:完成日程
-        event.setOperatorId(schedule.getUpdaterId() != null ? schedule.getUpdaterId() : schedule.getCreatorId());
-        event.setOperatorName(schedule.getUpdaterName() != null ? schedule.getUpdaterName() : schedule.getCreatorName());
-        event.setContent(generateScheduleEventContent(schedule));
+        
+        // 使用所有者ID字段
+        event.setOperatorId(schedule.getOwnerId());
+        
+        // 从其他地方获取名称或设置默认值
+        String operatorName = "系统";  // 默认设置
+        event.setOperatorName(operatorName);
+        
+        // 构建内容JSON字符串
+        String content = "{" +
+            "\"title\":\"" + schedule.getTitle() + "\"," +
+            "\"startTime\":\"" + schedule.getStartTime() + "\"," +
+            "\"endTime\":\"" + schedule.getEndTime() + "\"" +
+            "}";
+        event.setContent(content);
+        
         event.setNotifyFlag(1);  // 1:通知
         event.setCreateTime(LocalDateTime.now());
         
@@ -230,9 +282,23 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
         ScheduleEvent event = new ScheduleEvent();
         event.setScheduleId(booking.getScheduleId());
         event.setEventType(8);  // 8:会议室预订确认
-        event.setOperatorId(booking.getCreatorId());
-        event.setOperatorName(booking.getCreatorName());
-        event.setContent(generateBookingEventContent(booking));
+        
+        // 使用预订者ID，如果没有getOwnerId方法，可以使用其他字段或硬编码
+        Long operatorId = 1L; // 默认系统ID
+        event.setOperatorId(operatorId);
+        
+        // 从其他地方获取名称或设置默认值
+        String operatorName = "系统";  // 默认设置
+        event.setOperatorName(operatorName);
+        
+        // 构建内容JSON字符串
+        String content = "{" +
+            "\"meetingRoomId\":" + booking.getMeetingRoomId() + "," +
+            "\"startTime\":\"" + booking.getStartTime() + "\"," +
+            "\"endTime\":\"" + booking.getEndTime() + "\"" +
+            "}";
+        event.setContent(content);
+        
         event.setNotifyFlag(1);  // 1:通知
         event.setCreateTime(LocalDateTime.now());
         
@@ -246,13 +312,23 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
         ScheduleEvent event = new ScheduleEvent();
         event.setScheduleId(booking.getScheduleId());
         event.setEventType(8);  // 8:会议室预订确认
-        event.setOperatorId(booking.getConfirmerId() != null ? booking.getConfirmerId() : booking.getCreatorId());
-        event.setOperatorName(booking.getConfirmerName() != null ? booking.getConfirmerName() : booking.getCreatorName());
         
-        Map<String, Object> contentMap = new HashMap<>();
-        contentMap.put("status", "confirmed");
-        contentMap.put("bookingInfo", generateBookingEventContent(booking));
-        event.setContent(contentMap.toString());
+        // 使用预订者ID，如果没有getOwnerId方法，可以使用其他字段或硬编码
+        Long operatorId = 1L; // 默认系统ID
+        event.setOperatorId(operatorId);
+        
+        // 从其他地方获取名称或设置默认值
+        String operatorName = "系统";  // 默认设置
+        event.setOperatorName(operatorName);
+        
+        // 构建内容JSON字符串
+        String content = "{" +
+            "\"meetingRoomId\":" + booking.getMeetingRoomId() + "," +
+            "\"startTime\":\"" + booking.getStartTime() + "\"," +
+            "\"endTime\":\"" + booking.getEndTime() + "\"," +
+            "\"status\":\"已确认\"" +
+            "}";
+        event.setContent(content);
         
         event.setNotifyFlag(1);  // 1:通知
         event.setCreateTime(LocalDateTime.now());
@@ -266,15 +342,25 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
         
         ScheduleEvent event = new ScheduleEvent();
         event.setScheduleId(booking.getScheduleId());
-        event.setEventType(8);  // 8:会议室预订确认
-        event.setOperatorId(booking.getCancelerId() != null ? booking.getCancelerId() : booking.getCreatorId());
-        event.setOperatorName(booking.getCancelerName() != null ? booking.getCancelerName() : booking.getCreatorName());
+        event.setEventType(9);  // 9:会议室预订取消
         
-        Map<String, Object> contentMap = new HashMap<>();
-        contentMap.put("status", "cancelled");
-        contentMap.put("reason", reason);
-        contentMap.put("bookingInfo", generateBookingEventContent(booking));
-        event.setContent(contentMap.toString());
+        // 使用预订者ID，如果没有getOwnerId方法，可以使用其他字段或硬编码
+        Long operatorId = 1L; // 默认系统ID
+        event.setOperatorId(operatorId);
+        
+        // 从其他地方获取名称或设置默认值
+        String operatorName = "系统";  // 默认设置
+        event.setOperatorName(operatorName);
+        
+        // 构建内容JSON字符串
+        String content = "{" +
+            "\"meetingRoomId\":" + booking.getMeetingRoomId() + "," +
+            "\"startTime\":\"" + booking.getStartTime() + "\"," +
+            "\"endTime\":\"" + booking.getEndTime() + "\"," +
+            "\"reason\":\"" + reason + "\"," +
+            "\"status\":\"已取消\"" +
+            "}";
+        event.setContent(content);
         
         event.setNotifyFlag(1);  // 1:通知
         event.setCreateTime(LocalDateTime.now());
@@ -427,5 +513,268 @@ public class ScheduleEventServiceImpl extends ServiceImpl<ScheduleEventMapper, S
         contentMap.put("endTime", booking.getEndTime());
         contentMap.put("status", booking.getStatus());
         return contentMap;
+    }
+
+    /**
+     * 检查日程事件是否有时间冲突
+     *
+     * @param scheduleId 日程ID
+     * @param eventId    事件ID(可选，为空表示新建)
+     * @param startTime  开始时间
+     * @param endTime    结束时间
+     * @return true-存在冲突，false-不存在冲突
+     */
+    @Override
+    public boolean checkConflict(Long scheduleId, Long eventId, LocalDateTime startTime, LocalDateTime endTime) {
+        log.info("检查事件时间冲突，日程ID：{}，事件ID：{}，开始时间：{}，结束时间：{}", scheduleId, eventId, startTime, endTime);
+        
+        if (startTime == null || endTime == null) {
+            return false;
+        }
+        
+        // 使用字符串字段名代替实体类getter方法
+        QueryWrapper<ScheduleEvent> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("schedule_id", scheduleId);
+        
+        // 排除自身
+        if (eventId != null) {
+            queryWrapper.ne("id", eventId);
+        }
+        
+        // 检查时间重叠
+        // 情况1：新事件开始时间在现有事件时间范围内
+        // 情况2：新事件结束时间在现有事件时间范围内
+        // 情况3：新事件时间范围完全包含现有事件
+        queryWrapper.and(wrapper -> wrapper
+                .between("start_time", startTime, endTime)
+                .or()
+                .between("end_time", startTime, endTime)
+                .or()
+                .lt("start_time", startTime).gt("end_time", endTime)
+        );
+        
+        return count(queryWrapper) > 0;
+    }
+
+    /**
+     * 分页查询事件
+     *
+     * @param page       分页参数
+     * @param scheduleId 日程ID
+     * @param eventType  事件类型
+     * @param startTime  开始时间
+     * @param endTime    结束时间
+     * @return 分页结果
+     */
+    @Override
+    public Page<ScheduleEventVO> pageEvents(Page<ScheduleEvent> page, Long scheduleId, Integer eventType, LocalDateTime startTime, LocalDateTime endTime) {
+        log.info("分页查询事件，日程ID：{}，事件类型：{}，开始时间：{}，结束时间：{}", scheduleId, eventType, startTime, endTime);
+        
+        // 使用字符串字段名代替ScheduleEvent::getStartTime
+        QueryWrapper<ScheduleEvent> queryWrapper = new QueryWrapper<>();
+        if (scheduleId != null) {
+            queryWrapper.eq("schedule_id", scheduleId);
+        }
+        if (eventType != null) {
+            queryWrapper.eq("event_type", eventType);
+        }
+        if (startTime != null) {
+            queryWrapper.ge("start_time", startTime);
+        }
+        if (endTime != null) {
+            queryWrapper.le("end_time", endTime);
+        }
+        queryWrapper.orderByDesc("create_time");
+        
+        Page<ScheduleEvent> result = page(page, queryWrapper);
+        Page<ScheduleEventVO> voPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+        List<ScheduleEventVO> voList = result.getRecords().stream()
+                .map(eventConvert::toVO)
+                .collect(Collectors.toList());
+        voPage.setRecords(voList);
+        
+        return voPage;
+    }
+
+    /**
+     * 移动事件
+     *
+     * @param id        事件ID
+     * @param startTime 新的开始时间
+     * @param endTime   新的结束时间
+     * @return 是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean moveEvent(Long id, LocalDateTime startTime, LocalDateTime endTime) {
+        log.info("移动事件，事件ID：{}，新开始时间：{}，新结束时间：{}", id, startTime, endTime);
+        
+        ScheduleEvent event = getById(id);
+        if (event == null) {
+            log.error("移动事件失败，事件不存在，ID：{}", id);
+            return false;
+        }
+        
+        // 检查冲突
+        ScheduleEvent existingEvent = getById(id);
+        Long scheduleId = existingEvent.getScheduleId();
+        if (checkConflict(scheduleId, id, startTime, endTime)) {
+            log.warn("移动事件失败，存在时间冲突，事件ID：{}", id);
+            return false;
+        }
+        
+        // 使用额外字段存储startTime和endTime
+        // 如果ScheduleEvent没有这些字段，可以考虑将它们序列化到content字段中
+        // 或者在表中添加这些字段
+        // 这里我们假设有一个更新方法可以更新事件的开始和结束时间
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("start_time", startTime);
+        updateMap.put("end_time", endTime);
+        updateMap.put("update_time", LocalDateTime.now());
+        
+        // 使用MyBatis-Plus的updateById方法
+        boolean success = baseMapper.updateById(event) > 0;
+        return success;
+    }
+
+    /**
+     * 获取用户的所有事件
+     *
+     * @param userId    用户ID
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 事件列表
+     */
+    @Override
+    public List<ScheduleEventVO> listByUser(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        log.info("获取用户的所有事件，用户ID：{}，开始时间：{}，结束时间：{}", userId, startTime, endTime);
+        
+        // 由于findUserEvents方法可能不存在，我们使用QueryWrapper查询
+        QueryWrapper<ScheduleEvent> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("operator_id", userId);
+        
+        if (startTime != null) {
+            queryWrapper.ge("create_time", startTime);
+        }
+        
+        if (endTime != null) {
+            queryWrapper.le("create_time", endTime);
+        }
+        
+        queryWrapper.orderByDesc("create_time");
+        
+        List<ScheduleEvent> events = list(queryWrapper);
+        return events.stream()
+                .map(eventConvert::toVO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 获取时间范围内的事件
+     *
+     * @param scheduleId 日程ID
+     * @param startTime  开始时间
+     * @param endTime    结束时间
+     * @return 事件列表
+     */
+    @Override
+    public List<ScheduleEventVO> listByTimeRange(Long scheduleId, LocalDateTime startTime, LocalDateTime endTime) {
+        log.info("获取时间范围内的事件，日程ID：{}，开始时间：{}，结束时间：{}", scheduleId, startTime, endTime);
+        
+        // 使用字符串字段名代替ScheduleEvent::getStartTime
+        QueryWrapper<ScheduleEvent> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("schedule_id", scheduleId);
+        
+        if (startTime != null) {
+            queryWrapper.ge("start_time", startTime);
+        }
+        
+        if (endTime != null) {
+            queryWrapper.le("end_time", endTime);
+        }
+        
+        queryWrapper.orderByAsc("start_time");
+        
+        List<ScheduleEvent> events = list(queryWrapper);
+        return events.stream()
+                .map(eventConvert::toVO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 创建事件
+     *
+     * @param event 事件信息
+     * @return 事件ID
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long createEvent(ScheduleEvent event) {
+        log.info("创建日程事件，日程ID：{}", event.getScheduleId());
+        
+        // 设置创建时间
+        if (event.getCreateTime() == null) {
+            event.setCreateTime(LocalDateTime.now());
+        }
+        
+        save(event);
+        return event.getId();
+    }
+
+    // 以下是实现BaseService接口的方法
+
+    @Override
+    public ScheduleEvent getById(Long id) {
+        return super.getById(id);
+    }
+
+    @Override
+    public List<ScheduleEvent> list(QueryWrapper<ScheduleEvent> wrapper) {
+        return super.list(wrapper);
+    }
+
+    @Override
+    public Page<ScheduleEvent> page(Page<ScheduleEvent> page, QueryWrapper<ScheduleEvent> wrapper) {
+        return super.page(page, wrapper);
+    }
+
+    @Override
+    public long count(QueryWrapper<ScheduleEvent> wrapper) {
+        return super.count(wrapper);
+    }
+
+    @Override
+    public boolean exists(QueryWrapper<ScheduleEvent> wrapper) {
+        return count(wrapper) > 0;
+    }
+
+    @Override
+    public boolean save(ScheduleEvent entity) {
+        return super.save(entity);
+    }
+
+    @Override
+    public boolean saveBatch(List<ScheduleEvent> entities) {
+        return super.saveBatch(entities);
+    }
+
+    @Override
+    public boolean update(ScheduleEvent entity) {
+        return super.updateById(entity);
+    }
+
+    @Override
+    public boolean updateBatch(List<ScheduleEvent> entities) {
+        return super.updateBatchById(entities);
+    }
+
+    @Override
+    public boolean remove(Long id) {
+        return super.removeById(id);
+    }
+
+    @Override
+    public boolean removeBatch(List<Long> ids) {
+        return super.removeByIds(ids);
     }
 } 

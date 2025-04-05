@@ -18,23 +18,25 @@ public interface ScheduleParticipantConvert {
     /**
      * 将DTO转换为实体
      */
-    @Mapping(target = "participantType", expression = "java(dto.getParticipantType() != null ? dto.getParticipantType().ordinal() : null)")
-    @Mapping(target = "responseStatus", expression = "java(dto.getResponseStatus() != null ? dto.getResponseStatus().ordinal() : null)")
+    @Mapping(target = "participantType", expression = "java(dto.getParticipantType() != null ? dto.getParticipantType().getCode() : null)")
+    @Mapping(target = "responseStatus", expression = "java(dto.getResponseStatus() != null ? dto.getResponseStatus().getCode() : null)")
     ScheduleParticipant toEntity(ScheduleParticipantDTO dto);
 
     /**
      * 将实体转换为VO
      */
-    @Mapping(target = "participantTypeName", expression = "java(getParticipantTypeName(entity.getParticipantType()))")
-    @Mapping(target = "responseStatusName", expression = "java(getResponseStatusName(entity.getResponseStatus()))")
+    @Mapping(target = "participantType", expression = "java(mapIntegerToParticipantType(entity.getParticipantType()))")
+    @Mapping(target = "responseStatus", expression = "java(mapIntegerToResponseStatus(entity.getResponseStatus()))")
+    @Mapping(target = "participantTypeDesc", expression = "java(getParticipantTypeName(entity.getParticipantType()))")
+    @Mapping(target = "responseStatusDesc", expression = "java(getResponseStatusName(entity.getResponseStatus()))")
     ScheduleParticipantVO toVO(ScheduleParticipant entity);
 
     /**
      * 根据DTO更新实体
      */
-    @Mapping(target = "participantType", expression = "java(dto.getParticipantType() != null ? dto.getParticipantType().ordinal() : entity.getParticipantType())")
-    @Mapping(target = "responseStatus", expression = "java(dto.getResponseStatus() != null ? dto.getResponseStatus().ordinal() : entity.getResponseStatus())")
-    ScheduleParticipant updateEntity(@MappingTarget ScheduleParticipant entity, ScheduleParticipantDTO dto);
+    @Mapping(target = "participantType", expression = "java(dto.getParticipantType() != null ? dto.getParticipantType().getCode() : entity.getParticipantType())")
+    @Mapping(target = "responseStatus", expression = "java(dto.getResponseStatus() != null ? dto.getResponseStatus().getCode() : entity.getResponseStatus())")
+    void updateEntity(@MappingTarget ScheduleParticipant entity, ScheduleParticipantDTO dto);
     
     /**
      * 获取参与者类型名称
@@ -43,12 +45,8 @@ public interface ScheduleParticipantConvert {
         if (typeCode == null) {
             return null;
         }
-        for (ParticipantType type : ParticipantType.values()) {
-            if (type.ordinal() == typeCode) {
-                return type.name();
-            }
-        }
-        return null;
+        ParticipantType type = ParticipantType.getByCode(typeCode);
+        return type != null ? type.name() : null;
     }
     
     /**
@@ -58,11 +56,29 @@ public interface ScheduleParticipantConvert {
         if (statusCode == null) {
             return null;
         }
-        for (ResponseStatus status : ResponseStatus.values()) {
-            if (status.ordinal() == statusCode) {
-                return status.name();
-            }
+        ResponseStatus status = ResponseStatus.getByCode(statusCode);
+        return status != null ? status.name() : null;
+    }
+    
+    /**
+     * Integer转换为ParticipantType
+     */
+    default ParticipantType mapIntegerToParticipantType(Integer typeCode) {
+        if (typeCode == null) {
+            return null;
         }
-        return null;
+        ParticipantType type = ParticipantType.getByCode(typeCode);
+        return type != null ? type : ParticipantType.REQUIRED; // 默认返回必要参与者
+    }
+    
+    /**
+     * Integer转换为ResponseStatus
+     */
+    default ResponseStatus mapIntegerToResponseStatus(Integer statusCode) {
+        if (statusCode == null) {
+            return null;
+        }
+        ResponseStatus status = ResponseStatus.getByCode(statusCode);
+        return status != null ? status : ResponseStatus.PENDING; // 默认返回未回复状态
     }
 } 

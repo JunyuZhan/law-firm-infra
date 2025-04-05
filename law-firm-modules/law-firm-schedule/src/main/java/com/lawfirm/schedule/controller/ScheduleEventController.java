@@ -39,15 +39,17 @@ public class ScheduleEventController {
     @PreAuthorize("hasAuthority('schedule:event:create')")
     public CommonResult<Long> createEvent(@Valid @RequestBody ScheduleEventDTO eventDTO) {
         log.info("创建日程事件，日程ID：{}", eventDTO.getScheduleId());
+        
+        // 使用转换器将DTO转换为实体
         ScheduleEvent event = new ScheduleEvent();
         event.setScheduleId(eventDTO.getScheduleId());
-        event.setTitle(eventDTO.getTitle());
-        event.setDescription(eventDTO.getDescription());
-        event.setEventType(eventDTO.getEventType());
+        event.setEventType(Integer.parseInt(eventDTO.getEventType()));
         event.setStartTime(eventDTO.getStartTime());
         event.setEndTime(eventDTO.getEndTime());
-        event.setLocation(eventDTO.getLocation());
-        event.setCreatedBy(SecurityUtils.getUserId());
+        event.setContent(eventDTO.getTitle() + ":" + eventDTO.getDescription());
+        event.setRemarks(eventDTO.getDescription());
+        event.setOperatorId(SecurityUtils.getUserId());
+        event.setOperatorName(SecurityUtils.getUsername());
         
         Long id = eventService.createEvent(event);
         return CommonResult.success(id, "创建事件成功");
@@ -60,15 +62,16 @@ public class ScheduleEventController {
             @Parameter(description = "事件ID") @PathVariable Long id,
             @Valid @RequestBody ScheduleEventDTO eventDTO) {
         log.info("更新日程事件：{}", id);
+        
+        // 使用转换器将DTO转换为实体
         ScheduleEvent event = new ScheduleEvent();
-        event.setTitle(eventDTO.getTitle());
-        event.setDescription(eventDTO.getDescription());
-        event.setEventType(eventDTO.getEventType());
+        event.setEventType(Integer.parseInt(eventDTO.getEventType()));
         event.setStartTime(eventDTO.getStartTime());
         event.setEndTime(eventDTO.getEndTime());
-        event.setLocation(eventDTO.getLocation());
+        event.setContent(eventDTO.getTitle() + ":" + eventDTO.getDescription());
+        event.setRemarks(eventDTO.getDescription());
         
-        boolean success = eventService.updateEvent(id, event);
+        boolean success = eventService.updateEvent(id, eventDTO);
         return success ? CommonResult.success(true, "更新事件成功") : CommonResult.error("更新事件失败");
     }
     
@@ -77,7 +80,7 @@ public class ScheduleEventController {
     @PreAuthorize("hasAuthority('schedule:event:delete')")
     public CommonResult<Boolean> deleteEvent(@Parameter(description = "事件ID") @PathVariable Long id) {
         log.info("删除日程事件：{}", id);
-        boolean success = eventService.deleteEvent(id);
+        boolean success = eventService.removeEvent(id);
         return success ? CommonResult.success(true, "删除事件成功") : CommonResult.error("删除事件失败");
     }
     
