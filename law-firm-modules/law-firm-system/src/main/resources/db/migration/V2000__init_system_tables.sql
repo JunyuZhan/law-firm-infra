@@ -1,0 +1,88 @@
+-- 系统模块表结构初始化
+
+-- 创建系统配置表
+CREATE TABLE IF NOT EXISTS sys_config (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+  config_name VARCHAR(100) NOT NULL COMMENT '配置名称',
+  config_key VARCHAR(100) NOT NULL COMMENT '配置键',
+  config_value VARCHAR(500) NOT NULL COMMENT '配置值',
+  config_type VARCHAR(20) NOT NULL DEFAULT 'SYSTEM' COMMENT '配置类型（SYSTEM系统配置/BUSINESS业务配置）',
+  remark VARCHAR(500) DEFAULT NULL COMMENT '备注说明',
+  create_by VARCHAR(64) NOT NULL COMMENT '创建人',
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  update_by VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  update_time DATETIME DEFAULT NULL COMMENT '更新时间',
+  deleted TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否删除（0否/1是）',
+  UNIQUE KEY uk_config_key (config_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表';
+
+-- 创建字典表
+CREATE TABLE IF NOT EXISTS sys_dict (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+  dict_name VARCHAR(100) NOT NULL COMMENT '字典名称',
+  dict_code VARCHAR(100) NOT NULL COMMENT '字典编码',
+  description VARCHAR(500) DEFAULT NULL COMMENT '描述',
+  status TINYINT(1) NOT NULL DEFAULT 1 COMMENT '状态（0停用/1正常）',
+  create_by VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  update_by VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  update_time DATETIME DEFAULT NULL COMMENT '更新时间',
+  deleted TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否删除（0否/1是）',
+  UNIQUE KEY uk_dict_code (dict_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典表';
+
+-- 创建字典项表
+CREATE TABLE IF NOT EXISTS sys_dict_item (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+  dict_id BIGINT NOT NULL COMMENT '字典ID',
+  item_name VARCHAR(100) NOT NULL COMMENT '字典项名称',
+  item_value VARCHAR(100) NOT NULL COMMENT '字典项值',
+  description VARCHAR(500) DEFAULT NULL COMMENT '描述',
+  sort INT DEFAULT 0 COMMENT '排序',
+  status TINYINT(1) NOT NULL DEFAULT 1 COMMENT '状态（0停用/1正常）',
+  create_by VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  update_by VARCHAR(64) DEFAULT NULL COMMENT '更新人',
+  update_time DATETIME DEFAULT NULL COMMENT '更新时间',
+  deleted TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否删除（0否/1是）',
+  KEY idx_dict_id (dict_id),
+  KEY idx_sort (sort)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典项表';
+
+-- 创建操作日志表
+CREATE TABLE IF NOT EXISTS sys_operation_log (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+  user_id BIGINT DEFAULT NULL COMMENT '用户ID',
+  username VARCHAR(50) DEFAULT NULL COMMENT '用户名',
+  operation VARCHAR(50) NOT NULL COMMENT '操作类型',
+  method VARCHAR(100) NOT NULL COMMENT '方法名',
+  request_uri VARCHAR(255) NOT NULL COMMENT '请求URI',
+  request_method VARCHAR(10) NOT NULL COMMENT '请求方式',
+  request_params TEXT DEFAULT NULL COMMENT '请求参数',
+  response_result TEXT DEFAULT NULL COMMENT '响应结果',
+  status TINYINT(1) NOT NULL COMMENT '操作状态（0失败/1成功）',
+  error_msg TEXT DEFAULT NULL COMMENT '错误消息',
+  operation_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+  execution_time BIGINT DEFAULT NULL COMMENT '执行时长(毫秒)',
+  ip VARCHAR(50) DEFAULT NULL COMMENT 'IP地址',
+  browser VARCHAR(50) DEFAULT NULL COMMENT '浏览器',
+  os VARCHAR(50) DEFAULT NULL COMMENT '操作系统',
+  KEY idx_user_id (user_id),
+  KEY idx_operation_time (operation_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='操作日志表';
+
+-- 创建登录日志表
+CREATE TABLE IF NOT EXISTS sys_login_log (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+  user_id BIGINT DEFAULT NULL COMMENT '用户ID',
+  username VARCHAR(50) DEFAULT NULL COMMENT '用户名',
+  ip VARCHAR(50) DEFAULT NULL COMMENT 'IP地址',
+  login_location VARCHAR(255) DEFAULT NULL COMMENT '登录地点',
+  browser VARCHAR(50) DEFAULT NULL COMMENT '浏览器',
+  os VARCHAR(50) DEFAULT NULL COMMENT '操作系统',
+  status TINYINT(1) NOT NULL COMMENT '登录状态（0失败/1成功）',
+  msg VARCHAR(255) DEFAULT NULL COMMENT '提示消息',
+  login_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
+  KEY idx_username (username),
+  KEY idx_login_time (login_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='登录日志表'; 

@@ -23,7 +23,6 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>system-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 核心模块依赖 -->

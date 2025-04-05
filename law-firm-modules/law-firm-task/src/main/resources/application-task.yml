@@ -1,0 +1,37 @@
+# 任务模块配置
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_task
+  
+  # 数据源配置继承自主应用
+
+# 任务模块自定义配置
+task:
+  # 任务提醒配置
+  reminder:
+    enabled: true
+    default-before-minutes: 30
+    channels: email,system,sms
+  
+  # 任务分配策略
+  assignment:
+    auto-balance: true
+    max-tasks-per-user: 10
+  
+  # 任务附件配置
+  attachment:
+    allowed-types: pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,png,zip,rar
+    max-file-size: 20MB
+    storage-path: ${user.home}/.law-firm/task-attachments
+  
+  # 任务权限配置
+  permission:
+    creator-can-delete: true
+    creator-can-reassign: true
+    assignee-can-complete: true 

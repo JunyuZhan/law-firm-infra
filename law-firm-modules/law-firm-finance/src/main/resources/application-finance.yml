@@ -1,0 +1,55 @@
+# 财务管理模块配置
+spring:
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 7000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_finance
+  
+  # 数据源配置 - 通常由主应用提供，这里仅作参考
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+
+# 财务模块业务配置
+finance:
+  # 发票配置
+  invoice:
+    # 发票编号格式 (年月日时分秒)
+    number-format: "INV-%Y%m%d%H%M%S"
+    # 开票信息模板存储路径
+    template-path: ${user.home}/.law-firm/finance/invoice-templates
+    # 是否启用电子发票功能
+    e-invoice-enabled: true
+  
+  # 收款配置
+  payment:
+    # 支持的支付方式列表
+    methods: cash,bank_transfer,wechat,alipay
+    # 支付超时时间(分钟)
+    timeout-minutes: 30
+    # 是否自动发送收款提醒
+    auto-reminder: true
+    # 逾期前提醒天数(多个值)
+    reminder-days-before: 7,3,1
+    # 是否启用定期对账单发送
+    statement-sending-enabled: true
+  
+  # 财务报表配置
+  reporting:
+    # 报表文件存储目录
+    storage-path: ${user.home}/.law-firm/finance/reports
+    # 支持的报表格式
+    formats: pdf,excel,csv
+    # 是否启用自动生成报表
+    auto-generate: true
+    # 报表自动生成周期(每月1日凌晨1点)
+    generation-cron: "0 0 1 1 * ?" 

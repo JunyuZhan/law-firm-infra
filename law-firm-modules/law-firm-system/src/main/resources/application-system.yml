@@ -1,35 +1,51 @@
 # 系统管理模块配置
 
-# 系统配置
+# 数据库配置
 spring:
-  # Flyway配置
+  # Flyway数据库迁移配置
   flyway:
     enabled: ${SYSTEM_FLYWAY_ENABLED:true}
     locations: classpath:db/migration
     baseline-on-migrate: true
-    baseline-version: 0
+    baseline-version: 2000
     validate-on-migrate: true
     out-of-order: false
     table: flyway_schema_history_system
 
-# 系统管理模块自定义配置
+# 系统管理模块业务配置
 system:
+  # 安全配置
   security:
+    # 管理员角色编码
     admin-role: ${SYSTEM_ADMIN_ROLE:ROLE_ADMIN}
+    # IP白名单列表
     ip-whitelist: ${SYSTEM_IP_WHITELIST:127.0.0.1,192.168.1.1}
   
+  # 系统监控配置
   monitor:
+    # 指标收集间隔(秒)
     metrics-interval: ${SYSTEM_METRICS_INTERVAL:60}
+    # 告警阈值配置
     alert-threshold:
+      # CPU使用率告警阈值(%)
       cpu: ${SYSTEM_ALERT_CPU:80}
+      # 内存使用率告警阈值(%)
       memory: ${SYSTEM_ALERT_MEMORY:80}
+      # 磁盘使用率告警阈值(%)
       disk: ${SYSTEM_ALERT_DISK:90}
   
+  # 系统升级配置
   upgrade:
+    # 备份文件路径
     backup-path: ${SYSTEM_BACKUP_PATH:/data/backup}
+    # 补丁文件路径
     patch-path: ${SYSTEM_PATCH_PATH:/data/patch}
   
+  # 日志配置
   log:
+    # 日志保留天数
     retention-days: ${SYSTEM_LOG_RETENTION:30}
+    # 是否启用审计日志
     audit-enabled: ${SYSTEM_AUDIT_ENABLED:true}
+    # 日志导出路径
     export-path: ${SYSTEM_LOG_EXPORT:/data/export/log} 

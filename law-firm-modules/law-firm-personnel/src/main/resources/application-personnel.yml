@@ -1,0 +1,81 @@
+# 人事管理模块配置
+spring:
+  # 数据源配置 - 通常由主应用提供，这里仅作参考
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+  
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 9000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_personnel
+  
+  # Redis缓存配置
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000 # 1小时
+      cache-null-values: true
+  
+  # 邮件服务配置
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: personnel@lawfirm.com
+    password: ${MAIL_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# 人事模块业务配置
+personnel:
+  # 文件上传配置
+  upload:
+    # 员工照片上传路径
+    photo-path: ${PERSONNEL_UPLOAD_PATH:/data/upload/personnel/photos}
+    # 文档上传路径
+    doc-path: ${PERSONNEL_DOC_PATH:/data/upload/personnel/docs}
+    # 允许的文件类型
+    allowed-types: jpg,jpeg,png,pdf,doc,docx,xls,xlsx
+    # 最大文件大小（MB）
+    max-size: 10
+  
+  # 邮件通知配置
+  notification:
+    # 是否启用邮件通知
+    enabled: true
+    # 发件人
+    sender: personnel@lawfirm.com
+    # 抄送人
+    cc: hr@lawfirm.com
+    # 合同到期提醒天数
+    contract-expiry-days: 30
+    # 生日提醒天数
+    birthday-reminder-days: 7
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.model.personnel.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0 

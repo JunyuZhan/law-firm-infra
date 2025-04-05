@@ -1,42 +1,6 @@
 # 知识管理模块配置
-
-knowledge:
-  # 存储配置
-  storage:
-    base-path: ${user.home}/lawfirm/knowledge
-    temp-path: ${user.home}/lawfirm/knowledge/temp
-    
-  # 文档配置
-  document:
-    max-size: 10MB
-    allowed-extensions: .doc,.docx,.pdf,.md,.txt
-    
-  # 附件配置
-  attachment:
-    max-size: 20MB
-    max-count-per-knowledge: 10
-    allowed-extensions: .doc,.docx,.pdf,.jpg,.png,.zip
-    
-  # 分类配置
-  category:
-    max-depth: 3
-    
-  # 搜索配置
-  search:
-    enable-highlight: true
-    max-result-count: 100
-    min-keyword-length: 2
-    
-  # 权限配置
-  permission:
-    public-categories: [1, 2, 3]  # 公开分类ID列表
-    
-  # 统计任务
-  statistic:
-    cron: "0 0 1 * * ?"  # 每天凌晨1点执行
-
-# 数据库配置
 spring:
+  # 数据库配置
   datasource:
     url: jdbc:mysql://localhost:3306/law_firm_knowledge?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
@@ -49,13 +13,63 @@ spring:
       connection-timeout: 30000
       max-lifetime: 1800000
       
-  # Flyway配置
+  # Flyway数据库迁移配置
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+    baseline-version: 8000
     validate-on-migrate: true
     table: flyway_schema_history_knowledge
+
+# 知识管理模块业务配置
+knowledge:
+  # 存储配置
+  storage:
+    # 基础存储路径
+    base-path: ${user.home}/lawfirm/knowledge
+    # 临时文件路径
+    temp-path: ${user.home}/lawfirm/knowledge/temp
+    
+  # 文档配置
+  document:
+    # 最大文档大小
+    max-size: 10MB
+    # 允许的文件扩展名
+    allowed-extensions: .doc,.docx,.pdf,.md,.txt
+    
+  # 附件配置
+  attachment:
+    # 最大附件大小
+    max-size: 20MB
+    # 每个知识条目最大附件数量
+    max-count-per-knowledge: 10
+    # 允许的附件扩展名
+    allowed-extensions: .doc,.docx,.pdf,.jpg,.png,.zip
+    
+  # 分类配置
+  category:
+    # 分类最大层级深度
+    max-depth: 3
+    
+  # 搜索配置
+  search:
+    # 是否启用高亮显示
+    enable-highlight: true
+    # 最大搜索结果数量
+    max-result-count: 100
+    # 最小关键词长度
+    min-keyword-length: 2
+    
+  # 权限配置
+  permission:
+    # 公开分类ID列表
+    public-categories: [1, 2, 3]
+    
+  # 统计任务配置
+  statistic:
+    # 统计任务执行时间 - 每天凌晨1点执行
+    cron: "0 0 1 * * ?"
     
 # MyBatis-Plus配置
 mybatis-plus:
@@ -74,12 +88,16 @@ mybatis-plus:
 
 # 存储服务配置
 storage:
-  # MinIO配置
+  # MinIO对象存储配置
   minio:
     enabled: true
+    # MinIO服务器地址
     endpoint: http://minio:9000
+    # 访问密钥
     access-key: ${MINIO_ACCESS_KEY:miniouser}
+    # 密钥
     secret-key: ${MINIO_SECRET_KEY:${random.uuid}}
+    # 存储桶名称
     bucket: knowledge-documents
     
 # 搜索服务配置
@@ -87,12 +105,9 @@ search:
   # Elasticsearch配置
   elasticsearch:
     enabled: true
+    # Elasticsearch服务器地址
     host: elasticsearch
+    # Elasticsearch服务器端口
     port: 9200
-    index-prefix: law-firm-
-    
-# 日志配置
-logging:
-  level:
-    com.lawfirm.knowledge: debug
-    com.lawfirm.model.knowledge: debug 
+    # 索引前缀
+    index-prefix: law-firm- 

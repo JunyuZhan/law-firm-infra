@@ -1,0 +1,79 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:Zjy-1314}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  
+  # Redis配置
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:redis}
+      port: ${SPRING_REDIS_PORT:6379}
+      database: 0
+      timeout: 10s
+      lettuce:
+        pool:
+          min-idle: 0
+          max-idle: 8
+          max-active: 8
+          max-wait: -1ms
+  
+  # 启用Flyway数据库迁移
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    encoding: UTF-8
+    placeholders:
+      schema: ${spring.datasource.url}
+  
+  # 文件上传限制
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:50MB}
+      max-request-size: ${MAX_REQUEST_SIZE:100MB}
+
+# 工作流配置
+flowable:
+  enabled: ${FLOWABLE_ENABLED:false}
+  async-executor-activate: ${FLOWABLE_ASYNC_EXECUTOR_ACTIVATE:false}
+  database-schema-update: ${FLOWABLE_DATABASE_SCHEMA_UPDATE:true}
+
+# 自定义配置
+lawfirm:
+  # 搜索引擎配置
+  search:
+    enabled: ${LAWFIRM_SEARCH_ENABLED:true}
+    type: ${LAWFIRM_SEARCH_TYPE:lucene}
+  
+  # 存储配置
+  storage:
+    enabled: ${LAWFIRM_STORAGE_ENABLED:true}
+    defaultType: ${LAWFIRM_STORAGE_TYPE:LOCAL}
+    path:
+      baseDir: ${LAWFIRM_STORAGE_PATH:/app/storage}
+      tempDir: ${LAWFIRM_STORAGE_TEMP_PATH:/app/storage/temp}
+    local:
+      enabled: true
+      basePath: ${LAWFIRM_STORAGE_LOCAL_PATH:/app/storage}
+
+# 日志配置
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm: ${LOGGING_LEVEL_APP:INFO}
+    org.springframework: ${LOGGING_LEVEL_SPRING:WARN}
+    org.hibernate: ${LOGGING_LEVEL_HIBERNATE:WARN}
+  file:
+    name: ${LOG_FILE:/app/logs/app.log} 

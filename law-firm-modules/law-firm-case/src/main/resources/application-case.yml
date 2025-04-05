@@ -1,23 +1,95 @@
-# 案件模块配置
+# 案件管理模块配置
+
+# 数据库迁移配置
+spring:
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    table: flyway_case_schema_history
+    baseline-version: 4000
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    out-of-order: false
+
+# 案件模块业务配置
 lawfirm:
   case:
     # 模块是否启用
     enabled: true
+    
     # 案件编号生成规则配置
     case-number:
+      # 案件编号前缀
       prefix: CASE
+      # 日期格式
       date-format: yyyyMMdd
+      # 序列号长度
       sequence-length: 4
+      
     # 案件文档配置
     document:
+      # 允许的文件扩展名
       allowed-extensions: .pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.png
+      # 最大文件大小
       max-size: 50MB
+      # 文档存储路径
       storage-path: /case/documents
+      
     # 案件状态流转配置
     status-flow:
+      # 是否启用状态流转
       enabled: true
+      # 是否需要审批
       require-approval: true
+      # 是否通知案件负责人
       notify-owner: true
+      
+    # 案件状态转换配置
+    status-transition:
+      # 是否启用案件状态自动转换
+      auto-enabled: true
+      # 需要审批的状态转换
+      require-approval:
+        # 完成状态需要审批
+        to-complete: true
+        # 归档状态需要审批
+        to-archive: true
+        # 终止状态需要审批
+        to-terminate: true
+      # 状态转换通知
+      notify:
+        # 是否启用通知
+        enabled: true
+        # 通知渠道
+        channels: 'system,email'
+        
+    # 案件团队配置
+    team:
+      # 允许的最大团队成员数量
+      max-members: 10
+      # 默认包含案件创建者
+      include-creator: true
+      # 是否自动设置主办律师为团队负责人
+      lawyer-as-lead: true
+      
+    # 案件催办配置
+    reminder:
+      # 是否启用定期催办
+      enabled: true
+      # 催办间隔(天)
+      interval-days: 7
+      # 催办方式
+      method: 'system,email'
+
+# 案件相关通知配置
+notification:
+  # 案件到期提醒配置
+  expiration:
+    # 是否启用到期提醒
+    enabled: true
+    # 提前提醒天数(多个值)
+    days-before: [30, 15, 7, 3, 1]
 
 # MyBatis Plus配置
 mybatis-plus:
@@ -31,13 +103,4 @@ mybatis-plus:
       logic-delete-value: true
       logic-not-delete-value: false
   type-aliases-package: com.lawfirm.model.cases.entity
-  mapper-locations: classpath*:/mapper/**/*.xml
-
-# 数据库迁移配置
-spring:
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    baseline-version: 0
-    out-of-order: true 
+  mapper-locations: classpath*:/mapper/**/*.xml 

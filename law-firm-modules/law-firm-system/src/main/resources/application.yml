@@ -1,0 +1,20 @@
+# 系统管理模块基础配置
+
+spring:
+  application:
+    name: law-firm-system
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+    include:
+      - system
+
+server:
+  port: ${SERVER_PORT:8084}
+  servlet:
+    context-path: ${CONTEXT_PATH:/system}
+
+# 日志配置
+logging:
+  level:
+    com.law.firm.system: ${LOG_LEVEL:info}
+    org.springframework: ${SPRING_LOG_LEVEL:warn} 

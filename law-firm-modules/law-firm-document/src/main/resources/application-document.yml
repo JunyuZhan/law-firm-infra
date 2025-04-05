@@ -9,6 +9,16 @@ spring:
           password: ${spring.datasource.master.password}
           driver-class-name: ${spring.datasource.master.driver-class-name}
   
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 6000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_document
+  
   # SQL脚本执行配置
   sql:
     init:
@@ -22,11 +32,11 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 
-# 文档模块配置
+# 文档模块业务配置
 document:
   # 存储配置
   storage:
-    # 默认存储类型：LOCAL, OSS, S3
+    # 默认存储类型：LOCAL本地存储, OSS阿里云存储, S3亚马逊S3存储
     default-type: ${DOCUMENT_STORAGE_TYPE:LOCAL}
     # 本地存储路径
     local-path: ${DOCUMENT_LOCAL_PATH:${user.home}/lawfirm/document}
@@ -41,25 +51,25 @@ document:
     # 最大文件大小（字节）
     max-size: ${DOCUMENT_MAX_SIZE:104857600}
   
-  # 预览配置
+  # 文档预览配置
   preview:
     # 是否启用水印
     watermark-enabled: ${DOCUMENT_WATERMARK_ENABLED:true}
     # 水印文字
     watermark-text: ${DOCUMENT_WATERMARK_TEXT:预览版本，仅供查看}
-    # 是否启用转换
+    # 是否启用文件格式转换
     convert-enabled: ${DOCUMENT_CONVERT_ENABLED:true}
     # 支持预览的文件类型
     supported-types: ${DOCUMENT_PREVIEW_TYPES:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,jpg,jpeg,png,gif}
 
-  # 版本控制
+  # 文档版本控制
   version:
     # 是否启用版本控制
     enabled: ${DOCUMENT_VERSION_ENABLED:true}
     # 最大保留版本数
     max-count: ${DOCUMENT_VERSION_MAX_COUNT:10}
 
-  # 分享配置
+  # 文档分享配置
   share:
     # 默认过期时间（小时）
     default-expire-hours: ${DOCUMENT_SHARE_EXPIRE:24}
@@ -71,10 +81,15 @@ document:
 # 定时任务配置
 scheduling:
   enabled: ${SCHEDULING_ENABLED:true}
-  # Cron表达式
+  # 清理临时文件 - 每天凌晨2点执行
   cleanup-temp-files: ${SCHEDULING_CLEANUP_TEMP:0 0 2 * * ?}
+  # 计算存储空间使用情况 - 每天凌晨3点执行
   calculate-storage-usage: ${SCHEDULING_STORAGE_USAGE:0 0 3 * * ?}
+  # 重建文档索引 - 每周日凌晨1点执行
   rebuild-document-index: ${SCHEDULING_REBUILD_INDEX:0 0 1 ? * SUN}
+  # 优化搜索索引 - 每天凌晨4点执行
   optimize-search-index: ${SCHEDULING_OPTIMIZE_INDEX:0 0 4 * * ?}
+  # 清理过期文档 - 每天凌晨5点执行
   cleanup-expired-documents: ${SCHEDULING_CLEANUP_EXPIRED:0 0 5 * * ?}
+  # 清理操作日志 - 每月1日凌晨6点执行
   cleanup-operation-logs: ${SCHEDULING_CLEANUP_LOGS:0 0 6 1 * ?} 

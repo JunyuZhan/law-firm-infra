@@ -33,6 +33,7 @@
         <module>message-model</module>
         <module>knowledge-model</module>
         <module>ai-model</module>
+        <module>schedule-model</module>
     </modules>
 
     <dependencyManagement>
@@ -46,11 +47,6 @@
             </dependency>
             
             <!-- 内部模块依赖管理 -->
-            <dependency>
-                <groupId>com.lawfirm</groupId>
-                <artifactId>base-model2</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>base-model</artifactId>
@@ -129,6 +125,11 @@
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>ai-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>schedule-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
             

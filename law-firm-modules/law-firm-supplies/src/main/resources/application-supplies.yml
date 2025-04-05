@@ -1,0 +1,41 @@
+# 供应模块配置
+spring:
+  # Flyway配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 7000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_supplies
+  
+  # 数据源配置继承自主应用
+
+# 供应模块自定义配置
+supplies:
+  # 物品编码配置
+  code:
+    prefix: SUP
+    length: 8
+    include-category: true
+  
+  # 库存配置
+  inventory:
+    low-stock-threshold-percentage: 20
+    auto-notify-low-stock: true
+    stocktake-interval-days: 30
+  
+  # 采购配置
+  purchase:
+    approval-threshold: 5000
+    require-multiple-quotes-threshold: 10000
+    auto-reorder: true
+    reorder-point-factor: 1.5
+  
+  # 供应商配置
+  supplier:
+    rating-enabled: true
+    evaluation-period-months: 6
+    auto-selection: true
+    blacklist-period-months: 12

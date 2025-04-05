@@ -1,0 +1,43 @@
+# 资产模块配置
+spring:
+  # Flyway配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 4000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_asset
+  
+  # 数据源配置继承自主应用
+
+# 资产模块自定义配置
+asset:
+  # 资产编码配置
+  code:
+    prefix: AST
+    length: 8
+    include-category: true
+  
+  # 资产图片配置
+  image:
+    storage-path: ${user.home}/.law-firm/asset/images
+    allowed-formats: jpg,png,jpeg
+    max-file-size: 5MB
+    thumbnail-size: 200x200
+  
+  # 资产扫描配置
+  scan:
+    qr-enabled: true
+    barcode-enabled: true
+    scan-log-retention-days: 90
+  
+  # 折旧配置
+  depreciation:
+    calculation-day: 1
+    auto-calculate: true
+    methods:
+      - straight_line
+      - reducing_balance
+      - units_of_production 

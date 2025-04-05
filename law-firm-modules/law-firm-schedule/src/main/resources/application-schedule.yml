@@ -1,0 +1,91 @@
+# 日程模块配置
+spring:
+  # Flyway配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 10000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_schedule
+  
+  # 数据源配置
+  datasource:
+    dynamic:
+      datasource:
+        schedule:
+          url: ${spring.datasource.master.url}
+          username: ${spring.datasource.master.username}
+          password: ${spring.datasource.master.password}
+          driver-class-name: ${spring.datasource.master.driver-class-name}
+  
+  # SQL脚本执行配置
+  sql:
+    init:
+      mode: ${SQL_INIT_MODE:always}
+      schema-locations: classpath:db/migration/V*.sql
+      continue-on-error: true
+
+# 律师事务所配置
+lawfirm:
+  # 日程模块配置
+  schedule:
+    # 模块是否启用
+    enabled: true
+    
+    # 日程提醒配置
+    reminder:
+      enabled: ${SCHEDULE_REMINDER_ENABLED:true}
+      default-times: 
+        - 15 # 15分钟前
+        - 60 # 1小时前
+        - 1440 # 1天前
+      channels: ${SCHEDULE_REMINDER_CHANNELS:email,system,sms}
+      max-retry-count: ${SCHEDULE_REMINDER_MAX_RETRY:3}
+      retry-interval: ${SCHEDULE_REMINDER_RETRY_INTERVAL:5}
+    
+    # 日程同步配置
+    sync:
+      enabled: ${SCHEDULE_SYNC_ENABLED:true}
+      providers:
+        - google
+        - outlook
+        - exchange
+      interval: ${SCHEDULE_SYNC_INTERVAL:30}
+      history-days: ${SCHEDULE_SYNC_HISTORY_DAYS:90}
+    
+    # 冲突检测配置
+    conflict:
+      enabled: ${SCHEDULE_CONFLICT_ENABLED:true}
+      level: ${SCHEDULE_CONFLICT_LEVEL:warn}
+      buffer-minutes: ${SCHEDULE_CONFLICT_BUFFER:15}
+    
+    # 重复规则配置
+    recurrence:
+      enabled: ${SCHEDULE_RECURRENCE_ENABLED:true}
+      max-instances: ${SCHEDULE_RECURRENCE_MAX_INSTANCES:50}
+      patterns:
+        - daily
+        - weekly
+        - monthly
+        - yearly
+    
+    # 会议室配置
+    meeting-room:
+      approval-required: ${SCHEDULE_MEETING_APPROVAL_REQUIRED:false}
+      booking-notice-hours: ${SCHEDULE_MEETING_NOTICE_HOURS:1}
+      max-booking-hours: ${SCHEDULE_MEETING_MAX_HOURS:8}
+      max-future-days: ${SCHEDULE_MEETING_MAX_FUTURE_DAYS:90}
+
+# 定时任务配置
+scheduling:
+  enabled: ${SCHEDULING_ENABLED:true}
+  # 日程提醒检查 - 每分钟执行一次
+  check-schedule-reminders: ${SCHEDULING_CHECK_REMINDERS:0 * * * * ?}
+  # 日历同步任务 - 每30分钟执行一次
+  sync-external-calendars: ${SCHEDULING_SYNC_CALENDARS:0 0/30 * * * ?}
+  # 清理过期提醒 - 每天凌晨1点执行
+  cleanup-expired-reminders: ${SCHEDULING_CLEANUP_REMINDERS:0 0 1 * * ?}
+  # 清理同步历史 - 每周日凌晨2点执行
+  cleanup-sync-history: ${SCHEDULING_CLEANUP_SYNC_HISTORY:0 0 2 ? * SUN} 

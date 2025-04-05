@@ -1,0 +1,39 @@
+# 分析模块配置
+spring:
+  # Flyway配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 9000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_analysis
+  
+  # 数据源配置继承自主应用
+
+# 分析模块自定义配置
+analysis:
+  # 报表配置
+  report:
+    template-path: ${user.home}/.law-firm/analysis/templates
+    output-path: ${user.home}/.law-firm/analysis/output
+    default-format: pdf
+    allowed-formats: pdf,excel,html
+  
+  # 数据源配置
+  datasource:
+    refresh-interval: 3600 # 秒
+    max-cache-size: 500
+  
+  # 导出配置
+  export:
+    max-rows: 10000
+    timeout-seconds: 300
+    thread-pool-size: 5
+  
+  # 图表配置
+  chart:
+    default-theme: light
+    color-palette: professional
+    enable-interactive: true 

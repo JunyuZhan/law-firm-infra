@@ -1,0 +1,81 @@
+# 合同管理模块配置
+
+# 数据源配置
+spring:
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 5000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_contract_schema_history
+
+# 合同模块业务配置
+contract:
+  # 合同编号生成规则
+  number:
+    # 合同编号前缀
+    prefix: "CT"
+    # 日期格式
+    date-format: "yyyyMMdd"
+    # 序列号长度
+    sequence-length: 4
+    # 编号生成模式
+    pattern: "${prefix}-${date}-${sequence}"
+  
+  # 合同模板配置
+  template:
+    # 模板存储路径
+    storage-path: ${user.home}/.law-firm/contract-templates
+    # 默认模板格式
+    default-format: docx
+    # 变量占位符模式
+    variables-pattern: "${variable}"
+  
+  # 合同审批配置
+  approval:
+    # 是否启用审批流程
+    enabled: true
+    # 审批级别数量
+    levels: 2
+    # 是否自动发送通知
+    auto-notify: true
+    # 通知渠道
+    notify-channels: system,email
+  
+  # 合同归档配置
+  archive:
+    # 是否自动归档
+    auto-archive: true
+    # 自动归档延迟天数
+    archive-delay-days: 30
+    # 是否要求签名
+    require-signature: true
+    # 是否要求附件
+    require-attachment: false
+  
+  # 合同提醒配置
+  reminder:
+    # 是否启用提醒
+    enabled: true
+    # 到期前提醒天数(多个值)
+    expire-days-before: 30,15,7,3,1
+    # 续签前提醒天数(多个值)
+    renew-days-before: 60,30,15
+    # 提醒任务执行时间(每天早8点)
+    scheduler-cron: "0 0 8 * * ?"
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.lawfirm.contract.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0 

@@ -1,0 +1,19 @@
+# 分析模块应用配置
+spring:
+  application:
+    name: law-firm-analysis
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+    include: analysis
+
+# 服务器配置
+server:
+  port: ${ANALYSIS_SERVER_PORT:8089}
+  servlet:
+    context-path: ${ANALYSIS_CONTEXT_PATH:/api/analysis}
+
+# 日志配置
+logging:
+  level:
+    com.lawfirm.analysis: ${ANALYSIS_LOG_LEVEL:DEBUG}
+    org.springframework: INFO 

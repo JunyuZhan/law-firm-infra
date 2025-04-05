@@ -1,93 +1,25 @@
-# 人事模块应用配置
+# 人事管理模块基础配置
 spring:
   application:
     name: law-firm-personnel
-  
-  # 数据源配置
-  datasource:
-    # 使用通用数据源配置，实际开发中应该从配置中心获取
-    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  
-  # Redis配置
-  redis:
-    host: localhost
-    port: 6379
-    database: 0
-    # password: 
-    timeout: 10000
-  
-  # 缓存配置
-  cache:
-    type: redis
-    redis:
-      time-to-live: 3600000 # 1小时
-      cache-null-values: true
-  
-  # 邮件配置
-  mail:
-    host: smtp.example.com
-    port: 587
-    username: personnel@lawfirm.com
-    password: password
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+  profiles:
+    # 默认激活开发环境
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+    # 引入人事管理模块特定配置
+    include: personnel
 
 # 服务器配置
 server:
-  port: 8082
+  # 服务端口
+  port: ${PERSONNEL_SERVER_PORT:8082}
   servlet:
-    context-path: /api/personnel
-
-# MyBatis-Plus配置
-mybatis-plus:
-  mapper-locations: classpath*:/mapper/**/*.xml
-  type-aliases-package: com.lawfirm.model.personnel.entity
-  configuration:
-    map-underscore-to-camel-case: true
-    cache-enabled: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      id-type: AUTO
-      logic-delete-field: deleted
-      logic-delete-value: 1
-      logic-not-delete-value: 0
+    # 上下文路径
+    context-path: ${PERSONNEL_CONTEXT_PATH:/api/personnel}
 
 # 日志配置
 logging:
   level:
-    com.lawfirm: DEBUG
+    # 人事模块日志级别
+    com.lawfirm.personnel: ${PERSONNEL_LOG_LEVEL:DEBUG}
+    # Spring框架日志级别
     org.springframework: INFO
-
-# 人事模块自定义配置
-personnel:
-  # 文件上传配置
-  upload:
-    # 员工照片上传路径
-    photo-path: /data/upload/personnel/photos
-    # 文档上传路径
-    doc-path: /data/upload/personnel/docs
-    # 允许的文件类型
-    allowed-types: jpg,jpeg,png,pdf,doc,docx,xls,xlsx
-    # 最大文件大小（MB）
-    max-size: 10
-  
-  # 邮件通知配置
-  notification:
-    # 是否启用邮件通知
-    enabled: true
-    # 发件人
-    sender: personnel@lawfirm.com
-    # 抄送人
-    cc: hr@lawfirm.com
-    # 合同到期提醒天数
-    contract-expiry-days: 30
-    # 生日提醒天数
-    birthday-reminder-days: 7 

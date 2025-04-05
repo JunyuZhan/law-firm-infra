@@ -1,0 +1,66 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/law_firm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:Zjy-1314}
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  
+  # Flyway配置
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    encoding: UTF-8
+    placeholders:
+      schema: ${spring.datasource.url}
+  
+  # Redis测试配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 1 # 使用测试专用库
+      timeout: 5s
+      lettuce:
+        pool:
+          min-idle: 0
+          max-idle: 4
+          max-active: 4
+  
+  # 禁用缓存
+  cache:
+    type: none
+
+# 测试环境专用配置
+lawfirm:
+  # 搜索引擎配置
+  search:
+    enabled: false
+  
+  # 存储配置
+  storage:
+    enabled: true
+    defaultType: LOCAL
+    path:
+      baseDir: ${user.home}/.law-firm/test/storage
+      tempDir: ${user.home}/.law-firm/test/storage/temp
+    local:
+      enabled: true
+      basePath: ${user.home}/.law-firm/test/storage
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.lawfirm: DEBUG
+    org.springframework: INFO
+    org.hibernate: INFO 

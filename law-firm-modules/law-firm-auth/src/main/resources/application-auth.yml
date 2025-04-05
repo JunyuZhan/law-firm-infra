@@ -1,0 +1,73 @@
+# 认证管理模块配置
+spring:
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 1000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_auth_schema_history
+
+# 认证服务配置
+auth:
+  # 登录配置
+  login:
+    # 是否允许多端登录
+    multi-login: true
+    # 登录失败最大次数
+    max-fail-count: 5
+    # 登录锁定时间（分钟）
+    lock-time: 30
+    # 验证码配置
+    captcha:
+      # 是否启用验证码
+      enabled: true
+      # 验证码类型: math - 算术验证码，char - 字符验证码
+      type: math
+      # 验证码长度
+      length: 4
+  
+  # 令牌配置
+  token:
+    # 令牌加密密钥
+    secret: ${AUTH_TOKEN_SECRET:Cn2MKskALP7kOVeboBme9fY6aQw2xsMwIoL}
+    # 访问令牌有效期（秒）
+    access-token-expiration: 7200
+    # 刷新令牌有效期（秒）
+    refresh-token-expiration: 604800
+    # 令牌签发者标识
+    issuer: law-firm-auth
+  
+  # 密码策略
+  password:
+    # 密码最小长度
+    min-length: 8
+    # 是否必须包含大写字母
+    require-uppercase: true
+    # 是否必须包含小写字母
+    require-lowercase: true
+    # 是否必须包含数字
+    require-digit: true
+    # 是否必须包含特殊字符
+    require-special-char: true
+    # 密码过期时间（天）
+    expire-days: 90
+    # 历史密码检查数量（不允许使用前n次密码）
+    history-count: 3
+  
+  # 第三方登录
+  social:
+    # 微信登录配置
+    wechat:
+      # 微信应用ID
+      app-id: ${AUTH_WECHAT_APP_ID:wx1234567890}
+      # 微信应用密钥
+      app-secret: ${AUTH_WECHAT_APP_SECRET:your_wechat_app_secret}
+    # 钉钉登录配置
+    dingtalk:
+      # 钉钉应用ID
+      app-id: ${AUTH_DINGTALK_APP_ID:dingtalk1234567890}
+      # 钉钉应用密钥
+      app-secret: ${AUTH_DINGTALK_APP_SECRET:your_dingtalk_app_secret} 

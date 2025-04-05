@@ -1,14 +1,61 @@
+# 律师事务所管理系统主应用配置
 spring:
   application:
     name: law-firm-management
   profiles:
+    # 默认激活的环境配置
     active: ${SPRING_PROFILES_ACTIVE:dev-mysql}
+    # 包含所有业务模块配置
+    include:
+      # 核心业务模块
+      - system     # 系统管理
+      - auth       # 认证授权
+      - personnel  # 人事管理
+      - finance    # 财务管理
+      - document   # 文档管理
+      - knowledge  # 知识管理
+      # 业务功能模块
+      - case       # 案件管理
+      - contract   # 合同管理
+      - client     # 客户管理
+      - archive    # 归档管理
+      # 辅助功能模块
+      - task       # 任务管理
+      - conflict   # 冲突检查
+      - seal       # 印章管理
+      - asset      # 资产管理
+      - schedule   # 日程管理
+      - analysis   # 数据分析
+      - supplies   # 物资管理
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
     lazy-initialization: false
     banner-mode: off
-  # 禁用JPA自动配置
+  # 数据服务配置
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 30000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    encoding: UTF-8
+    out-of-order: true
+    ignore-migration-patterns: "*:missing"
+  # 禁用不需要的自动配置
   jpa:
     open-in-view: false
     enabled: false
@@ -16,6 +63,7 @@ spring:
     jpa:
       repositories:
         enabled: false
+  # Web相关配置  
   servlet:
     encoding:
       charset: UTF-8
@@ -24,27 +72,6 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 100MB
-  security:
-    enabled: true
-    ignore-urls:
-      - "/favicon.ico"
-      - "/error"
-      - "/health"
-      - "/version"
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
-    username: root
-    password: Zjy-1314
-    hikari:
-      minimum-idle: 5
-      maximum-pool-size: 15
-      idle-timeout: 30000
-      connection-timeout: 30000
-      connection-test-query: SELECT 1
-  flyway:
-    enabled: false
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -54,6 +81,15 @@ spring:
     default-property-inclusion: NON_NULL
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  # 安全配置
+  security:
+    enabled: true
+    ignore-urls:
+      - "/favicon.ico"
+      - "/error"
+      - "/health"
+      - "/version"
+  # MyBatis-Plus配置
   mybatis-plus:
     configuration:
       map-underscore-to-camel-case: true
@@ -62,9 +98,11 @@ spring:
         logic-delete-field: deleted
         logic-not-delete-value: 0
         logic-delete-value: 1
+  # SQL初始化配置
   sql:
     init:
       mode: never
+  # 静态资源配置
   mvc:
     static-path-pattern: /**
   web:
@@ -72,6 +110,7 @@ spring:
       static-locations:
         - classpath:/static/
 
+# 服务器配置
 server:
   port: 8080
   tomcat:
@@ -85,31 +124,33 @@ server:
   compression:
     enabled: false
 
-# 添加应用基本配置
+# 应用基本信息
 app:
   name: "法律事务管理系统"
   version: "1.0.0"
   description: "专业法律事务管理平台"
 
-# 简化的模块配置
+# 业务模块集成配置
 lawfirm:
   module:
     case: true
     contract: true
     knowledge:
       enabled: true
+  # 搜索服务配置
   search:
     enabled: true
     type: lucene
+  # 存储服务配置
   storage:
     enabled: true
     defaultType: LOCAL
     path:
-      baseDir: ${user.home}/.law-firm/storage
-      tempDir: ${user.home}/.law-firm/storage/temp
+      baseDir: ${LAWFIRM_STORAGE_PATH:${user.home}/.law-firm/storage}
+      tempDir: ${LAWFIRM_STORAGE_TEMP_PATH:${user.home}/.law-firm/storage/temp}
     local:
       enabled: true
-      basePath: ${user.home}/.law-firm/storage
+      basePath: ${LAWFIRM_STORAGE_LOCAL_PATH:${user.home}/.law-firm/storage}
 
 # 日志配置
 logging:

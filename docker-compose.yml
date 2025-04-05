@@ -20,6 +20,8 @@ services:
       # Redis配置
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
+      # Flyway配置
+      - FLYWAY_ENABLED=true
       # 禁用工作流
       - FLOWABLE_ENABLED=false
       - LAWFIRM_WORKFLOW_ENABLED=false
@@ -28,6 +30,9 @@ services:
       - LAWFIRM_SEARCH_ENABLED=true
       - LAWFIRM_SEARCH_TYPE=lucene
       - LAWFIRM_STORAGE_ENABLED=true
+      - LAWFIRM_STORAGE_PATH=/app/storage
+      - LAWFIRM_STORAGE_TEMP_PATH=/app/storage/temp
+      - LAWFIRM_STORAGE_LOCAL_PATH=/app/storage
     depends_on:
       - mysql
       - redis
@@ -36,6 +41,12 @@ services:
       - ./storage:/app/storage
     networks:
       - law-firm-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   # MySQL数据库
   mysql:
@@ -55,6 +66,12 @@ services:
       - ./scripts/mysql:/docker-entrypoint-initdb.d
     networks:
       - law-firm-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_PASSWORD:-lawfirm_default}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Redis缓存
   redis:
@@ -68,6 +85,11 @@ services:
       - ./data/redis:/data
     networks:
       - law-firm-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 # 网络
 networks:

@@ -1,0 +1,56 @@
+# 客户管理模块配置
+spring:
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 3000
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_client
+  
+  # 数据源配置继承自主应用
+
+# 客户模块业务配置
+client:
+  # 客户跟进配置
+  follow:
+    # 是否启用自动提醒跟进
+    auto-remind: true
+    # 提前提醒天数
+    remind-days: 3
+    # 历史记录最大保存数量
+    max-history-records: 100
+  
+  # 客户数据导入导出配置
+  import:
+    # 允许导入的文件类型
+    allowed-types: xlsx,xls,csv
+    # 导入文件大小限制
+    max-file-size: 10MB
+  export:
+    # 默认导出列
+    default-columns: client_name,client_type,contact_person,contact_phone,principal_name
+  
+  # 客户跟进记录配置
+  follow-record:
+    # 是否启用自动跟进提醒
+    enable-auto-follow: true
+    # 跟进间隔天数
+    follow-interval-days: 30
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.client.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0 
