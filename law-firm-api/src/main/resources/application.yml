@@ -27,6 +27,8 @@ spring:
       - schedule   # 日程管理
       - analysis   # 数据分析
       - supplies   # 物资管理
+      # API文档配置
+      - api-docs   # API文档
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true

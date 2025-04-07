@@ -1,0 +1,30 @@
+# 开发环境MySQL数据库配置
+spring:
+  # 数据源配置
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: root
+    password: Zjy-1314
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 30000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+  # 开发环境特定配置
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: false
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.lawfirm: DEBUG
+    org.springframework: INFO
+    org.hibernate: INFO
+    com.zaxxer.hikari: INFO

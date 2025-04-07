@@ -40,6 +40,7 @@
 - log-model: 日志
 - organization-model: 组织架构
 - personnel-model: 人事管理
+- schedule-model: 日程管理
 
 ### 4. 核心功能层 (law-firm-core)
 - core-ai: AI能力
@@ -391,8 +392,6 @@ docker-compose up -d
 
 - [系统使用教程](docs/user-guide.md) - 详细的系统使用说明
 - [模块文档](docs/modules.md) - 模块结构和依赖关系
-
-# 重构服务实现类的修复总结（更新）
 
 ## 修复问题概述
 
