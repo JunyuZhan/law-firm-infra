@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.client.constant.ClientConstants;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController("clientController")
 @RequiredArgsConstructor
-@RequestMapping("/client")
+@RequestMapping(ClientConstants.API_PREFIX)
 public class ClientController extends BaseController {
 
     private final ClientServiceImpl clientService;

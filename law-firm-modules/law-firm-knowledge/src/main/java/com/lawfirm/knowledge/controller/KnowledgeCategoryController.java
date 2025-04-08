@@ -1,5 +1,6 @@
 package com.lawfirm.knowledge.controller;
 
+import com.lawfirm.knowledge.constant.KnowledgeConstants;
 import com.lawfirm.model.knowledge.service.convert.KnowledgeConvert;
 import com.lawfirm.model.knowledge.entity.KnowledgeCategory;
 import com.lawfirm.model.knowledge.service.KnowledgeCategoryService;
@@ -20,8 +21,8 @@ import java.util.List;
  */
 @Slf4j
 @Tag(name = "知识分类", description = "知识分类管理接口")
-@RestController
-@RequestMapping("/knowledge/category")
+@RestController("knowledgeCategoryController")
+@RequestMapping(KnowledgeConstants.API_CATEGORY_PREFIX)
 public class KnowledgeCategoryController {
 
     @Autowired

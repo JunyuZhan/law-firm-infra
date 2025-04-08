@@ -93,11 +93,13 @@ public final class CaseBusinessConstants {
         /**
          * API路径前缀
          */
-        public static final String API_PREFIX = "/api/cases";
-        public static final String API_TEAM_PREFIX = "/api/cases/teams";
-        public static final String API_DOCUMENT_PREFIX = "/api/cases/documents";
-        public static final String API_FEE_PREFIX = "/api/cases/fees";
-        public static final String API_PROCESS_PREFIX = "/api/cases/processes";
+        public static final String API_PREFIX = "/api/v1/cases";
+        public static final String API_TEAM_PREFIX = "/api/v1/cases/teams";
+        public static final String API_DOCUMENT_PREFIX = "/api/v1/cases/documents";
+        public static final String API_FEE_PREFIX = "/api/v1/cases/fees";
+        public static final String API_PROCESS_PREFIX = "/api/v1/cases/processes";
+        public static final String API_TASK_PREFIX = "/api/v1/cases/tasks";
+        public static final String API_EVENT_PREFIX = "/api/v1/cases/events";
         
         /**
          * 响应消息

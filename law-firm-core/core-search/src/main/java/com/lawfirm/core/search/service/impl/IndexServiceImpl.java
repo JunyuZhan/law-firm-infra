@@ -8,6 +8,7 @@ import com.lawfirm.model.search.entity.SearchIndex;
 import com.lawfirm.model.search.mapper.SearchIndexMapper;
 import com.lawfirm.model.search.service.IndexService;
 import com.lawfirm.model.search.vo.IndexVO;
+import com.lawfirm.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.springframework.stereotype.Component;
@@ -282,5 +283,20 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     @Override
     public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return SecurityUtils.getUsername();
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return SecurityUtils.getUserId();
+    }
+
+    @Override
+    public Long getCurrentTenantId() {
+        return 1L; // TODO: 从租户上下文获取
     }
 } 

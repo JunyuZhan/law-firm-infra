@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import com.lawfirm.model.auth.constant.AuthConstants;
 
 /**
  * 认证控制器
@@ -24,7 +25,7 @@ import jakarta.validation.constraints.NotBlank;
 @Slf4j
 @Tag(name = "认证管理", description = "认证相关接口")
 @RestController("authController")
-@RequestMapping("/auth")
+@RequestMapping(AuthConstants.Api.AUTH)
 @RequiredArgsConstructor
 public class AuthController {
     

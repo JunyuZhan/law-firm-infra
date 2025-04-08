@@ -4,7 +4,7 @@ spring:
     name: law-firm-management
   profiles:
     # 默认激活的环境配置
-    active: ${SPRING_PROFILES_ACTIVE:dev-mysql}
+    active: ${SPRING_PROFILES_ACTIVE:local}
     # 包含所有业务模块配置
     include:
       # 核心业务模块
@@ -22,11 +22,8 @@ spring:
       # 辅助功能模块
       - task       # 任务管理
       - conflict   # 冲突检查
-      - seal       # 印章管理
-      - asset      # 资产管理
       - schedule   # 日程管理
       - analysis   # 数据分析
-      - supplies   # 物资管理
       # API文档配置
       - api-docs   # API文档
   main:

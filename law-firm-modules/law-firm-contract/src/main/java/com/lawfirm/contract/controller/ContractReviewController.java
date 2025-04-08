@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.contract.constant.ContractConstants;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("contractReviewController")
-@RequestMapping("/contract/review")
+@RequestMapping(ContractConstants.API_REVIEW_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "合同审批管理", description = "提供合同审批相关功能，包括提交审批、审批流程查询等")
 public class ContractReviewController {

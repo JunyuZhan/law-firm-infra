@@ -3,6 +3,7 @@ package com.lawfirm.finance.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.finance.constant.FinanceConstants;
 import com.lawfirm.model.finance.dto.ContractIncomeStat;
 import com.lawfirm.model.finance.entity.Income;
 import com.lawfirm.model.finance.enums.IncomeTypeEnum;
@@ -25,7 +26,7 @@ import java.util.Map;
 @Slf4j
 @RestController("incomeController")
 @RequiredArgsConstructor
-@RequestMapping("/finance/income")
+@RequestMapping(FinanceConstants.API_INCOME_PREFIX)
 @Tag(name = "收入管理", description = "收入相关接口")
 public class IncomeController {
 

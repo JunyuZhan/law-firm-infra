@@ -2,7 +2,9 @@ package com.lawfirm.auth.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.model.auth.constant.AuthConstants;
 import com.lawfirm.model.auth.dto.role.RoleCreateDTO;
+import com.lawfirm.model.auth.dto.role.RoleQueryDTO;
 import com.lawfirm.model.auth.dto.role.RoleUpdateDTO;
 import com.lawfirm.model.auth.service.RoleService;
 import com.lawfirm.model.auth.vo.RoleVO;
@@ -23,7 +25,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "角色管理", description = "角色管理接口")
 @RestController("roleController")
-@RequestMapping("/role")
+@RequestMapping(AuthConstants.Api.ROLE)
 @RequiredArgsConstructor
 public class RoleController {
     
@@ -90,7 +92,7 @@ public class RoleController {
     @Operation(summary = "分页查询角色", description = "分页查询角色列表")
     @GetMapping("/getRolePage")
     @PreAuthorize("hasAuthority('sys:role:read')")
-    public CommonResult<Page<RoleVO>> getRolePage(RoleUpdateDTO queryDTO) {
+    public CommonResult<Page<RoleVO>> getRolePage(RoleQueryDTO queryDTO) {
         Page<RoleVO> page = roleService.pageRoles(queryDTO);
         return CommonResult.success(page);
     }

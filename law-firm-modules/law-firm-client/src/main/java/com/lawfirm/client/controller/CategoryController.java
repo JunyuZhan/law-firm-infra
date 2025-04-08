@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.client.constant.ClientConstants;
 
 import java.util.List;
 
@@ -19,9 +20,9 @@ import java.util.List;
  */
 @Tag(name = "客户分类管理")
 @Slf4j
-@RestController("clientCategoryController")
+@RestController("categoryController")
 @RequiredArgsConstructor
-@RequestMapping("/client/category")
+@RequestMapping(ClientConstants.API_CATEGORY_PREFIX)
 public class CategoryController extends BaseController {
 
     @Qualifier("clientCategoryServiceImpl")

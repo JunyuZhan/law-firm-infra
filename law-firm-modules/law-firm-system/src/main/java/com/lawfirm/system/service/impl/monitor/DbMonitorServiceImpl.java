@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.time.LocalDateTime;
@@ -161,7 +162,7 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
             // 在实际项目中，应该通过MySQL性能监控获取
             // 例如通过查询MySQL performance_schema
             // 这里返回模拟数据
-            return BigDecimal.valueOf(Math.random() * 100).setScale(2, BigDecimal.ROUND_HALF_UP);
+            return BigDecimal.valueOf(Math.random() * 100).setScale(2, RoundingMode.HALF_UP);
         } catch (Exception e) {
             log.error("获取QPS异常", e);
             return BigDecimal.ZERO;
@@ -176,7 +177,7 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
             // 在实际项目中，应该通过MySQL性能监控获取
             // 例如通过查询MySQL performance_schema
             // 这里返回模拟数据
-            return BigDecimal.valueOf(Math.random() * 50).setScale(2, BigDecimal.ROUND_HALF_UP);
+            return BigDecimal.valueOf(Math.random() * 50).setScale(2, RoundingMode.HALF_UP);
         } catch (Exception e) {
             log.error("获取TPS异常", e);
             return BigDecimal.ZERO;

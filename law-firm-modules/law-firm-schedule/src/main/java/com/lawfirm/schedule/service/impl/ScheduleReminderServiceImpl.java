@@ -226,4 +226,19 @@ public class ScheduleReminderServiceImpl extends ServiceImpl<ScheduleReminderMap
     public boolean exists(QueryWrapper<ScheduleReminder> wrapper) {
         return count(wrapper) > 0;
     }
+
+    @Override
+    public Long getCurrentTenantId() {
+        return null; // TODO: 实现获取当前租户ID的逻辑
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return null; // TODO: 实现获取当前用户ID的逻辑
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return null; // TODO: 实现获取当前用户名的逻辑
+    }
 } 

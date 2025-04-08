@@ -27,6 +27,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.security.utils.SecurityUtils;
+import org.springframework.transaction.annotation.Transactional;
+
 /**
  * 基于Lucene的搜索服务实现
  */
@@ -96,68 +101,38 @@ public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, Se
         try {
             BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder();
             
-            // 关键词搜索
+            // 添加关键词查询
             if (request.getKeyword() != null && !request.getKeyword().isEmpty()) {
-                List<String> fields = request.getFields();
-                if (fields.isEmpty()) {
-                    // 默认搜索所有文本字段
-                    fields = Arrays.asList("title", "content", "keywords", "description");
-                }
+                String[] fields = request.getFields() != null ? 
+                    request.getFields().toArray(new String[0]) : 
+                    new String[]{"content"};
                 
-                // 根据搜索类型构建不同的查询
-                Query keywordQuery;
-                if (SearchTypeEnum.TERM.equals(request.getSearchType())) {
-                    // 精确匹配
-                    BooleanQuery.Builder keywordBuilder = new BooleanQuery.Builder();
-                    for (String field : fields) {
-                        keywordBuilder.add(new TermQuery(new Term(field, request.getKeyword())), BooleanClause.Occur.SHOULD);
-                    }
-                    keywordQuery = keywordBuilder.build();
-                } else {
-                    // 模糊匹配
-                    QueryParser parser = new MultiFieldQueryParser(
-                        fields.toArray(new String[0]), 
-                        luceneManager.getAnalyzer()
-                    );
-                    keywordQuery = parser.parse(request.getKeyword());
-                }
+                MultiFieldQueryParser parser = new MultiFieldQueryParser(
+                    fields, 
+                    luceneManager.getAnalyzer()
+                );
                 
+                Query keywordQuery = parser.parse(request.getKeyword());
                 booleanQueryBuilder.add(keywordQuery, BooleanClause.Occur.MUST);
             }
             
-            // 过滤条件
-            if (request.getFilters() != null && !request.getFilters().isEmpty()) {
+            // 添加过滤条件
+            if (request.getFilters() != null) {
                 for (Map.Entry<String, Object> entry : request.getFilters().entrySet()) {
                     String field = entry.getKey();
                     Object value = entry.getValue();
                     
                     if (value != null) {
-                        Query filterQuery;
-                        if (value instanceof String) {
-                            filterQuery = new TermQuery(new Term(field, (String) value));
-                        } else if (value instanceof Number) {
-                            if (value instanceof Integer || value instanceof Long) {
-                                filterQuery = LongPoint.newExactQuery(field, ((Number) value).longValue());
-                            } else {
-                                filterQuery = DoublePoint.newExactQuery(field, ((Number) value).doubleValue());
-                            }
-                        } else if (value instanceof Boolean) {
-                            filterQuery = new TermQuery(new Term(field, value.toString()));
-                        } else if (value instanceof Date) {
-                            filterQuery = LongPoint.newExactQuery(field, ((Date) value).getTime());
-                        } else {
-                            filterQuery = new TermQuery(new Term(field, value.toString()));
-                        }
-                        
-                        booleanQueryBuilder.add(filterQuery, BooleanClause.Occur.MUST);
+                        Term term = new Term(field, value.toString());
+                        TermQuery termQuery = new TermQuery(term);
+                        booleanQueryBuilder.add(termQuery, BooleanClause.Occur.FILTER);
                     }
                 }
             }
             
             return booleanQueryBuilder.build();
         } catch (ParseException e) {
-            log.error("构建查询失败: {}", e.getMessage());
-            // 返回一个匹配所有文档的查询
+            log.error("解析查询条件失败", e);
             return new MatchAllDocsQuery();
         }
     }
@@ -548,5 +523,21 @@ public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, Se
         }
         
         return result;
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return SecurityUtils.getUsername();
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return SecurityUtils.getUserId();
+    }
+
+    @Override
+    public Long getCurrentTenantId() {
+        // TODO: 从租户上下文中获取租户ID
+        return 1L;
     }
 }

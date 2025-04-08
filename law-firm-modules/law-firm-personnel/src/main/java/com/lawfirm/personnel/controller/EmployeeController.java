@@ -9,6 +9,7 @@ import com.lawfirm.model.personnel.enums.EmployeeTypeEnum;
 import com.lawfirm.model.personnel.service.EmployeeService;
 import com.lawfirm.model.personnel.vo.EmployeeVO;
 import com.lawfirm.personnel.converter.EmployeeConverter;
+import com.lawfirm.personnel.constant.PersonnelConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Tag(name = "员工管理", description = "提供员工管理相关接口")
 @RestController("employeeController")
-@RequestMapping("/personnel/employee")
+@RequestMapping(PersonnelConstants.API_EMPLOYEE_PREFIX)
 @Validated
 public class EmployeeController {
 

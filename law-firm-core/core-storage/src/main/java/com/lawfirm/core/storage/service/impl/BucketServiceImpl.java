@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.cache.annotation.RepeatSubmit;
 import com.lawfirm.common.cache.annotation.SimpleCache;
 import com.lawfirm.common.security.annotation.RequiresPermissions;
+import com.lawfirm.common.security.utils.SecurityUtils;
 import com.lawfirm.core.storage.config.StorageProperties;
 import com.lawfirm.core.storage.strategy.StorageContext;
 import com.lawfirm.core.storage.strategy.StorageStrategy;
@@ -328,5 +329,20 @@ public class BucketServiceImpl extends BaseServiceImpl<StorageBucketMapper, Stor
         vo.setUpdateBy(bucket.getUpdateBy());
         
         return vo;
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return SecurityUtils.getUsername();
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return SecurityUtils.getUserId();
+    }
+
+    @Override
+    public Long getCurrentTenantId() {
+        return 1L; // TODO: 从租户上下文获取
     }
 } 

@@ -1,6 +1,7 @@
 package com.lawfirm.finance.controller;
 
 import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.finance.constant.FinanceConstants;
 import com.lawfirm.model.finance.entity.FinancialReport;
 import com.lawfirm.model.finance.enums.ReportTypeEnum;
 import com.lawfirm.model.finance.service.FinancialReportService;
@@ -24,7 +25,7 @@ import java.util.Map;
 @Slf4j
 @RestController("financialReportController")
 @RequiredArgsConstructor
-@RequestMapping("/finance/report")
+@RequestMapping(FinanceConstants.API_REPORT_PREFIX)
 @Tag(name = "财务报表", description = "财务报表相关接口")
 public class FinancialReportController {
 

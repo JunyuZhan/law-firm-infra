@@ -3,7 +3,6 @@ package com.lawfirm.auth.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.model.auth.dto.permission.PermissionCreateDTO;
 import com.lawfirm.model.auth.dto.permission.PermissionUpdateDTO;
 import com.lawfirm.model.auth.entity.Permission;
@@ -17,6 +16,7 @@ import com.lawfirm.model.auth.vo.PermissionVO;
 import com.lawfirm.model.auth.vo.RouterVO;
 import com.lawfirm.model.auth.vo.MetaVO;
 import com.lawfirm.model.base.dto.BaseDTO;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("authPermissionServiceImpl")
 @RequiredArgsConstructor
-public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permission> implements PermissionService {
+public class PermissionServiceImpl extends BaseServiceImpl<PermissionMapper, Permission> implements PermissionService {
 
     private final PermissionMapper permissionMapper;
     private final RolePermissionMapper rolePermissionMapper;

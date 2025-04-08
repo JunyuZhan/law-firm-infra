@@ -9,6 +9,7 @@ import com.lawfirm.model.auth.vo.PermissionVO;
 import com.lawfirm.model.auth.vo.RouterVO;
 import com.lawfirm.model.base.dto.BaseDTO;
 import com.lawfirm.auth.utils.SecurityUtils;
+import com.lawfirm.model.auth.constant.AuthConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "权限管理", description = "权限相关接口")
 @RestController("permissionController")
-@RequestMapping("/permission")
+@RequestMapping(AuthConstants.Api.PERMISSION)
 @RequiredArgsConstructor
 public class PermissionController {
     

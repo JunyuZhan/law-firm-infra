@@ -6,6 +6,7 @@ import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.finance.entity.Expense;
 import com.lawfirm.model.finance.service.ExpenseService;
 import com.lawfirm.model.finance.service.ExpenseService.ExpenseStat;
+import com.lawfirm.finance.constant.FinanceConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController("expenseController")
 @RequiredArgsConstructor
-@RequestMapping("/finance/expense")
+@RequestMapping(FinanceConstants.API_EXPENSE_PREFIX)
 @Tag(name = "支出管理", description = "支出相关接口")
 public class ExpenseController {
 

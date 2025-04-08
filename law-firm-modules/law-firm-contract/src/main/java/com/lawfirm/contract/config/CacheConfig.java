@@ -28,6 +28,7 @@ public class CacheConfig {
         // 默认配置
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofHours(2))  // 默认缓存2小时
+                .prefixCacheNameWith("contract:")  // 添加缓存键前缀
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair.fromSerializer(
                                 new GenericJackson2JsonRedisSerializer()

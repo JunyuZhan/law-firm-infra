@@ -72,4 +72,33 @@ public interface BaseService<T extends ModelBaseEntity> extends IService<T> {
      * 这是对IService的扩展方法
      */
     boolean exists(QueryWrapper<T> wrapper);
+
+    /**
+     * 获取租户ID
+     */
+    Long getCurrentTenantId();
+
+    /**
+     * 获取当前用户ID
+     */
+    Long getCurrentUserId();
+
+    /**
+     * 获取当前用户名
+     */
+    String getCurrentUsername();
+
+    /**
+     * 处理业务前置逻辑
+     */
+    default void preHandle(T entity) {
+        // 默认不做任何处理，子类可以覆盖
+    }
+
+    /**
+     * 处理业务后置逻辑
+     */
+    default void postHandle(T entity) {
+        // 默认不做任何处理，子类可以覆盖
+    }
 } 

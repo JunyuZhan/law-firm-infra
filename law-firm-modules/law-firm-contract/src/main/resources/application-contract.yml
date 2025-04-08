@@ -67,6 +67,37 @@ contract:
     # 提醒任务执行时间(每天早8点)
     scheduler-cron: "0 0 8 * * ?"
 
+  # 合同冲突检查配置
+  conflict:
+    # 是否启用冲突检查
+    enabled: true
+    # 冲突检查时机
+    check-timing: before_create,before_update
+    # 冲突级别配置
+    level:
+      # 客户冲突级别
+      client: MEDIUM
+      # 律师冲突级别
+      lawyer: LOW
+      # 案件冲突级别
+      case: HIGH
+    # 冲突检查范围
+    scope:
+      # 检查时间范围(天)
+      time-range: 365
+      # 是否检查已终止合同
+      include-terminated: false
+      # 是否检查已归档合同
+      include-archived: false
+    # 冲突通知配置
+    notification:
+      # 是否自动通知
+      auto-notify: true
+      # 通知渠道
+      channels: system,email
+      # 通知模板
+      template: "发现合同冲突：${conflictDesc}"
+
 # MyBatis-Plus配置
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml

@@ -12,6 +12,7 @@ import com.lawfirm.model.schedule.service.ExternalCalendarSyncService;
 import com.lawfirm.model.schedule.vo.CalendarSyncHistoryVO;
 import com.lawfirm.model.schedule.vo.ExternalCalendarAccountVO;
 import com.lawfirm.model.schedule.vo.ExternalCalendarVO;
+import com.lawfirm.schedule.constant.ScheduleConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,7 +41,7 @@ import java.util.stream.Collectors;
  */
 @Tag(name = "外部日历管理")
 @RestController("externalCalendarController")
-@RequestMapping("/schedule/external-calendar")
+@RequestMapping(ScheduleConstants.API_EXTERNAL_CALENDAR_PREFIX)
 @RequiredArgsConstructor
 @Validated
 @Slf4j

@@ -14,10 +14,23 @@
     <description>任务管理模块</description>
 
     <dependencies>
+        <!-- Task Model -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>task-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Common Core -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
+        </dependency>
+
+        <!-- Common Web -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-web</artifactId>
         </dependency>
 
         <!-- Core Workflow -->
@@ -59,6 +72,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- OpenAPI/Swagger -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
 
         <!-- Test -->

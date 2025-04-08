@@ -6,6 +6,7 @@ import com.lawfirm.model.personnel.service.EmployeeOrganizationService;
 import com.lawfirm.model.personnel.service.EmployeeService;
 import com.lawfirm.model.personnel.vo.EmployeeVO;
 import com.lawfirm.personnel.converter.EmployeeConverter;
+import com.lawfirm.personnel.constant.PersonnelConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Tag(name = "组织机构管理", description = "提供组织机构管理相关接口")
 @RestController("organizationController")
-@RequestMapping("/personnel/organization")
+@RequestMapping(PersonnelConstants.API_ORGANIZATION_PREFIX)
 @Validated
 public class OrganizationController {
 

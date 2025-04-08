@@ -6,6 +6,7 @@ import com.lawfirm.model.document.service.DocumentService;
 import com.lawfirm.model.storage.service.BucketService;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.entity.file.FileObject;
+import com.lawfirm.document.constant.DocumentConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,8 +29,8 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 @Tag(name = "文件操作", description = "文件上传下载接口")
-@RestController
-@RequestMapping("/document/files")
+@RestController("documentFileController")
+@RequestMapping(DocumentConstants.API_FILE_PREFIX)
 @RequiredArgsConstructor
 public class FileController {
 

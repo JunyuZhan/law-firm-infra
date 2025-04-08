@@ -1,6 +1,7 @@
 package com.lawfirm.cases.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.cases.constant.CaseBusinessConstants;
 import com.lawfirm.model.cases.dto.business.CaseApprovalDTO;
 import com.lawfirm.model.cases.service.business.CaseApprovalService;
 import com.lawfirm.model.cases.vo.business.CaseApprovalVO;
@@ -21,8 +22,8 @@ import java.util.List;
  * 案件流程控制器
  */
 @Slf4j
-@RestController("caseProcessController")
-@RequestMapping("/case/process")
+@RestController("processController")
+@RequestMapping(CaseBusinessConstants.Controller.API_PROCESS_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "案件流程管理", description = "提供案件流程管理功能，包括流程定义、实例创建、任务处理等功能")
 public class ProcessController {

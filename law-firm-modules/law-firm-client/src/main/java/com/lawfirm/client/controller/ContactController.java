@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.client.constant.ClientConstants;
 
 import java.util.List;
 
@@ -21,9 +22,9 @@ import java.util.List;
  */
 @Tag(name = "客户联系人管理")
 @Slf4j
-@RestController("clientContactController")
+@RestController("contactController")
 @RequiredArgsConstructor
-@RequestMapping("/client/contact")
+@RequestMapping(ClientConstants.API_CONTACT_PREFIX)
 public class ContactController extends BaseController {
 
     private final ContactServiceImpl contactService;

@@ -18,91 +18,97 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-log</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         
         <!-- 案件模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>case-model</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
+        </dependency>
+        
+        <!-- 合同模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>contract-model</artifactId>
+            <version>${revision}</version>
         </dependency>
         
         <!-- 认证模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>auth-model</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         
         <!-- 客户模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>client-model</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         
         <!-- 客户服务模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-client</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         
         <!-- 文档模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>document-model</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         
         <!-- 人事模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>personnel-model</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- 核心模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-workflow</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-audit</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-storage</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-search</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-message</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- MyBatis Plus -->

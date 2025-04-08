@@ -7,6 +7,7 @@ import com.lawfirm.model.finance.entity.Fee;
 import com.lawfirm.model.finance.enums.FeeStatusEnum;
 import com.lawfirm.model.finance.enums.FeeTypeEnum;
 import com.lawfirm.model.finance.service.FeeService;
+import com.lawfirm.finance.constant.FinanceConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +26,8 @@ import java.util.List;
  */
 @Slf4j
 @Tag(name = "费用管理", description = "费用管理接口")
-@RestController("financeFeeController")
-@RequestMapping("/finance/fee")
+@RestController("financeFeeeController")
+@RequestMapping(FinanceConstants.API_FEE_PREFIX)
 @RequiredArgsConstructor
 public class FeeController {
 

@@ -1,12 +1,32 @@
-# 知识管理模块基础配置
+# 知识管理模块配置
 spring:
   application:
     name: law-firm-knowledge
   profiles:
     # 默认激活开发环境
     active: ${SPRING_PROFILES_ACTIVE:dev}
-    # 引入知识管理模块特定配置
-    include: knowledge
+    
+  # 数据库配置
+  datasource:
+    url: ${KNOWLEDGE_DB_URL:jdbc:mysql://localhost:3306/law_firm_knowledge?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${KNOWLEDGE_DB_USERNAME:root}
+    password: ${KNOWLEDGE_DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 8000
+    validate-on-migrate: true
+    table: flyway_schema_history_knowledge
 
 # 服务器配置
 server:
@@ -25,4 +45,94 @@ logging:
     org.springframework: INFO
   file:
     # 日志文件路径
-    name: ${KNOWLEDGE_LOG_FILE:${user.home}/logs/law-firm-knowledge.log} 
+    name: ${KNOWLEDGE_LOG_FILE:${user.home}/logs/law-firm-knowledge.log}
+
+# 知识管理模块业务配置
+knowledge:
+  # 存储配置
+  storage:
+    # 基础存储路径
+    base-path: ${KNOWLEDGE_STORAGE_PATH:${user.home}/lawfirm/knowledge}
+    # 临时文件路径
+    temp-path: ${KNOWLEDGE_TEMP_PATH:${user.home}/lawfirm/knowledge/temp}
+    
+  # 文档配置
+  document:
+    # 最大文档大小
+    max-size: ${KNOWLEDGE_DOC_MAX_SIZE:10MB}
+    # 允许的文件扩展名
+    allowed-extensions: ${KNOWLEDGE_DOC_EXTENSIONS:.doc,.docx,.pdf,.md,.txt}
+    
+  # 附件配置
+  attachment:
+    # 最大附件大小
+    max-size: ${KNOWLEDGE_ATTACH_MAX_SIZE:20MB}
+    # 每个知识条目最大附件数量
+    max-count-per-knowledge: ${KNOWLEDGE_ATTACH_MAX_COUNT:10}
+    # 允许的附件扩展名
+    allowed-extensions: ${KNOWLEDGE_ATTACH_EXTENSIONS:.doc,.docx,.pdf,.jpg,.png,.zip}
+    
+  # 分类配置
+  category:
+    # 分类最大层级深度
+    max-depth: ${KNOWLEDGE_CATEGORY_MAX_DEPTH:3}
+    
+  # 搜索配置
+  search:
+    # 是否启用高亮显示
+    enable-highlight: ${KNOWLEDGE_SEARCH_HIGHLIGHT:true}
+    # 最大搜索结果数量
+    max-result-count: ${KNOWLEDGE_SEARCH_MAX_RESULTS:100}
+    # 最小关键词长度
+    min-keyword-length: ${KNOWLEDGE_SEARCH_MIN_KEYWORD:2}
+    
+  # 权限配置
+  permission:
+    # 公开分类ID列表
+    public-categories: ${KNOWLEDGE_PUBLIC_CATEGORIES:[1, 2, 3]}
+    
+  # 统计任务配置
+  statistic:
+    # 统计任务执行时间 - 每天凌晨1点执行
+    cron: ${KNOWLEDGE_STATISTIC_CRON:"0 0 1 * * ?"}
+    
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.model.knowledge.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 存储服务配置
+storage:
+  # MinIO对象存储配置
+  minio:
+    enabled: ${KNOWLEDGE_MINIO_ENABLED:true}
+    # MinIO服务器地址
+    endpoint: ${KNOWLEDGE_MINIO_ENDPOINT:http://minio:9000}
+    # 访问密钥
+    access-key: ${MINIO_ACCESS_KEY:miniouser}
+    # 密钥
+    secret-key: ${MINIO_SECRET_KEY:${random.uuid}}
+    # 存储桶名称
+    bucket: ${KNOWLEDGE_MINIO_BUCKET:knowledge-documents}
+    
+# 搜索服务配置
+search:
+  # Elasticsearch配置
+  elasticsearch:
+    enabled: ${KNOWLEDGE_ES_ENABLED:true}
+    # Elasticsearch服务器地址
+    host: ${KNOWLEDGE_ES_HOST:elasticsearch}
+    # Elasticsearch服务器端口
+    port: ${KNOWLEDGE_ES_PORT:9200}
+    # 索引前缀
+    index-prefix: ${KNOWLEDGE_ES_INDEX_PREFIX:law-firm-} 

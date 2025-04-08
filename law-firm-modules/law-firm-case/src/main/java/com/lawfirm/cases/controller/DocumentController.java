@@ -1,6 +1,7 @@
 package com.lawfirm.cases.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.cases.constant.CaseBusinessConstants;
 import com.lawfirm.model.cases.dto.business.CaseDocumentDTO;
 import com.lawfirm.model.cases.service.business.CaseDocumentService;
 import com.lawfirm.model.cases.vo.business.CaseDocumentVO;
@@ -21,8 +22,8 @@ import java.util.List;
  * 案件文档控制器
  */
 @Slf4j
-@RestController("caseDocumentController")
-@RequestMapping("/case/document")
+@RestController("documentController")
+@RequestMapping(CaseBusinessConstants.Controller.API_DOCUMENT_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "案件文档管理", description = "提供案件文档管理功能，包括文档上传、下载、分类、版本控制、共享等操作")
 public class DocumentController {

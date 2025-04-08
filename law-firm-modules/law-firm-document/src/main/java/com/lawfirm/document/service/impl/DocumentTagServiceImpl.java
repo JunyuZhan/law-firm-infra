@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.document.dto.tag.TagCreateDTO;
 import com.lawfirm.model.document.dto.tag.TagQueryDTO;
 import com.lawfirm.model.document.dto.tag.TagUpdateDTO;
@@ -25,7 +25,22 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service("documentTagServiceImpl")
-public class DocumentTagServiceImpl extends ServiceImpl<DocumentTagMapper, DocumentTag> implements DocumentTagService {
+public class DocumentTagServiceImpl extends BaseServiceImpl<DocumentTagMapper, DocumentTag> implements DocumentTagService {
+
+    @Override
+    public Long getCurrentTenantId() {
+        return null; // TODO: 实现获取当前租户ID的逻辑
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return null; // TODO: 实现获取当前用户ID的逻辑
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return null; // TODO: 实现获取当前用户名的逻辑
+    }
 
     @Override
     public boolean exists(QueryWrapper<DocumentTag> wrapper) {

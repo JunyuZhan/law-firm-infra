@@ -4,6 +4,7 @@ import com.lawfirm.model.knowledge.service.convert.KnowledgeConvert;
 import com.lawfirm.model.knowledge.entity.KnowledgeTag;
 import com.lawfirm.model.knowledge.service.KnowledgeTagService;
 import com.lawfirm.model.knowledge.vo.KnowledgeTagVO;
+import com.lawfirm.knowledge.constant.KnowledgeConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "知识标签管理", description = "知识标签的增删改查接口")
 @RestController("knowledgeTagController")
-@RequestMapping("/knowledge/tag")
+@RequestMapping(KnowledgeConstants.API_TAG_PREFIX)
 public class KnowledgeTagController {
 
     @Autowired

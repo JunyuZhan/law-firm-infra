@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.knowledge.constant.KnowledgeConstants;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ import java.util.List;
  */
 @Slf4j
 @Tag(name = "知识库", description = "知识库管理接口")
-@RestController
-@RequestMapping("/knowledge")
+@RestController("knowledgeController")
+@RequestMapping(KnowledgeConstants.API_PREFIX)
 public class KnowledgeController {
 
     @Autowired

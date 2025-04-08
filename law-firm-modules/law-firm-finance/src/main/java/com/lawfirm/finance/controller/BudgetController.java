@@ -3,6 +3,7 @@ package com.lawfirm.finance.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.finance.constant.FinanceConstants;
 import com.lawfirm.model.finance.entity.Budget;
 import com.lawfirm.model.finance.enums.BudgetStatusEnum;
 import com.lawfirm.model.finance.service.BudgetService;
@@ -22,7 +23,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "预算管理", description = "预算管理接口")
 @RestController("budgetController")
-@RequestMapping("/finance/budget")
+@RequestMapping(FinanceConstants.API_BUDGET_PREFIX)
 @RequiredArgsConstructor
 public class BudgetController {
 

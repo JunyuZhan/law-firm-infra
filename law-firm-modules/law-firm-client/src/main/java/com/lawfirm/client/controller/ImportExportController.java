@@ -19,14 +19,16 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.lawfirm.client.constant.ClientConstants;
+
 /**
  * 客户导入导出控制器
  */
 @Tag(name = "客户导入导出管理")
 @Slf4j
-@RestController("clientImportExportController")
+@RestController("importExportController")
 @RequiredArgsConstructor
-@RequestMapping("/client/import-export")
+@RequestMapping(ClientConstants.API_IMPORT_EXPORT_PREFIX)
 public class ImportExportController extends BaseController {
 
     private final List<ImportStrategy> importStrategies;

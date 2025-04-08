@@ -19,13 +19,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.lawfirm.system.constant.SystemConstants;
 
 /**
  * 系统监控控制器
  */
 @Tag(name = "系统监控", description = "提供系统监控指标和相关接口")
 @RestController("monitorController")
-@RequestMapping("/system/monitor")
+@RequestMapping(SystemConstants.API_MONITOR_PREFIX)
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class MonitorController extends BaseController {

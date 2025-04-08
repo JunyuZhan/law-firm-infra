@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.finance.constant.FinanceConstants;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "账户管理", description = "账户管理接口")
 @RestController("accountController")
-@RequestMapping("/finance/account")
+@RequestMapping(FinanceConstants.API_ACCOUNT_PREFIX)
 @RequiredArgsConstructor
 public class AccountController {
     

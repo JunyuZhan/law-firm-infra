@@ -1,0 +1,66 @@
+# Windows本地开发环境配置
+spring:
+  # 数据源配置
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: root
+    password: Zjy-1314
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 30000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  
+  # Redis配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 10s
+      lettuce:
+        pool:
+          min-idle: 0
+          max-idle: 8
+          max-active: 8
+          max-wait: -1ms
+  
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    encoding: UTF-8
+    out-of-order: true
+    ignore-migration-patterns: "*:missing"
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.lawfirm: DEBUG
+    org.springframework: INFO
+    org.hibernate: INFO
+    com.zaxxer.hikari: INFO
+
+# 应用存储路径配置
+lawfirm:
+  # 搜索服务配置
+  search:
+    enabled: true
+    type: lucene
+  # 存储服务配置
+  storage:
+    enabled: true
+    defaultType: LOCAL
+    path:
+      baseDir: ${user.home}/law-firm/storage
+      tempDir: ${user.home}/law-firm/storage/temp
+    local:
+      enabled: true
+      basePath: ${user.home}/law-firm/storage 

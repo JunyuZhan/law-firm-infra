@@ -3,6 +3,7 @@ package com.lawfirm.finance.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.finance.constant.FinanceConstants;
 import com.lawfirm.model.finance.entity.CostCenter;
 import com.lawfirm.model.finance.service.CostCenterService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("costCenterController")
-@RequestMapping("/finance/cost-center")
+@RequestMapping(FinanceConstants.API_COST_CENTER_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "成本中心管理", description = "成本中心管理接口")
 public class CostCenterController {

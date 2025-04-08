@@ -8,7 +8,9 @@ import com.lawfirm.model.search.entity.SearchDoc;
 import com.lawfirm.model.search.mapper.SearchDocMapper;
 import com.lawfirm.model.search.service.SearchService;
 import com.lawfirm.model.search.vo.SearchVO;
+import com.lawfirm.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +23,13 @@ import java.util.stream.Collectors;
  * 基于数据库的搜索服务实现
  */
 @Slf4j
-@Service("databaseSearchServiceImpl")
+@Service("databaseSearchService")
 @ConditionalOnProperty(prefix = "lawfirm.search", name = "type", havingValue = "database", matchIfMissing = true)
 @Transactional(rollbackFor = Exception.class)
 public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
+
+    @Autowired
+    private SearchService searchService;
 
     @PostConstruct
     public void init() {
@@ -33,123 +38,7 @@ public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, 
 
     @Override
     public SearchVO search(SearchRequestDTO request) {
-        long startTime = System.currentTimeMillis();
-        SearchVO result = new SearchVO();
-        
-        try {
-            // 构建查询条件
-            QueryWrapper<SearchDoc> wrapper = new QueryWrapper<>();
-            
-            // 关键词搜索
-            if (request.getKeyword() != null && !request.getKeyword().isEmpty()) {
-                List<String> fields = request.getFields();
-                if (fields.isEmpty()) {
-                    // 默认搜索内容和业务类型
-                    wrapper.like("content", request.getKeyword())
-                           .or()
-                           .like("biz_type", request.getKeyword());
-                } else {
-                    // 根据指定字段搜索
-                    wrapper.and(w -> {
-                        for (String field : fields) {
-                            if ("content".equals(field)) {
-                                w.like("content", request.getKeyword()).or();
-                            } else if ("bizType".equals(field)) {
-                                w.like("biz_type", request.getKeyword()).or();
-                            } else if ("docId".equals(field)) {
-                                w.like("doc_id", request.getKeyword()).or();
-                            }
-                        }
-                    });
-                }
-            }
-            
-            // 过滤条件
-            if (request.getFilters() != null && !request.getFilters().isEmpty()) {
-                for (Map.Entry<String, Object> entry : request.getFilters().entrySet()) {
-                    String field = entry.getKey();
-                    Object value = entry.getValue();
-                    
-                    if (value != null) {
-                        if ("bizType".equals(field)) {
-                            wrapper.eq("biz_type", value);
-                        } else if ("status".equals(field)) {
-                            wrapper.eq("status", value);
-                        } else if ("docId".equals(field)) {
-                            wrapper.eq("doc_id", value);
-                        }
-                    }
-                }
-            }
-            
-            // 排序
-            if (request.getSorts() != null && !request.getSorts().isEmpty()) {
-                for (Map.Entry<String, String> entry : request.getSorts().entrySet()) {
-                    String field = entry.getKey();
-                    String order = entry.getValue();
-                    
-                    boolean isAsc = !"desc".equalsIgnoreCase(order);
-                    if ("createTime".equals(field)) {
-                        wrapper.orderBy(true, isAsc, "create_time");
-                    } else if ("updateTime".equals(field)) {
-                        wrapper.orderBy(true, isAsc, "update_time");
-                    } else if ("indexTime".equals(field)) {
-                        wrapper.orderBy(true, isAsc, "index_time");
-                    }
-                }
-            } else {
-                // 默认按创建时间倒序
-                wrapper.orderByDesc("create_time");
-            }
-            
-            // 分页查询
-            Page<SearchDoc> pageRequest = new Page<>(request.getPageNum(), request.getPageSize());
-            Page<SearchDoc> pageResult = baseMapper.selectPage(pageRequest, wrapper);
-            
-            // 构建返回结果
-            List<SearchVO.Hit> hits = pageResult.getRecords().stream().map(doc -> {
-                SearchVO.Hit hit = new SearchVO.Hit();
-                hit.setId(doc.getId().toString());
-                hit.setIndex(request.getIndexName());
-                hit.setScore(1.0f); // 数据库查询没有评分
-                
-                // 构建源文档
-                Map<String, Object> source = new HashMap<>();
-                source.put("id", doc.getId());
-                source.put("indexId", doc.getIndexId());
-                source.put("docId", doc.getDocId());
-                source.put("bizId", doc.getBizId());
-                source.put("bizType", doc.getBizType());
-                source.put("content", doc.getContent());
-                source.put("status", doc.getStatus());
-                source.put("errorMsg", doc.getErrorMsg());
-                source.put("retryCount", doc.getRetryCount());
-                source.put("lastRetryTime", doc.getLastRetryTime());
-                source.put("indexTime", doc.getIndexTime());
-                source.put("createTime", doc.getCreateTime());
-                source.put("updateTime", doc.getUpdateTime());
-                
-                hit.setSource(source);
-                return hit;
-            }).collect(Collectors.toList());
-            
-            result.setTotal(pageResult.getTotal());
-            result.setHits(hits);
-            result.setMaxScore(1.0f);
-            result.setTook(System.currentTimeMillis() - startTime);
-            result.setTimedOut(false);
-            
-            return result;
-            
-        } catch (Exception e) {
-            log.error("数据库搜索失败", e);
-            result.setTotal(0L);
-            result.setHits(Collections.emptyList());
-            result.setMaxScore(0f);
-            result.setTook(System.currentTimeMillis() - startTime);
-            result.setTimedOut(true);
-            return result;
-        }
+        return searchService.search(request);
     }
 
     @Override
@@ -354,7 +243,23 @@ public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, 
         log.warn("数据库不支持suggest操作");
         return Collections.emptyList();
     }
-    
+
+    @Override
+    public String getCurrentUsername() {
+        return SecurityUtils.getUsername();
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return SecurityUtils.getUserId();
+    }
+
+    @Override
+    public Long getCurrentTenantId() {
+        // TODO: 从租户上下文中获取租户ID
+        return 1L;
+    }
+
     /**
      * 将Map转换为SearchDoc实体
      */

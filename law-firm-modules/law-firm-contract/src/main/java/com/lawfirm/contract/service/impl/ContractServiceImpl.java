@@ -2,6 +2,7 @@ package com.lawfirm.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.common.security.utils.SecurityUtils;
 import com.lawfirm.contract.util.ContractConverter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.contract.dto.ContractCreateDTO;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +31,23 @@ import java.util.stream.Collectors;
 public class ContractServiceImpl extends BaseServiceImpl<ContractMapper, Contract> implements ContractService {
 
     private final ContractMapper contractMapper;
+    
+    @Override
+    public String getCurrentUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+    
+    @Override
+    public Long getCurrentUserId() {
+        return SecurityUtils.getUserId();
+    }
+    
+    @Override
+    public Long getCurrentTenantId() {
+        // 如果系统支持多租户，则从SecurityContext中获取租户ID
+        // 如果系统不支持多租户，则返回默认租户ID
+        return 1L; // 默认返回租户ID为1
+    }
     
     @Override
     @Transactional(rollbackFor = Exception.class)

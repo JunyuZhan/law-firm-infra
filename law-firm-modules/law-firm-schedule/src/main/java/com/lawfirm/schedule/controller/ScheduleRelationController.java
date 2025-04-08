@@ -8,6 +8,7 @@ import com.lawfirm.model.schedule.dto.ScheduleTaskRelationDTO;
 import com.lawfirm.model.schedule.service.ScheduleRelationService;
 import com.lawfirm.model.schedule.vo.ScheduleCaseRelationVO;
 import com.lawfirm.model.schedule.vo.ScheduleTaskRelationVO;
+import com.lawfirm.schedule.constant.ScheduleConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 @Tag(name = "日程关联")
 @RestController("scheduleRelationController")
-@RequestMapping("/schedule/relation")
+@RequestMapping(ScheduleConstants.API_RELATION_PREFIX)
 @RequiredArgsConstructor
 @Validated
 @Slf4j

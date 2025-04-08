@@ -1,5 +1,8 @@
 package com.lawfirm.core.search.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.search.dto.search.SearchRequestDTO;
 import com.lawfirm.model.search.entity.SearchDoc;
@@ -104,5 +107,23 @@ public class DatabaseSearchService extends BaseServiceImpl<SearchDocMapper, Sear
     public List<String> suggest(String indexName, String field, String text) {
         log.warn("数据库搜索不支持建议操作");
         return Collections.emptyList();
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        // Implementation needed
+        throw new UnsupportedOperationException("Method not implemented");
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        // Implementation needed
+        throw new UnsupportedOperationException("Method not implemented");
+    }
+
+    @Override
+    public Long getCurrentTenantId() {
+        // Implementation needed
+        throw new UnsupportedOperationException("Method not implemented");
     }
 } 

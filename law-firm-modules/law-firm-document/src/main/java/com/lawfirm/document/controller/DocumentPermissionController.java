@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
+import com.lawfirm.document.constant.DocumentConstants;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "文档权限", description = "文档权限管理接口")
 @RestController("documentPermissionController")
-@RequestMapping("/document/permission")
+@RequestMapping(DocumentConstants.API_PERMISSION_PREFIX)
 @RequiredArgsConstructor
 @Validated
 public class DocumentPermissionController {

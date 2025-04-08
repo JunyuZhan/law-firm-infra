@@ -7,6 +7,7 @@ import com.lawfirm.model.document.dto.category.CategoryQueryDTO;
 import com.lawfirm.model.document.dto.category.CategoryUpdateDTO;
 import com.lawfirm.model.document.service.DocumentCategoryService;
 import com.lawfirm.model.document.vo.CategoryVO;
+import com.lawfirm.document.constant.DocumentConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +25,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "文档分类", description = "文档分类管理接口")
 @RestController("documentCategoryController")
-@RequestMapping("/document/category")
+@RequestMapping(DocumentConstants.API_CATEGORY_PREFIX)
 @RequiredArgsConstructor
 public class DocumentCategoryController {
 

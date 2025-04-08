@@ -8,6 +8,7 @@ import com.lawfirm.model.schedule.entity.MeetingRoom;
 import com.lawfirm.model.schedule.service.MeetingRoomService;
 import com.lawfirm.model.schedule.vo.MeetingRoomVO;
 import com.lawfirm.schedule.converter.MeetingRoomConvert;
+import com.lawfirm.schedule.constant.ScheduleConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @Tag(name = "会议室管理")
 @RestController("meetingRoomController")
-@RequestMapping("/schedule/meeting-room")
+@RequestMapping(ScheduleConstants.API_MEETING_ROOM_PREFIX)
 @RequiredArgsConstructor
 @Validated
 @Slf4j

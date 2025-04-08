@@ -154,4 +154,49 @@ public interface ContractConstant {
          */
         int CUSTOM = 2;
     }
+    
+    /**
+     * 冲突检查状态
+     */
+    interface ConflictCheckStatus {
+        /**
+         * 未检查
+         */
+        int UNCHECKED = 0;
+        
+        /**
+         * 检查中
+         */
+        int CHECKING = 1;
+        
+        /**
+         * 无冲突
+         */
+        int NO_CONFLICT = 2;
+        
+        /**
+         * 存在冲突
+         */
+        int HAS_CONFLICT = 3;
+    }
+    
+    /**
+     * 冲突类型
+     */
+    interface ConflictType {
+        /**
+         * 客户冲突
+         */
+        String CLIENT = "client";
+        
+        /**
+         * 律师冲突
+         */
+        String LAWYER = "lawyer";
+        
+        /**
+         * 案件冲突
+         */
+        String CASE = "case";
+    }
 } 

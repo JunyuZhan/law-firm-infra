@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.client.constant.ClientConstants;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ import java.util.List;
  */
 @Tag(name = "客户标签管理")
 @Slf4j
-@RestController("clientTagController")
+@RestController("tagController")
 @RequiredArgsConstructor
-@RequestMapping("/client/tag")
+@RequestMapping(ClientConstants.API_TAG_PREFIX)
 public class TagController extends BaseController {
 
     private final TagServiceImpl tagService;

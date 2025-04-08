@@ -1,5 +1,6 @@
 package com.lawfirm.knowledge.controller;
 
+import com.lawfirm.knowledge.constant.KnowledgeConstants;
 import com.lawfirm.model.knowledge.entity.KnowledgeAttachment;
 import com.lawfirm.model.knowledge.service.KnowledgeAttachmentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +18,8 @@ import java.util.List;
  */
 @Slf4j
 @Tag(name = "知识附件", description = "知识附件管理接口")
-@RestController
-@RequestMapping("/knowledge/attachment")
+@RestController("knowledgeAttachmentController")
+@RequestMapping(KnowledgeConstants.API_ATTACHMENT_PREFIX)
 public class KnowledgeAttachmentController {
 
     @Autowired

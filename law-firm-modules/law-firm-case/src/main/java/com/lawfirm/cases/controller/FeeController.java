@@ -1,6 +1,7 @@
 package com.lawfirm.cases.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.cases.constant.CaseBusinessConstants;
 import com.lawfirm.model.cases.dto.business.CaseFinanceDTO;
 import com.lawfirm.model.cases.service.business.CaseFinanceService;
 import com.lawfirm.model.cases.vo.business.CaseFinanceVO;
@@ -21,8 +22,8 @@ import java.util.List;
  * 案件费用控制器
  */
 @Slf4j
-@RestController("caseFeeController")
-@RequestMapping("/case/fee")
+@RestController("feeController")
+@RequestMapping(CaseBusinessConstants.Controller.API_FEE_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "案件费用管理", description = "提供案件费用管理功能，包括费用记录、结算、统计报表等操作")
 public class FeeController {

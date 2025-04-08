@@ -8,6 +8,7 @@ import com.lawfirm.model.document.dto.document.DocumentUpdateDTO;
 import com.lawfirm.model.document.entity.base.BaseDocument;
 import com.lawfirm.model.document.service.DocumentService;
 import com.lawfirm.model.document.vo.DocumentVO;
+import com.lawfirm.document.constant.DocumentConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +26,8 @@ import java.util.List;
  */
 @Slf4j
 @Tag(name = "文档管理", description = "文档管理接口")
-@RestController("documentAdminController")
-@RequestMapping("/document/admin")
+@RestController("documentController")
+@RequestMapping(DocumentConstants.API_PREFIX)
 @RequiredArgsConstructor
 public class DocumentController {
 

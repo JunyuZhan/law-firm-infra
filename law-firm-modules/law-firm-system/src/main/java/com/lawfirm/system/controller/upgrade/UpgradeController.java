@@ -26,6 +26,7 @@ import com.lawfirm.model.system.dto.upgrade.UpgradeUpdateDTO;
 import com.lawfirm.model.system.service.UpgradeService;
 import com.lawfirm.model.system.vo.upgrade.PatchVO;
 import com.lawfirm.model.system.vo.upgrade.UpgradeVO;
+import com.lawfirm.system.constant.SystemConstants;
 
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +38,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @Tag(name = "系统升级管理", description = "管理系统升级，包括版本升级、脚本执行等操作")
 @RestController("upgradeController")
-@RequestMapping("/system/upgrade")
+@RequestMapping(SystemConstants.API_UPGRADE_PREFIX)
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UpgradeController extends BaseController {

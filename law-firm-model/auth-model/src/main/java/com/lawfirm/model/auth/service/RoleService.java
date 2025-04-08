@@ -2,6 +2,7 @@ package com.lawfirm.model.auth.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.model.auth.dto.role.RoleCreateDTO;
+import com.lawfirm.model.auth.dto.role.RoleQueryDTO;
 import com.lawfirm.model.auth.dto.role.RoleUpdateDTO;
 import com.lawfirm.model.auth.entity.Role;
 import com.lawfirm.model.auth.vo.RoleVO;
@@ -59,7 +60,7 @@ public interface RoleService extends BaseService<Role> {
      * @param queryDTO 查询条件
      * @return 分页结果
      */
-    Page<RoleVO> pageRoles(RoleUpdateDTO queryDTO);
+    Page<RoleVO> pageRoles(RoleQueryDTO queryDTO);
     
     /**
      * 获取所有角色

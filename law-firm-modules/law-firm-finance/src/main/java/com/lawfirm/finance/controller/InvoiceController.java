@@ -7,6 +7,7 @@ import com.lawfirm.model.finance.entity.Invoice;
 import com.lawfirm.model.finance.enums.InvoiceStatusEnum;
 import com.lawfirm.model.finance.enums.InvoiceTypeEnum;
 import com.lawfirm.model.finance.service.InvoiceService;
+import com.lawfirm.finance.constant.FinanceConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +23,7 @@ import java.util.List;
 @Slf4j
 @RestController("invoiceController")
 @RequiredArgsConstructor
-@RequestMapping("/finance/invoice")
+@RequestMapping(FinanceConstants.API_INVOICE_PREFIX)
 @Tag(name = "发票管理", description = "发票相关接口")
 public class InvoiceController {
 

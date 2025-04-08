@@ -3,6 +3,7 @@ package com.lawfirm.document.controller.support;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.document.service.DocumentService;
 import com.lawfirm.model.document.service.TemplateService;
+import com.lawfirm.document.constant.DocumentConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @RestController("documentPreviewController")
 @RequiredArgsConstructor
-@RequestMapping("/document/preview")
+@RequestMapping(DocumentConstants.API_PREVIEW_PREFIX)
 @Tag(name = "文档预览", description = "文档在线预览相关接口")
 public class PreviewController {
 

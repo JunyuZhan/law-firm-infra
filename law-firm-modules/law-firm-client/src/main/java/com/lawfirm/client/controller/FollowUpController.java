@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.client.constant.ClientConstants;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,9 +22,9 @@ import java.util.List;
  */
 @Tag(name = "客户跟进记录管理")
 @Slf4j
-@RestController("clientFollowUpController")
+@RestController("followUpController")
 @RequiredArgsConstructor
-@RequestMapping("/client/followup")
+@RequestMapping(ClientConstants.API_FOLLOW_UP_PREFIX)
 public class FollowUpController extends BaseController {
 
     private final FollowUpServiceImpl followUpService;

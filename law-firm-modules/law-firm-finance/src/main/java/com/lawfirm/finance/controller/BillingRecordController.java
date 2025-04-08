@@ -6,6 +6,7 @@ import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.finance.entity.BillingRecord;
 import com.lawfirm.model.finance.enums.BillingStatusEnum;
 import com.lawfirm.model.finance.service.BillingRecordService;
+import com.lawfirm.finance.constant.FinanceConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "账单管理", description = "账单管理接口")
 @RestController("billingRecordController")
-@RequestMapping("/finance/billing")
+@RequestMapping(FinanceConstants.API_BILLING_PREFIX)
 @RequiredArgsConstructor
 public class BillingRecordController {
 

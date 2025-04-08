@@ -1,6 +1,7 @@
 package com.lawfirm.cases.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.cases.constant.CaseBusinessConstants;
 import com.lawfirm.model.cases.dto.business.CaseTaskDTO;
 import com.lawfirm.model.cases.service.business.CaseTaskService;
 import com.lawfirm.model.cases.vo.business.CaseTaskVO;
@@ -18,8 +19,8 @@ import java.util.List;
  * 案件任务管理控制器
  */
 @Slf4j
-@RestController("caseTaskController")
-@RequestMapping("/case/task")
+@RestController("taskController")
+@RequestMapping(CaseBusinessConstants.Controller.API_TASK_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "案件任务管理", description = "提供案件任务管理功能，包括任务的创建、分配、完成、跟进等操作")
 public class TaskController {

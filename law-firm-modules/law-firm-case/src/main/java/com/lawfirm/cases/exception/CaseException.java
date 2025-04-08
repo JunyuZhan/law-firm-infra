@@ -2,6 +2,7 @@ package com.lawfirm.cases.exception;
 
 import com.lawfirm.common.core.exception.BaseException;
 import com.lawfirm.common.core.constant.ResultCode;
+import com.lawfirm.model.cases.constant.CaseContractErrorCode;
 import com.lawfirm.model.cases.constants.CaseErrorConstants;
 
 /**
@@ -143,5 +144,46 @@ public class CaseException extends BaseException {
             MODULE_PREFIX + CaseErrorConstants.Status.STATUS_NOT_ALLOWED + 
             ": 案件操作无效, 案件ID=" + caseId + ", 操作=" + operation
         );
+    }
+
+    /**
+     * 案件合同无效异常
+     *
+     * @param caseId 案件ID
+     * @param contractId 合同ID
+     * @return 异常对象
+     */
+    public static CaseException caseContractInvalid(Long caseId, Long contractId) {
+        return new CaseException(ResultCode.BAD_REQUEST, 
+                String.format("案件[%d]的合同[%d]无效或不存在", caseId, contractId));
+    }
+
+    /**
+     * 案件合同状态异常
+     *
+     * @param caseId 案件ID
+     * @param contractId 合同ID
+     * @param currentStatus 当前状态
+     * @param targetStatus 目标状态
+     * @return 异常对象
+     */
+    public static CaseException caseContractStatusInvalid(Long caseId, Long contractId, 
+            String currentStatus, String targetStatus) {
+        return new CaseException(ResultCode.BAD_REQUEST,
+                String.format("案件[%d]的合同[%d]状态无效，当前状态[%s]，目标状态[%s]", 
+                        caseId, contractId, currentStatus, targetStatus));
+    }
+
+    /**
+     * 案件合同操作权限异常
+     *
+     * @param caseId 案件ID
+     * @param contractId 合同ID
+     * @param operation 操作类型
+     * @return 异常对象
+     */
+    public static CaseException caseContractPermissionDenied(Long caseId, Long contractId, String operation) {
+        return new CaseException(ResultCode.FORBIDDEN,
+                String.format("案件[%d]的合同[%d]操作[%s]权限不足", caseId, contractId, operation));
     }
 } 

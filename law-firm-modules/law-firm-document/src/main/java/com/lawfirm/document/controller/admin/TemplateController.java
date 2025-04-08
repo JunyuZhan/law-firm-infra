@@ -7,6 +7,7 @@ import com.lawfirm.model.document.dto.template.TemplateUpdateDTO;
 import com.lawfirm.model.document.entity.template.TemplateDocument;
 import com.lawfirm.model.document.service.TemplateService;
 import com.lawfirm.model.document.vo.TemplateVO;
+import com.lawfirm.document.constant.DocumentConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +26,8 @@ import java.util.Map;
  */
 @Slf4j
 @Tag(name = "文档模板", description = "文档模板管理接口")
-@RestController
-@RequestMapping("/document/admin/template")
+@RestController("documentTemplateController")
+@RequestMapping(DocumentConstants.API_TEMPLATE_PREFIX)
 @RequiredArgsConstructor
 public class TemplateController {
 

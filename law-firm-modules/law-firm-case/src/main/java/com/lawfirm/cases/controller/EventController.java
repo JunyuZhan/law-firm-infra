@@ -1,6 +1,7 @@
 package com.lawfirm.cases.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.cases.constant.CaseBusinessConstants;
 import com.lawfirm.model.cases.dto.business.CaseEventDTO;
 import com.lawfirm.model.cases.service.business.CaseEventService;
 import com.lawfirm.model.cases.vo.business.CaseEventVO;
@@ -20,8 +21,8 @@ import java.util.List;
  * 案件事件控制器
  */
 @Slf4j
-@RestController("caseEventController")
-@RequestMapping("/case/event")
+@RestController("eventController")
+@RequestMapping(CaseBusinessConstants.Controller.API_EVENT_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "案件事件管理", description = "提供案件事件管理功能，包括事件的创建、更新、查询等操作")
 public class EventController {

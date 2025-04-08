@@ -28,8 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @AutoConfiguration
 @ConditionalOnProperty(prefix = "lawfirm.module", name = "case", havingValue = "true", matchIfMissing = true)
 @ComponentScan(basePackages = "com.lawfirm.cases")
-// 注释掉冲突的MapperScan配置，使用全局配置
-// @MapperScan("com.lawfirm.model.cases.mapper")
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
 @EnableAsync
@@ -64,7 +62,9 @@ public class CaseModuleConfiguration {
          * 处理模块初始化任务
          */
         public void process() {
-            // 模块初始化后的业务处理逻辑
+            log.info("案件模块业务处理器初始化");
+            // 可以在这里添加模块初始化后的业务处理逻辑
+            // 例如：初始化必要的数据、检查系统设置等
         }
     }
     

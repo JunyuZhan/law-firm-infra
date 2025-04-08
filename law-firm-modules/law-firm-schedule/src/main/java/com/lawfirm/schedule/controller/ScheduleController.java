@@ -8,6 +8,7 @@ import com.lawfirm.model.schedule.entity.Schedule;
 import com.lawfirm.model.schedule.service.ScheduleConflictService;
 import com.lawfirm.model.schedule.service.ScheduleService;
 import com.lawfirm.model.schedule.vo.ScheduleVO;
+import com.lawfirm.schedule.constant.ScheduleConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +29,7 @@ import java.util.List;
  */
 @Tag(name = "日程管理")
 @RestController("scheduleController")
-@RequestMapping("/schedule")
+@RequestMapping(ScheduleConstants.API_PREFIX)
 @RequiredArgsConstructor
 @Validated
 @Slf4j

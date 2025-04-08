@@ -1,6 +1,7 @@
 package com.lawfirm.finance.controller;
 
 import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.finance.constant.FinanceConstants;
 import com.lawfirm.model.finance.entity.Income;
 import com.lawfirm.model.finance.entity.Invoice;
 import com.lawfirm.model.finance.entity.PaymentPlan;
@@ -26,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "合同财务管理", description = "合同财务管理接口")
 @RestController("contractFinanceController")
-@RequestMapping("/finance/contract")
+@RequestMapping(FinanceConstants.API_CONTRACT_FINANCE_PREFIX)
 @RequiredArgsConstructor
 public class ContractFinanceController {
 

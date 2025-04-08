@@ -11,12 +11,17 @@ import com.lawfirm.model.contract.mapper.ContractReviewBaseMapper;
 import com.lawfirm.model.contract.service.ContractReviewService;
 import com.lawfirm.model.contract.vo.ContractReviewDetailVO;
 import com.lawfirm.model.contract.vo.ContractReviewVO;
+import com.lawfirm.contract.util.ContractReviewConverter;
+import com.lawfirm.contract.constant.ContractConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.lawfirm.common.security.utils.SecurityUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 合同审核服务实现类
@@ -84,38 +89,148 @@ public class ContractReviewServiceImpl extends ServiceImpl<ContractReviewBaseMap
     @Transactional(rollbackFor = Exception.class)
     public Long submitReview(ContractReviewDTO reviewDTO) {
         log.info("提交合同审批: {}", reviewDTO);
-        // TODO: 实现提交合同审批逻辑
-        return 1L; // 临时返回默认值
+        
+        // 创建审核记录
+        ContractReview review = new ContractReview();
+        review.setContractId(reviewDTO.getContractId());
+        review.setReviewer(reviewDTO.getReviewer());
+        review.setReviewStatus(String.valueOf(ContractConstant.ReviewStatus.PENDING)); // 待审核状态
+        review.setReviewComments(reviewDTO.getReviewComments());
+        
+        // 保存审核记录
+        boolean saved = save(review);
+        if (!saved) {
+            log.error("保存合同审核记录失败: {}", reviewDTO);
+            return null;
+        }
+        
+        log.info("合同审核提交成功，ID: {}", review.getId());
+        return review.getId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean approveReview(Long id, String comment) {
         log.info("审核通过: id={}, comment={}", id, comment);
-        // TODO: 实现审核通过逻辑
-        return true; // 临时返回默认值
+        
+        // 获取审核记录
+        ContractReview review = getById(id);
+        if (review == null) {
+            log.error("审核记录不存在: {}", id);
+            return false;
+        }
+        
+        // 检查审核状态
+        if (!String.valueOf(ContractConstant.ReviewStatus.PENDING).equals(review.getReviewStatus())) {
+            log.error("审核状态不正确，无法通过: {}, 当前状态: {}", id, review.getReviewStatus());
+            return false;
+        }
+        
+        // 更新审核状态
+        review.setReviewStatus(String.valueOf(ContractConstant.ReviewStatus.APPROVED)); // 已审核通过
+        review.setReviewComments(comment);
+        review.setReviewer(getCurrentUsername());
+        
+        // 保存审核结果
+        boolean updated = updateById(review);
+        if (!updated) {
+            log.error("更新审核状态失败: {}", id);
+            return false;
+        }
+        
+        log.info("合同审核通过成功，ID: {}", id);
+        return true;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean rejectReview(Long id, String comment) {
         log.info("审核拒绝: id={}, comment={}", id, comment);
-        // TODO: 实现审核拒绝逻辑
-        return true; // 临时返回默认值
+        
+        // 获取审核记录
+        ContractReview review = getById(id);
+        if (review == null) {
+            log.error("审核记录不存在: {}", id);
+            return false;
+        }
+        
+        // 检查审核状态
+        if (!String.valueOf(ContractConstant.ReviewStatus.PENDING).equals(review.getReviewStatus())) {
+            log.error("审核状态不正确，无法拒绝: {}, 当前状态: {}", id, review.getReviewStatus());
+            return false;
+        }
+        
+        // 更新审核状态
+        review.setReviewStatus(String.valueOf(ContractConstant.ReviewStatus.REJECTED)); // 已拒绝
+        review.setReviewComments(comment);
+        review.setReviewer(getCurrentUsername());
+        
+        // 保存审核结果
+        boolean updated = updateById(review);
+        if (!updated) {
+            log.error("更新审核状态失败: {}", id);
+            return false;
+        }
+        
+        log.info("合同审核拒绝成功，ID: {}", id);
+        return true;
     }
 
     @Override
     public ContractReviewDetailVO getReviewDetail(Long id) {
         log.info("获取审核详情: id={}", id);
-        // TODO: 实现获取审核详情逻辑
-        return new ContractReviewDetailVO(); // 临时返回空对象
+        
+        // 获取审核记录
+        ContractReview review = getById(id);
+        if (review == null) {
+            log.error("审核记录不存在: {}", id);
+            return null;
+        }
+        
+        // 转换为详情VO
+        ContractReviewDetailVO detailVO = new ContractReviewDetailVO();
+        detailVO.setId(review.getId());
+        detailVO.setContractId(review.getContractId());
+        
+        // 设置状态
+        Integer status = null;
+        if (String.valueOf(ContractConstant.ReviewStatus.PENDING).equals(review.getReviewStatus())) {
+            status = ContractConstant.ReviewStatus.PENDING; // 待审核
+        } else if (String.valueOf(ContractConstant.ReviewStatus.APPROVED).equals(review.getReviewStatus())) {
+            status = ContractConstant.ReviewStatus.APPROVED; // 已通过
+        } else if (String.valueOf(ContractConstant.ReviewStatus.REJECTED).equals(review.getReviewStatus())) {
+            status = ContractConstant.ReviewStatus.REJECTED; // 已拒绝
+        } else if (String.valueOf(ContractConstant.ReviewStatus.WITHDRAWN).equals(review.getReviewStatus())) {
+            status = ContractConstant.ReviewStatus.WITHDRAWN; // 已撤回
+        }
+        detailVO.setStatus(status);
+        
+        // 添加审核记录
+        ContractReviewDetailVO.ReviewRecord record = new ContractReviewDetailVO.ReviewRecord();
+        record.setId(review.getId());
+        record.setReviewerName(review.getReviewer());
+        record.setStatus(status);
+        record.setComment(review.getReviewComments());
+        detailVO.setReviewRecords(java.util.Collections.singletonList(record));
+        
+        log.info("获取审核详情成功，ID: {}", id);
+        return detailVO;
     }
 
     @Override
     public List<ContractReviewVO> listContractReviews(Long contractId) {
         log.info("查询合同审核历史: contractId={}", contractId);
-        // TODO: 实现查询合同审核历史逻辑
-        return new ArrayList<>(); // 临时返回空列表
+        
+        // 构建查询条件
+        QueryWrapper<ContractReview> wrapper = new QueryWrapper<>();
+        wrapper.eq("contract_id", contractId)
+               .orderByDesc("create_time");
+        
+        // 查询审核记录
+        List<ContractReview> reviews = list(wrapper);
+        
+        // 使用转换器将实体列表转换为VO列表
+        return ContractReviewConverter.toVOList(reviews);
     }
 
     @Override
@@ -161,5 +276,22 @@ public class ContractReviewServiceImpl extends ServiceImpl<ContractReviewBaseMap
         log.info("查询合同审核列表");
         // TODO: 实现查询合同审核列表逻辑
         return new ArrayList<>(); // 临时返回空列表
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+    
+    @Override
+    public Long getCurrentUserId() {
+        return SecurityUtils.getUserId();
+    }
+    
+    @Override
+    public Long getCurrentTenantId() {
+        // 如果系统支持多租户，则从SecurityContext中获取租户ID
+        // 如果系统不支持多租户，则返回默认租户ID
+        return 1L; // 默认返回租户ID为1
     }
 } 

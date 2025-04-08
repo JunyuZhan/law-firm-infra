@@ -6,6 +6,7 @@ import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.finance.entity.PaymentPlan;
 import com.lawfirm.model.finance.enums.PaymentPlanStatusEnum;
 import com.lawfirm.model.finance.service.PaymentPlanService;
+import com.lawfirm.finance.constant.FinanceConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController("paymentPlanController")
 @RequiredArgsConstructor
-@RequestMapping("/finance/payment-plan")
+@RequestMapping(FinanceConstants.API_PAYMENT_PLAN_PREFIX)
 @Tag(name = "付款计划管理", description = "付款计划相关接口")
 public class PaymentPlanController {
 

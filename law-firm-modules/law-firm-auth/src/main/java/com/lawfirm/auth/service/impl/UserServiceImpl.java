@@ -3,7 +3,6 @@ package com.lawfirm.auth.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.model.auth.mapper.UserMapper;
 import com.lawfirm.auth.utils.SecurityUtils;
 import com.lawfirm.model.auth.dto.user.UserCreateDTO;
@@ -14,6 +13,7 @@ import com.lawfirm.model.auth.service.UserService;
 import com.lawfirm.model.auth.vo.UserInfoVO;
 import com.lawfirm.model.auth.vo.UserVO;
 import com.lawfirm.auth.security.details.SecurityUserDetails;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Service("userDetailsService")
 @Primary
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
+public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
     
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;

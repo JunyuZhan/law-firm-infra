@@ -9,6 +9,7 @@ import com.lawfirm.model.contract.dto.ContractUpdateDTO;
 import com.lawfirm.model.contract.service.ContractService;
 import com.lawfirm.model.contract.vo.ContractDetailVO;
 import com.lawfirm.model.contract.vo.ContractVO;
+import com.lawfirm.contract.constant.ContractConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController("contractController")
-@RequestMapping("/contract")
+@RequestMapping(ContractConstants.API_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "合同管理接口", description = "提供合同的创建、查询、修改、删除等功能，支持合同全生命周期管理")
 public class ContractController {

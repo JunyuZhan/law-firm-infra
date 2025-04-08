@@ -1,6 +1,7 @@
 package com.lawfirm.cases.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.cases.constant.CaseBusinessConstants;
 import com.lawfirm.model.cases.dto.base.CaseCreateDTO;
 import com.lawfirm.model.cases.dto.base.CaseQueryDTO;
 import com.lawfirm.model.cases.dto.base.CaseUpdateDTO;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Tag(name = "案件管理", description = "案件管理接口")
 @RestController("caseController")
-@RequestMapping("/cases")
+@RequestMapping(CaseBusinessConstants.Controller.API_PREFIX)
 @RequiredArgsConstructor
 public class CaseController {
 

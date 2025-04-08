@@ -14,8 +14,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.User;
+import com.lawfirm.common.security.utils.SecurityUtils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,19 +33,16 @@ import java.util.Map;
  * 搜索服务实现
  */
 @Slf4j
+@Component
 @Primary
-@Component("searchServiceImpl")
 @Transactional(rollbackFor = Exception.class)
 public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 
-    private final DocumentHandler documentHandler;
-    private final SearchHandler searchHandler;
+    @Autowired
+    private SearchHandler searchHandler;
 
-    public SearchServiceImpl(SearchDocMapper baseMapper, DocumentHandler documentHandler, SearchHandler searchHandler) {
-        super();
-        this.documentHandler = documentHandler;
-        this.searchHandler = searchHandler;
-    }
+    @Autowired
+    private DocumentHandler documentHandler;
 
     @Override
     public SearchVO search(SearchRequestDTO request) {
@@ -43,7 +50,13 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
             return searchHandler.search(request);
         } catch (IOException e) {
             log.error("搜索失败", e);
-            throw new RuntimeException("搜索失败", e);
+            SearchVO result = new SearchVO();
+            result.setTotal(0L);
+            result.setMaxScore(0f);
+            result.setTook(0L);
+            result.setTimedOut(true);
+            result.setHits(Collections.emptyList());
+            return result;
         }
     }
 
@@ -52,8 +65,8 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
         try {
             documentHandler.bulkIndex(indexName, documents);
         } catch (IOException e) {
-            log.error("批量索引文档失败", e);
-            throw new RuntimeException("批量索引文档失败", e);
+            log.error("批量索引失败", e);
+            throw new RuntimeException("批量索引失败", e);
         }
     }
 
@@ -92,8 +105,8 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
         try {
             documentHandler.bulkDelete(indexName, ids);
         } catch (IOException e) {
-            log.error("批量删除文档失败", e);
-            throw new RuntimeException("批量删除文档失败", e);
+            log.error("批量删除失败", e);
+            throw new RuntimeException("批量删除失败", e);
         }
     }
 
@@ -130,9 +143,9 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
     @Override
     public long count(String indexName, Map<String, Object> query) {
         try {
-            SearchRequestDTO request = new SearchRequestDTO()
-                .setIndexName(indexName)
-                .setFilters(query);
+            SearchRequestDTO request = new SearchRequestDTO();
+            request.setIndexName(indexName);
+            request.setFilters(query);
             request.setPageNum(0);
             request.setPageSize(0);
             SearchVO result = searchHandler.search(request);
@@ -146,8 +159,8 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
     @Override
     public void clearIndex(String indexName) {
         try {
-            SearchRequestDTO request = new SearchRequestDTO()
-                .setIndexName(indexName);
+            SearchRequestDTO request = new SearchRequestDTO();
+            request.setIndexName(indexName);
             request.setPageNum(0);
             request.setPageSize(1000);
             
@@ -180,63 +193,9 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
         try {
             return searchHandler.suggest(indexName, field, text);
         } catch (IOException e) {
-            log.error("获取搜索建议失败", e);
-            throw new RuntimeException("获取搜索建议失败", e);
+            log.error("获取建议失败", e);
+            throw new RuntimeException("获取建议失败", e);
         }
-    }
-
-    // 实现BaseService接口的抽象方法
-    @Override
-    public boolean exists(QueryWrapper<SearchDoc> wrapper) {
-        return baseMapper.exists(wrapper);
-    }
-
-    @Override
-    public SearchDoc getById(Long id) {
-        return baseMapper.selectById(id);
-    }
-
-    @Override
-    public Page<SearchDoc> page(Page<SearchDoc> page, QueryWrapper<SearchDoc> wrapper) {
-        return baseMapper.selectPage(page, wrapper);
-    }
-
-    @Override
-    public boolean saveBatch(List<SearchDoc> entities) {
-        int size = entities.size();
-        int batchSize = 1000;
-        for (int i = 0; i < size; i += batchSize) {
-            int end = Math.min(i + batchSize, size);
-            List<SearchDoc> batch = entities.subList(i, end);
-            for (SearchDoc entity : batch) {
-                save(entity);
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public List<SearchDoc> list(QueryWrapper<SearchDoc> wrapper) {
-        return baseMapper.selectList(wrapper);
-    }
-
-    @Override
-    public boolean updateBatch(List<SearchDoc> entities) {
-        int size = entities.size();
-        int batchSize = 1000;
-        for (int i = 0; i < size; i += batchSize) {
-            int end = Math.min(i + batchSize, size);
-            List<SearchDoc> batch = entities.subList(i, end);
-            for (SearchDoc entity : batch) {
-                update(entity);
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean update(SearchDoc entity) {
-        return baseMapper.updateById(entity) > 0;
     }
 
     @Override
@@ -266,5 +225,20 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
             }
         }
         return true;
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return SecurityUtils.getUserId();
+    }
+
+    @Override
+    public Long getCurrentTenantId() {
+        return 1L; // TODO: 从租户上下文获取
     }
 } 

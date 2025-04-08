@@ -2,6 +2,8 @@ package com.lawfirm.finance.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.finance.constant.FinanceConstants;
 import com.lawfirm.model.finance.entity.Receivable;
 import com.lawfirm.model.finance.enums.ReceivableStatusEnum;
 import com.lawfirm.model.finance.service.ReceivableService;
@@ -26,7 +28,7 @@ import java.util.Map;
 @Slf4j
 @RestController("receivableController")
 @RequiredArgsConstructor
-@RequestMapping("/finance/receivable")
+@RequestMapping(FinanceConstants.API_RECEIVABLE_PREFIX)
 @Tag(name = "应收账款管理", description = "应收账款相关接口")
 public class ReceivableController {
 

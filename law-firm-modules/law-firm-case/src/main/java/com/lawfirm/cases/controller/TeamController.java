@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.cases.constant.CaseBusinessConstants;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ import java.util.List;
  * 案件团队控制器
  */
 @Slf4j
-@RestController("caseTeamController")
-@RequestMapping("/case/team")
+@RestController("teamController")
+@RequestMapping(CaseBusinessConstants.Controller.API_TEAM_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "案件团队管理", description = "提供案件团队管理功能，包括团队成员的添加、移除、角色分配等操作")
 public class TeamController {

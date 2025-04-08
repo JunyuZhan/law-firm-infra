@@ -3,13 +3,14 @@ package com.lawfirm.auth.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.model.auth.mapper.RoleMapper;
 import com.lawfirm.model.auth.dto.role.RoleCreateDTO;
+import com.lawfirm.model.auth.dto.role.RoleQueryDTO;
 import com.lawfirm.model.auth.dto.role.RoleUpdateDTO;
 import com.lawfirm.model.auth.entity.Role;
 import com.lawfirm.model.auth.service.RoleService;
 import com.lawfirm.model.auth.vo.RoleVO;
+import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("authRoleServiceImpl")
 @RequiredArgsConstructor
-public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
+public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implements RoleService {
     
     private final RoleMapper roleMapper;
     
@@ -70,7 +71,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
     
     @Override
-    public Page<RoleVO> pageRoles(RoleUpdateDTO queryDTO) {
+    public Page<RoleVO> pageRoles(RoleQueryDTO queryDTO) {
         Page<Role> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
         LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
         // 添加查询条件

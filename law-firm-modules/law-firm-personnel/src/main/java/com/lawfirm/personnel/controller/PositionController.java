@@ -4,6 +4,7 @@ import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.organization.entity.base.Position;
 import com.lawfirm.model.organization.service.PositionService;
 import com.lawfirm.personnel.converter.PositionConverter;
+import com.lawfirm.personnel.constant.PersonnelConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Tag(name = "职位管理", description = "提供职位管理相关接口")
 @RestController("positionController")
-@RequestMapping("/personnel/position")
+@RequestMapping(PersonnelConstants.API_POSITION_PREFIX)
 @Validated
 public class PositionController {
 

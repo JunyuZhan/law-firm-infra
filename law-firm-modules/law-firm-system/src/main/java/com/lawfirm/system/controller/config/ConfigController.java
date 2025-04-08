@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.system.constant.SystemConstants;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "系统配置管理", description = "管理系统配置数据，包括配置的增删改查、缓存刷新等操作")
 @RestController("configController")
-@RequestMapping("/system/config")
+@RequestMapping(SystemConstants.API_CONFIG_PREFIX)
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class ConfigController extends BaseController {

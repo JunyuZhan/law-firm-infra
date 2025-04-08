@@ -8,6 +8,7 @@ import com.lawfirm.model.schedule.dto.ScheduleReminderDTO;
 import com.lawfirm.model.schedule.entity.ScheduleReminder;
 import com.lawfirm.model.schedule.service.ScheduleReminderService;
 import com.lawfirm.model.schedule.vo.ScheduleReminderVO;
+import com.lawfirm.schedule.constant.ScheduleConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @Tag(name = "日程提醒")
 @RestController("scheduleReminderController")
-@RequestMapping("/schedule/reminder")
+@RequestMapping(ScheduleConstants.API_REMINDER_PREFIX)
 @RequiredArgsConstructor
 @Validated
 @Slf4j

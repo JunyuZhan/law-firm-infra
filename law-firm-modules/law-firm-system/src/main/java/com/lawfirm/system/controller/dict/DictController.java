@@ -11,6 +11,7 @@ import com.lawfirm.model.system.dto.dict.DictUpdateDTO;
 import com.lawfirm.model.system.entity.dict.SysDict;
 import com.lawfirm.model.system.service.DictService;
 import com.lawfirm.model.system.vo.dict.DictVO;
+import com.lawfirm.system.constant.SystemConstants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @Tag(name = "系统字典管理", description = "管理系统字典数据，包括字典的增删改查、缓存刷新等操作")
 @RestController("dictController")
-@RequestMapping("/system/dict")
+@RequestMapping(SystemConstants.API_DICT_PREFIX)
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class DictController extends BaseController {

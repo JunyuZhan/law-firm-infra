@@ -7,6 +7,7 @@ import com.lawfirm.model.schedule.dto.ScheduleParticipantDTO;
 import com.lawfirm.model.schedule.entity.ScheduleParticipant;
 import com.lawfirm.model.schedule.service.ScheduleParticipantService;
 import com.lawfirm.model.schedule.vo.ScheduleParticipantVO;
+import com.lawfirm.schedule.constant.ScheduleConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Tag(name = "日程参与人")
 @RestController("scheduleParticipantController")
-@RequestMapping("/schedule/participant")
+@RequestMapping(ScheduleConstants.API_PARTICIPANT_PREFIX)
 @RequiredArgsConstructor
 @Validated
 @Slf4j

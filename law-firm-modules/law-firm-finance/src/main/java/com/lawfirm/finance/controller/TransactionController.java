@@ -3,6 +3,7 @@ package com.lawfirm.finance.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
+import com.lawfirm.finance.constant.FinanceConstants;
 import com.lawfirm.model.finance.entity.Transaction;
 import com.lawfirm.model.finance.enums.TransactionTypeEnum;
 import com.lawfirm.model.finance.service.TransactionService;
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController("transactionController")
 @RequiredArgsConstructor
-@RequestMapping("/finance/transaction")
+@RequestMapping(FinanceConstants.API_TRANSACTION_PREFIX)
 @Tag(name = "交易管理", description = "交易管理相关API")
 public class TransactionController {
 

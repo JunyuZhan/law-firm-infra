@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lawfirm.model.personnel.vo.EmployeeVO;
 import com.lawfirm.model.schedule.dto.ScheduleParticipantDTO;
 import com.lawfirm.model.schedule.entity.ScheduleParticipant;
 import com.lawfirm.model.schedule.entity.enums.ParticipantType;
 import com.lawfirm.model.schedule.entity.enums.ResponseStatus;
 import com.lawfirm.model.schedule.mapper.ScheduleParticipantMapper;
 import com.lawfirm.model.schedule.service.ScheduleParticipantService;
+import com.lawfirm.model.personnel.vo.EmployeeVO;
 import com.lawfirm.model.schedule.vo.ScheduleParticipantVO;
 import com.lawfirm.schedule.converter.ScheduleParticipantConvert;
 import com.lawfirm.schedule.integration.PersonnelIntegration;
@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lawfirm.common.security.utils.SecurityUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -467,5 +468,20 @@ public class ScheduleParticipantServiceImpl extends ServiceImpl<ScheduleParticip
         
         // 查询是否存在
         return exists(queryWrapper);
+    }
+
+    @Override
+    public Long getCurrentTenantId() {
+        return 1L; // 暂时返回默认租户ID
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return SecurityUtils.getUserId();
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return SecurityUtils.getUsername();
     }
 }
