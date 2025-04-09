@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
  * 合同模块自动配置类
  */
 @AutoConfiguration
-@ComponentScan("com.lawfirm.contract")
+@ComponentScan({"com.lawfirm.contract", "com.lawfirm.model.client.service"})
 public class ContractAutoConfiguration {
     // 合同模块自动配置类
 } 

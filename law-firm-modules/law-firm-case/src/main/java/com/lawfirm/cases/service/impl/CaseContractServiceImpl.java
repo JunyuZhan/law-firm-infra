@@ -2,132 +2,206 @@ package com.lawfirm.cases.service.impl;
 
 import com.lawfirm.cases.exception.CaseException;
 import com.lawfirm.cases.service.CaseContractService;
-import com.lawfirm.model.cases.dto.business.CaseContractDTO;
+import com.lawfirm.model.cases.entity.CaseContractRelation;
+import com.lawfirm.model.cases.mapper.CaseContractRelationMapper;
+import com.lawfirm.model.cases.service.base.CaseService;
 import com.lawfirm.model.cases.vo.business.CaseContractVO;
 import com.lawfirm.model.contract.enums.ContractStatusEnum;
+import com.lawfirm.model.contract.service.ContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * 案件合同服务实现类
+ * 案件合同关联服务实现类
+ * 负责处理案件与合同之间的关联关系，不直接管理合同
  */
 @Slf4j
 @Service("caseContractService")
-public class CaseContractServiceImpl implements com.lawfirm.cases.service.CaseContractService {
+@Primary
+@ConditionalOnProperty(name = "lawfirm.module.case", havingValue = "true", matchIfMissing = false)
+public class CaseContractServiceImpl implements CaseContractService {
 
     @Autowired
-    private com.lawfirm.model.cases.service.business.CaseContractService modelCaseContractService;
+    private CaseService caseService;
+    
+    @Autowired
+    private ContractService contractService;
+    
+    @Autowired
+    private CaseContractRelationMapper caseContractRelationMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long createCaseContract(Long caseId, CaseContractDTO contractDTO) {
-        log.info("创建案件合同，案件ID：{}，合同信息：{}", caseId, contractDTO);
+    public boolean associateContractWithCase(Long caseId, Long contractId) {
+        log.info("关联合同到案件，案件ID：{}，合同ID：{}", caseId, contractId);
         
         // 验证案件是否存在
-        if (!modelCaseContractService.checkContractExists(caseId)) {
+        if (!caseExists(caseId)) {
             throw CaseException.caseNotFound(caseId);
         }
-
-        // 设置案件ID
-        contractDTO.setCaseId(caseId);
         
-        // 创建合同
-        return modelCaseContractService.createContract(contractDTO);
+        // 验证合同是否存在
+        if (!contractExists(contractId)) {
+            log.error("合同不存在，ID：{}", contractId);
+            return false;
+        }
+        
+        // 验证是否已关联
+        CaseContractRelation existingRelation = caseContractRelationMapper.selectByCaseIdAndContractId(caseId, contractId);
+        if (existingRelation != null) {
+            log.info("合同已关联到案件，案件ID：{}，合同ID：{}", caseId, contractId);
+            return true;
+        }
+        
+        // 创建关联
+        CaseContractRelation relation = new CaseContractRelation();
+        relation.setCaseId(caseId);
+        relation.setContractId(contractId);
+        relation.setCreateTime(new Date());
+        
+        return caseContractRelationMapper.insert(relation) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateCaseContract(Long caseId, Long contractId, CaseContractDTO contractDTO) {
-        log.info("更新案件合同，案件ID：{}，合同ID：{}，合同信息：{}", caseId, contractId, contractDTO);
+    public boolean disassociateContractFromCase(Long caseId, Long contractId) {
+        log.info("解除案件与合同的关联，案件ID：{}，合同ID：{}", caseId, contractId);
         
-        // 验证合同是否属于该案件
-        CaseContractVO contract = modelCaseContractService.getContractDetail(contractId);
-        if (contract == null || !contract.getCaseId().equals(caseId)) {
-            throw CaseException.caseContractInvalid(caseId, contractId);
+        // 验证案件是否存在
+        if (!caseExists(caseId)) {
+            throw CaseException.caseNotFound(caseId);
         }
-
-        // 更新合同
-        return modelCaseContractService.updateContract(contractDTO);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean deleteCaseContract(Long caseId, Long contractId) {
-        log.info("删除案件合同，案件ID：{}，合同ID：{}", caseId, contractId);
         
-        // 验证合同是否属于该案件
-        CaseContractVO contract = modelCaseContractService.getContractDetail(contractId);
-        if (contract == null || !contract.getCaseId().equals(caseId)) {
-            throw CaseException.caseContractInvalid(caseId, contractId);
-        }
-
-        // 删除合同
-        return modelCaseContractService.deleteContract(contractId);
-    }
-
-    @Override
-    public CaseContractVO getCaseContractDetail(Long caseId, Long contractId) {
-        log.info("获取案件合同详情，案件ID：{}，合同ID：{}", caseId, contractId);
-        
-        // 验证合同是否属于该案件
-        CaseContractVO contract = modelCaseContractService.getContractDetail(contractId);
-        if (contract == null || !contract.getCaseId().equals(caseId)) {
-            throw CaseException.caseContractInvalid(caseId, contractId);
-        }
-
-        return contract;
+        // 删除关联
+        return caseContractRelationMapper.deleteByCaseIdAndContractId(caseId, contractId) > 0;
     }
 
     @Override
     public List<CaseContractVO> listCaseContracts(Long caseId) {
-        log.info("获取案件的所有合同，案件ID：{}", caseId);
-        return modelCaseContractService.listCaseContracts(caseId);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean signCaseContract(Long caseId, Long contractId, Long signerId, String signatureData) {
-        log.info("签署案件合同，案件ID：{}，合同ID：{}，签署人ID：{}", caseId, contractId, signerId);
+        log.info("获取案件关联的所有合同，案件ID：{}", caseId);
         
-        // 验证合同是否属于该案件
-        CaseContractVO contract = modelCaseContractService.getContractDetail(contractId);
-        if (contract == null || !contract.getCaseId().equals(caseId)) {
-            throw CaseException.caseContractInvalid(caseId, contractId);
+        // 验证案件是否存在
+        if (!caseExists(caseId)) {
+            throw CaseException.caseNotFound(caseId);
         }
-
-        // 签署合同
-        return modelCaseContractService.signContract(contractId, signerId, signatureData);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean reviewCaseContract(Long caseId, Long contractId, boolean approved, String opinion) {
-        log.info("审核案件合同，案件ID：{}，合同ID：{}，审核结果：{}，审核意见：{}", 
-                caseId, contractId, approved, opinion);
         
-        // 验证合同是否属于该案件
-        CaseContractVO contract = modelCaseContractService.getContractDetail(contractId);
-        if (contract == null || !contract.getCaseId().equals(caseId)) {
-            throw CaseException.caseContractInvalid(caseId, contractId);
+        // 获取案件关联的所有合同ID
+        List<Long> contractIds = caseContractRelationMapper.selectContractIdsByCaseId(caseId);
+        if (contractIds.isEmpty()) {
+            return new ArrayList<>();
         }
-
-        // 审核合同
-        return modelCaseContractService.reviewContract(contractId, approved, opinion);
+        
+        // 查询合同详情
+        return contractIds.stream()
+                .map(this::convertToVO)
+                .filter(vo -> vo != null)
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean checkCaseContractStatus(Long caseId) {
-        log.info("检查案件合同状态，案件ID：{}", caseId);
+        log.info("检查案件是否有关联的有效合同，案件ID：{}", caseId);
         
-        // 获取案件的所有合同
-        List<CaseContractVO> contracts = modelCaseContractService.listCaseContracts(caseId);
+        // 验证案件是否存在
+        if (!caseExists(caseId)) {
+            throw CaseException.caseNotFound(caseId);
+        }
+        
+        // 获取案件关联的所有合同ID
+        List<Long> contractIds = caseContractRelationMapper.selectContractIdsByCaseId(caseId);
+        if (contractIds.isEmpty()) {
+            return false;
+        }
         
         // 检查是否有有效的合同
-        return contracts.stream()
-                .anyMatch(contract -> contract.getContractStatus() == ContractStatusEnum.EFFECTIVE.getCode());
+        for (Long contractId : contractIds) {
+            try {
+                var contractDetail = contractService.getContractDetail(contractId);
+                if (contractDetail != null && 
+                    contractDetail.getStatus() == ContractStatusEnum.EFFECTIVE.getCode()) {
+                    return true;
+                }
+            } catch (Exception e) {
+                log.error("获取合同状态失败，合同ID：{}", contractId, e);
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    public CaseContractVO getCaseContractDetail(Long caseId, Long contractId) {
+        log.info("获取案件关联的特定合同详情，案件ID：{}，合同ID：{}", caseId, contractId);
+        
+        // 验证案件是否存在
+        if (!caseExists(caseId)) {
+            throw CaseException.caseNotFound(caseId);
+        }
+        
+        // 验证合同是否关联到案件
+        CaseContractRelation relation = caseContractRelationMapper.selectByCaseIdAndContractId(caseId, contractId);
+        if (relation == null) {
+            log.error("合同未关联到案件，案件ID：{}，合同ID：{}", caseId, contractId);
+            throw CaseException.caseContractInvalid(caseId, contractId);
+        }
+        
+        // 返回合同详情
+        return convertToVO(contractId);
+    }
+    
+    /**
+     * 检查案件是否存在
+     */
+    private boolean caseExists(Long caseId) {
+        if (caseId == null) {
+            return false;
+        }
+        return caseService.getById(caseId) != null;
+    }
+    
+    /**
+     * 检查合同是否存在
+     */
+    private boolean contractExists(Long contractId) {
+        try {
+            return contractService.getById(contractId) != null;
+        } catch (Exception e) {
+            log.error("检查合同是否存在时发生异常，合同ID：{}", contractId, e);
+            return false;
+        }
+    }
+    
+    /**
+     * 将合同信息转换为VO对象
+     */
+    private CaseContractVO convertToVO(Long contractId) {
+        // 从合同模块获取详情
+        try {
+            // 这里需要合同模块提供转换接口，临时使用简单转换
+            var contractDetail = contractService.getContractDetail(contractId);
+            if (contractDetail == null) {
+                return null;
+            }
+            
+            CaseContractVO vo = new CaseContractVO();
+            vo.setId(contractId);
+            vo.setContractTitle(contractDetail.getContractName());
+            vo.setContractStatus(contractDetail.getStatus());
+            // 设置其他字段...
+            
+            return vo;
+        } catch (Exception e) {
+            log.error("获取合同详情失败，ID：{}", contractId, e);
+            return null;
+        }
     }
 } 

@@ -1,5 +1,6 @@
 package com.lawfirm.cases.controller;
 
+import com.lawfirm.cases.constant.CaseBusinessConstants;
 import com.lawfirm.cases.service.CaseContractService;
 import com.lawfirm.model.cases.dto.business.CaseContractDTO;
 import com.lawfirm.model.cases.vo.business.CaseContractVO;
@@ -13,45 +14,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 案件合同控制器
+ * 案件合同关联控制器
  */
-@Tag(name = "案件合同管理", description = "提供案件合同相关的API接口")
+@Tag(name = "案件合同关联", description = "提供案件与合同关联关系的API接口")
 @RestController("caseContractController")
-@RequestMapping("/api/v1/cases/{caseId}/contracts")
+@RequestMapping(CaseBusinessConstants.Controller.API_PREFIX + "/{caseId}/contracts")
 @RequiredArgsConstructor
 public class CaseContractController {
 
     private final CaseContractService caseContractService;
 
-    @Operation(summary = "创建案件合同")
-    @PostMapping
-    public ResponseEntity<Long> createContract(
-            @Parameter(description = "案件ID") @PathVariable Long caseId,
-            @Parameter(description = "合同信息") @RequestBody CaseContractDTO contractDTO) {
-        Long contractId = caseContractService.createCaseContract(caseId, contractDTO);
-        return ResponseEntity.ok(contractId);
-    }
-
-    @Operation(summary = "更新案件合同")
-    @PutMapping("/{contractId}")
-    public ResponseEntity<Boolean> updateContract(
-            @Parameter(description = "案件ID") @PathVariable Long caseId,
-            @Parameter(description = "合同ID") @PathVariable Long contractId,
-            @Parameter(description = "合同信息") @RequestBody CaseContractDTO contractDTO) {
-        boolean success = caseContractService.updateCaseContract(caseId, contractId, contractDTO);
-        return ResponseEntity.ok(success);
-    }
-
-    @Operation(summary = "删除案件合同")
-    @DeleteMapping("/{contractId}")
-    public ResponseEntity<Boolean> deleteContract(
+    @Operation(summary = "关联合同到案件")
+    @PostMapping("/associate/{contractId}")
+    public ResponseEntity<Boolean> associateContract(
             @Parameter(description = "案件ID") @PathVariable Long caseId,
             @Parameter(description = "合同ID") @PathVariable Long contractId) {
-        boolean success = caseContractService.deleteCaseContract(caseId, contractId);
+        boolean success = caseContractService.associateContractWithCase(caseId, contractId);
         return ResponseEntity.ok(success);
     }
 
-    @Operation(summary = "获取案件合同详情")
+    @Operation(summary = "取消关联合同")
+    @DeleteMapping("/disassociate/{contractId}")
+    public ResponseEntity<Boolean> disassociateContract(
+            @Parameter(description = "案件ID") @PathVariable Long caseId,
+            @Parameter(description = "合同ID") @PathVariable Long contractId) {
+        boolean success = caseContractService.disassociateContractFromCase(caseId, contractId);
+        return ResponseEntity.ok(success);
+    }
+
+    @Operation(summary = "获取案件关联的合同详情")
     @GetMapping("/{contractId}")
     public ResponseEntity<CaseContractVO> getContractDetail(
             @Parameter(description = "案件ID") @PathVariable Long caseId,
@@ -60,7 +51,7 @@ public class CaseContractController {
         return ResponseEntity.ok(contract);
     }
 
-    @Operation(summary = "获取案件的所有合同")
+    @Operation(summary = "获取案件的所有关联合同")
     @GetMapping
     public ResponseEntity<List<CaseContractVO>> listContracts(
             @Parameter(description = "案件ID") @PathVariable Long caseId) {
@@ -68,29 +59,7 @@ public class CaseContractController {
         return ResponseEntity.ok(contracts);
     }
 
-    @Operation(summary = "签署案件合同")
-    @PostMapping("/{contractId}/sign")
-    public ResponseEntity<Boolean> signContract(
-            @Parameter(description = "案件ID") @PathVariable Long caseId,
-            @Parameter(description = "合同ID") @PathVariable Long contractId,
-            @Parameter(description = "签署人ID") @RequestParam Long signerId,
-            @Parameter(description = "签名数据") @RequestParam String signatureData) {
-        boolean success = caseContractService.signCaseContract(caseId, contractId, signerId, signatureData);
-        return ResponseEntity.ok(success);
-    }
-
-    @Operation(summary = "审核案件合同")
-    @PostMapping("/{contractId}/review")
-    public ResponseEntity<Boolean> reviewContract(
-            @Parameter(description = "案件ID") @PathVariable Long caseId,
-            @Parameter(description = "合同ID") @PathVariable Long contractId,
-            @Parameter(description = "是否通过") @RequestParam boolean approved,
-            @Parameter(description = "审核意见") @RequestParam String opinion) {
-        boolean success = caseContractService.reviewCaseContract(caseId, contractId, approved, opinion);
-        return ResponseEntity.ok(success);
-    }
-
-    @Operation(summary = "检查案件合同状态")
+    @Operation(summary = "检查案件是否有有效合同")
     @GetMapping("/status")
     public ResponseEntity<Boolean> checkContractStatus(
             @Parameter(description = "案件ID") @PathVariable Long caseId) {

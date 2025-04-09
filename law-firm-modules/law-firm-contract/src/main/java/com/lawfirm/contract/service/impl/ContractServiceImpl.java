@@ -18,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.lawfirm.model.client.service.ClientService;
+import com.lawfirm.model.client.dto.ClientDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +34,9 @@ import java.util.stream.Collectors;
 public class ContractServiceImpl extends BaseServiceImpl<ContractMapper, Contract> implements ContractService {
 
     private final ContractMapper contractMapper;
+    
+    @Autowired(required = false)
+    private ClientService clientService;
     
     @Override
     public String getCurrentUsername() {
@@ -53,6 +59,13 @@ public class ContractServiceImpl extends BaseServiceImpl<ContractMapper, Contrac
     @Transactional(rollbackFor = Exception.class)
     public Long createContract(ContractCreateDTO createDTO) {
         log.info("创建合同: {}", createDTO.getContractName());
+        
+        // 验证客户是否存在
+        if (createDTO.getClientId() != null) {
+            validateClient(createDTO.getClientId());
+        } else {
+            log.warn("创建合同时未指定客户ID，可能导致业务问题");
+        }
         
         // 转换DTO为实体
         Contract contract = ContractConverter.toEntity(createDTO);
@@ -173,5 +186,28 @@ public class ContractServiceImpl extends BaseServiceImpl<ContractMapper, Contrac
         wrapper.orderByDesc(Contract::getUpdateTime);
         
         return wrapper;
+    }
+
+    /**
+     * 验证客户是否存在
+     * @param clientId 客户ID
+     * @throws IllegalArgumentException 如果客户不存在
+     */
+    private void validateClient(Long clientId) {
+        if (clientService == null) {
+            log.warn("客户服务未注入，无法验证客户是否存在，ID: {}", clientId);
+            return;
+        }
+        
+        try {
+            ClientDTO client = clientService.getClientDetail(clientId);
+            if (client == null) {
+                throw new IllegalArgumentException("客户不存在，ID: " + clientId);
+            }
+            log.info("客户验证通过，客户ID: {}，客户名称: {}", clientId, client.getClientName());
+        } catch (Exception e) {
+            log.error("验证客户时发生异常，客户ID: {}", clientId, e);
+            throw new IllegalArgumentException("验证客户失败: " + e.getMessage());
+        }
     }
 } 

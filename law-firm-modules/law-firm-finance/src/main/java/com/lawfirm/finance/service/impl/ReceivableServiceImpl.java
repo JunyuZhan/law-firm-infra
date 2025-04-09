@@ -248,8 +248,24 @@ public class ReceivableServiceImpl implements ReceivableService {
         if (receivable == null) {
             return null;
         }
+        
         ReceivableDetailVO vo = new ReceivableDetailVO();
-        // TODO: 实现 Receivable 到 ReceivableDetailVO 的转换逻辑
+        vo.setId(receivable.getId());
+        vo.setContractId(receivable.getContractId());
+        vo.setClientId(receivable.getClientId());
+        vo.setTotalAmount(receivable.getTotalAmount());
+        vo.setReceivedAmount(receivable.getReceivedAmount());
+        vo.setUnreceivedAmount(receivable.getUnreceivedAmount());
+        vo.setExpectedReceiptDate(receivable.getExpectedReceiptDate());
+        vo.setLastReceiptDate(receivable.getLastReceiptDate());
+        vo.setStatus(receivable.getStatusEnum().getCode());
+        vo.setOverdueDays(receivable.getOverdueDays());
+        vo.setRemark(receivable.getRemark());
+        vo.setCreateTime(receivable.getCreateTime());
+        vo.setUpdateTime(receivable.getUpdateTime());
+        vo.setCreateBy(receivable.getCreateBy());
+        vo.setUpdateBy(receivable.getUpdateBy());
+        
         return vo;
     }
 }

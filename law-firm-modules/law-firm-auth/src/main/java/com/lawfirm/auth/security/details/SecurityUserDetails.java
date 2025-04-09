@@ -72,5 +72,14 @@ public class SecurityUserDetails implements UserDetails {
     public Long getUserId() {
         return user.getId();
     }
+    
+    /**
+     * 获取租户ID
+     * 
+     * @return 租户ID
+     */
+    public Long getTenantId() {
+        return user.getTenantId();
+    }
 }
 

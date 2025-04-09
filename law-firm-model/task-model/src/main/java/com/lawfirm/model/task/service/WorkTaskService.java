@@ -6,6 +6,7 @@ import com.lawfirm.model.task.entity.WorkTask;
 import com.lawfirm.model.task.query.WorkTaskQuery;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 工作任务服务接口
@@ -87,4 +88,12 @@ public interface WorkTaskService extends BaseService<WorkTask> {
      * @param taskId 工作任务ID
      */
     void cancelTask(Long taskId);
+    
+    /**
+     * 获取任务统计信息
+     *
+     * @param query 查询条件
+     * @return 任务统计信息
+     */
+    Map<String, Object> getTaskStatistics(WorkTaskQuery query);
 } 

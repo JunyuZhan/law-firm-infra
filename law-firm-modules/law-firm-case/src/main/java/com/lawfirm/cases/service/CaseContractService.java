@@ -1,54 +1,34 @@
 package com.lawfirm.cases.service;
 
-import com.lawfirm.model.cases.dto.business.CaseContractDTO;
 import com.lawfirm.model.cases.vo.business.CaseContractVO;
-
 import java.util.List;
 
 /**
- * 案件合同服务接口
+ * 案件合同关联服务接口
+ * 负责处理案件与合同之间的关联关系，而不直接管理合同
  */
 public interface CaseContractService {
 
     /**
-     * 创建案件合同
-     *
-     * @param caseId 案件ID
-     * @param contractDTO 合同信息
-     * @return 合同ID
-     */
-    Long createCaseContract(Long caseId, CaseContractDTO contractDTO);
-
-    /**
-     * 更新案件合同
+     * 将案件关联到合同
      *
      * @param caseId 案件ID
      * @param contractId 合同ID
-     * @param contractDTO 合同信息
-     * @return 是否成功
+     * @return 是否关联成功
      */
-    boolean updateCaseContract(Long caseId, Long contractId, CaseContractDTO contractDTO);
+    boolean associateContractWithCase(Long caseId, Long contractId);
 
     /**
-     * 删除案件合同
+     * 解除案件与合同的关联
      *
      * @param caseId 案件ID
      * @param contractId 合同ID
      * @return 是否成功
      */
-    boolean deleteCaseContract(Long caseId, Long contractId);
+    boolean disassociateContractFromCase(Long caseId, Long contractId);
 
     /**
-     * 获取案件合同详情
-     *
-     * @param caseId 案件ID
-     * @param contractId 合同ID
-     * @return 合同详情
-     */
-    CaseContractVO getCaseContractDetail(Long caseId, Long contractId);
-
-    /**
-     * 获取案件的所有合同
+     * 获取案件关联的所有合同
      *
      * @param caseId 案件ID
      * @return 合同列表
@@ -56,32 +36,19 @@ public interface CaseContractService {
     List<CaseContractVO> listCaseContracts(Long caseId);
 
     /**
-     * 签署案件合同
+     * 检查案件是否有关联的有效合同
      *
      * @param caseId 案件ID
-     * @param contractId 合同ID
-     * @param signerId 签署人ID
-     * @param signatureData 签名数据
-     * @return 是否成功
-     */
-    boolean signCaseContract(Long caseId, Long contractId, Long signerId, String signatureData);
-
-    /**
-     * 审核案件合同
-     *
-     * @param caseId 案件ID
-     * @param contractId 合同ID
-     * @param approved 是否通过
-     * @param opinion 审核意见
-     * @return 是否成功
-     */
-    boolean reviewCaseContract(Long caseId, Long contractId, boolean approved, String opinion);
-
-    /**
-     * 检查案件合同状态
-     *
-     * @param caseId 案件ID
-     * @return 合同状态是否有效
+     * @return 是否有有效合同
      */
     boolean checkCaseContractStatus(Long caseId);
+    
+    /**
+     * 获取案件关联的特定合同详情
+     *
+     * @param caseId 案件ID
+     * @param contractId 合同ID
+     * @return 合同详情
+     */
+    CaseContractVO getCaseContractDetail(Long caseId, Long contractId);
 } 

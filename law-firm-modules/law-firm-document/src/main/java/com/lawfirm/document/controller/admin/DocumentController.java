@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Tag(name = "文档管理", description = "文档管理接口")
-@RestController("documentController")
+@RestController("documentModuleController")
 @RequestMapping(DocumentConstants.API_PREFIX)
 @RequiredArgsConstructor
 public class DocumentController {

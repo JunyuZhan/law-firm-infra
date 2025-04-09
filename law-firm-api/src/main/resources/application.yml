@@ -46,14 +46,7 @@ spring:
       connection-test-query: SELECT 1
   # Flyway数据库迁移配置
   flyway:
-    enabled: ${FLYWAY_ENABLED:true}
-    baseline-on-migrate: true
-    validate-on-migrate: false
-    locations: classpath:db/migration
-    table: flyway_schema_history
-    encoding: UTF-8
-    out-of-order: true
-    ignore-migration-patterns: "*:missing"
+    enabled: false
   # 禁用不需要的自动配置
   jpa:
     open-in-view: false

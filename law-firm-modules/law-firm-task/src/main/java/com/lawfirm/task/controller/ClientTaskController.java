@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 客户任务控制器
@@ -67,11 +68,15 @@ public class ClientTaskController {
      */
     @Operation(summary = "获取客户任务统计", description = "获取指定客户的任务统计信息")
     @GetMapping("/statistics")
-    public CommonResult<Object> getClientTaskStatistics(
+    public CommonResult<Map<String, Object>> getClientTaskStatistics(
             @Parameter(description = "客户ID") 
             @PathVariable Long clientId) {
         log.info("获取客户任务统计: clientId={}", clientId);
-        // TODO: 实现任务统计功能
-        return CommonResult.success();
+        
+        WorkTaskQuery query = new WorkTaskQuery();
+        query.setClientId(clientId);
+        Map<String, Object> statistics = workTaskService.getTaskStatistics(query);
+        
+        return CommonResult.success(statistics);
     }
 } 

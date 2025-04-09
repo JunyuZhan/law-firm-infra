@@ -22,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lawfirm.common.security.utils.SecurityUtils;
+import com.lawfirm.common.core.context.BaseContextHandler;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -611,16 +613,16 @@ public class ScheduleCalendarServiceImpl extends ServiceImpl<ScheduleCalendarMap
 
     @Override
     public Long getCurrentTenantId() {
-        return null; // TODO: 实现获取当前租户ID的逻辑
+        return 1L; // 默认返回租户ID为1
     }
 
     @Override
     public Long getCurrentUserId() {
-        return null; // TODO: 实现获取当前用户ID的逻辑
+        return SecurityUtils.getUserId();
     }
 
     @Override
     public String getCurrentUsername() {
-        return null; // TODO: 实现获取当前用户名的逻辑
+        return SecurityUtils.getUsername();
     }
 } 

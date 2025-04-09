@@ -51,29 +51,25 @@ public class CaseIntegration {
      * @return 案件信息映射 (caseId -> CaseDetailVO)
      */
     public Map<Long, CaseDetailVO> getCasesInfo(Set<Long> caseIds) {
-        // TODO: 对接案件模块，实现批量获取案件信息
         log.info("批量获取案件信息，案件ID数量：{}", caseIds.size());
         
         if (caseIds.isEmpty()) {
             return Collections.emptyMap();
         }
         
-        // 临时实现，生成模拟数据
-        Map<Long, CaseDetailVO> result = new HashMap<>();
-        for (Long caseId : caseIds) {
-            CaseDetailVO caseDetail = new CaseDetailVO();
-            caseDetail.setId(caseId);
-            caseDetail.setCaseName("案件" + caseId);
-            caseDetail.setCaseNumber("CASE-" + caseId);
-            caseDetail.setStatus(1);
-            caseDetail.setDescription("这是一个模拟案件");
-            caseDetail.setClientId(100L + caseId % 10);
-            caseDetail.setClientName("客户" + (100L + caseId % 10));
-            
-            result.put(caseId, caseDetail);
+        try {
+            Map<Long, CaseDetailVO> result = new HashMap<>();
+            for (Long caseId : caseIds) {
+                CaseDetailVO caseDetail = caseService.getCaseDetail(caseId);
+                if (caseDetail != null) {
+                    result.put(caseId, caseDetail);
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            log.error("批量获取案件信息失败", e);
+            return Collections.emptyMap();
         }
-        
-        return result;
     }
     
     /**
@@ -83,10 +79,19 @@ public class CaseIntegration {
      * @return 是否存在
      */
     public boolean caseExists(Long caseId) {
-        // TODO: 对接案件模块，实现案件存在性检查
         log.info("检查案件是否存在，案件ID：{}", caseId);
-        // 临时实现，假设所有案件ID都存在
-        return caseId != null;
+        
+        if (caseId == null) {
+            return false;
+        }
+        
+        try {
+            CaseDetailVO caseDetail = caseService.getCaseDetail(caseId);
+            return caseDetail != null;
+        } catch (Exception e) {
+            log.error("检查案件是否存在失败，案件ID：{}", caseId, e);
+            return false;
+        }
     }
     
     /**

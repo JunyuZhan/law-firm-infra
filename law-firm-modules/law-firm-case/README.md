@@ -304,3 +304,67 @@ src
 实现高级搜索和搜索建议等接口。
 
 > 注：所有接口定义详情请参考`law-firm-model/case-model`模块的API文档
+
+## 案件合同关联架构调整
+
+### 背景与目标
+
+律师事务所的标准业务流程通常是先有委托合同，再创建案件。合同管理属于合同模块的职责，而案件模块应该只负责案件管理以及案件与合同的关联关系。
+
+为了符合单一职责原则并避免功能重复，我们对案件与合同之间的关系进行了架构调整。
+
+### 调整内容
+
+1. **明确模块职责边界**：
+   - 合同模块：负责合同的完整生命周期管理（创建、签署、审核等）
+   - 案件模块：负责案件管理，并通过关联ID引用合同
+
+2. **重构案件合同关联服务**：
+   - 将`CaseContractService`接口简化为只处理关联关系
+   - 删除了案件模块中的合同管理功能（如合同签署、审核等）
+   - 新增`case_contract_relation`表存储案件与合同的多对多关系
+
+3. **修改接口定义**：
+   - 新增关联/解除关联接口
+   - 保留合同查询和状态检查接口
+   - 移除直接管理合同的接口
+
+### 数据结构
+
+案件合同关联表(`case_contract_relation`)用于存储案件与合同之间的多对多关系：
+
+| 字段名 | 类型 | 描述 |
+|--------|------|------|
+| id | bigint | 主键ID |
+| case_id | bigint | 案件ID |
+| contract_id | bigint | 合同ID |
+| relation_type | tinyint | 关联类型（1:委托合同, 2:服务合同, 3:其他） |
+| relation_desc | varchar | 关联描述 |
+| ... | ... | 其他系统字段 |
+
+### 使用方式
+
+```java
+// 关联合同到案件
+caseContractService.associateContractWithCase(caseId, contractId);
+
+// 解除案件与合同的关联
+caseContractService.disassociateContractFromCase(caseId, contractId);
+
+// 获取案件关联的所有合同
+List<CaseContractVO> contracts = caseContractService.listCaseContracts(caseId);
+
+// 检查案件是否有关联的有效合同
+boolean hasValidContract = caseContractService.checkCaseContractStatus(caseId);
+
+// 获取案件关联的特定合同详情
+CaseContractVO contractDetail = caseContractService.getCaseContractDetail(caseId, contractId);
+```
+
+### 业务流程
+
+1. 客户咨询并意向委托 → 创建并签署委托合同
+2. 基于委托合同 → 创建案件
+3. 创建案件时 → 关联已有的委托合同
+4. 案件进行中 → 可关联更多相关合同（如服务合同）
+5. 查看案件详情 → 可查看所有关联的合同

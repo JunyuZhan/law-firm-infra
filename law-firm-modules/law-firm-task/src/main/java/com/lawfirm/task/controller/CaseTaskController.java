@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 案例任务控制器
@@ -65,13 +66,17 @@ public class CaseTaskController {
     /**
      * 获取案例任务统计
      */
-    @Operation(summary = "获取案例任务统计", description = "获取指定案例的任务统计信息")
+    @Operation(summary = "获取案件任务统计", description = "获取指定案件的任务统计信息")
     @GetMapping("/statistics")
-    public CommonResult<Object> getCaseTaskStatistics(
-            @Parameter(description = "案例ID") 
+    public CommonResult<Map<String, Object>> getCaseTaskStatistics(
+            @Parameter(description = "案件ID") 
             @PathVariable Long caseId) {
-        log.info("获取案例任务统计: caseId={}", caseId);
-        // TODO: 实现任务统计功能
-        return CommonResult.success();
+        log.info("获取案件任务统计: caseId={}", caseId);
+        
+        WorkTaskQuery query = new WorkTaskQuery();
+        query.setCaseId(caseId);
+        Map<String, Object> statistics = workTaskService.getTaskStatistics(query);
+        
+        return CommonResult.success(statistics);
     }
 } 

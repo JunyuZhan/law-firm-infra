@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * 工作任务服务实现类
@@ -455,5 +457,47 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         // 从上下文或配置中获取租户ID
         // 这里暂时返回默认租户ID
         return 1L;
+    }
+
+    @Override
+    public Map<String, Object> getTaskStatistics(WorkTaskQuery query) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<WorkTask> queryWrapper = buildTaskQueryWrapper(query);
+        
+        // 2. 查询所有符合条件的任务
+        List<WorkTask> tasks = list(queryWrapper);
+        
+        // 3. 统计各状态的任务数量
+        Map<String, Object> statistics = new HashMap<>();
+        statistics.put("total", tasks.size());
+        statistics.put("todo", tasks.stream()
+            .filter(task -> Objects.equals(task.getStatus(), WorkTaskStatusEnum.TODO.getCode()))
+            .count());
+        statistics.put("inProgress", tasks.stream()
+            .filter(task -> Objects.equals(task.getStatus(), WorkTaskStatusEnum.IN_PROGRESS.getCode()))
+            .count());
+        statistics.put("completed", tasks.stream()
+            .filter(task -> Objects.equals(task.getStatus(), WorkTaskStatusEnum.COMPLETED.getCode()))
+            .count());
+        statistics.put("cancelled", tasks.stream()
+            .filter(task -> Objects.equals(task.getStatus(), WorkTaskStatusEnum.CANCELLED.getCode()))
+            .count());
+        
+        // 4. 统计优先级分布
+        Map<Integer, Long> priorityDistribution = tasks.stream()
+            .collect(Collectors.groupingBy(WorkTask::getPriority, Collectors.counting()));
+        statistics.put("priorityDistribution", priorityDistribution);
+        
+        // 5. 统计最近7天的任务创建数量
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        Map<String, Long> dailyTaskCount = tasks.stream()
+            .filter(task -> task.getCreateTime().isAfter(sevenDaysAgo))
+            .collect(Collectors.groupingBy(
+                task -> task.getCreateTime().toLocalDate().toString(),
+                Collectors.counting()
+            ));
+        statistics.put("dailyTaskCount", dailyTaskCount);
+        
+        return statistics;
     }
 } 

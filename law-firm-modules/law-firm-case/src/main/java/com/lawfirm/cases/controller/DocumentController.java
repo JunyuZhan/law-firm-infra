@@ -22,7 +22,7 @@ import java.util.List;
  * 案件文档控制器
  */
 @Slf4j
-@RestController("documentController")
+@RestController("caseDocumentController")
 @RequestMapping(CaseBusinessConstants.Controller.API_DOCUMENT_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "案件文档管理", description = "提供案件文档管理功能，包括文档上传、下载、分类、版本控制、共享等操作")
