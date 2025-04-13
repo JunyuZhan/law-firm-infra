@@ -3,63 +3,85 @@
 ## 模块说明
 数据模型层是系统的数据模型定义层,包含所有业务实体、数据传输对象、视图对象等。该层不包含任何业务逻辑,只负责数据的定义和转换。
 
-## 目录结构
-```
-law-firm-model/
-├── base-model/           # 基础模型
-│   ├── entity/          # 基础实体类
-│   ├── dto/             # 基础数据传输对象
-│   ├── vo/              # 基础视图对象
-│   ├── enums/           # 基础枚举类
-│   ├── constants/       # 基础常量类
-│   ├── query/           # 基础查询对象
-│   ├── result/          # 基础结果对象
-│   ├── service/         # 基础服务接口
-│   ├── controller/      # 基础控制器
-│   ├── tenant/          # 租户相关
-│   └── support/         # 支持类
-├── system-model/        # 系统模型
-├── log-model/          # 日志模型
-├── case-model/         # 案件模型
-├── client-model/       # 客户模型
-├── contract-model/     # 合同模型
-├── document-model/     # 文档模型
-├── finance-model/      # 财务模型
-├── organization-model/ # 组织模型
-├── personnel-model/    # 人员模型
-├── auth-model/        # 认证模型
-├── workflow-model/    # 工作流模型
-├── storage-model/     # 存储模型
-├── search-model/      # 搜索模型
-├── message-model/     # 消息模型
-├── knowledge-model/   # 知识模型
-└── ai-model/         # AI模型
-```
-
-## 模块分类
+## 模块列表
 
 ### 1. 基础模块
-- **base-model**: 基础模型,提供基础实体类、DTO、VO等
-- **system-model**: 系统模型,包含系统配置、系统参数等
-- **log-model**: 日志模型,包含日志记录、审计日志等
+- **base-model**: 基础模型,提供基础实体类、DTO、VO等,依赖于common-core、common-util、common-data、common-web和common-security
+- **system-model**: 系统模型,包含系统配置、系统参数等（已完整实现）
+- **log-model**: 日志模型,包含日志记录、审计日志等（已完整实现）
 
 ### 2. 业务模块
-- **case-model**: 案件相关模型
-- **client-model**: 客户相关模型
-- **contract-model**: 合同相关模型
-- **document-model**: 文档相关模型
-- **finance-model**: 财务相关模型
-- **organization-model**: 组织相关模型
-- **personnel-model**: 人员相关模型
+- **case-model**: 案件相关模型（已完整实现）
+  - 案件基本信息管理
+  - 案件状态流转
+  - 案件团队管理
+  - 案件文档管理
+  - 案件费用管理
+  - 案件进展管理
+- **client-model**: 客户相关模型（已完整实现）
+  - 客户基本信息管理
+  - 客户分类管理
+  - 客户关系管理
+- **contract-model**: 合同相关模型（已完整实现）
+  - 合同基本信息管理
+  - 合同模板管理
+  - 合同审批流程
+- **document-model**: 文档相关模型（已完整实现）
+  - 文档基本信息管理
+  - 文档版本控制
+  - 文档存储管理
+- **finance-model**: 财务相关模型（已完整实现）
+  - 费用管理
+  - 收入管理
+  - 财务报表
+- **organization-model**: 组织相关模型（已完整实现）
+  - 组织架构管理
+  - 部门管理
+  - 职位管理
+  - 团队管理
+- **personnel-model**: 人员相关模型（已完整实现）
+  - 人员基本信息
+  - 员工管理
+  - 律师管理
+  - 行政人员管理
 
 ### 3. 功能模块
-- **auth-model**: 认证相关模型
-- **workflow-model**: 工作流相关模型
-- **storage-model**: 存储相关模型
-- **search-model**: 搜索相关模型
-- **message-model**: 消息相关模型
-- **knowledge-model**: 知识相关模型
-- **ai-model**: AI相关模型
+- **auth-model**: 认证相关模型（已完整实现）
+  - 用户认证
+  - 角色权限
+  - 安全策略
+- **workflow-model**: 工作流相关模型（已完整实现）
+  - 流程定义
+  - 流程实例
+  - 任务管理
+- **storage-model**: 存储相关模型（已完整实现）
+  - 文件存储
+  - 对象存储
+  - 存储策略
+- **search-model**: 搜索相关模型（已完整实现）
+  - 全文检索
+  - 高级搜索
+  - 搜索结果处理
+- **message-model**: 消息相关模型（已完整实现）
+  - 消息发送
+  - 消息接收
+  - 消息模板
+- **knowledge-model**: 知识相关模型（已完整实现）
+  - 知识库管理
+  - 知识分类
+  - 知识检索
+- **ai-model**: AI相关模型（已完整实现）
+  - AI模型管理
+  - AI服务集成
+  - AI结果处理
+- **schedule-model**: 调度相关模型（已完整实现）
+  - 调度任务管理
+  - 调度规则定义
+  - 调度执行控制
+- **task-model**: 任务相关模型（已完整实现）
+  - 任务定义
+  - 任务分配
+  - 任务执行
 
 ## 开发规范
 
@@ -79,6 +101,10 @@ module/
 ├── vo/              # 视图对象
 ├── enums/           # 枚举类
 ├── constants/       # 常量类
+├── service/         # 服务接口
+├── mapper/          # 数据访问接口
+├── event/           # 事件定义
+├── config/          # 配置类
 ├── query/           # 查询对象
 └── result/          # 结果对象
 ```
@@ -91,6 +117,9 @@ module/
 - 常量类: 以Constants结尾,如`CaseConstants`
 - 查询类: 以Query结尾,如`CaseQuery`
 - 结果类: 以Result结尾,如`CaseResult`
+- 服务接口: 以Service结尾,如`CaseService`
+- 数据访问接口: 以Mapper结尾,如`CaseMapper`
+- 事件类: 以Event结尾,如`CaseEvent`
 
 ### 4. 字段规范
 - 实体类字段:
@@ -119,7 +148,7 @@ module/
 /**
  * 案件实体类
  *
- * @author JunyuZhan
+ * @author author
  * @date 2024-03-18
  */
 ```
@@ -137,22 +166,11 @@ private Long id;
 private String name;
 ```
 
-- 方法注释:
-```java
-/**
- * 获取案件信息
- *
- * @param id 案件ID
- * @return 案件信息
- */
-public CaseVO getCaseInfo(Long id);
-```
-
 ### 6. 依赖规范
-- 不依赖其他业务模块
-- 只依赖基础模块
-- 不依赖框架模块
-- 不依赖持久层模块
+- 所有模块依赖于base-model
+- 不允许模块间的横向依赖
+- 只允许依赖基础设施层的common模块
+- 不允许依赖业务实现模块
 
 ### 7. 测试规范
 - 单元测试覆盖率要求: 80%以上
@@ -164,223 +182,29 @@ public CaseVO getCaseInfo(Long id);
   - 常量类测试
   - 查询类测试
   - 结果类测试
+  - 服务接口测试
+  - 数据访问接口测试
+  - 事件处理测试
 
-## 开发流程
-
-### 1. 创建模块
-```bash
-# 创建模块目录
-mkdir -p law-firm-model/new-module
-
-# 创建pom.xml
-cp law-firm-model/base-model/pom.xml law-firm-model/new-module/
-
-# 创建目录结构
-mkdir -p law-firm-model/new-module/src/main/java/com/lawfirm/new/model/{entity,dto,vo,enums,constants,query,result}
-```
-
-### 2. 开发实体类
-```java
-/**
- * 新模块实体类
- *
- * @author JunyuZhan
- * @date 2024-03-18
- */
-@Data
-@TableName("new_table")
-public class NewEntity extends ModelBaseEntity {
-    /**
-     * 字段1
-     */
-    private String field1;
-
-    /**
-     * 字段2
-     */
-    private Integer field2;
-}
-```
-
-### 3. 开发DTO
-```java
-/**
- * 新模块DTO
- *
- * @author JunyuZhan
- * @date 2024-03-18
- */
-@Data
-public class NewDTO extends BaseDTO {
-    /**
-     * 字段1
-     */
-    private String field1;
-
-    /**
-     * 字段2
-     */
-    private Integer field2;
-}
-```
-
-### 4. 开发VO
-```java
-/**
- * 新模块VO
- *
- * @author JunyuZhan
- * @date 2024-03-18
- */
-@Data
-public class NewVO extends BaseVO {
-    /**
-     * 字段1
-     */
-    private String field1;
-
-    /**
-     * 字段2
-     */
-    private Integer field2;
-}
-```
-
-### 5. 开发枚举类
-```java
-/**
- * 新模块状态枚举
- *
- * @author JunyuZhan
- * @date 2024-03-18
- */
-public enum NewStatusEnum implements BaseEnum {
-    DRAFT(0, "草稿"),
-    PUBLISHED(1, "已发布");
-
-    private final Integer code;
-    private final String desc;
-
-    NewStatusEnum(Integer code, String desc) {
-        this.code = code;
-        this.desc = desc;
-    }
-
-    @Override
-    public Integer getCode() {
-        return code;
-    }
-
-    @Override
-    public String getDesc() {
-        return desc;
-    }
-}
-```
-
-### 6. 开发常量类
-```java
-/**
- * 新模块常量类
- *
- * @author JunyuZhan
- * @date 2024-03-18
- */
-public class NewConstants {
-    /**
-     * 最大长度
-     */
-    public static final int MAX_LENGTH = 100;
-
-    /**
-     * 最小长度
-     */
-    public static final int MIN_LENGTH = 1;
-}
-```
-
-### 7. 开发查询类
-```java
-/**
- * 新模块查询类
- *
- * @author JunyuZhan
- * @date 2024-03-18
- */
-@Data
-public class NewQuery extends BaseQuery {
-    /**
-     * 字段1
-     */
-    private String field1;
-
-    /**
-     * 字段2
-     */
-    private Integer field2;
-}
-```
-
-### 8. 开发结果类
-```java
-/**
- * 新模块结果类
- *
- * @author JunyuZhan
- * @date 2024-03-18
- */
-@Data
-public class NewResult extends BaseResult {
-    /**
-     * 字段1
-     */
-    private String field1;
-
-    /**
-     * 字段2
-     */
-    private Integer field2;
-}
-```
-
-### 9. 编写测试
-```java
-/**
- * 新模块测试类
- *
- * @author JunyuZhan
- * @date 2024-03-18
- */
-@SpringBootTest
-public class NewTest {
-    @Test
-    public void testEntity() {
-        NewEntity entity = new NewEntity();
-        entity.setField1("test");
-        entity.setField2(1);
-        Assert.assertEquals("test", entity.getField1());
-        Assert.assertEquals(1, entity.getField2());
-    }
-
-    @Test
-    public void testDTO() {
-        NewDTO dto = new NewDTO();
-        dto.setField1("test");
-        dto.setField2(1);
-        Assert.assertEquals("test", dto.getField1());
-        Assert.assertEquals(1, dto.getField2());
-    }
-
-    @Test
-    public void testVO() {
-        NewVO vo = new NewVO();
-        vo.setField1("test");
-        vo.setField2(1);
-        Assert.assertEquals("test", vo.getField1());
-        Assert.assertEquals(1, vo.getField2());
-    }
-}
-```
+## 最佳实践
+1. 保持模型的纯粹性，不包含业务逻辑
+2. 遵循统一的命名和目录规范
+3. 合理使用继承和组合
+4. 保持接口的稳定性
+5. 注意版本兼容性
+6. 使用事件驱动模式处理跨模块交互
+7. 合理使用缓存提高性能
+8. 注意数据一致性和事务处理
 
 ## 更新日志
-- 2024-03-18: 初始版本发布 
+- 2024-03-18: 初始版本发布
+- 2024-03-19: 完成案件管理模块实现
+- 2024-03-20: 完成认证授权模块实现
+- 2024-03-21: 完成人事管理和组织架构模块实现
+- 2024-03-22: 完成客户和合同模块实现
+- 2024-03-23: 完成文档和财务模块实现
+- 2024-03-24: 完成工作流和存储模块实现
+- 2024-03-25: 完成搜索和消息模块实现
+- 2024-03-26: 完成知识和AI模块实现
+- 2024-04-05: 完成调度模块实现
+- 2024-04-07: 完成任务模块实现 

@@ -6,89 +6,81 @@
 ## 模块列表
 
 ### 1. common-core（核心模块）
-- 统一响应处理
-- 统一异常处理
-- 基础配置支持
-- 基础实体支持
-- 上下文管理
-- 常量定义
+核心模块，提供基础功能支持，主要包含：
+- Spring Boot 核心功能
+- 数据验证支持
+- AOP支持
+- 配置处理
+- 日志功能
+- Web基础功能
+- JSON处理（Jackson）
 
 ### 2. common-util（工具模块）
-- ID生成工具
-- Bean工具类
-- 文件处理工具
-- 验证工具类
-- 字符串工具类
-- JSON处理工具
-- 图片处理工具
-- HTTP工具类
-- 地理信息工具
-- Excel处理工具
-- 日期处理工具
-- 加密解密工具
-- 压缩解压工具
-- 编码解码工具
-- 集合处理工具
+工具模块，依赖于common-core，提供各种工具类支持：
+- Apache Commons工具（lang3, collections4, io）
+- HTTP客户端（Apache HttpClient5）
+- Excel处理（Apache POI, EasyExcel）
+- JSON处理（Jackson）
+- 通用工具（Guava）
+- Web工具（可选）
+- 安全工具（可选）
 
 ### 3. common-web（Web模块）
-- Web工具类
-- Web支持类
-- 响应处理
-- 过滤器
-- 请求处理
-- 异常处理
-- 常量定义
-- Web配置
-- Web上下文
+Web功能支持模块，提供：
+- CORS跨域配置
+- 消息转换器配置（Long转String等）
+- XSS过滤
+- 文件上传配置
+- 全局异常处理
+- IP地址工具
+- Web上下文支持
+- 参数验证
+- 分页支持
 
 ### 4. common-data（数据模块）
-- 序列化处理
-- 属性处理
-- 查询处理
-- 实体处理
-- 数据配置
-- 数据注解
-- 数据切面
+数据访问模块，依赖于common-core，提供：
+- MyBatis Plus支持
+- 数据库操作支持
+- 数据访问层抽象
 
 ### 5. common-cache（缓存模块）
-- 缓存服务
-- 缓存常量
-- 缓存配置
-- 缓存切面
-- 缓存注解
+缓存支持模块，依赖于common-core和common-util，提供：
+- Redis缓存支持
+- 本地缓存支持（Caffeine）
+- Redisson分布式功能
+- 连接池配置（Commons Pool2）
+- AOP缓存处理
 
 ### 6. common-security（安全模块）
-- 安全配置
-- 安全工具
-- 令牌处理
-- 加密处理
-- 安全核心
-- 安全上下文
-- 安全常量
-- 授权处理
-- 认证处理
-- 安全审计
+安全框架模块，依赖于common-core和common-web，提供：
+- Spring Security集成
+- JWT支持
+- Redis会话管理（可选）
 - 安全注解
+- 认证授权接口
+- 安全审计
+- 令牌服务
+- 加密服务
+- 数据脱敏
 
 ### 7. common-log（日志模块）
-- 日志事件
-- 日志工具
-- 日志属性
-- 日志过滤
-- 日志配置
-- 日志切面
-- 日志注解
+日志功能模块，依赖于common-core、common-web、common-security和common-data，提供：
+- Spring Boot日志集成
+- AOP日志处理
+- Web日志支持（可选）
+- 配置处理
 
 ### 8. common-message（消息模块）
-- 消息处理
-- 消息支持
+消息处理模块，依赖于common-core、common-util和common-cache，提供：
+- RocketMQ集成
+- 邮件服务
+- 模板引擎支持（Thymeleaf，可选）
+- Web支持（可选）
 
 ### 9. common-test（测试模块）
-- 测试配置
-- 测试应用
-- 基础测试
-- 集成测试
-- 性能测试
+测试支持模块，依赖于其他所有模块，提供：
+- Spring Boot测试支持
+- Spring Security测试支持
 
 ## 使用说明
 
@@ -102,6 +94,7 @@
 ```
 
 ### 2. 模块依赖
+根据需要引入相应模块：
 ```xml
 <!-- 核心模块 -->
 <dependency>
@@ -180,17 +173,6 @@ law-firm:
       enabled: true
 ```
 
-## 详细文档
-- [核心模块文档](common-core/README.md)
-- [工具模块文档](common-util/README.md)
-- [Web模块文档](common-web/README.md)
-- [数据模块文档](common-data/README.md)
-- [缓存模块文档](common-cache/README.md)
-- [安全模块文档](common-security/README.md)
-- [日志模块文档](common-log/README.md)
-- [消息模块文档](common-message/README.md)
-- [测试模块文档](common-test/README.md)
-
 ## 最佳实践
 1. 优先使用基础设施层提供的功能
 2. 遵循模块的设计规范
@@ -198,13 +180,6 @@ law-firm:
 4. 注意性能优化
 5. 做好异常处理
 6. 完善单元测试
-
-## 常见问题
-1. 模块依赖问题
-2. 配置问题
-3. 性能问题
-4. 安全问题
-5. 日志问题
 
 ## 更新日志
 - 2024-03-18: 初始版本发布

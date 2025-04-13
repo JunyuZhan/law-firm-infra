@@ -16,6 +16,32 @@ echo "     律师事务所管理系统 - 数据库工具"
 echo "============================================="
 echo ""
 
+# 检查MySQL版本
+check_mysql_version() {
+    echo "正在检查MySQL版本..."
+    echo "请输入MySQL root密码:"
+    
+    # 获取MySQL版本
+    MYSQL_VERSION=$(mysql -u root -p -se "SELECT VERSION();")
+    
+    if [ $? -ne 0 ]; then
+        echo "MySQL连接失败，请检查服务状态和密码"
+        return 1
+    fi
+    
+    echo "当前MySQL版本: $MYSQL_VERSION"
+    
+    # 检查是否为MySQL 8.0或更高版本
+    if [[ $MYSQL_VERSION =~ ^8\. ]] || [[ $MYSQL_VERSION =~ ^[9-9][0-9]\. ]]; then
+        echo "MySQL版本满足要求 (8.0+)"
+        return 0
+    else
+        echo "警告: 当前MySQL版本低于8.0，某些迁移脚本可能会失败"
+        echo "建议升级到MySQL 8.0或更高版本"
+        return 1
+    fi
+}
+
 # 定义函数 - 数据库调试模式
 debug_db() {
     echo "正在启动律师事务所管理系统 - 数据库调试模式..."
@@ -96,6 +122,14 @@ clear_flyway() {
     cat > clear_flyway.sql << EOF
 -- 删除Flyway历史表以重置迁移
 DROP TABLE IF EXISTS flyway_schema_history;
+-- 删除旧的历史表（如果存在）
+DROP TABLE IF EXISTS flyway_schema_history_auth;
+DROP TABLE IF EXISTS flyway_schema_history_client;
+DROP TABLE IF EXISTS flyway_schema_history_system;
+DROP TABLE IF EXISTS flyway_schema_history_personnel;
+DROP TABLE IF EXISTS flyway_auth_schema_history;
+DROP TABLE IF EXISTS flyway_case_schema_history;
+DROP TABLE IF EXISTS flyway_contract_schema_history;
 EOF
     
     # 执行MySQL命令
@@ -123,6 +157,9 @@ case "$OPTION" in
     "clear")
         clear_flyway
         ;;
+    "check-version")
+        check_mysql_version
+        ;;
     *)
         # 显示菜单
         echo "请选择操作:"
@@ -130,10 +167,11 @@ case "$OPTION" in
         echo "2. 修复Flyway迁移问题"
         echo "3. 禁用Flyway迁移"
         echo "4. 清理Flyway历史记录"
-        echo "5. 退出"
+        echo "5. 检查MySQL版本"
+        echo "6. 退出"
         echo ""
         
-        read -p "请选择 [1-5]: " CHOICE
+        read -p "请选择 [1-6]: " CHOICE
         
         case "$CHOICE" in
             "1")
@@ -148,7 +186,10 @@ case "$OPTION" in
             "4")
                 clear_flyway
                 ;;
-            "5"|*)
+            "5")
+                check_mysql_version
+                ;;
+            "6"|*)
                 echo "操作已取消"
                 ;;
         esac

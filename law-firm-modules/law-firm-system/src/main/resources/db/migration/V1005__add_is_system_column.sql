@@ -1,5 +1,2 @@
--- 为配置表添加is_system字段
-ALTER TABLE sys_config ADD is_system TINYINT(1) DEFAULT 0;
-
--- 将所有现有配置标记为系统内置
-UPDATE sys_config SET is_system = 1; 
+-- 添加is_system列到字典表
+ALTER TABLE sys_dict ADD is_system TINYINT(1) NOT NULL DEFAULT 0; 

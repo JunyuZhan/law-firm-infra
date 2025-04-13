@@ -110,6 +110,20 @@
   - 集合分组
   - 集合过滤
 
+### 16. Servlet工具类
+- **ServletUtils**: Servlet相关工具类
+  - 请求参数获取
+  - 响应数据写入
+  - Cookie操作
+  - Session操作
+
+### 17. Spring工具类
+- **SpringUtils**: Spring相关工具类
+  - Bean获取
+  - 环境配置获取
+  - 属性值获取
+  - 事件发布
+
 ## 目录结构
 ```
 com.lawfirm.common.util
@@ -143,375 +157,138 @@ com.lawfirm.common.util
 │   └── CompressUtils.java
 ├── codec
 │   └── CodecUtils.java
-└── collection
-    └── CollUtils.java
+├── collection
+│   └── CollUtils.java
+├── ServletUtils.java
+├── SpringUtils.java
+└── BaseUtils.java
 ```
 
-## 主要功能
+## 使用示例
 
 ### 1. ID生成
-- UUID生成
-- 雪花ID生成
-- 订单号生成
-- 序列号生成
-
-### 2. Bean处理
-- 对象属性复制
-- 对象类型转换
-- 对象比较
-- 对象克隆
-
-### 3. 文件操作
-- 文件读写
-- 文件压缩
-- 文件类型判断
-- 文件大小计算
-
-### 4. 参数验证
-- 空值检查
-- 长度验证
-- 范围检查
-- 类型验证
-
-### 5. 字符串处理
-- 字符串判空
-- 字符串转换
-- 字符串格式化
-- 字符串匹配
-
-### 6. JSON处理
-- 对象序列化
-- 对象反序列化
-- JSON格式化
-- JSON路径
-
-### 7. 图片处理
-- 图片压缩
-- 图片裁剪
-- 图片旋转
-- 图片格式转换
-
-### 8. HTTP请求
-- GET/POST请求
-- 参数处理
-- 异常处理
-- 响应处理
-
-### 9. 地理信息
-- 距离计算
-- 坐标转换
-- 区域判断
-- 地理编码
-
-### 10. Excel处理
-- 数据导出
-- 数据导入
-- 模板导出
-- 格式处理
-
-### 11. 日期处理
-- 日期格式化
-- 日期解析
-- 日期计算
-- 时区转换
-
-### 12. 加密解密
-- MD5加密
-- AES加密
-- RSA加密
-- 数字签名
-
-### 13. 压缩解压
-- 文件压缩
-- 文件解压
-- 字符串压缩
-- 流压缩
-
-### 14. 编码解码
-- Base64编码
-- URL编码
-- Unicode编码
-- 字符集转换
-
-### 15. 集合处理
-- 集合判空
-- 集合转换
-- 集合分组
-- 集合过滤
-
-## 依赖说明
-
-### 1. Spring Boot 相关依赖
-```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-security</artifactId>
-</dependency>
-```
-
-### 2. 工具类库
-```xml
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-lang3</artifactId>
-</dependency>
-<dependency>
-    <groupId>commons-io</groupId>
-    <artifactId>commons-io</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-collections4</artifactId>
-</dependency>
-```
-
-### 3. HTTP客户端
-```xml
-<dependency>
-    <groupId>org.apache.httpcomponents.client5</groupId>
-    <artifactId>httpclient5</artifactId>
-</dependency>
-```
-
-### 4. Excel处理
-```xml
-<dependency>
-    <groupId>org.apache.poi</groupId>
-    <artifactId>poi-ooxml</artifactId>
-</dependency>
-```
-
-## 使用说明
-
-### 1. 引入依赖
-```xml
-<dependency>
-    <groupId>com.lawfirm</groupId>
-    <artifactId>common-util</artifactId>
-    <version>${project.version}</version>
-</dependency>
-```
-
-### 2. ID生成
 ```java
 // 生成UUID
 String uuid = IdUtils.uuid();
 
 // 生成雪花ID
-Long snowflakeId = IdUtils.snowflake();
+Long snowflakeId = IdUtils.snowflakeId();
 
 // 生成订单号
 String orderNo = IdUtils.orderNo();
 ```
 
-### 3. Bean处理
+### 2. Bean处理
 ```java
-// 对象复制
-BeanUtils.copyProperties(source, target);
+// 对象属性复制
+UserDTO userDTO = new UserDTO();
+BeanUtils.copyProperties(userEntity, userDTO);
 
-// 对象转换
-Target target = BeanUtils.convert(source, Target.class);
-
-// 对象比较
-boolean equals = BeanUtils.equals(source, target);
+// 对象类型转换
+UserVO userVO = BeanUtils.convert(userDTO, UserVO.class);
 ```
 
-### 4. 文件操作
+### 3. 文件操作
 ```java
-// 文件上传
-FileUtils.upload(file, path);
+// 文件读取
+String content = FileUtils.readFileToString(file);
 
-// 文件下载
-FileUtils.download(url, path);
+// 文件写入
+FileUtils.writeStringToFile(file, content);
 
-// 文件删除
-FileUtils.delete(path);
+// 文件压缩
+FileUtils.compress(file, zipFile);
 ```
 
-### 5. 参数验证
+### 4. 参数验证
 ```java
-// 参数验证
-Assert.notNull(value, "参数不能为空");
+// 非空检查
+Assert.notNull(obj, "对象不能为空");
 
-// 条件验证
-Assert.isTrue(condition, "条件不满足");
+// 长度验证
+Assert.length(str, 1, 10, "字符串长度必须在1-10之间");
 
-// 状态验证
-Assert.state(condition, "状态不正确");
+// 范围检查
+Assert.range(num, 1, 100, "数字必须在1-100之间");
 ```
 
-### 6. 字符串处理
-```java
-// 字符串判空
-StringUtils.isEmpty(str);
-
-// 字符串转换
-StringUtils.toCamelCase(str);
-
-// 字符串格式化
-StringUtils.format(template, args);
-```
-
-### 7. JSON处理
+### 5. JSON处理
 ```java
 // 对象转JSON
 String json = JsonUtils.toJson(obj);
 
 // JSON转对象
-Object obj = JsonUtils.fromJson(json, Object.class);
+User user = JsonUtils.fromJson(json, User.class);
 
-// JSON路径
-Object value = JsonPathUtils.getValue(json, "$.key");
+// JSON格式化
+String formatted = JsonUtils.format(json);
 ```
 
-### 8. 图片处理
-```java
-// 图片压缩
-ImageUtils.compress(image, quality);
-
-// 图片裁剪
-ImageUtils.crop(image, x, y, width, height);
-
-// 图片旋转
-ImageUtils.rotate(image, angle);
-```
-
-### 9. HTTP请求
+### 6. HTTP请求
 ```java
 // GET请求
-String response = HttpUtils.get(url);
+String response = HttpUtils.get(url, params);
 
 // POST请求
-String response = HttpUtils.post(url, data);
+String response = HttpUtils.post(url, params);
 
 // 文件上传
 String response = HttpUtils.upload(url, file);
 ```
 
-### 10. 地理信息
-```java
-// 计算距离
-double distance = GeoUtils.distance(lat1, lng1, lat2, lng2);
-
-// 坐标转换
-Point point = GeoUtils.convert(lat, lng);
-
-// 区域判断
-boolean inArea = GeoUtils.inArea(point, area);
-```
-
-### 11. Excel处理
-```java
-// 导出Excel
-ExcelUtils.export(data, path);
-
-// 导入Excel
-List<Object> data = ExcelUtils.import(path);
-
-// 模板导出
-ExcelUtils.exportTemplate(template, data, path);
-```
-
-### 12. 日期处理
+### 7. 日期处理
 ```java
 // 日期格式化
-String date = DateUtils.format(date, pattern);
+String dateStr = DateUtils.format(date, "yyyy-MM-dd");
 
 // 日期解析
-Date date = DateUtils.parse(str, pattern);
+Date date = DateUtils.parse(dateStr, "yyyy-MM-dd");
 
 // 日期计算
-Date date = DateUtils.add(date, Calendar.DAY_OF_MONTH, 1);
+Date nextDay = DateUtils.addDays(date, 1);
 ```
 
-### 13. 加密解密
+### 8. 加密解密
 ```java
 // MD5加密
 String md5 = CryptoUtils.md5(str);
 
 // AES加密
-String aes = CryptoUtils.aes(str, key);
+String encrypted = CryptoUtils.aesEncrypt(str, key);
 
 // RSA加密
-String rsa = CryptoUtils.rsa(str, key);
+String encrypted = CryptoUtils.rsaEncrypt(str, publicKey);
 ```
 
-### 14. 压缩解压
-```java
-// 压缩文件
-CompressUtils.zip(source, target);
+## 注意事项
 
-// 解压文件
-CompressUtils.unzip(source, target);
+1. 工具类使用
+   - 注意空值处理
+   - 注意异常处理
+   - 注意性能影响
 
-// 压缩字符串
-String compressed = CompressUtils.compress(str);
-```
+2. 线程安全
+   - 大部分工具类是线程安全的
+   - 注意共享资源的使用
+   - 避免并发问题
 
-### 15. 编码解码
-```java
-// Base64编码
-String base64 = CodecUtils.base64Encode(str);
+3. 性能优化
+   - 合理使用缓存
+   - 避免重复计算
+   - 注意资源释放
 
-// URL编码
-String url = CodecUtils.urlEncode(str);
+## 常见问题
 
-// Unicode编码
-String unicode = CodecUtils.unicodeEncode(str);
-```
+1. Q: 如何处理工具类的异常？
+   A: 工具类通常抛出运行时异常，建议在调用处进行异常处理。
 
-### 16. 集合处理
-```java
-// 集合判空
-CollUtils.isEmpty(collection);
+2. Q: 如何扩展工具类功能？
+   A: 可以通过继承或组合的方式扩展工具类，注意保持向后兼容。
 
-// 集合转换
-List<T> list = CollUtils.convert(collection, converter);
+3. Q: 如何保证工具类的线程安全？
+   A: 使用不可变对象或线程安全的数据结构，避免共享状态。
 
-// 集合分组
-Map<K, List<T>> map = CollUtils.group(collection, keyExtractor);
-```
-
-## 测试说明
-
-### 1. 测试覆盖
-- 测试用例总数：79个
-- 测试覆盖率要求：80%以上
-- 测试模块：
-  - ID生成测试
-  - Bean处理测试
-  - 文件操作测试
-  - 参数验证测试
-  - 字符串处理测试
-  - JSON处理测试
-  - 图片处理测试
-  - HTTP请求测试
-  - 地理信息测试
-  - Excel处理测试
-  - 日期处理测试
-  - 加密解密测试
-  - 压缩解压测试
-  - 编码解码测试
-  - 集合处理测试
-
-### 2. 测试执行
-```bash
-# 执行所有测试
-mvn test
-
-# 生成测试覆盖率报告
-mvn test jacoco:report
-```
-
-### 3. 测试报告
-- 测试结果：全部通过
-- 测试覆盖率：符合要求
-- 性能指标：响应时间在预期范围内
-
-## 维护者
-- 维护团队：基础架构组
-- 联系邮箱：xxx@xxx.com 
+## 相关文档
+- [工具类使用规范](../../docs/util-specification.md)
+- [工具类测试说明](../../docs/util-test.md)
+- [工具类性能优化](../../docs/util-performance.md) 

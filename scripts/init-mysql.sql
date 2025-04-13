@@ -1,7 +1,19 @@
+-- ======================================================
+-- 律师事务所管理系统数据库初始化脚本 - 统一版本
+-- ======================================================
+
+-- 确保使用UTF8mb4字符集
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- 创建律所管理系统数据库
 CREATE DATABASE IF NOT EXISTS law_firm DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE law_firm;
+
+-- ==================
+-- 核心系统表 (system)
+-- ==================
 
 -- 系统用户表
 CREATE TABLE IF NOT EXISTS sys_user (
@@ -105,7 +117,9 @@ CREATE TABLE IF NOT EXISTS sys_dept (
     deleted TINYINT DEFAULT 0 COMMENT '是否删除: 0-未删除, 1-已删除'
 ) COMMENT '部门表';
 
--- 插入初始数据
+-- ==================
+-- 初始化数据
+-- ==================
 
 -- 插入管理员用户 (密码: admin123)
 INSERT INTO sys_user (id, username, password, real_name, email, status, creator, create_time) 
@@ -191,4 +205,7 @@ VALUES
     (5, 2, '民事法律组', 1, '孙七', 1, 1, NOW()),
     (6, 2, '商事法律组', 2, '周八', 1, 1, NOW())
 ON DUPLICATE KEY UPDATE
-    update_time = NOW(); 
+    update_time = NOW();
+
+-- 重新启用外键检查
+SET FOREIGN_KEY_CHECKS = 1; 

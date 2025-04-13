@@ -27,6 +27,12 @@ common-security/
 │   └── SensitiveDataService.java # 数据脱敏服务接口
 ├── core/             # 核心服务接口
 │   └── SecurityService.java      # 安全核心服务接口
+├── dao/              # 数据访问接口
+│   ├── UserDao.java             # 用户数据访问接口
+│   └── RoleDao.java             # 角色数据访问接口
+├── utils/            # 工具类
+│   ├── SecurityUtils.java       # 安全工具类
+│   └── PasswordUtils.java       # 密码工具类
 └── constants/        # 安全常量定义
     └── SecurityConstants.java     # 安全相关常量
 ```
@@ -118,6 +124,43 @@ public interface SensitiveDataService {
 }
 ```
 
+### 7. 数据访问
+提供了用户和角色相关的数据访问接口：
+```java
+public interface UserDao {
+    User findByUsername(String username);
+    List<User> findByRole(String role);
+    void save(User user);
+    void update(User user);
+    void delete(String username);
+}
+
+public interface RoleDao {
+    Role findByName(String name);
+    List<Role> findAll();
+    void save(Role role);
+    void update(Role role);
+    void delete(String name);
+}
+```
+
+### 8. 工具类
+提供了安全相关的工具方法：
+```java
+public class SecurityUtils {
+    public static Authentication getAuthentication();
+    public static Authorization getAuthorization();
+    public static String getCurrentUsername();
+    public static boolean isAuthenticated();
+}
+
+public class PasswordUtils {
+    public static String encode(String rawPassword);
+    public static boolean matches(String rawPassword, String encodedPassword);
+    public static String generateRandomPassword();
+}
+```
+
 ## 设计说明
 
 1. **接口设计原则**
@@ -152,6 +195,41 @@ public interface SensitiveDataService {
   - 通用的数据脱敏
   - 完整的安全审计
   - 令牌管理服务
+  - 数据访问接口
+  - 安全工具类
+
+## 注意事项
+
+1. 接口实现
+   - 必须实现所有必要的方法
+   - 保持接口的抽象性
+   - 避免具体实现细节
+
+2. 线程安全
+   - 注意上下文线程安全
+   - 避免共享状态
+   - 使用线程安全的数据结构
+
+3. 性能考虑
+   - 合理使用缓存
+   - 避免重复计算
+   - 注意资源释放
+
+## 常见问题
+
+1. Q: 如何实现自定义认证方式？
+   A: 实现 AuthenticationProvider 接口，并在配置中注册。
+
+2. Q: 如何添加新的权限控制？
+   A: 实现 Authorization 接口，或使用 @RequiresPermissions 注解。
+
+3. Q: 如何处理安全审计？
+   A: 实现 SecurityAudit 接口，并在需要审计的地方调用相应方法。
+
+## 相关文档
+- [安全框架设计文档](../../docs/security-framework-design.md)
+- [认证授权实现指南](../../docs/auth-implementation-guide.md)
+- [安全审计规范](../../docs/security-audit-spec.md)
 
 ### 数据脱敏服务
 

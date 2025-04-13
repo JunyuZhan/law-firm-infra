@@ -215,7 +215,7 @@
 ## 辅助业务模块
 
 ### law-firm-task（任务管理模块）
-- **核心职责**：跨模块的统一任务管理
+- **核心职责**：任务和待办事项管理
 - **主要功能**：
   - 任务创建与分配
   - 任务优先级与截止日期
@@ -229,7 +229,7 @@
 - **依赖模块**：system、personnel
 
 ### law-firm-schedule（日程管理模块）
-- **核心职责**：律所人员日程与会议管理
+- **核心职责**：日程安排与会议管理
 - **主要功能**：
   - 个人日程管理
   - 团队日程协调
@@ -242,61 +242,23 @@
 - **对外接口**：日程API、会议室API、提醒API
 - **依赖模块**：personnel、case
 
-### law-firm-conflict（利益冲突模块）
-- **核心职责**：律所利益冲突检查与管理
-- **主要功能**：
-  - 利益冲突规则配置
-  - 冲突检查（案件、客户、律师）
-  - 潜在冲突预警
-  - 冲突审批与处理
-  - 回避管理
-  - 保密墙设置
-- **技术组件**：规则引擎、冲突检测算法
-- **数据管理**：冲突规则、检查记录、处理记录
-- **对外接口**：冲突检查API、预警API、审批API
-- **依赖模块**：client、case、personnel
+> **注：原计划的利益冲突检查功能已整合到合同管理模块(law-firm-contract)中实现，以简化架构。**
 
-### law-firm-supplies（办公用品模块）
-- **核心职责**：律所办公用品管理
-- **主要功能**：
-  - 办公用品分类与管理
-  - 库存管理
-  - 申请与审批
-  - 领用与归还
-  - 供应商管理
-  - 采购管理
-- **技术组件**：库存算法、条码集成
-- **数据管理**：用品信息、库存记录、申请记录
-- **对外接口**：用品API、库存API、申请API
-- **依赖模块**：system、finance
+## 支持模块清单
 
-### law-firm-asset（资产管理模块）
-- **核心职责**：律所固定资产管理
-- **主要功能**：
-  - 资产登记与编码
-  - 资产分类与状态管理
-  - 资产领用与归还
-  - 资产维护与报修
-  - 资产折旧与盘点
-  - 资产处置
-- **技术组件**：资产标签、折旧算法
-- **数据管理**：资产信息、领用记录、维护记录
-- **对外接口**：资产API、领用API、维护API
-- **依赖模块**：finance、personnel
-
-### law-firm-seal（印章管理模块）
-- **核心职责**：律所印章使用与管理
-- **主要功能**：
-  - 印章登记与分类
-  - 印章申请与审批
-  - 用印记录与跟踪
-  - 印章权限管理
-  - 电子印章管理
-  - 印章归档与统计
-- **技术组件**：core-workflow集成、电子签章
-- **数据管理**：印章信息、申请记录、用印记录
-- **对外接口**：印章API、申请API、用印API
-- **依赖模块**：document、contract
+- 🔐 law-firm-auth
+- 🏢 law-firm-system
+- 👥 law-firm-personnel
+- 💼 law-firm-case
+- 📄 law-firm-contract
+- 👪 law-firm-client
+- 💰 law-firm-finance
+- 📑 law-firm-document
+- 📚 law-firm-knowledge
+- 📅 law-firm-schedule
+- ✅ law-firm-task
+- �� law-firm-archive
+- 📊 law-firm-analysis
 
 ## 模块间依赖关系
 ### 层级结构
@@ -320,7 +282,6 @@
 4. **辅助层**：
    - ✅ law-firm-task
    - 📅 law-firm-schedule
-   - ⚖️ law-firm-conflict
    - 🖨️ law-firm-supplies
    - 🏷️ law-firm-asset
    - 🖋️ law-firm-seal

@@ -47,7 +47,7 @@
 
 ### 2.4 搜索服务模块 (core-search)
 
-基于Elasticsearch的搜索服务：
+基于Lucene的搜索服务：
 - 全文检索
 - 多字段组合搜索
 - 基础的聚合分析
@@ -78,14 +78,14 @@
 - Spring Boot Starter
 - Spring Cloud
 - Flowable：工作流引擎
-- Elasticsearch：搜索引擎
+- Lucene：搜索引擎
 - MinIO：对象存储
 - RocketMQ：消息队列
 - OpenAI SDK：AI服务
 
 ### 3.2 存储方案
 - MySQL：结构化数据
-- Elasticsearch：搜索数据
+- Lucene：搜索数据
 - MinIO/OSS：对象存储
 - Redis：缓存
 
@@ -204,132 +204,32 @@ bucket.setStorageType(StorageTypeEnum.MINIO);
 Long bucketId = bucketService.createBucket(bucket);
 ```
 
-#### 5.3.3 审计服务调用
+## 6. 安全与合规
 
-```java
-// 记录审计日志
-auditService.recordLog("合同管理", "删除合同", "删除合同ID: " + contractId);
+### 6.1 数据安全
+- 敏感信息过滤
+- 审计日志加密存储
+- 访问权限控制
 
-// 异步记录审计日志
-auditService.recordLogAsync("批量操作", "导入客户", "导入客户数量: " + customers.size());
+### 6.2 性能考虑
+- 异步日志记录
+- 日志批量处理
+- 合理的日志保留策略
 
-// 查询审计日志
-Page<AuditLogVO> logs = auditQueryService.queryAuditLogs(
-    AuditLogQueryDTO.builder()
-        .module("合同管理")
-        .startTime(startTime)
-        .endTime(endTime)
-        .pageNum(1)
-        .pageSize(10)
-        .build()
-);
-```
+### 6.3 合规保障
+- 满足监管合规要求
+- 支持多种审计规范
+- 审计日志防篡改
 
-#### 5.3.4 搜索服务调用
-
-```java
-// 基础搜索
-SearchResult<DocVO> result = searchService.search(
-    "合同违约",     // 关键词
-    "contract",    // 搜索范围
-    PageRequest.of(0, 10)  // 分页
-);
-
-// 索引文档
-indexService.indexDocument(document);
-```
-
-#### 5.3.5 消息服务调用
-
-```java
-// 发送系统消息
-messageSender.sendSystemMessage(
-    "任务提醒", 
-    "您有新的合同审核任务需要处理", 
-    Arrays.asList("user1", "user2")
-);
-
-// 发送邮件
-messageSender.sendTemplateEmail(
-    "case_assignment",  // 模板代码
-    templateParams,     // 模板参数
-    "案件分配通知",      // 邮件主题
-    Collections.singletonList("lawyer@example.com")
-);
-```
-
-### 5.4 业务模块封装最佳实践
-
-业务模块应该对核心服务进行二次封装，以适应具体业务场景：
-
-```java
-@Service
-@RequiredArgsConstructor
-public class ContractWorkflowService {
-    
-    @Autowired
-    @Qualifier("coreProcessServiceImpl")
-    private ProcessService processService;
-    
-    /**
-     * 启动合同审批流程
-     */
-    public String startContractApprovalProcess(Contract contract) {
-        // 构建流程变量
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("contractId", contract.getId());
-        variables.put("contractType", contract.getType());
-        variables.put("amount", contract.getAmount());
-        variables.put("initiator", SecurityUtils.getCurrentUsername());
-        
-        // 调用核心层服务启动流程
-        return processService.startProcess(
-            "contract_approval_process",
-            "CONTRACT-" + contract.getId(),
-            variables
-        );
-    }
-}
-```
-
-通过这种方式，业务模块可以使用核心层提供的底层功能，同时增加业务特定的逻辑，实现关注点分离和代码复用。 
-
-### 5.5 配置管理规范
-- 核心模块不直接管理配置文件
-- 配置项由业务层提供
-- 核心模块应设计接收配置的接口
-- 核心模块不应硬编码配置值
-- 敏感配置（如API密钥）由业务层负责安全存储和管理
-
-### 5.6 数据存储规范
-- 核心模块不直接创建或管理数据库表
-- 数据存储相关表结构由业务模块定义
-- 核心模块应通过接口获取业务层提供的数据存储服务
-- 核心模块不应包含数据库迁移脚本
-- 业务层负责定义数据库表之间的关联关系
-
-## 6. 核心层重构建议
-
-针对当前核心层中存在的直接管理数据库和配置的问题，提出以下重构建议：
-
-### 6.1 清理数据库脚本
-- 将核心层中的数据库迁移脚本（如`V1.0.1__init_workflow_tables.sql`）移至相应的业务模块
-- 移除核心层中的数据库表创建逻辑
-- 调整核心层服务实现，通过接口获取业务层提供的数据访问服务
-
-### 6.2 调整配置管理
-- 移除核心层中的具体配置文件（如`application-workflow.yml`）
-- 设计配置接口，供业务层注入配置
-- 使用条件装配方式适应不同业务场景的配置
-
-### 6.3 重新设计存储抽象
-- 将存储策略与存储结构分离
-- 业务层负责提供数据存储实现
-- 核心层仅处理功能逻辑，不涉及存储细节
-
-### 6.4 统一异常处理
-- 定义核心层统一的异常体系
-- 屏蔽底层技术实现的异常
-- 提供清晰的错误信息和状态码
-
-## 7. 业务模块调用方式
+## 7. 更新日志
+- 2024-03-18: 初始版本发布
+- 2024-03-19: 完成案件管理模块实现
+- 2024-03-20: 完成认证授权模块实现
+- 2024-03-21: 完成人事管理和组织架构模块实现
+- 2024-03-22: 完成客户和合同模块实现
+- 2024-03-23: 完成文档和财务模块实现
+- 2024-03-24: 完成工作流和存储模块实现
+- 2024-03-25: 完成搜索和消息模块实现
+- 2024-03-26: 完成知识和AI模块实现
+- 2024-04-05: 完成调度模块实现
+- 2024-04-07: 完成任务模块实现

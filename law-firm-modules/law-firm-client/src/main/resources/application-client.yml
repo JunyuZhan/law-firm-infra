@@ -5,10 +5,10 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
-    baseline-version: 3000
+    baseline-version: 4000
     validate-on-migrate: true
-    out-of-order: false
-    table: flyway_schema_history_client
+    out-of-order: true
+    table: flyway_schema_history
   
   # 数据源配置继承自主应用
 

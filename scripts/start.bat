@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 setlocal enabledelayedexpansion
 
 :: 默认环境为开发环境
