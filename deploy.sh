@@ -33,8 +33,25 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-# 启动所有容器
-echo "开始部署系统..."
+# 设置变量
+APP_NAME="law-firm-api"
+IMAGE_NAME="law-firm-infra-law-firm-api"
+CONTAINER_NAME="law-firm-infra"
+
+# 停止并删除旧容器
+echo "停止并删除旧容器..."
+docker-compose down
+
+# 删除旧镜像
+echo "删除旧镜像..."
+docker rmi $IMAGE_NAME
+
+# 构建新镜像
+echo "构建新镜像..."
+docker-compose build
+
+# 启动服务
+echo "启动服务..."
 docker-compose up -d
 
 # 检查容器状态

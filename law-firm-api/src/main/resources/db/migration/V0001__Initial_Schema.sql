@@ -1,3 +1,8 @@
+/* 
+ * API模块初始化数据库表结构
+ * 版本号V0001，避免与系统模块V1xxx冲突
+ */
+
 -- 系统用户表
 CREATE TABLE IF NOT EXISTS sys_user (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -196,18 +201,31 @@ CREATE TABLE IF NOT EXISTS sys_permission_request (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='权限申请表';
 
 -- 系统配置表
-CREATE TABLE IF NOT EXISTS sys_config (
-  id bigint AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
-  config_name varchar(100) NOT NULL COMMENT '配置名称',
-  config_key varchar(100) NOT NULL COMMENT '配置键',
-  config_value varchar(500) NOT NULL COMMENT '配置值',
-  config_type varchar(20) NOT NULL DEFAULT 'SYSTEM' COMMENT '配置类型（SYSTEM系统配置/BUSINESS业务配置）',
-  is_system tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否系统内置（0否/1是）',
-  remark varchar(500) DEFAULT NULL COMMENT '备注说明',
-  create_by varchar(64) NOT NULL COMMENT '创建人',
-  create_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  update_by varchar(64) DEFAULT NULL COMMENT '更新人',
-  update_time datetime DEFAULT NULL COMMENT '更新时间',
-  deleted tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除（0否/1是）',
-  UNIQUE KEY uk_config_key (config_key)
+CREATE TABLE IF NOT EXISTS `sys_config` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `config_key` varchar(100) NOT NULL COMMENT '配置键',
+  `config_value` text COMMENT '配置值',
+  `config_name` varchar(100) NOT NULL COMMENT '配置名称',
+  `config_type` varchar(20) DEFAULT 'text' COMMENT '配置类型（text-文本,number-数字,boolean-布尔,json-JSON）',
+  `is_system` tinyint(1) DEFAULT '0' COMMENT '是否系统配置（0-否，1-是）',
+  `is_public` tinyint(1) DEFAULT '1' COMMENT '是否公开（0-否，1-是）',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '租户ID',
+  `tenant_code` varchar(50) DEFAULT NULL COMMENT '租户编码',
+  `version` int(11) DEFAULT '0' COMMENT '版本号',
+  `sort` int(11) DEFAULT '0' COMMENT '排序',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除（0-否，1-是）',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` varchar(50) DEFAULT NULL COMMENT '创建者',
+  `update_by` varchar(50) DEFAULT NULL COMMENT '更新者',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_config_key` (`config_key`,`tenant_id`,`deleted`),
+  KEY `idx_config_type` (`config_type`),
+  KEY `idx_is_system` (`is_system`),
+  KEY `idx_is_public` (`is_public`),
+  KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表';
+
+-- 注意：sys_config表定义已移至系统模块 (law-firm-system)
+-- 参见：law-firm-modules/law-firm-system/src/main/resources/db/migration/V1003__create_system_tables.sql

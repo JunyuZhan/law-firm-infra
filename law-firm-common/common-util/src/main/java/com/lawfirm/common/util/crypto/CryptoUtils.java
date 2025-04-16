@@ -12,7 +12,6 @@ import java.util.Base64;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
-import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.crypto.symmetric.DES;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,8 +75,6 @@ public class CryptoUtils extends BaseUtils {
     }
     
     // RSA加密
-    private static final RSA RSA = new RSA();
-    
     public static KeyPair generateKeyPair() {
         return SecureUtil.generateKeyPair("RSA");
     }

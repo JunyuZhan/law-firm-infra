@@ -24,6 +24,35 @@
     </properties>
 
     <dependencies>
+        <!-- Common 模块依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-data</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-log</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>common-message</artifactId>
+        </dependency>
         <!-- 业务模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
@@ -96,37 +125,7 @@
             <version>${revision}</version>
         </dependency>
         
-        <!-- 通用组件依赖 -->
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-core</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-data</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-web</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-security</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-cache</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lawfirm</groupId>
-            <artifactId>common-log</artifactId>
-            <version>${revision}</version>
-        </dependency>
+
 
         <!-- Spring Boot Web -->
         <dependency>

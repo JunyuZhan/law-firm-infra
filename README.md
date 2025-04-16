@@ -313,21 +313,32 @@ docker-compose up -d
 #### 开发环境启动
 
 ```bash
-# 默认启动
-java -jar target/law-firm-api-1.0.0.jar
+# 启动开发环境（包含MySQL、Redis、MinIO等基础设施）
+./start-docker.sh
 
-# 无Redis环境启动
-java "-Dspring.profiles.active=dev-noredis" -jar target/law-firm-api-1.0.0.jar
+# 启动完成后，可以通过以下地址访问服务：
+# API服务：http://localhost:8080
+# MinIO控制台：http://localhost:9000
+# Redis：localhost:6379
+# MySQL：localhost:3306
 ```
 
-#### 生产环境启动
+#### 生产环境部署
 
 ```bash
-# 使用配置文件启动
-java -jar target/law-firm-api-1.0.0.jar --spring.profiles.active=prod
+# 1. 进入API层目录
+cd law-firm-api
 
-# 指定JVM参数启动
-java -Xms2g -Xmx2g -jar target/law-firm-api-1.0.0.jar --spring.profiles.active=prod
+# 2. 设置环境变量
+export SPRING_PROFILES_ACTIVE=prod
+export DB_HOST=实际数据库地址
+export DB_USERNAME=实际数据库用户名
+export DB_PASSWORD=实际数据库密码
+export REDIS_HOST=实际Redis地址
+export MINIO_ENDPOINT=实际MinIO地址
+
+# 3. 启动应用
+./start.sh
 ```
 
 ## 项目规范
@@ -430,42 +441,3 @@ java -Xms2g -Xmx2g -jar target/law-firm-api-1.0.0.jar --spring.profiles.active=p
 
 - [系统使用教程](docs/user-guide.md) - 详细的系统使用说明
 - [模块文档](docs/modules.md) - 模块结构和依赖关系
-
-## 修复进度更新（2025-03-04）
-
-### 已修复问题
-
-1. 创建了缺失的 `ScheduleCalendarMapper` 接口
-2. 为 `ScheduleEvent` 实体类添加了 `startTime` 和 `endTime` 字段
-3. 修复了 `ScheduleEventDTO` 中添加缺失的 `startTime` 和 `endTime` 字段
-4. 为 `MeetingRoomBookingDTO` 添加了 `creatorId` 字段
-5. 为 `MeetingRoomDTO` 添加了 `facilities` 字段
-6. 解决了 `ScheduleCalendarServiceImpl` 中的枚举类型转换问题
-7. 修复了 `ScheduleEventServiceImpl` 中的 `checkConflict` 方法
-8. 修复了 `reminderService.getPendingReminders` 方法的参数不匹配问题
-9. 在 `MeetingRoomConvert` 中添加了 `List<String>` 和 `String` 之间的类型转换方法
-10. 修复了 `MeetingRoomController` 中 `IPage` 和 `Page` 类型不匹配问题
-11. 优化了 `MeetingRoomController` 使用 `MeetingRoomConvert` 进行DTO和实体转换
-12. 在 `MeetingRoomVO` 中添加了缺失的 `facilities` 字段
-13. 创建了 `TimeConverter` 工具类以处理 `LocalDateTime` 与 `long` 之间的转换
-
-### 仍需修复的问题
-
-1. 其他控制器中的 `IPage` 和 `Page` 类型转换问题：
-   - 需要检查其他Controller类中对Service返回的IPage类型处理
-
-2. 服务接口方法缺失问题：
-   - 一些Service接口缺少必要的方法，导致实现类中的方法无法正确覆盖接口
-   - 需要检查每个Service接口和实现类的方法签名
-
-3. 现有代码需使用 `TimeConverter` 工具类：
-   - 在需要在 `LocalDateTime` 和 `long` 之间转换的地方使用新增的工具类方法
-   - 修复现有代码中的类型转换错误
-
-### 下一步计划
-
-1. 完成编译并进行完整测试
-2. 修复其他Controller层对Service层方法的调用问题
-3. 修复剩余的`IPage`和`Page`类型不匹配的问题
-4. 补充缺失的接口方法定义
-5. 使用`TimeConverter`工具类解决日期时间类型转换问题

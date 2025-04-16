@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.core.env.Environment;
+import org.springframework.core.annotation.Order;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @Configuration("commonCacheConfig")
 @EnableCaching
+@Order(1)
 public class CacheConfig {
 
     @Value("${spring.redis.host:localhost}")
@@ -50,6 +52,7 @@ public class CacheConfig {
 
     @Bean(name = "commonRedissonClient")
     @ConditionalOnProperty(prefix = "spring.redis", name = "host")
+    @Order(2)
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
@@ -63,7 +66,8 @@ public class CacheConfig {
      */
     @Bean("commonCacheManager")
     @Primary
-    public CacheManager cacheManager(RedissonClient redissonClient) {
+    @Order(3)
+    public CacheManager cacheManager() {
         // 获取是否使用Redis的配置
         boolean useRedis = "REDIS".equalsIgnoreCase(cacheType) && cacheEnabled && 
                            environment.getProperty("dev.use-redis", Boolean.class, true);
@@ -72,10 +76,12 @@ public class CacheConfig {
         List<String> cacheNames = Arrays.asList("common", "menu", "dict", "user", "role", "perm");
         
         // 根据配置选择缓存实现
-        if (useRedis && redissonClient != null) {
-            return new RedissonSpringCacheManager(redissonClient);
-        } else {
-            return new ConcurrentMapCacheManager(cacheNames.toArray(new String[0]));
+        if (useRedis) {
+            RedissonClient redissonClient = redissonClient();
+            if (redissonClient != null) {
+                return new RedissonSpringCacheManager(redissonClient);
+            }
         }
+        return new ConcurrentMapCacheManager(cacheNames.toArray(new String[0]));
     }
 } 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import jakarta.annotation.PostConstruct;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 
 // 有条件导入
 import com.lawfirm.model.system.service.ConfigService;
@@ -20,6 +21,7 @@ import com.lawfirm.common.security.crypto.SensitiveDataService;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnExpression("'${spring.profiles.active}' != 'nodb'")
 public class AIConfigLoader {
 
     private final AIConfig aiConfig;

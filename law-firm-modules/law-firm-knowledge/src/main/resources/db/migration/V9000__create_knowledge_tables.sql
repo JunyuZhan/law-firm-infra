@@ -1,4 +1,4 @@
--- 知识管理模块数据库迁移脚本 V8000
+-- 知识管理模块数据库迁移脚本 V9000
 
 -- 知识文档表
 CREATE TABLE IF NOT EXISTS `knowledge_document` (

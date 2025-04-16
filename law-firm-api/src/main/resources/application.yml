@@ -21,7 +21,6 @@ spring:
       - archive    # 归档管理
       # 辅助功能模块
       - task       # 任务管理
-      # - conflict   # 冲突检查 (已整合到contract模块)
       - schedule   # 日程管理
       - analysis   # 数据分析
       # API文档配置
@@ -31,86 +30,153 @@ spring:
     allow-circular-references: true
     lazy-initialization: false
     banner-mode: off
-  # 数据服务配置
+  config:
+    import:
+      - optional:classpath:application-local.yml
+      - optional:classpath:application-docker.yml
+      - optional:classpath:application-test.yml
+      - optional:classpath:application-prod.yml
+  # 数据源配置
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
-    username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     hikari:
-      minimum-idle: 5
-      maximum-pool-size: 15
-      idle-timeout: 30000
-      connection-timeout: 30000
+      pool-name: ${SPRING_DATASOURCE_HIKARI_POOL_NAME}
+      minimum-idle: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE}
+      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE}
+      idle-timeout: ${SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT}
+      max-lifetime: ${SPRING_DATASOURCE_HIKARI_MAX_LIFETIME}
+      connection-timeout: ${SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT}
+      validation-timeout: ${SPRING_DATASOURCE_HIKARI_VALIDATION_TIMEOUT}
       connection-test-query: SELECT 1
-  # Flyway数据库迁移配置
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    validate-on-migrate: true
-    out-of-order: true
-    table: flyway_schema_history
-  # 禁用不需要的自动配置
-  jpa:
-    open-in-view: false
-    enabled: false
+      connection-init-sql: SET NAMES utf8mb4
+      auto-commit: true
+      metrics-tracker-factory: com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTrackerFactory
+      register-mbeans: true
+  # Redis配置
   data:
-    jpa:
-      repositories:
-        enabled: false
-  # Web相关配置  
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 100MB
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-      fail-on-empty-beans: false
-    deserialization:
-      fail-on-unknown-properties: false
-    default-property-inclusion: NON_NULL
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-  # 安全配置
-  security:
+    redis:
+      host: ${SPRING_REDIS_HOST}
+      port: ${SPRING_REDIS_PORT}
+      database: ${SPRING_REDIS_DATABASE}
+      timeout: ${SPRING_REDIS_TIMEOUT}
+      lettuce:
+        pool:
+          min-idle: ${SPRING_REDIS_LETTUCE_POOL_MIN_IDLE}
+          max-idle: ${SPRING_REDIS_LETTUCE_POOL_MAX_IDLE}
+          max-active: ${SPRING_REDIS_LETTUCE_POOL_MAX_ACTIVE}
+          max-wait: ${SPRING_REDIS_LETTUCE_POOL_MAX_WAIT}
+  # Flyway配置
+  flyway:
+    enabled: ${SPRING_FLYWAY_ENABLED}
+    clean-disabled: true
+    baseline-on-migrate: ${SPRING_FLYWAY_BASELINE_ON_MIGRATE}
+    validate-on-migrate: ${SPRING_FLYWAY_VALIDATE_ON_MIGRATE}
+    out-of-order: ${SPRING_FLYWAY_OUT_OF_ORDER}
+    ignore-migration-patterns: "*:missing"
+    table: flyway_schema_history
+    locations: 
+      - classpath:db/migration
+      - classpath:db/migration/modules
+    placeholders:
+      schema: ${SPRING_FLYWAY_PLACEHOLDERS_SCHEMA}
+    url: ${SPRING_DATASOURCE_URL}
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+
+# MyBatis-Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+    cache-enabled: true
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+    multiple-result-sets-enabled: true
+    use-generated-keys: true
+    auto-mapping-behavior: partial
+    default-executor-type: SIMPLE
+    default-statement-timeout: 30
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+      id-type: auto
+      table-underline: true
+      capital-mode: false
+      logic-delete: true
+      db-type: mysql
+    banner: false
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.**.entity
+  type-handlers-package: com.lawfirm.**.handler
+
+# Web相关配置  
+servlet:
+  encoding:
+    charset: UTF-8
     enabled: true
-    ignore-urls:
-      - "/favicon.ico"
-      - "/error"
-      - "/health"
-      - "/version"
-  # MyBatis-Plus配置
-  mybatis-plus:
-    configuration:
-      map-underscore-to-camel-case: true
-    global-config:
-      db-config:
-        logic-delete-field: deleted
-        logic-not-delete-value: 0
-        logic-delete-value: 1
-  # SQL初始化配置
-  sql:
-    init:
-      mode: never
-  # 静态资源配置
-  mvc:
-    static-path-pattern: /**
-  web:
-    resources:
-      static-locations:
-        - classpath:/static/
+    force: true
+multipart:
+  max-file-size: ${MAX_FILE_SIZE:50MB}
+  max-request-size: ${MAX_REQUEST_SIZE:100MB}
+jackson:
+  serialization:
+    write-dates-as-timestamps: false
+    fail-on-empty-beans: false
+  deserialization:
+    fail-on-unknown-properties: false
+  default-property-inclusion: NON_NULL
+  date-format: yyyy-MM-dd HH:mm:ss
+  time-zone: GMT+8
+
+# 安全配置
+security:
+  enabled: true
+  ignore-urls:
+    - "/favicon.ico"
+    - "/error"
+    - "/health"
+    - "/version"
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+    max-age: ${CORS_MAX_AGE:3600}
+  xss:
+    enabled: true
+    exclude-urls: ${XSS_EXCLUDE_URLS:/api/upload}
+  sql-injection:
+    enabled: true
+    exclude-urls: ${SQL_INJECTION_EXCLUDE_URLS:}
+
+# SQL初始化配置
+sql:
+  init:
+    mode: never
+
+# 静态资源配置
+mvc:
+  static-path-pattern: /**
 
 # 服务器配置
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
   tomcat:
     uri-encoding: UTF-8
+    threads:
+      max: ${SERVER_TOMCAT_THREADS_MAX:200}
+      min-spare: ${SERVER_TOMCAT_THREADS_MIN:10}
+    max-connections: ${SERVER_TOMCAT_MAX_CONNECTIONS:8192}
+    accept-count: ${SERVER_TOMCAT_ACCEPT_COUNT:100}
+    connection-timeout: ${SERVER_TOMCAT_CONNECTION_TIMEOUT:5000}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
     encoding:
@@ -118,7 +184,9 @@ server:
       force: true
       enabled: true
   compression:
-    enabled: false
+    enabled: ${SERVER_COMPRESSION_ENABLED:true}
+    mime-types: application/json,application/xml,text/html,text/plain,text/css,application/javascript
+    min-response-size: 2048
 
 # 应用基本信息
 app:
@@ -129,18 +197,36 @@ app:
 # 业务模块集成配置
 lawfirm:
   module:
-    case: true
-    contract: true
+    # 模块上下文路径配置
+    context-path:
+      system: /api/system
+      auth: /api/auth
+      document: /api/document
+      knowledge: /api/knowledge
+      archive: /api/archive
+      case: /api/case
+      contract: /api/contract
+      client: /api/client
+      personnel: /api/personnel
+      finance: /api/finance
+      task: /api/task
+      schedule: /api/schedule
+      analysis: /api/analysis
+    # 模块功能开关
+    case:
+      enabled: true
+    contract:
+      enabled: true
     knowledge:
       enabled: true
   # 搜索服务配置
   search:
-    enabled: true
-    type: lucene
+    enabled: ${LAWFIRM_SEARCH_ENABLED:true}
+    type: ${LAWFIRM_SEARCH_TYPE:lucene}
   # 存储服务配置
   storage:
-    enabled: true
-    defaultType: LOCAL
+    enabled: ${LAWFIRM_STORAGE_ENABLED:true}
+    defaultType: ${LAWFIRM_STORAGE_TYPE:LOCAL}
     path:
       baseDir: ${LAWFIRM_STORAGE_PATH:${user.home}/.law-firm/storage}
       tempDir: ${LAWFIRM_STORAGE_TEMP_PATH:${user.home}/.law-firm/storage/temp}
@@ -151,5 +237,15 @@ lawfirm:
 # 日志配置
 logging:
   level:
-    root: INFO
-    com.lawfirm: INFO
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm: ${LOGGING_LEVEL_APP:INFO}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+  file:
+    name: ${LOG_FILE:${user.home}/logs/law-firm.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"

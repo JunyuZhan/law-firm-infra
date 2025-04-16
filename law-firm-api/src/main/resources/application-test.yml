@@ -1,40 +1,42 @@
+# 测试环境配置
 spring:
+  # 数据源配置
   datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/law_firm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
-    username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:Zjy-1314}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
     hikari:
-      minimum-idle: 3
-      maximum-pool-size: 10
-      idle-timeout: 30000
-      connection-timeout: 30000
+      minimum-idle: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE}
+      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE_TEST}
+      idle-timeout: ${SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT}
+      connection-timeout: ${SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT}
       connection-test-query: SELECT 1
   
   # Flyway配置
   flyway:
-    enabled: true
-    baseline-on-migrate: true
-    validate-on-migrate: false
+    enabled: ${SPRING_FLYWAY_ENABLED}
+    baseline-on-migrate: ${SPRING_FLYWAY_BASELINE_ON_MIGRATE}
+    validate-on-migrate: ${SPRING_FLYWAY_VALIDATE_ON_MIGRATE}
     locations: classpath:db/migration
     table: flyway_schema_history
     encoding: UTF-8
     placeholders:
-      schema: ${spring.datasource.url}
+      schema: ${SPRING_FLYWAY_PLACEHOLDERS_SCHEMA}
   
   # Redis测试配置
   data:
     redis:
-      host: localhost
-      port: 6379
-      database: 1 # 使用测试专用库
-      timeout: 5s
+      host: ${SPRING_REDIS_HOST}
+      port: ${SPRING_REDIS_PORT}
+      database: ${SPRING_REDIS_DATABASE_TEST}
+      timeout: ${SPRING_REDIS_TIMEOUT}
       lettuce:
         pool:
-          min-idle: 0
-          max-idle: 4
-          max-active: 4
+          min-idle: ${SPRING_REDIS_LETTUCE_POOL_MIN_IDLE}
+          max-idle: ${SPRING_REDIS_LETTUCE_POOL_MAX_IDLE}
+          max-active: ${SPRING_REDIS_LETTUCE_POOL_MAX_ACTIVE}
+          max-wait: ${SPRING_REDIS_LETTUCE_POOL_MAX_WAIT}
   
   # 禁用缓存
   cache:
@@ -44,23 +46,26 @@ spring:
 lawfirm:
   # 搜索引擎配置
   search:
-    enabled: false
+    enabled: ${LAWFIRM_SEARCH_ENABLED:false}
   
   # 存储配置
   storage:
-    enabled: true
-    defaultType: LOCAL
+    enabled: ${LAWFIRM_STORAGE_ENABLED:true}
+    defaultType: ${LAWFIRM_STORAGE_TYPE:LOCAL}
     path:
-      baseDir: ${user.home}/.law-firm/test/storage
-      tempDir: ${user.home}/.law-firm/test/storage/temp
+      baseDir: ${LAWFIRM_STORAGE_PATH:${user.home}/.law-firm/test/storage}
+      tempDir: ${LAWFIRM_STORAGE_TEMP_PATH:${user.home}/.law-firm/test/storage/temp}
     local:
       enabled: true
-      basePath: ${user.home}/.law-firm/test/storage
+      basePath: ${LAWFIRM_STORAGE_LOCAL_PATH:${user.home}/.law-firm/test/storage}
 
 # 日志配置
 logging:
   level:
-    root: INFO
-    com.lawfirm: DEBUG
-    org.springframework: INFO
-    org.hibernate: INFO 
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+  file:
+    name: ${LOG_FILE:${user.home}/logs/law-firm-test.log} 

@@ -26,7 +26,7 @@ class SimpleRetryPolicyTest {
          * 使用可变参数构造重试策略
          */
         @SafeVarargs
-        @SuppressWarnings({"unchecked", "varargs"})
+        @SuppressWarnings("varargs")
         public static SimpleRetryPolicy of(int maxRetries, Duration baseDelay, Class<? extends Throwable>... retryableExceptions) {
             return new SimpleRetryPolicy(maxRetries, baseDelay, List.of(retryableExceptions));
         }

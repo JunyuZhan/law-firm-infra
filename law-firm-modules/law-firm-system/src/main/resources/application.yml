@@ -4,17 +4,92 @@ spring:
   application:
     name: law-firm-system
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
-    include:
-      - system
+    # 默认激活开发环境
+    active: ${SPRING_PROFILES_ACTIVE:local}
+    # 引入系统管理模块特定配置
+    include: system
 
 server:
-  port: ${SERVER_PORT:8084}
   servlet:
-    context-path: ${CONTEXT_PATH:/system}
+    # 上下文路径
+    context-path: ${SYSTEM_CONTEXT_PATH:/api/system}
+
+# 系统管理配置
+system:
+  # 用户管理配置
+  user:
+    password:
+      min-length: ${USER_PASSWORD_MIN_LENGTH:8}
+      max-length: ${USER_PASSWORD_MAX_LENGTH:20}
+      require-special: ${USER_PASSWORD_REQUIRE_SPECIAL:true}
+      require-number: ${USER_PASSWORD_REQUIRE_NUMBER:true}
+      require-upper: ${USER_PASSWORD_REQUIRE_UPPER:true}
+      require-lower: ${USER_PASSWORD_REQUIRE_LOWER:true}
+      history-size: ${USER_PASSWORD_HISTORY_SIZE:5}
+      expiry-days: ${USER_PASSWORD_EXPIRY_DAYS:90}
+    login:
+      max-attempts: ${USER_LOGIN_MAX_ATTEMPTS:5}
+      lockout-duration: ${USER_LOGIN_LOCKOUT_DURATION:30m}
+      session-timeout: ${USER_LOGIN_SESSION_TIMEOUT:30m}
+      remember-me: ${USER_LOGIN_REMEMBER_ME:true}
+  
+  # 系统设置配置
+  settings:
+    general:
+      site-name: ${SYSTEM_SITE_NAME:律所管理系统}
+      site-description: ${SYSTEM_SITE_DESCRIPTION:专业的律所管理平台}
+      timezone: ${SYSTEM_TIMEZONE:Asia/Shanghai}
+      language: ${SYSTEM_LANGUAGE:zh_CN}
+    security:
+      cors:
+        enabled: ${SYSTEM_CORS_ENABLED:true}
+        allowed-origins: ${SYSTEM_CORS_ALLOWED_ORIGINS:*}
+        allowed-methods: ${SYSTEM_CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+        allowed-headers: ${SYSTEM_CORS_ALLOWED_HEADERS:*}
+        max-age: ${SYSTEM_CORS_MAX_AGE:3600}
+      xss:
+        enabled: ${SYSTEM_XSS_ENABLED:true}
+        exclude-urls: ${SYSTEM_XSS_EXCLUDE_URLS:/api/system/health}
+      sql-injection:
+        enabled: ${SYSTEM_SQL_INJECTION_ENABLED:true}
+        exclude-urls: ${SYSTEM_SQL_INJECTION_EXCLUDE_URLS:/api/system/health}
+  
+  # 审计日志配置
+  audit:
+    enabled: ${SYSTEM_AUDIT_ENABLED:true}
+    retention-days: ${SYSTEM_AUDIT_RETENTION_DAYS:365}
+    log-path: ${SYSTEM_AUDIT_LOG_PATH:./logs/audit.log}
+  
+  # 系统通知配置
+  notification:
+    enabled: ${SYSTEM_NOTIFICATION_ENABLED:true}
+  
+  # 系统监控配置
+  monitoring:
+    enabled: ${SYSTEM_MONITORING_ENABLED:true}
+    alert:
+      enabled: ${SYSTEM_ALERT_ENABLED:true}
+      thresholds:
+        cpu-usage: ${SYSTEM_ALERT_CPU_USAGE:80}
+        memory-usage: ${SYSTEM_ALERT_MEMORY_USAGE:85}
+        disk-usage: ${SYSTEM_ALERT_DISK_USAGE:90}
+        thread-count: ${SYSTEM_ALERT_THREAD_COUNT:1000}
+        db-connections: ${SYSTEM_ALERT_DB_CONNECTIONS:80}
+        redis-connections: ${SYSTEM_ALERT_REDIS_CONNECTIONS:80}
 
 # 日志配置
 logging:
   level:
-    com.law.firm.system: ${LOG_LEVEL:info}
-    org.springframework: ${SPRING_LOG_LEVEL:warn} 
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm.system: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+  file:
+    name: ${LOG_FILE:./logs/system.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+    total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:3GB}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" 

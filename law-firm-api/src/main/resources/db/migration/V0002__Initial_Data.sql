@@ -1,3 +1,8 @@
+/* 
+ * API模块初始化数据
+ * 版本号V0002，避免与认证模块V2xxx冲突
+ */
+
 -- 初始化系统用户
 INSERT INTO sys_user (id, username, password, nickname, email, phone, status, avatar, deleted)
 VALUES (1, 'admin', '$2a$10$UZfU5pKgK6H77NtQ0iJxV.GnCxiHKIOsHEFaH37RaWmVV5Ue9.SJO', '管理员', 'admin@example.com', '13800138000', 1, '', 0);

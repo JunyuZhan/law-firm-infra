@@ -8,31 +8,35 @@
 
 Flyway迁移脚本遵循以下命名规范：`V{版本号}__{描述}.sql`
 
+版本号规则：
+- 知识管理模块使用V9xxx作为版本号前缀
+- 数字按照执行顺序递增
+
 例如：
-- `V1.0.0__create_knowledge_tables.sql` - 创建表结构
-- `V1.0.1__insert_initial_data.sql` - 插入初始数据
-- `V1.0.2__insert_example_knowledge.sql` - 插入示例知识文档
+- `V9000__create_knowledge_tables.sql` - 创建表结构
+- `V9001__insert_initial_data.sql` - 插入初始数据
+- `V9004__optimize_knowledge_structure.sql` - 优化知识结构
 
 ## 迁移脚本内容
 
-### V1.0.0__create_knowledge_tables.sql
+### V9000__create_knowledge_tables.sql
 创建知识管理模块所需的数据库表：
-- `knowledge` - 知识文档表
+- `knowledge_document` - 知识文档表
 - `knowledge_category` - 知识分类表
 - `knowledge_tag` - 知识标签表
 - `knowledge_tag_relation` - 知识-标签关联表
 - `knowledge_attachment` - 知识附件表
 
-### V1.0.1__insert_initial_data.sql
+### V9001__insert_initial_data.sql
 插入基础数据：
 - 知识分类初始数据
 - 知识标签初始数据
 
-### V1.0.2__insert_example_knowledge.sql
-插入示例知识文档数据：
-- 示例知识文档
-- 示例标签关联
-- 示例附件数据
+### V9004__optimize_knowledge_structure.sql
+优化知识结构：
+- 优化表结构
+- 添加新字段或索引
+- 调整数据关系
 
 ## 数据库迁移执行
 

@@ -5,6 +5,8 @@ spring:
   profiles:
     # 默认激活开发环境
     active: ${SPRING_PROFILES_ACTIVE:dev}
+    # 引入知识库模块特定配置
+    include: knowledge
     
   # 数据库配置
   datasource:
@@ -30,8 +32,6 @@ spring:
 
 # 服务器配置
 server:
-  # 服务端口
-  port: ${KNOWLEDGE_SERVER_PORT:8085}
   servlet:
     # 上下文路径
     context-path: ${KNOWLEDGE_CONTEXT_PATH:/api/knowledge}
@@ -39,13 +39,19 @@ server:
 # 日志配置
 logging:
   level:
-    # 知识模块日志级别
-    com.lawfirm.knowledge: ${KNOWLEDGE_LOG_LEVEL:DEBUG}
-    # Spring框架日志级别
-    org.springframework: INFO
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm.knowledge: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
   file:
-    # 日志文件路径
-    name: ${KNOWLEDGE_LOG_FILE:${user.home}/logs/law-firm-knowledge.log}
+    name: ${LOG_FILE:./logs/knowledge.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+    total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:3GB}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 # 知识管理模块业务配置
 knowledge:
@@ -82,9 +88,16 @@ knowledge:
     # 是否启用高亮显示
     enable-highlight: ${KNOWLEDGE_SEARCH_HIGHLIGHT:true}
     # 最大搜索结果数量
-    max-result-count: ${KNOWLEDGE_SEARCH_MAX_RESULTS:100}
+    max-result-count: ${KNOWLEDGE_SEARCH_MAX_RESULTS:1000}
     # 最小关键词长度
     min-keyword-length: ${KNOWLEDGE_SEARCH_MIN_KEYWORD:2}
+    # 搜索引擎类型
+    type: ${LAWFIRM_SEARCH_TYPE:lucene}
+    # Lucene配置
+    lucene:
+      index-path: ${LAWFIRM_LUCENE_INDEX_PATH:/data/law-firm/lucene}
+      analyzer: standard
+      commit-interval: 1000
     
   # 权限配置
   permission:
@@ -95,6 +108,30 @@ knowledge:
   statistic:
     # 统计任务执行时间 - 每天凌晨1点执行
     cron: ${KNOWLEDGE_STATISTIC_CRON:"0 0 1 * * ?"}
+    
+  # 标签配置
+  tags:
+    enabled: ${KNOWLEDGE_TAGS_ENABLED:true}
+    max-per-article: ${KNOWLEDGE_TAGS_MAX:10}
+    popular:
+      enabled: ${KNOWLEDGE_TAGS_POPULAR_ENABLED:true}
+      threshold: ${KNOWLEDGE_TAGS_POPULAR_THRESHOLD:10}
+      update-interval: ${KNOWLEDGE_TAGS_POPULAR_INTERVAL:1d}
+  
+  # 版本控制配置
+  version:
+    enabled: ${KNOWLEDGE_VERSION_ENABLED:true}
+    max-versions: ${KNOWLEDGE_VERSION_MAX:10}
+    auto-clean: ${KNOWLEDGE_VERSION_AUTO_CLEAN:true}
+    clean-days: ${KNOWLEDGE_VERSION_CLEAN_DAYS:30}
+  
+  # 评论配置
+  comment:
+    enabled: ${KNOWLEDGE_COMMENT_ENABLED:true}
+    moderation:
+      enabled: ${KNOWLEDGE_COMMENT_MODERATION:true}
+    max-length: ${KNOWLEDGE_COMMENT_MAX_LENGTH:1000}
+    max-depth: ${KNOWLEDGE_COMMENT_MAX_DEPTH:3}
     
 # MyBatis-Plus配置
 mybatis-plus:
@@ -123,16 +160,4 @@ storage:
     # 密钥
     secret-key: ${MINIO_SECRET_KEY:${random.uuid}}
     # 存储桶名称
-    bucket: ${KNOWLEDGE_MINIO_BUCKET:knowledge-documents}
-    
-# 搜索服务配置
-search:
-  # Elasticsearch配置
-  elasticsearch:
-    enabled: ${KNOWLEDGE_ES_ENABLED:true}
-    # Elasticsearch服务器地址
-    host: ${KNOWLEDGE_ES_HOST:elasticsearch}
-    # Elasticsearch服务器端口
-    port: ${KNOWLEDGE_ES_PORT:9200}
-    # 索引前缀
-    index-prefix: ${KNOWLEDGE_ES_INDEX_PREFIX:law-firm-} 
+    bucket: ${KNOWLEDGE_MINIO_BUCKET:knowledge-documents} 

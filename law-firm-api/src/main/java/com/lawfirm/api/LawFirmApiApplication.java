@@ -21,16 +21,59 @@ import java.util.Optional;
 @Slf4j
 @SpringBootApplication(
     scanBasePackages = {
-        "com.lawfirm.api",
-        "com.lawfirm.common",
-        "com.lawfirm.core",
-        "com.lawfirm.auth",
+        // 1. Common模块（最先编译）
+        "com.lawfirm.common.core",
+        "com.lawfirm.common.util",
+        "com.lawfirm.common.web",
+        "com.lawfirm.common.data",
+        "com.lawfirm.common.cache",
+        "com.lawfirm.common.security",
+        "com.lawfirm.common.log",
+        "com.lawfirm.common.message",
+        "com.lawfirm.common.test",
+
+        // 2. Model模块（其次编译）
+        "com.lawfirm.model.base",
+        "com.lawfirm.model.organization",
+        "com.lawfirm.model.personnel",
+        "com.lawfirm.model.auth",
+        "com.lawfirm.model.system",
+        "com.lawfirm.model.log",
+        "com.lawfirm.model.client",
+        "com.lawfirm.model.document",
+        "com.lawfirm.model.contract",
+        "com.lawfirm.model.cases",
+        "com.lawfirm.model.finance",
+        "com.lawfirm.model.workflow",
+        "com.lawfirm.model.storage",
+        "com.lawfirm.model.search",
+        "com.lawfirm.model.message",
+        "com.lawfirm.model.knowledge",
+        "com.lawfirm.model.ai",
+        "com.lawfirm.model.schedule",
+        "com.lawfirm.model.task",
+
+        // 3. Core模块（再次编译）
+        "com.lawfirm.core.audit",
+        "com.lawfirm.core.storage",
+        "com.lawfirm.core.search",
+        "com.lawfirm.core.ai",
+        "com.lawfirm.core.message",
+        "com.lawfirm.core.workflow",
+
+        // 4. 业务模块和API（最后编译）
         "com.lawfirm.system",
-        "com.lawfirm.cases",
-        "com.lawfirm.client",
-        "com.lawfirm.contract",
+        "com.lawfirm.auth",
         "com.lawfirm.document",
-        "com.lawfirm.knowledge"
+        "com.lawfirm.personnel",
+        "com.lawfirm.client",
+        "com.lawfirm.cases",
+        "com.lawfirm.contract",
+        "com.lawfirm.finance",
+        "com.lawfirm.knowledge",
+        "com.lawfirm.schedule",
+        "com.lawfirm.task",
+        "com.lawfirm.api"
     },
     exclude = {
         SecurityAutoConfiguration.class,
@@ -84,23 +127,17 @@ public class LawFirmApiApplication {
             log.warn("无法确定主机地址", e);
         }
         
-        String activeProfiles = String.join(", ", env.getActiveProfiles());
-        activeProfiles = activeProfiles.isEmpty() ? "default" : activeProfiles;
-        
-        log.info("\n----------------------------------------------------------\n" +
-                "应用 '{}' 已启动! 访问地址:\n" +
-                "本地: \t\t{}://localhost:{}{}\n" +
-                "外部: \t\t{}://{}:{}{}\n" +
+        log.info("\n----------------------------------------------------------\n\t" +
+                "应用 '{}' 正在运行! 访问地址:\n\t" +
+                "本地: \t\t{}://localhost:{}{}\n\t" +
+                "外部: \t\t{}://{}:{}{}\n\t" +
+                "配置: \t\t{}\n\t" +
                 "环境: \t\t{}\n" +
                 "----------------------------------------------------------",
-                env.getProperty("spring.application.name", "律师事务所管理系统"),
-                protocol,
-                serverPort,
-                contextPath,
-                protocol,
-                hostAddress,
-                serverPort,
-                contextPath,
-                activeProfiles);
+                env.getProperty("spring.application.name"),
+                protocol, serverPort, contextPath,
+                protocol, hostAddress, serverPort, contextPath,
+                env.getActiveProfiles(),
+                env.getProperty("spring.profiles.active"));
     }
 }

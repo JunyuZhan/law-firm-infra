@@ -4,22 +4,128 @@ spring:
     name: law-firm-finance
   profiles:
     # 默认激活开发环境
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:local}
     # 引入财务管理模块特定配置
     include: finance
+    
+  # 数据库配置
+  datasource:
+    url: ${FINANCE_DB_URL:jdbc:mysql://localhost:3306/law_firm_finance?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${FINANCE_DB_USERNAME:root}
+    password: ${FINANCE_DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      
+  # Redis配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${FINANCE_REDIS_DATABASE:0}
+      timeout: 10000
+      client-type: lettuce
+      connect-timeout: 10000
+      pool:
+        enabled: true
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+
+# MinIO配置
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${FINANCE_MINIO_BUCKET:finance-documents}
 
 # 服务器配置
 server:
-  # 服务端口
-  port: ${FINANCE_SERVER_PORT:8083}
   servlet:
     # 上下文路径
     context-path: ${FINANCE_CONTEXT_PATH:/api/finance}
+  port: ${FINANCE_SERVER_PORT:8083}
+  tomcat:
+    max-threads: 200
+    min-spare-threads: 10
+    max-connections: 10000
+    connection-timeout: 5000
+
+# MyBatis配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.finance.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 财务管理配置
+finance:
+  # 账单配置
+  bill:
+    auto-generate: ${BILL_AUTO_GENERATE:true}
+    generate-days: ${BILL_GENERATE_DAYS:30}
+    reminder-days: ${BILL_REMINDER_DAYS:7}
+    overdue-days: ${BILL_OVERDUE_DAYS:30}
+  
+  # 支付配置
+  payment:
+    enabled: ${PAYMENT_ENABLED:true}
+    min-amount: ${PAYMENT_MIN_AMOUNT:0.01}
+    max-amount: ${PAYMENT_MAX_AMOUNT:1000000}
+    timeout: ${PAYMENT_TIMEOUT:30m}
+  
+  # 发票配置
+  invoice:
+    enabled: ${INVOICE_ENABLED:true}
+    auto-generate: ${INVOICE_AUTO_GENERATE:true}
+    max-amount: ${INVOICE_MAX_AMOUNT:1000000}
+  
+  # 财务报告配置
+  report:
+    enabled: ${REPORT_ENABLED:true}
+    auto-generate: ${REPORT_AUTO_GENERATE:true}
+    retention-days: ${REPORT_RETENTION_DAYS:365}
+  
+  # 财务通知配置
+  notification:
+    enabled: ${FINANCE_NOTIFICATION_ENABLED:true}
+  
+  # 财务搜索配置
+  search:
+    enabled: ${FINANCE_SEARCH_ENABLED:true}
+    type: ${FINANCE_SEARCH_TYPE:lucene}
+    lucene:
+      index-path: ${FINANCE_LUCENE_INDEX_PATH:./lucene/finance}
+      analyzer: standard
+      max-results: ${FINANCE_SEARCH_MAX_RESULTS:1000}
+      commit-interval: ${FINANCE_SEARCH_COMMIT_INTERVAL:1000}
 
 # 日志配置
 logging:
   level:
-    # 财务模块日志级别
-    com.lawfirm.finance: ${FINANCE_LOG_LEVEL:DEBUG}
-    # Spring框架日志级别
-    org.springframework: INFO
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm.finance: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+  file:
+    name: ${LOG_FILE:./logs/finance.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+    total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:3GB}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

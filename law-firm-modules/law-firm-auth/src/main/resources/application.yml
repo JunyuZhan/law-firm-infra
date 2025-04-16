@@ -3,23 +3,93 @@ spring:
   application:
     name: law-firm-auth
   profiles:
-    # 默认激活开发环境
-    active: ${SPRING_PROFILES_ACTIVE:dev}
-    # 引入认证管理模块特定配置
+    active: ${SPRING_PROFILES_ACTIVE:local}
     include: auth
 
 # 服务器配置
 server:
-  # 服务端口
-  port: ${AUTH_SERVER_PORT:8097}
   servlet:
-    # 上下文路径
     context-path: ${AUTH_CONTEXT_PATH:/api/auth}
+
+# 认证授权配置
+auth:
+  # 认证配置
+  authentication:
+    enabled: ${AUTH_ENABLED:true}
+    password:
+      encoder: ${AUTH_PASSWORD_ENCODER:bcrypt}
+      strength: ${AUTH_PASSWORD_STRENGTH:10}
+    remember-me:
+      enabled: ${AUTH_REMEMBER_ME_ENABLED:true}
+      key: ${AUTH_REMEMBER_ME_KEY:lawfirm}
+      validity: ${AUTH_REMEMBER_ME_VALIDITY:1209600}
+  
+  # 令牌配置
+  token:
+    type: ${AUTH_TOKEN_TYPE:jwt}
+    jwt:
+      secret: ${AUTH_JWT_SECRET:}
+      issuer: ${AUTH_JWT_ISSUER:lawfirm}
+      audience: ${AUTH_JWT_AUDIENCE:lawfirm-client}
+      expiration: ${AUTH_JWT_EXPIRATION:86400}
+      refresh-expiration: ${AUTH_JWT_REFRESH_EXPIRATION:604800}
+    redis:
+      enabled: ${AUTH_TOKEN_REDIS_ENABLED:true}
+      prefix: ${AUTH_TOKEN_REDIS_PREFIX:auth:token:}
+      timeout: ${AUTH_TOKEN_REDIS_TIMEOUT:86400}
+  
+  # 权限配置
+  authorization:
+    enabled: ${AUTH_AUTHORIZATION_ENABLED:true}
+  
+  # 安全配置
+  security:
+    cors:
+      enabled: ${AUTH_CORS_ENABLED:true}
+      allowed-origins: ${AUTH_CORS_ALLOWED_ORIGINS:*}
+      allowed-methods: ${AUTH_CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+      allowed-headers: ${AUTH_CORS_ALLOWED_HEADERS:*}
+      max-age: ${AUTH_CORS_MAX_AGE:3600}
+    csrf:
+      enabled: ${AUTH_CSRF_ENABLED:true}
+      cookie-name: ${AUTH_CSRF_COOKIE_NAME:XSRF-TOKEN}
+      header-name: ${AUTH_CSRF_HEADER_NAME:X-XSRF-TOKEN}
+    xss:
+      enabled: ${AUTH_XSS_ENABLED:true}
+      exclude-urls: ${AUTH_XSS_EXCLUDE_URLS:/api/auth/health}
+    sql-injection:
+      enabled: ${AUTH_SQL_INJECTION_ENABLED:true}
+      exclude-urls: ${AUTH_SQL_INJECTION_EXCLUDE_URLS:/api/auth/health}
+  
+  # 审计配置
+  audit:
+    enabled: ${AUTH_AUDIT_ENABLED:true}
+    retention-days: ${AUTH_AUDIT_RETENTION_DAYS:365}
+    log-path: ${AUTH_AUDIT_LOG_PATH:./logs/auth/audit.log}
+  
+  # 搜索配置
+  search:
+    enabled: ${AUTH_SEARCH_ENABLED:true}
+    type: ${AUTH_SEARCH_TYPE:lucene}
+    lucene:
+      index-path: ${AUTH_LUCENE_INDEX_PATH:./lucene/auth}
+      analyzer: standard
+      max-results: ${AUTH_SEARCH_MAX_RESULTS:1000}
+      commit-interval: ${AUTH_SEARCH_COMMIT_INTERVAL:1000}
 
 # 日志配置
 logging:
   level:
-    # 认证模块日志级别
-    com.lawfirm.auth: ${AUTH_LOG_LEVEL:DEBUG}
-    # Spring框架日志级别
-    org.springframework: INFO 
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm.auth: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+  file:
+    name: ${LOG_FILE:./logs/auth.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+    total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:3GB}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" 

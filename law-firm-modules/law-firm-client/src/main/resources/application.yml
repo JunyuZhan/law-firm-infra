@@ -4,22 +4,128 @@ spring:
     name: law-firm-client
   profiles:
     # 默认激活开发环境
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:local}
     # 引入客户管理模块特定配置
     include: client
+    
+  # 数据库配置
+  datasource:
+    url: ${CLIENT_DB_URL:jdbc:mysql://localhost:3306/law_firm_client?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${CLIENT_DB_USERNAME:root}
+    password: ${CLIENT_DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      
+  # Redis配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${CLIENT_REDIS_DATABASE:0}
+      timeout: 10000
+      client-type: lettuce
+      connect-timeout: 10000
+      pool:
+        enabled: true
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+
+# MinIO配置
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${CLIENT_MINIO_BUCKET:client-documents}
 
 # 服务器配置
 server:
-  # 服务端口
-  port: ${CLIENT_SERVER_PORT:8086}
   servlet:
     # 上下文路径
     context-path: ${CLIENT_CONTEXT_PATH:/api/client}
+  port: ${CLIENT_SERVER_PORT:8081}
+  tomcat:
+    max-threads: 200
+    min-spare-threads: 10
+    max-connections: 10000
+    connection-timeout: 5000
+
+# MyBatis配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.client.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 客户管理配置
+client:
+  # 系统参数配置
+  system:
+    # 文档存储配置
+    document:
+      storage-type: ${CLIENT_DOCUMENT_STORAGE_TYPE:minio}
+      storage-path: ${CLIENT_DOCUMENT_STORAGE_PATH:./documents/client}
+      max-size: ${CLIENT_DOCUMENT_MAX_SIZE:50MB}
+    
+    # 提醒配置
+    reminder:
+      enabled: ${CLIENT_REMINDER_ENABLED:true}
+      intervals: ${CLIENT_REMINDER_INTERVALS:7d,3d,1d}
+    
+    # 搜索配置
+    search:
+      enabled: ${CLIENT_SEARCH_ENABLED:true}
+      type: ${CLIENT_SEARCH_TYPE:lucene}
+      index-path: ${CLIENT_LUCENE_INDEX_PATH:./lucene/clients}
+      max-results: ${CLIENT_SEARCH_MAX_RESULTS:1000}
+      commit-interval: ${CLIENT_SEARCH_COMMIT_INTERVAL:1000}
+    
+    # 统计配置
+    statistics:
+      enabled: ${CLIENT_STATISTICS_ENABLED:true}
+      retention-days: ${CLIENT_STATISTICS_RETENTION_DAYS:365}
+  
+  # 客户状态配置
+  status:
+    auto-inactive: ${CLIENT_AUTO_INACTIVE:true}
+    inactive-days: ${CLIENT_INACTIVE_DAYS:365}
+  
+  # 客户标签配置
+  tags:
+    enabled: ${CLIENT_TAGS_ENABLED:true}
+    max-count: ${CLIENT_TAGS_MAX_COUNT:10}
+  
+  # 客户通知配置
+  notification:
+    enabled: ${CLIENT_NOTIFICATION_ENABLED:true}
 
 # 日志配置
 logging:
   level:
-    # 客户模块日志级别
-    com.lawfirm.client: ${CLIENT_LOG_LEVEL:DEBUG}
-    # Spring框架日志级别
-    org.springframework: INFO
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm.client: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+  file:
+    name: ${LOG_FILE:./logs/client.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+    total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:3GB}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

@@ -4,22 +4,125 @@ spring:
     name: law-firm-case
   profiles:
     # 默认激活开发环境
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:local}
     # 引入案件管理模块特定配置
     include: case
+    
+  # 数据库配置
+  datasource:
+    url: ${CASE_DB_URL:jdbc:mysql://localhost:3306/law_firm_case?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${CASE_DB_USERNAME:root}
+    password: ${CASE_DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      
+  # Redis配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${CASE_REDIS_DATABASE:0}
+      timeout: 10000
+      client-type: lettuce
+      connect-timeout: 10000
+      pool:
+        enabled: true
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+
+# MinIO配置
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${CASE_MINIO_BUCKET:case-documents}
 
 # 服务器配置
 server:
-  # 服务端口
-  port: ${CASE_SERVER_PORT:8095}
   servlet:
     # 上下文路径
     context-path: ${CASE_CONTEXT_PATH:/api/case}
+  port: ${CASE_SERVER_PORT:8084}
+  tomcat:
+    max-threads: 200
+    min-spare-threads: 10
+    max-connections: 10000
+    connection-timeout: 5000
+
+# 案件管理配置
+case:
+  # 系统参数配置
+  system:
+    # 文档存储配置
+    document:
+      storage-type: ${CASE_DOCUMENT_STORAGE_TYPE:minio}
+      storage-path: ${CASE_DOCUMENT_STORAGE_PATH:./documents/case}
+      max-size: ${CASE_DOCUMENT_MAX_SIZE:50MB}
+    
+    # 提醒配置
+    reminder:
+      enabled: ${CASE_REMINDER_ENABLED:true}
+      intervals: ${CASE_REMINDER_INTERVALS:7d,3d,1d,1h}
+    
+    # 搜索配置
+    search:
+      enabled: ${CASE_SEARCH_ENABLED:true}
+      type: ${CASE_SEARCH_TYPE:lucene}
+      lucene:
+        index-path: ${CASE_LUCENE_INDEX_PATH:./lucene/cases}
+        max-results: ${CASE_SEARCH_MAX_RESULTS:1000}
+        commit-interval: ${CASE_SEARCH_COMMIT_INTERVAL:1000}
+    
+    # 统计配置
+    statistics:
+      enabled: ${CASE_STATISTICS_ENABLED:true}
+      retention-days: ${CASE_STATISTICS_RETENTION_DAYS:365}
+  
+  # 案件状态配置
+  status:
+    auto-close: ${CASE_AUTO_CLOSE:true}
+    close-days: ${CASE_CLOSE_DAYS:30}
+    reminder-days: ${CASE_REMINDER_DAYS:7}
+  
+  # 案件通知配置
+  notification:
+    enabled: ${CASE_NOTIFICATION_ENABLED:true}
+
+# MyBatis配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.case.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 
 # 日志配置
 logging:
   level:
-    # 案件模块日志级别
-    com.lawfirm.case: ${CASE_LOG_LEVEL:DEBUG}
-    # Spring框架日志级别
-    org.springframework: INFO 
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm.case: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+  file:
+    name: ${LOG_FILE:./logs/case.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+    total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:3GB}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

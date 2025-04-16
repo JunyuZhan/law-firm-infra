@@ -1,3 +1,25 @@
+/* 
+ * 全局跨模块外键约束脚本
+ * 版本号V9900，在所有业务模块迁移之后执行
+ * 
+ * 版本号分配策略：
+ * - API模块：V0000-V0999
+ * - 系统模块：V1000-V1999
+ * - 认证模块：V2000-V2999
+ * - 人员模块：V3000-V3999
+ * - 客户模块：V4000-V4999
+ * - 文档模块：V5000-V5999
+ * - 案件模块：V6000-V6999
+ * - 合同模块：V7000-V7999
+ * - 财务模块：V8000-V8999
+ * - 知识库模块：V9000-V9899
+ * - 跨模块约束：V9900-V9999
+ * - 归档模块：V11000-V11999
+ * - 任务模块：V12000-V12999
+ * - 日程模块：V13000-V13999
+ * - 分析模块：V16000-V16999
+ */
+
 -- 全局跨模块外键约束脚本 (版本号V9900，避免与知识库模块的V9000系列冲突)
 -- 此脚本集中管理所有跨模块的外键约束关系
 -- 注意：执行此脚本前，确保所有相关表已创建
@@ -76,4 +98,4 @@ ALTER TABLE schedule_task_relation ADD CONSTRAINT fk_schedule_task FOREIGN KEY (
 ALTER TABLE client_info ADD CONSTRAINT fk_client_lawyer FOREIGN KEY (responsible_lawyer_id) REFERENCES personnel_lawyer(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- 客户跟进记录与跟进人的外键约束 (client→personnel)
-ALTER TABLE client_follow_up ADD CONSTRAINT fk_follow_up_employee FOREIGN KEY (follow_up_by) REFERENCES personnel_employee(id) ON DELETE SET NULL ON UPDATE CASCADE; 
+ALTER TABLE client_follow_up ADD CONSTRAINT fk_follow_up_employee FOREIGN KEY (follow_up_by) REFERENCES personnel_employee(id) ON DELETE SET NULL ON UPDATE CASCADE;

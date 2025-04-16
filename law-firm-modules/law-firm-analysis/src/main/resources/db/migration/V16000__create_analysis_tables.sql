@@ -1,6 +1,6 @@
 -- 创建统计分析记录表
 CREATE TABLE IF NOT EXISTS `analysis_record` (
-    `id` bigint NOT NULL COMMENT '主键ID',
+    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `analysis_type` varchar(32) NOT NULL COMMENT '分析类型',
     `start_time` datetime NOT NULL COMMENT '分析开始时间',
     `end_time` datetime NOT NULL COMMENT '分析结束时间',
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `analysis_record` (
 
 -- 创建统计分析报告表
 CREATE TABLE IF NOT EXISTS `analysis_report` (
-    `id` bigint NOT NULL COMMENT '主键ID',
+    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `analysis_type` varchar(32) NOT NULL COMMENT '分析类型',
     `title` varchar(128) NOT NULL COMMENT '报告标题',
     `description` varchar(512) DEFAULT NULL COMMENT '报告描述',

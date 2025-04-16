@@ -65,4 +65,10 @@ public class SysConfig extends ModelBaseEntity {
      */
     @TableField("update_by")
     private String updateBy;
-} 
+    
+    /**
+     * 版本号
+     */
+    @TableField("version")
+    private Integer version;
+}

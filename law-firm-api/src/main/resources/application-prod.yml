@@ -1,0 +1,284 @@
+# 生产环境配置
+spring:
+  profiles:
+    active: prod
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:law_firm}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: ${DB_MIN_IDLE:10}
+      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE_PROD:50}
+      idle-timeout: ${DB_IDLE_TIMEOUT:30000}
+      max-lifetime: ${DB_MAX_LIFETIME:1800000}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000}
+      validation-timeout: ${DB_VALIDATION_TIMEOUT:5000}
+      connection-test-query: SELECT 1
+      connection-init-sql: SET NAMES utf8mb4
+  
+  # Redis配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      database: ${REDIS_DATABASE:0}
+      password: ${REDIS_PASSWORD}
+      timeout: ${REDIS_TIMEOUT:10s}
+      lettuce:
+        pool:
+          min-idle: ${SPRING_REDIS_LETTUCE_POOL_MIN_IDLE_PROD:8}
+          max-idle: ${SPRING_REDIS_LETTUCE_POOL_MAX_IDLE_PROD:16}
+          max-active: ${SPRING_REDIS_LETTUCE_POOL_MAX_ACTIVE_PROD:32}
+          max-wait: ${REDIS_MAX_WAIT:-1ms}
+        shutdown-timeout: ${SPRING_REDIS_LETTUCE_SHUTDOWN_TIMEOUT:100ms}
+  
+  # 缓存配置
+  cache:
+    type: redis
+    redis:
+      time-to-live: ${CACHE_TTL:3600000}
+      cache-null-values: ${CACHE_NULL_VALUES:false}
+      key-prefix: ${CACHE_KEY_PREFIX:lawfirm:}
+      use-key-prefix: ${CACHE_USE_KEY_PREFIX:true}
+  cache-names:
+    - userCache
+    - roleCache
+    - permissionCache
+    - configCache
+    - documentCache
+    - caseCache
+    - clientCache
+  
+  # 异步处理配置
+  task:
+    execution:
+      pool:
+        core-size: ${SPRING_TASK_EXECUTION_POOL_CORE_SIZE:10}
+        max-size: ${SPRING_TASK_EXECUTION_POOL_MAX_SIZE:20}
+        queue-capacity: ${SPRING_TASK_EXECUTION_POOL_QUEUE_CAPACITY:100}
+        keep-alive: ${SPRING_TASK_EXECUTION_POOL_KEEP_ALIVE:60s}
+        allow-core-thread-timeout: ${SPRING_TASK_EXECUTION_POOL_ALLOW_CORE_THREAD_TIMEOUT:true}
+        thread-name-prefix: ${SPRING_TASK_EXECUTION_POOL_THREAD_NAME_PREFIX:spring-task-executor-}
+    scheduling:
+      pool:
+        size: ${SPRING_TASK_SCHEDULING_POOL_SIZE:10}
+        thread-name-prefix: ${SPRING_TASK_SCHEDULING_POOL_THREAD_NAME_PREFIX:spring-task-scheduler-}
+  
+  # Flyway配置
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    clean-disabled: true
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE:true}
+    validate-on-migrate: true
+    out-of-order: ${FLYWAY_OUT_OF_ORDER:false}
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    encoding: UTF-8
+    placeholders:
+      schema: ${DB_NAME:law_firm}
+  
+  # 文件上传限制
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:100MB}
+      max-request-size: ${MAX_REQUEST_SIZE:200MB}
+
+# 安全配置
+security:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:https://your-domain.com}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+    max-age: ${CORS_MAX_AGE:3600}
+  xss:
+    enabled: true
+    exclude-urls: ${XSS_EXCLUDE_URLS:/api/upload}
+  sql-injection:
+    enabled: true
+    exclude-urls: ${SQL_INJECTION_EXCLUDE_URLS:}
+  rate-limit:
+    enabled: true
+    global:
+      limit: ${RATE_LIMIT_GLOBAL:1000}
+      period: ${RATE_LIMIT_PERIOD:60s}
+    ip:
+      limit: ${RATE_LIMIT_IP:100}
+      period: ${RATE_LIMIT_IP_PERIOD:60s}
+    user:
+      limit: ${RATE_LIMIT_USER:50}
+      period: ${RATE_LIMIT_USER_PERIOD:60s}
+  ssl:
+    enabled: ${SSL_ENABLED:true}
+    key-store: ${SSL_KEY_STORE:classpath:keystore.p12}
+    key-store-password: ${SSL_KEY_STORE_PASSWORD:changeit}
+    key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12}
+    key-alias: ${SSL_KEY_ALIAS:tomcat}
+  headers:
+    enabled: true
+    hsts:
+      enabled: true
+      max-age: ${SECURITY_HEADERS_HSTS_MAX_AGE:31536000}
+      include-subdomains: true
+    content-security-policy: ${SECURITY_HEADERS_CSP:default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;}
+    x-frame-options: ${SECURITY_HEADERS_XFO:DENY}
+    x-content-type-options: ${SECURITY_HEADERS_XCTO:nosniff}
+    x-xss-protection: ${SECURITY_HEADERS_XXSSP:1; mode=block}
+    referrer-policy: ${SECURITY_HEADERS_REFERRER:strict-origin-when-cross-origin}
+  audit:
+    enabled: true
+    events:
+      - AUTHENTICATION_SUCCESS
+      - AUTHENTICATION_FAILURE
+      - AUTHORIZATION_GRANT
+      - AUTHORIZATION_FAILURE
+      - ACCESS_DENIED
+      - LOGOUT_SUCCESS
+    log:
+      enabled: true
+      path: ${SECURITY_AUDIT_LOG_PATH:./logs/audit.log}
+      max-size: ${SECURITY_AUDIT_LOG_MAX_SIZE:100MB}
+      max-history: ${SECURITY_AUDIT_LOG_MAX_HISTORY:30}
+
+# 自定义配置
+lawfirm:
+  # 搜索引擎配置
+  search:
+    enabled: ${LAWFIRM_SEARCH_ENABLED:true}
+    type: ${LAWFIRM_SEARCH_TYPE:lucene}
+    lucene:
+      index-path: ${LAWFIRM_LUCENE_INDEX_PATH:/data/law-firm/lucene}
+      analyzer: standard
+      max-results: 1000
+      commit-interval: 1000
+  
+  # 存储配置
+  storage:
+    enabled: ${LAWFIRM_STORAGE_ENABLED:true}
+    defaultType: ${LAWFIRM_STORAGE_TYPE:MINIO}
+    path:
+      baseDir: ${LAWFIRM_STORAGE_PATH:/data/law-firm/storage}
+      tempDir: ${LAWFIRM_STORAGE_TEMP_PATH:/data/law-firm/storage/temp}
+    minio:
+      enabled: true
+      endpoint: ${MINIO_ENDPOINT:http://minio:9000}
+      accessKey: ${MINIO_ACCESS_KEY:minioadmin}
+      secretKey: ${MINIO_SECRET_KEY:minioadmin}
+      bucketName: ${MINIO_BUCKET_NAME:law-firm}
+      secure: ${MINIO_SECURE:false}
+      region: ${MINIO_REGION:us-east-1}
+      connect-timeout: ${MINIO_CONNECT_TIMEOUT:10s}
+      write-timeout: ${MINIO_WRITE_TIMEOUT:60s}
+      read-timeout: ${MINIO_READ_TIMEOUT:10s}
+      retry:
+        max-attempts: ${MINIO_RETRY_MAX_ATTEMPTS:3}
+        initial-interval: ${MINIO_RETRY_INITIAL_INTERVAL:1000}
+        max-interval: ${MINIO_RETRY_MAX_INTERVAL:10000}
+        multiplier: ${MINIO_RETRY_MULTIPLIER:2}
+
+# 日志配置
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm: ${LOGGING_LEVEL_APP:INFO}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+  file:
+    name: ${LOG_FILE:/data/logs/law-firm/app.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+    total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:3GB}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# 服务器配置
+server:
+  tomcat:
+    threads:
+      max: ${SERVER_TOMCAT_THREADS_MAX:200}
+      min-spare: ${SERVER_TOMCAT_THREADS_MIN:20}
+    max-connections: ${SERVER_TOMCAT_MAX_CONNECTIONS:8192}
+    accept-count: ${SERVER_TOMCAT_ACCEPT_COUNT:100}
+    connection-timeout: ${SERVER_TOMCAT_CONNECTION_TIMEOUT:5000}
+    keep-alive-timeout: ${SERVER_TOMCAT_KEEP_ALIVE_TIMEOUT:20000}
+    max-http-header-size: ${SERVER_TOMCAT_MAX_HTTP_HEADER_SIZE:8192}
+    max-http-form-post-size: ${SERVER_TOMCAT_MAX_HTTP_FORM_POST_SIZE:10485760}
+  compression:
+    enabled: ${SERVER_COMPRESSION_ENABLED:true}
+    mime-types: application/json,application/xml,text/html,text/plain,text/css,application/javascript
+    min-response-size: 2048
+  error:
+    whitelabel:
+      enabled: false
+    include-message: never
+    include-binding-errors: never
+
+# 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+      path-mapping:
+        health: health
+        info: info
+        metrics: metrics
+        prometheus: prometheus
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+      liveness-state:
+        enabled: true
+      readiness-state:
+        enabled: true
+      group:
+        readiness:
+          include: db,redis,minio
+        liveness:
+          include: ping,diskSpace
+    metrics:
+      enabled: true
+      distribution:
+        percentiles-histogram:
+          http.server.requests: true
+          http.client.requests: true
+          jvm.memory.used: true
+          jvm.gc.pause: true
+          process.cpu.usage: true
+          system.cpu.usage: true
+          tomcat.sessions.active: true
+          tomcat.threads.busy: true
+          hikaricp.connections.active: true
+          hikaricp.connections.idle: true
+          redis.lettuce.command.completion: true
+    prometheus:
+      enabled: true
+      step: 1m
+      descriptions: true
+  health:
+    defaults:
+      enabled: true
+    db:
+      enabled: true
+    redis:
+      enabled: true
+    diskspace:
+      enabled: true
+      path: ${SYSTEM_LOG_DIR}
+      threshold: 10GB
+    ping:
+      enabled: true
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+    os:
+      enabled: true 

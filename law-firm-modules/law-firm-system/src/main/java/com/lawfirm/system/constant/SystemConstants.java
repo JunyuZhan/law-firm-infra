@@ -38,4 +38,9 @@ public final class SystemConstants {
      * 升级API路径前缀
      */
     public static final String API_UPGRADE_PREFIX = "/api/v1/upgrades";
+    
+    /**
+     * 数据库备份API路径前缀
+     */
+    public static final String API_DATABASE_PREFIX = "/api/v1/database";
 } 

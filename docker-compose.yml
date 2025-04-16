@@ -1,88 +1,180 @@
-version: '3.8'
-
 services:
-  # 应用服务
-  law-firm-api:
+  # API服务
+  api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: law-firm-api
+    container_name: law-firm-app
     restart: always
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       # 环境配置
       - SPRING_PROFILES_ACTIVE=docker
       # 数据库配置
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/law_firm?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME:-root}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD:-lawfirm_default}
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=law_firm
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=lawfirm_default
+      - DB_MIN_IDLE=5
+      - DB_MAX_POOL_SIZE=15
+      - DB_IDLE_TIMEOUT=30000
+      - DB_MAX_LIFETIME=1800000
+      - DB_CONNECTION_TIMEOUT=30000
+      # 直接设置数据源配置
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/law_firm?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=lawfirm_default
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       # Redis配置
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      # 直接设置Redis配置
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_DATABASE=0
+      # MinIO配置
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET_NAME=law-firm
       # Flyway配置
-      - FLYWAY_ENABLED=true
+      - SPRING_FLYWAY_ENABLED=true
+      - SPRING_FLYWAY_BASELINE_ON_MIGRATE=true
+      - SPRING_FLYWAY_VALIDATE_ON_MIGRATE=true
+      - SPRING_FLYWAY_OUT_OF_ORDER=true
+      - SPRING_FLYWAY_IGNORE_MIGRATION_PATTERNS=*:missing
+      - SPRING_FLYWAY_TABLE=flyway_schema_history
+      - SPRING_FLYWAY_LOCATIONS=classpath:db/migration,classpath:db/migration/modules
+      - SPRING_FLYWAY_PLACEHOLDERS_SCHEMA=${DB_NAME}
+      # 禁用各模块的Flyway，只使用主应用的统一配置
+      - SYSTEM_FLYWAY_ENABLED=false
+      - AUTH_FLYWAY_ENABLED=false
+      - CASE_FLYWAY_ENABLED=false
+      - CLIENT_FLYWAY_ENABLED=false
+      - CONTRACT_FLYWAY_ENABLED=false
+      - DOCUMENT_FLYWAY_ENABLED=false
+      - KNOWLEDGE_FLYWAY_ENABLED=false
+      - FINANCE_FLYWAY_ENABLED=false
+      - PERSONNEL_FLYWAY_ENABLED=false
+      - SCHEDULE_FLYWAY_ENABLED=false
+      - TASK_FLYWAY_ENABLED=false
+      - ARCHIVE_FLYWAY_ENABLED=false
+      - ANALYSIS_FLYWAY_ENABLED=false
       # 禁用工作流
       - FLOWABLE_ENABLED=false
       - LAWFIRM_WORKFLOW_ENABLED=false
       # 系统功能开关
-      - ELASTICSEARCH_ENABLED=false
       - LAWFIRM_SEARCH_ENABLED=true
       - LAWFIRM_SEARCH_TYPE=lucene
+      - LAWFIRM_LUCENE_INDEX_PATH=/app/lucene
       - LAWFIRM_STORAGE_ENABLED=true
+      - LAWFIRM_STORAGE_TYPE=MINIO
       - LAWFIRM_STORAGE_PATH=/app/storage
       - LAWFIRM_STORAGE_TEMP_PATH=/app/storage/temp
-      - LAWFIRM_STORAGE_LOCAL_PATH=/app/storage
+      # 监控配置
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics,prometheus
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=always
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW_COMPONENTS=always
+      - MANAGEMENT_ENDPOINT_METRICS_ENABLED=true
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      # 性能监控配置
+      - MANAGEMENT_METRICS_ENABLE_ALL=true
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_HTTP_SERVER_REQUESTS=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_HTTP_CLIENT_REQUESTS=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_JVM_MEMORY_USED=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_JVM_GC_PAUSE=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_PROCESS_CPU_USAGE=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_SYSTEM_CPU_USAGE=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_REDIS_LETTUCE_COMMAND_COMPLETION=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_TOMCAT_SESSIONS_ACTIVE=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_TOMCAT_THREADS_BUSY=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_HIKARICP_CONNECTIONS_ACTIVE=0.5,0.75,0.95,0.99
+      - MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILES_HISTOGRAM_HIKARICP_CONNECTIONS_IDLE=0.5,0.75,0.95,0.99
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
     volumes:
-      - ./logs:/app/logs
-      - ./storage:/app/storage
+      - app_logs:/app/logs
+      - app_storage:/app/storage
+      - app_lucene:/app/lucene
     networks:
       - law-firm-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
 
   # MySQL数据库
   mysql:
     image: mysql:8.0
-    container_name: law-firm-mysql
+    container_name: law-mysql
     restart: always
     ports:
-      - "3306:3306"
+      - "13306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD:-lawfirm_default}
+      - MYSQL_ROOT_PASSWORD=lawfirm_default
       - MYSQL_DATABASE=law_firm
       - TZ=Asia/Shanghai
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql-mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
     volumes:
-      - ./data/mysql:/var/lib/mysql
-      # 初始化脚本(如果存在)
+      - mysql_data:/var/lib/mysql
       - ./scripts/mysql:/docker-entrypoint-initdb.d
     networks:
       - law-firm-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_PASSWORD:-lawfirm_default}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-plawfirm_default"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
 
   # Redis缓存
   redis:
     image: redis:7.0
-    container_name: law-firm-redis
+    container_name: law-redis
     restart: always
     ports:
       - "6379:6379"
-    command: redis-server --appendonly yes
+    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
     volumes:
-      - ./data/redis:/data
+      - redis_data:/data
     networks:
       - law-firm-network
     healthcheck:
@@ -90,8 +182,66 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+
+  # MinIO对象存储
+  minio:
+    image: minio/minio
+    container_name: law-minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+      - ./scripts/minio:/scripts/minio
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
 
 # 网络
 networks:
   law-firm-network:
-    driver: bridge 
+    driver: bridge
+
+# 命名卷
+volumes:
+  mysql_data:    # MySQL数据持久化
+  redis_data:    # Redis数据持久化
+  minio_data:    # MinIO数据持久化
+  app_logs:      # 应用日志
+  app_storage:   # 上传文件存储
+  app_lucene:    # Lucene索引存储

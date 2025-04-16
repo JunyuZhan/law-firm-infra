@@ -8,7 +8,6 @@ spring:
 
 # 服务器配置
 server:
-  port: ${ARCHIVE_SERVER_PORT:8087}
   servlet:
     context-path: ${ARCHIVE_CONTEXT_PATH:/api/archive}
 

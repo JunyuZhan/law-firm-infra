@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.lawfirm.common.log.annotation.Log;
 import com.lawfirm.model.base.controller.BaseController;
@@ -41,8 +43,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping(SystemConstants.API_UPGRADE_PREFIX)
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
+@ConditionalOnExpression("'${spring.profiles.active}' != 'nodb'")
 public class UpgradeController extends BaseController {
 
+    @Qualifier("systemUpgradeServiceImpl")
     private final UpgradeService upgradeService;
 
     /**

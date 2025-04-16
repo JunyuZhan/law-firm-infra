@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -36,6 +37,7 @@ import java.util.Base64;
 @Slf4j
 @Service("systemUpgradeServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnExpression("'${spring.profiles.active}' != 'nodb'")
 public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> implements UpgradeService {
 
     private final PatchMapper patchMapper;
