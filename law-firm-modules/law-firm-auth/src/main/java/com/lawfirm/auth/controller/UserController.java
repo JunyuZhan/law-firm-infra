@@ -135,14 +135,15 @@ public class UserController {
     }
     
     /**
-     * 获取用户信息
+     * 获取当前用户信息
+     * 标准接口，适配vue-vben-admin格式
      */
-    @Operation(summary = "获取用户信息", description = "获取当前登录用户信息")
+    @Operation(summary = "获取当前用户信息", description = "获取当前登录用户详细信息，适配vue-vben-admin")
     @GetMapping("/getUserInfo")
     public CommonResult<UserInfoVO> getUserInfo() {
         Long userId = SecurityUtils.getCurrentUserId();
-        UserInfoVO userInfoVO = userService.getUserInfo(userId);
-        return CommonResult.success(userInfoVO);
+        UserInfoVO userInfo = userService.getUserDetailInfo(userId);
+        return CommonResult.success(userInfo);
     }
     
     /**

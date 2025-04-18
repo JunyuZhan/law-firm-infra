@@ -1,5 +1,6 @@
 package com.lawfirm.model.client.entity.business;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.client.entity.base.ClientRelation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
+@TableName("contract_party")
 public class ContractParty extends ClientRelation {
 
     private static final long serialVersionUID = 1L;

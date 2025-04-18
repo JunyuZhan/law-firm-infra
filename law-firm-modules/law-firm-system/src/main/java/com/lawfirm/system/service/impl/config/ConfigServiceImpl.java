@@ -213,6 +213,11 @@ public class ConfigServiceImpl extends BaseServiceImpl<SysConfigMapper, SysConfi
             }
         }
         
+        // 设置默认状态为启用
+        if (vo.getStatus() == null) {
+            vo.setStatus(1); // 1-启用
+        }
+        
         return vo;
     }
 

@@ -14,7 +14,7 @@ public class SystemSqlConstants {
          * 根据配置键查询配置
          */
         public static final String SELECT_BY_KEY = 
-                "SELECT * FROM sys_config WHERE config_key = #{configKey} AND deleted = 0";
+                "SELECT id,config_name,config_key,config_value,config_type,remark,create_by,update_by,create_time,update_time,deleted FROM sys_config WHERE config_key = #{configKey} AND deleted = 0";
                 
         /**
          * 根据配置分组查询配置列表

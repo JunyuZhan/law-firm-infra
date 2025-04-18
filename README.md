@@ -199,7 +199,6 @@
 
 ### 2. 核心框架
 - Spring Boot 3.2.x
-- Spring Cloud 2023.x
 - Spring Security 6.x
 - MyBatis Plus 3.5.x
 

@@ -549,7 +549,6 @@ public class CorsConfig {
 
 ```java
 @SpringBootApplication
-@EnableDiscoveryClient
 @ComponentScan(basePackages = {"com.lawfirm"})
 public class LawFirmApiApplication {
     
@@ -840,3 +839,59 @@ law-firm:
 4. **防止 CSRF**：使用 CSRF Token
 5. **敏感数据加密**：敏感数据要加密存储和传输
 6. **日志记录**：记录关键操作和安全事件的日志
+
+## Redis配置说明
+
+系统支持以下Redis配置方式：
+
+### 1. 不使用密码的Redis (本地开发)
+
+本地开发环境通常使用无密码的Redis，可以通过以下方式启动应用：
+
+```bash
+# Linux/Mac
+./start-local.sh
+
+# Windows
+start-local.bat
+```
+
+这些脚本会自动设置正确的环境变量，并使用local配置文件。
+
+### 2. 使用密码的Redis (生产环境)
+
+生产环境通常需要Redis密码，可以通过以下环境变量配置：
+
+```bash
+export REDIS_HOST=your-redis-host
+export REDIS_PORT=6379
+export REDIS_PASSWORD=your-redis-password
+```
+
+然后使用标准启动脚本：
+
+```bash
+./start.sh
+```
+
+### 3. 禁用Redis缓存
+
+如果不想使用Redis，可以在配置中禁用Redis缓存，在application.yml或本地配置文件中设置：
+
+```yaml
+law:
+  firm:
+    cache:
+      enabled: false
+      type: LOCAL
+```
+
+## 常见问题排查
+
+1. Redis认证错误: "ERR Client sent AUTH, but no password is set"
+   - 原因：应用尝试使用密码连接没有密码的Redis服务
+   - 解决：使用start-local.sh/bat脚本启动，或确保REDIS_PASSWORD环境变量为空
+
+2. Redis连接失败
+   - 检查Redis服务是否运行: `redis-cli ping` 应返回PONG
+   - 检查Redis配置信息: `redis-cli info` 查看详细信息

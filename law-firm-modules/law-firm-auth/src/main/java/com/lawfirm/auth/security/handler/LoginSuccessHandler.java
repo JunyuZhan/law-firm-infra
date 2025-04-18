@@ -8,8 +8,10 @@ import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.auth.dto.auth.TokenDTO;
 import com.lawfirm.model.auth.service.LoginHistoryService;
 import com.lawfirm.model.auth.vo.LoginVO;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,12 +30,24 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
+@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     
     private final LoginHistoryService loginHistoryService;
     private final ObjectMapper objectMapper;
     private final JwtTokenProvider tokenProvider;
+    private final Environment environment;
+    
+    public LoginSuccessHandler(
+            LoginHistoryService loginHistoryService, 
+            @Qualifier("objectMapper") ObjectMapper objectMapper, 
+            JwtTokenProvider tokenProvider,
+            Environment environment) {
+        this.loginHistoryService = loginHistoryService;
+        this.objectMapper = objectMapper;
+        this.tokenProvider = tokenProvider;
+        this.environment = environment;
+    }
     
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -41,23 +55,32 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
         
-        // 记录登录成功历史
-        try {
-            Long userId = getUserIdFromUserDetails(userDetails);
-            String ip = SecurityUtils.getClientIp(request);
-            String userAgent = request.getHeader("User-Agent");
-            loginHistoryService.saveLoginHistory(
-                userId, 
-                username, 
-                ip, 
-                "", // 地理位置，可通过IP获取
-                userAgent, // 浏览器信息
-                "", // 操作系统信息，可从User-Agent解析
-                0, // 成功状态
-                "登录成功"
-            );
-        } catch (Exception e) {
-            log.error("记录登录历史失败", e);
+        // 检查是否启用数据库功能
+        boolean isDatabaseEnabled = Boolean.parseBoolean(
+            environment.getProperty("lawfirm.database.enabled", "true"));
+            
+        // 记录登录成功历史 - 只在数据库功能启用时记录
+        if (isDatabaseEnabled && loginHistoryService != null) {
+            try {
+                Long userId = getUserIdFromUserDetails(userDetails);
+                String ip = SecurityUtils.getClientIp(request);
+                String userAgent = request.getHeader("User-Agent");
+                loginHistoryService.saveLoginHistory(
+                    userId, 
+                    username, 
+                    ip, 
+                    "", // 地理位置，可通过IP获取
+                    userAgent, // 浏览器信息
+                    "", // 操作系统信息，可从User-Agent解析
+                    0, // 成功状态
+                    "登录成功"
+                );
+                log.info("记录登录历史成功，用户: {}, IP: {}", username, ip);
+            } catch (Exception e) {
+                log.error("记录登录历史失败", e);
+            }
+        } else {
+            log.info("数据库功能已禁用或LoginHistoryService未注入，跳过登录历史记录");
         }
         
         // 直接使用tokenProvider生成token，而不是调用AuthService

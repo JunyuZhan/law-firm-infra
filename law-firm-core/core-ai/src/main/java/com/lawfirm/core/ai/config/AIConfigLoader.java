@@ -191,4 +191,19 @@ public class AIConfigLoader {
             log.warn("加载AI通用配置失败", e);
         }
     }
+
+    /**
+     * 处理配置值，考虑实体字段可能不存在的情况
+     * 
+     * @param config 配置对象
+     * @param fieldName 字段名称
+     * @param defaultValue 默认值
+     * @return 处理后的值
+     */
+    private String getConfigValue(ConfigVO config) {
+        if (config == null) {
+            return null;
+        }
+        return config.getConfigValue();
+    }
 } 

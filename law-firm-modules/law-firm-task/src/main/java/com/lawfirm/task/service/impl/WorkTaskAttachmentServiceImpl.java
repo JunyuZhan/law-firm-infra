@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import com.lawfirm.common.security.utils.SecurityUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -332,17 +333,20 @@ public class WorkTaskAttachmentServiceImpl extends ServiceImpl<WorkTaskAttachmen
     
     @Override
     public Long getCurrentUserId() {
-        return 1L; // TODO: 从安全上下文获取当前用户ID
+        return SecurityUtils.getUserId();
     }
     
     @Override
     public String getCurrentUsername() {
-        return "admin"; // TODO: 从安全上下文获取当前用户名
+        return SecurityUtils.getUsername();
     }
     
     @Override
     public Long getCurrentTenantId() {
-        return 1L; // TODO: 从安全上下文获取当前租户ID
+        // 如果SecurityUtils中没有直接获取租户ID的方法，可以通过用户对象获取
+        // 这里假设租户ID需要从其他地方获取，暂时返回默认值
+        // 在实际实现中，应该从当前用户的上下文中获取租户ID
+        return 1L; // 默认租户ID，后续应替换为实际获取逻辑
     }
     
     @Override

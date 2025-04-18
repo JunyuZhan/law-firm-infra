@@ -6,21 +6,28 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 消息自动配置类
+ * 消息服务自动配置类
+ * 此类将自动导入消息服务相关的所有配置
  */
 @Slf4j
 @AutoConfiguration
+@ComponentScan("com.lawfirm.core.message")
 @Import({
     MessageConfig.class,
     MessageSecurityConfig.class,
     MessageRedisConfig.class,
     RetryConfig.class,
-    MessageServiceConfig.class
+    MessageServiceConfig.class,
+    MessageFacadeConfig.class
 })
+@PropertySource(value = "classpath:default-message-config.properties", ignoreResourceNotFound = true)
 public class MessageAutoConfiguration {
 
     /**

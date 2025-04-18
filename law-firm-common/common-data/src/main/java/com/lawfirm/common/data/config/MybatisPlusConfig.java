@@ -8,14 +8,19 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * MyBatis-Plus通用配置
  * 提供全局共享的拦截器、分页和防止全表更新删除等功能
+ * 只有在lawfirm.database.enabled=true时才启用
  */
+@Slf4j
 @Configuration
 @EnableTransactionManagement
+@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
 public class MybatisPlusConfig {
 
     /**
@@ -25,6 +30,7 @@ public class MybatisPlusConfig {
     @Bean(name = "commonMybatisPlusInterceptor")
     @Primary
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        log.info("创建MyBatis-Plus拦截器");
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 分页插件
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));

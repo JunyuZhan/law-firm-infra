@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Primary;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,13 +27,13 @@ import java.util.List;
 @Order(1)
 public class CacheConfig {
 
-    @Value("${spring.redis.host:localhost}")
+    @Value("${spring.data.redis.host:localhost}")
     private String host;
 
-    @Value("${spring.redis.port:6379}")
+    @Value("${spring.data.redis.port:6379}")
     private int port;
 
-    @Value("${spring.redis.password:}")
+    @Value("${spring.data.redis.password:}")
     private String password;
     
     @Value("${law.firm.cache.enabled:false}")
@@ -51,13 +52,21 @@ public class CacheConfig {
     }
 
     @Bean(name = "commonRedissonClient")
-    @ConditionalOnProperty(prefix = "spring.redis", name = "host")
+    @ConditionalOnProperty(prefix = "spring.data.redis", name = "host")
     @Order(2)
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
-              .setAddress("redis://" + host + ":" + port)
-              .setPassword(password.isEmpty() ? null : password);
+              .setAddress("redis://" + host + ":" + port);
+        
+        // 只有当密码非空时才设置密码
+        if (StringUtils.hasText(password) && !password.isEmpty() && !password.trim().isEmpty()) {
+            config.useSingleServer().setPassword(password);
+        } else {
+            // 显式设置为null，确保不发送AUTH命令
+            config.useSingleServer().setPassword(null);
+        }
+        
         return Redisson.create(config);
     }
 

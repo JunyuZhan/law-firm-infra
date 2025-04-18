@@ -1,71 +1,85 @@
 # 测试环境配置
 spring:
-  # 数据源配置
+  # 数据库配置
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+    url: jdbc:mysql://localhost:3306/law_firm_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+    username: ${TEST_DB_USERNAME:root}
+    password: ${TEST_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      minimum-idle: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE}
-      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE_TEST}
-      idle-timeout: ${SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT}
-      connection-timeout: ${SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT}
-      connection-test-query: SELECT 1
-  
-  # Flyway配置
-  flyway:
-    enabled: ${SPRING_FLYWAY_ENABLED}
-    baseline-on-migrate: ${SPRING_FLYWAY_BASELINE_ON_MIGRATE}
-    validate-on-migrate: ${SPRING_FLYWAY_VALIDATE_ON_MIGRATE}
-    locations: classpath:db/migration
-    table: flyway_schema_history
-    encoding: UTF-8
-    placeholders:
-      schema: ${SPRING_FLYWAY_PLACEHOLDERS_SCHEMA}
-  
-  # Redis测试配置
+      minimum-idle: 3
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+    # 动态数据源配置，测试环境不启用
+    dynamic:
+      enabled: false
+  # Redis配置
   data:
     redis:
-      host: ${SPRING_REDIS_HOST}
-      port: ${SPRING_REDIS_PORT}
-      database: ${SPRING_REDIS_DATABASE_TEST}
-      timeout: ${SPRING_REDIS_TIMEOUT}
-      lettuce:
-        pool:
-          min-idle: ${SPRING_REDIS_LETTUCE_POOL_MIN_IDLE}
-          max-idle: ${SPRING_REDIS_LETTUCE_POOL_MAX_IDLE}
-          max-active: ${SPRING_REDIS_LETTUCE_POOL_MAX_ACTIVE}
-          max-wait: ${SPRING_REDIS_LETTUCE_POOL_MAX_WAIT}
-  
-  # 禁用缓存
-  cache:
-    type: none
+      host: ${TEST_REDIS_HOST:localhost}
+      port: ${TEST_REDIS_PORT:6379}
+      database: 1  # 使用单独的库，避免影响开发环境
+      password: ${TEST_REDIS_PASSWORD:}
+  # 数据库迁移配置
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
+    baseline-on-migrate: true
+    out-of-order: true
 
-# 测试环境专用配置
-lawfirm:
-  # 搜索引擎配置
-  search:
-    enabled: ${LAWFIRM_SEARCH_ENABLED:false}
-  
-  # 存储配置
-  storage:
-    enabled: ${LAWFIRM_STORAGE_ENABLED:true}
-    defaultType: ${LAWFIRM_STORAGE_TYPE:LOCAL}
-    path:
-      baseDir: ${LAWFIRM_STORAGE_PATH:${user.home}/.law-firm/test/storage}
-      tempDir: ${LAWFIRM_STORAGE_TEMP_PATH:${user.home}/.law-firm/test/storage/temp}
-    local:
-      enabled: true
-      basePath: ${LAWFIRM_STORAGE_LOCAL_PATH:${user.home}/.law-firm/test/storage}
-
-# 日志配置
+# 日志配置 - 测试环境减少DEBUG日志
 logging:
   level:
-    root: ${LOGGING_LEVEL_ROOT:INFO}
-    com.lawfirm: ${LOGGING_LEVEL_APP:DEBUG}
-    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
-    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
-    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
-  file:
-    name: ${LOG_FILE:${user.home}/logs/law-firm-test.log} 
+    root: INFO
+    com.lawfirm: INFO  # 开发环境是DEBUG
+    org.springframework: INFO
+    org.springframework.web: INFO  # 开发环境是DEBUG
+    com.lawfirm.common.data: INFO  # 开发环境是DEBUG
+    # 保留Flyway日志，以便查看SQL执行情况
+    org.flywaydb: INFO
+
+# 启用基本安全组件
+security:
+  enabled: true
+  ignore-urls:
+    - "/favicon.ico"
+    - "/error"
+    - "/health"
+    - "/version"
+    - "/api/auth/login"
+    - "/api/auth/logout"
+    - "/api/auth/captcha"
+    - "/api/docs/**"
+    - "/swagger-ui/**"
+    - "/v3/api-docs/**"
+
+# 测试环境业务模块配置
+lawfirm:
+  # 搜索服务配置 - 测试环境开启
+  search:
+    enabled: true
+    type: lucene
+  # 存储服务配置
+  storage:
+    enabled: true
+    defaultType: LOCAL
+    path:
+      baseDir: ${user.home}/.law-firm-test/storage
+      tempDir: ${user.home}/.law-firm-test/storage/temp
+  # 缓存配置 - 测试环境开启
+  cache:
+    enabled: true
+    type: REDIS
+
+# 管理端点配置 - 仅测试环境可见，生产环境会禁用
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always 

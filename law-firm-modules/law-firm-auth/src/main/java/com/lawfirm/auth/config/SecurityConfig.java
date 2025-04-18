@@ -1,5 +1,7 @@
 package com.lawfirm.auth.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lawfirm.auth.security.filter.JsonLoginFilter;
 import com.lawfirm.auth.security.filter.JwtAuthenticationFilter;
 import com.lawfirm.auth.security.handler.LoginFailureHandler;
 import com.lawfirm.auth.security.handler.LoginSuccessHandler;
@@ -7,7 +9,11 @@ import com.lawfirm.auth.security.provider.JwtTokenProvider;
 import com.lawfirm.common.security.config.BaseSecurityConfig;
 import com.lawfirm.common.security.constants.SecurityConstants;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -38,19 +44,32 @@ import jakarta.servlet.http.HttpServletResponse;
  * </p>
  * 
  * 注意: 该配置类优先级高于通用安全配置，Bean名称唯一，避免与其他安全配置冲突
+ * 只有在lawfirm.database.enabled=true时才启用完整功能
  */
-// @Configuration("authSecurityConfig") // Temporarily disable this configuration
+@Slf4j
 @Configuration("authSecurityConfig")
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Order(90)  // 确保此配置在通用安全配置之前加载
+@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityConfig extends BaseSecurityConfig {
     
     private final JwtTokenProvider tokenProvider;
     private final LoginSuccessHandler loginSuccessHandler;
     private final LoginFailureHandler loginFailureHandler;
+    
+    @Qualifier("objectMapper")
+    private final ObjectMapper objectMapper;
+    
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    
+    private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    public void setAuthenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
+    }
     
     // 公开路径列表
     private static final String[] PERMIT_ALL_PATHS = {
@@ -68,6 +87,7 @@ public class SecurityConfig extends BaseSecurityConfig {
     @Primary
     @ConditionalOnMissingBean(name = "passwordEncoder")
     public PasswordEncoder passwordEncoder() {
+        log.info("创建密码编码器");
         return new BCryptPasswordEncoder();
     }
     
@@ -76,24 +96,38 @@ public class SecurityConfig extends BaseSecurityConfig {
      */
     @Bean("authAuthenticationManager")
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        log.info("创建认证管理器");
         return authenticationConfiguration.getAuthenticationManager();
     }
     
     /**
      * 配置JWT认证过滤器
      */
-    // @Bean("jwtAuthFilter") // Temporarily disable the creation of this specific filter bean
     @Bean("jwtAuthFilter")
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        log.info("创建JWT认证过滤器");
         return new JwtAuthenticationFilter(tokenProvider);
+    }
+    
+    /**
+     * 配置JSON登录过滤器
+     * 使用限定的ObjectMapper，避免依赖注入冲突
+     */
+    @Bean("jsonLoginFilter")
+    public JsonLoginFilter jsonLoginFilter() {
+        log.info("创建JSON登录过滤器");
+        JsonLoginFilter filter = JsonLoginFilter.create("/auth/login", authenticationManager, objectMapper);
+        filter.setAuthenticationSuccessHandler(loginSuccessHandler);
+        filter.setAuthenticationFailureHandler(loginFailureHandler);
+        return filter;
     }
     
     /**
      * 配置安全过滤链，覆盖父类方法
      */
-    // @Bean("authFilterChain") // Temporarily disable this bean
     @Bean("authFilterChain")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("配置安全过滤链");
         return http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(request -> {
@@ -117,11 +151,7 @@ public class SecurityConfig extends BaseSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.disable())
             .httpBasic(basic -> basic.disable())
-            .formLogin(form -> form
-                .loginProcessingUrl("/auth/login")
-                .successHandler(loginSuccessHandler)
-                .failureHandler(loginFailureHandler)
-            )
+            .formLogin(form -> form.disable()) // 禁用表单登录，使用JsonLoginFilter处理JSON格式的登录请求
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
@@ -137,6 +167,7 @@ public class SecurityConfig extends BaseSecurityConfig {
                     response.getWriter().write("{\"code\":403,\"message\":\"访问被拒绝\"}");
                 })
             )
+            .addFilterBefore(jsonLoginFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .build();
     }

@@ -337,35 +337,57 @@ public class PermissionServiceImpl extends BaseServiceImpl<PermissionMapper, Per
     
     /**
      * 构建路由
+     * 适配vue-vben-admin前端路由格式
      */
     private List<RouterVO> buildRouters(List<PermissionVO> menus) {
         List<RouterVO> routers = new ArrayList<>();
         
         for (PermissionVO menu : menus) {
             RouterVO router = new RouterVO();
-            router.setName(menu.getName());
+            
+            // 设置路由名称 - 强制使用首字母大写的驼峰格式
+            String routeName = formatRouterName(menu.getName());
+            router.setName(routeName);
+            
+            // 设置路由路径
             router.setPath(menu.getPath());
-            router.setComponent(menu.getComponent());
+            
+            // 特殊处理布局组件
+            if ("Layout".equalsIgnoreCase(menu.getComponent()) 
+                    || menu.getComponent() == null 
+                    || "LAYOUT".equalsIgnoreCase(menu.getComponent())) {
+                router.setComponent("LAYOUT");
+                router.setLayout(true);
+            } else {
+                // 其他组件
+                router.setComponent(menu.getComponent());
+                router.setLayout(false);
+            }
+            
+            // 设置重定向
+            router.setRedirect(menu.getRedirect());
+            
+            // 设置Meta信息
             router.setMeta(new MetaVO(
-                    menu.getName(),
-                    menu.getIcon(),
-                    menu.getHidden() != null ? menu.getHidden() : false,
-                    menu.getKeepAlive() != null ? !menu.getKeepAlive() : true,
-                    false,
-                    null,
-                    menu.getOrderNum(),
-                    false,
-                    false,
-                    false,
-                    false,
-                    null,
-                    null,
-                    false,
-                    null,
-                    null,
-                    false,
-                    menu.getType(),
-                    false
+                    menu.getName(),                 // 标题
+                    menu.getIcon(),                 // 图标
+                    menu.getHidden() != null ? menu.getHidden() : false,  // 是否隐藏菜单
+                    menu.getKeepAlive() != null ? !menu.getKeepAlive() : true,   // 是否缓存
+                    menu.getAffix() != null ? menu.getAffix() : false,    // 是否固定标签
+                    menu.getCurrentActiveMenu(),    // 当前激活的菜单
+                    menu.getOrderNum(),             // 排序
+                    menu.getIgnoreRoute() != null ? menu.getIgnoreRoute() : false,   // 是否忽略路由
+                    menu.getHidePathForChildren() != null ? menu.getHidePathForChildren() : false,  // 是否在子级菜单的完整path中忽略本级path
+                    menu.getHideTab() != null ? menu.getHideTab() : false,    // 是否隐藏标签页
+                    menu.getIsLink() != null ? menu.getIsLink() : false,      // 是否是外链
+                    menu.getFrameSrc(),             // 内嵌iframe的地址
+                    menu.getTransitionName(),       // 该路由切换的动画名
+                    menu.getDynamicLevel() != null && menu.getDynamicLevel() > 0,  // 是否有动态父级菜单
+                    menu.getPermissions(),          // 权限标识
+                    menu.getRoles(),                // 角色列表
+                    menu.getHideBreadcrumb() != null ? menu.getHideBreadcrumb() : false,  // 是否隐藏面包屑
+                    menu.getType(),                 // 菜单类型
+                    menu.getNoCache() != null ? menu.getNoCache() : false      // 是否不缓存
             ));
             
             // 处理子路由
@@ -377,6 +399,27 @@ public class PermissionServiceImpl extends BaseServiceImpl<PermissionMapper, Per
         }
         
         return routers;
+    }
+
+    /**
+     * 格式化路由名称为vue-vben-admin期望的格式
+     * 确保首字母大写的驼峰格式
+     */
+    private String formatRouterName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return "NotNamed";
+        }
+        
+        // 移除非字母数字字符，并将首字母大写
+        String routeName = name.replaceAll("[^a-zA-Z0-9]", "");
+        if (!routeName.isEmpty()) {
+            routeName = Character.toUpperCase(routeName.charAt(0)) + 
+                       (routeName.length() > 1 ? routeName.substring(1) : "");
+        } else {
+            routeName = "NotNamed";
+        }
+        
+        return routeName;
     }
 
     @Override

@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
@@ -19,10 +21,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * MyBatis会话工厂配置
  * <p>
  * 负责创建和配置SqlSessionFactory
+ * 只有在lawfirm.database.enabled=true时才启用
  * </p>
  */
 @Configuration
 @MapperScan(basePackages = {"com.lawfirm.model.**.mapper"})
+@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
 public class SessionFactoryConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SessionFactoryConfig.class);
@@ -30,9 +34,11 @@ public class SessionFactoryConfig {
     /**
      * 创建SqlSessionFactory
      * 使用MybatisPlusConfig提供的MybatisPlusInterceptor
+     * 只有当DataSource存在时才创建
      */
     @Bean(name = "sqlSessionFactory")
     @Primary
+    @ConditionalOnBean(DataSource.class)
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource, 
                                              @Qualifier("commonMybatisPlusInterceptor") MybatisPlusInterceptor interceptor) throws Exception {
         log.info("初始化MyBatis和MyBatis-Plus配置");

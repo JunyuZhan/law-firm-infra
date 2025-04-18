@@ -17,8 +17,12 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
 org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
 org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 
-# 数据库相关配置
-org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+# 注意：以下配置在LawFirmApiApplication中被排除，这里不应再导入
+# org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+# org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+# org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
+# 数据库相关配置（不包含DataSourceAutoConfiguration）
 org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration
 org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration
 org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration

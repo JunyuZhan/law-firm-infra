@@ -1,13 +1,17 @@
 package com.lawfirm.contract.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lawfirm.common.util.json.JsonUtils;
 import com.lawfirm.model.contract.dto.ContractTemplateCreateDTO;
 import com.lawfirm.model.contract.dto.ContractTemplateUpdateDTO;
 import com.lawfirm.model.contract.entity.ContractTemplate;
 import com.lawfirm.model.contract.vo.ContractTemplateDetailVO;
 import com.lawfirm.model.contract.vo.ContractTemplateVO;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * 合同模板对象转换工具类
@@ -16,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ContractTemplateConverter {
     
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
     /**
      * 将创建DTO转换为实体
      * @param createDTO 创建DTO
@@ -37,8 +39,8 @@ public class ContractTemplateConverter {
         // 处理变量列表
         if (createDTO.getVariables() != null && !createDTO.getVariables().isEmpty()) {
             try {
-                template.setVariables(objectMapper.writeValueAsString(createDTO.getVariables()));
-            } catch (JsonProcessingException e) {
+                template.setVariables(JsonUtils.toJsonString(createDTO.getVariables()));
+            } catch (Exception e) {
                 log.error("转换变量列表失败", e);
             }
         }
@@ -75,8 +77,8 @@ public class ContractTemplateConverter {
         // 处理变量列表
         if (updateDTO.getVariables() != null && !updateDTO.getVariables().isEmpty()) {
             try {
-                entity.setVariables(objectMapper.writeValueAsString(updateDTO.getVariables()));
-            } catch (JsonProcessingException e) {
+                entity.setVariables(JsonUtils.toJsonString(updateDTO.getVariables()));
+            } catch (Exception e) {
                 log.error("转换变量列表失败", e);
             }
         }
@@ -110,8 +112,9 @@ public class ContractTemplateConverter {
         // 设置变量数量
         if (entity.getVariables() != null) {
             try {
-                vo.setVariableCount(objectMapper.readTree(entity.getVariables()).size());
-            } catch (JsonProcessingException e) {
+                JsonNode node = JsonUtils.parseNode(entity.getVariables());
+                vo.setVariableCount(node != null ? node.size() : 0);
+            } catch (Exception e) {
                 log.error("解析变量数量失败", e);
                 vo.setVariableCount(0);
             }
@@ -152,13 +155,10 @@ public class ContractTemplateConverter {
         // 处理变量列表
         if (entity.getVariables() != null) {
             try {
-                detailVO.setVariables(objectMapper.readValue(entity.getVariables(), 
-                    objectMapper.getTypeFactory().constructCollectionType(
-                        java.util.List.class, 
-                        com.lawfirm.model.contract.vo.ContractTemplateDetailVO.TemplateVariableVO.class
-                    )
-                ));
-            } catch (JsonProcessingException e) {
+                List<ContractTemplateDetailVO.TemplateVariableVO> variables = 
+                    JsonUtils.parseArray(entity.getVariables(), ContractTemplateDetailVO.TemplateVariableVO.class);
+                detailVO.setVariables(variables);
+            } catch (Exception e) {
                 log.error("解析变量列表失败", e);
             }
         }

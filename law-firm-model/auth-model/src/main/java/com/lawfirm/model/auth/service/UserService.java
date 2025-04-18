@@ -158,4 +158,13 @@ public interface UserService extends BaseService<User> {
      * 获取用户信息
      */
     UserInfoVO getUserInfo(Long userId);
+    
+    /**
+     * 获取用户详细信息（适配vue-vben-admin）
+     * 包含更多字段，如realName, avatar, desc等
+     * 
+     * @param userId 用户ID
+     * @return 详细的用户信息
+     */
+    UserInfoVO getUserDetailInfo(Long userId);
 } 

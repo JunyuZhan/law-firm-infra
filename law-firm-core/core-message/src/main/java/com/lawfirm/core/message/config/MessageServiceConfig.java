@@ -3,10 +3,12 @@ package com.lawfirm.core.message.config;
 import com.lawfirm.common.security.crypto.CryptoService;
 import com.lawfirm.core.message.service.MessageTemplateService;
 import com.lawfirm.core.message.service.impl.MessageTemplateServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;

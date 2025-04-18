@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -84,6 +85,7 @@ import java.util.Optional;
         JpaRepositoriesAutoConfiguration.class
     }
 )
+@ComponentScan(basePackages = {"com.lawfirm"})
 public class LawFirmApiApplication {
 
     public static void main(String[] args) {

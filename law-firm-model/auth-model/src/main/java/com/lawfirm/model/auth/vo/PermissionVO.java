@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * 权限视图对象
+ * 适配vue-vben-admin前端框架
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -112,4 +113,73 @@ public class PermissionVO extends BaseVO {
      * 备注
      */
     private String remark;
+    
+    /**
+     * 以下是vue-vben-admin所需的额外字段
+     */
+    
+    /**
+     * 是否固定标签
+     */
+    private Boolean affix;
+    
+    /**
+     * 当前激活的菜单。用于配置详情页时左侧激活的菜单路径
+     */
+    private String currentActiveMenu;
+    
+    /**
+     * 是否在ROUTE_MAPPING以及BACK_END_MENU中忽略该项
+     */
+    private Boolean ignoreRoute;
+    
+    /**
+     * 是否在子级菜单的完整path中忽略本级path
+     */
+    private Boolean hidePathForChildren;
+    
+    /**
+     * 是否隐藏标签页
+     */
+    private Boolean hideTab;
+    
+    /**
+     * 是否是外链
+     */
+    private Boolean isLink;
+    
+    /**
+     * 内嵌iframe的地址
+     */
+    private String frameSrc;
+    
+    /**
+     * 该路由切换的动画名
+     */
+    private String transitionName;
+    
+    /**
+     * 动态路由可打开Tab页数
+     */
+    private Integer dynamicLevel;
+    
+    /**
+     * 权限标识列表
+     */
+    private List<String> permissions;
+    
+    /**
+     * 角色列表
+     */
+    private List<String> roles;
+    
+    /**
+     * 是否隐藏面包屑
+     */
+    private Boolean hideBreadcrumb;
+    
+    /**
+     * 是否不缓存
+     */
+    private Boolean noCache;
 } 

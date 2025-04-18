@@ -1,92 +1,86 @@
 # 律师事务所管理系统主应用配置
+
+# 模块条件化配置（各模块使用ConditionalOnProperty检查的配置项）
+message:
+  enabled: false  # 消息服务开关
+  crypto:
+    enabled: false  # 消息加密开关
+  async:
+    enabled: false  # 异步消息开关
+
+# Spring主配置
 spring:
   application:
     name: law-firm-management
   profiles:
-    # 默认激活的环境配置
-    active: ${SPRING_PROFILES_ACTIVE:local}
-    # 包含所有业务模块配置
-    include:
-      # 核心业务模块
-      - system     # 系统管理
-      - auth       # 认证授权
-      - personnel  # 人事管理
-      - finance    # 财务管理
-      - document   # 文档管理
-      - knowledge  # 知识管理
-      # 业务功能模块
-      - case       # 案件管理
-      - contract   # 合同管理
-      - client     # 客户管理
-      - archive    # 归档管理
-      # 辅助功能模块
-      - task       # 任务管理
-      - schedule   # 日程管理
-      - analysis   # 数据分析
-      # API文档配置
-      - api-docs   # API文档
+    # 默认激活的环境配置 - 使用更明确的develop环境
+    active: ${SPRING_PROFILES_ACTIVE:develop}
+  # 数据源配置
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DATABASE_PASSWORD:}}
+    hikari:
+      pool-name: ${SPRING_DATASOURCE_HIKARI_POOL_NAME:HikariCP}
+      minimum-idle: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:5}
+      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:15}
+      idle-timeout: ${SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT:30000}
+      max-lifetime: ${SPRING_DATASOURCE_HIKARI_MAX_LIFETIME:1800000}
+      connection-timeout: ${SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT:30000}
+      validation-timeout: ${SPRING_DATASOURCE_HIKARI_VALIDATION_TIMEOUT:5000}
+      connection-test-query: SELECT 1
+      connection-init-sql: SET NAMES utf8mb4
+      auto-commit: true
+    # 动态数据源配置，默认不启用
+    dynamic:
+      enabled: ${SPRING_DATASOURCE_DYNAMIC_ENABLED:false}
+  # Redis配置
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+      database: ${SPRING_REDIS_DATABASE:0}
+      timeout: ${SPRING_REDIS_TIMEOUT:10000}
+      password: ${SPRING_REDIS_PASSWORD:}  # 显式设置默认为空
+      lettuce:
+        pool:
+          min-idle: ${SPRING_REDIS_LETTUCE_POOL_MIN_IDLE:0}
+          max-idle: ${SPRING_REDIS_LETTUCE_POOL_MAX_IDLE:8}
+          max-active: ${SPRING_REDIS_LETTUCE_POOL_MAX_ACTIVE:8}
+          max-wait: ${SPRING_REDIS_LETTUCE_POOL_MAX_WAIT:-1}
+  # 主要Spring配置
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
     lazy-initialization: false
     banner-mode: off
-  config:
-    import:
-      - optional:classpath:application-local.yml
-      - optional:classpath:application-docker.yml
-      - optional:classpath:application-test.yml
-      - optional:classpath:application-prod.yml
-  # 数据源配置
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    hikari:
-      pool-name: ${SPRING_DATASOURCE_HIKARI_POOL_NAME}
-      minimum-idle: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE}
-      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE}
-      idle-timeout: ${SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT}
-      max-lifetime: ${SPRING_DATASOURCE_HIKARI_MAX_LIFETIME}
-      connection-timeout: ${SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT}
-      validation-timeout: ${SPRING_DATASOURCE_HIKARI_VALIDATION_TIMEOUT}
-      connection-test-query: SELECT 1
-      connection-init-sql: SET NAMES utf8mb4
-      auto-commit: true
-      metrics-tracker-factory: com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTrackerFactory
-      register-mbeans: true
-  # Redis配置
-  data:
-    redis:
-      host: ${SPRING_REDIS_HOST}
-      port: ${SPRING_REDIS_PORT}
-      database: ${SPRING_REDIS_DATABASE}
-      timeout: ${SPRING_REDIS_TIMEOUT}
-      lettuce:
-        pool:
-          min-idle: ${SPRING_REDIS_LETTUCE_POOL_MIN_IDLE}
-          max-idle: ${SPRING_REDIS_LETTUCE_POOL_MAX_IDLE}
-          max-active: ${SPRING_REDIS_LETTUCE_POOL_MAX_ACTIVE}
-          max-wait: ${SPRING_REDIS_LETTUCE_POOL_MAX_WAIT}
   # Flyway配置
   flyway:
-    enabled: ${SPRING_FLYWAY_ENABLED}
+    enabled: ${SPRING_FLYWAY_ENABLED:false}
     clean-disabled: true
-    baseline-on-migrate: ${SPRING_FLYWAY_BASELINE_ON_MIGRATE}
-    validate-on-migrate: ${SPRING_FLYWAY_VALIDATE_ON_MIGRATE}
-    out-of-order: ${SPRING_FLYWAY_OUT_OF_ORDER}
+    baseline-on-migrate: ${SPRING_FLYWAY_BASELINE_ON_MIGRATE:true}
+    validate-on-migrate: ${SPRING_FLYWAY_VALIDATE_ON_MIGRATE:true}
+    out-of-order: ${SPRING_FLYWAY_OUT_OF_ORDER:false}
     ignore-migration-patterns: "*:missing"
     table: flyway_schema_history
     locations: 
       - classpath:db/migration
-      - classpath:db/migration/modules
     placeholders:
-      schema: ${SPRING_FLYWAY_PLACEHOLDERS_SCHEMA}
-    url: ${SPRING_DATASOURCE_URL}
-    user: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      schema: ${SPRING_FLYWAY_PLACEHOLDERS_SCHEMA:law_firm}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true}
+    user: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DATABASE_PASSWORD:}}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
+
+# 跨域配置 - 供common-web模块的WebConfig使用
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+  allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+  allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+  allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+  max-age: ${CORS_MAX_AGE:3600}
 
 # MyBatis-Plus配置
 mybatis-plus:
@@ -117,55 +111,6 @@ mybatis-plus:
   type-aliases-package: com.lawfirm.**.entity
   type-handlers-package: com.lawfirm.**.handler
 
-# Web相关配置  
-servlet:
-  encoding:
-    charset: UTF-8
-    enabled: true
-    force: true
-multipart:
-  max-file-size: ${MAX_FILE_SIZE:50MB}
-  max-request-size: ${MAX_REQUEST_SIZE:100MB}
-jackson:
-  serialization:
-    write-dates-as-timestamps: false
-    fail-on-empty-beans: false
-  deserialization:
-    fail-on-unknown-properties: false
-  default-property-inclusion: NON_NULL
-  date-format: yyyy-MM-dd HH:mm:ss
-  time-zone: GMT+8
-
-# 安全配置
-security:
-  enabled: true
-  ignore-urls:
-    - "/favicon.ico"
-    - "/error"
-    - "/health"
-    - "/version"
-  cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
-    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
-    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
-    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
-    max-age: ${CORS_MAX_AGE:3600}
-  xss:
-    enabled: true
-    exclude-urls: ${XSS_EXCLUDE_URLS:/api/upload}
-  sql-injection:
-    enabled: true
-    exclude-urls: ${SQL_INJECTION_EXCLUDE_URLS:}
-
-# SQL初始化配置
-sql:
-  init:
-    mode: never
-
-# 静态资源配置
-mvc:
-  static-path-pattern: /**
-
 # 服务器配置
 server:
   port: ${SERVER_PORT:8080}
@@ -188,15 +133,53 @@ server:
     mime-types: application/json,application/xml,text/html,text/plain,text/css,application/javascript
     min-response-size: 2048
 
+# 安全配置
+security:
+  enabled: false
+  ignore-urls:
+    - "/favicon.ico"
+    - "/error"
+    - "/health"
+    - "/version"
+  xss:
+    enabled: true
+    exclude-urls: ${XSS_EXCLUDE_URLS:/api/upload}
+  sql-injection:
+    enabled: true
+    exclude-urls: ${SQL_INJECTION_EXCLUDE_URLS:}
+
 # 应用基本信息
 app:
   name: "法律事务管理系统"
   version: "1.0.0"
   description: "专业法律事务管理平台"
 
+# 日志配置
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.lawfirm: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
+    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
+
 # 业务模块集成配置
 lawfirm:
+  # 工作流功能开关
+  workflow:
+    enabled: false
+  
+  # 审计相关配置
+  audit:
+    enabled: true
+    async:
+      enabled: true
+  
+  # 各模块开关配置
   module:
+    case: true
+    contract: true
+    knowledge: true
     # 模块上下文路径配置
     context-path:
       system: /api/system
@@ -212,17 +195,28 @@ lawfirm:
       task: /api/task
       schedule: /api/schedule
       analysis: /api/analysis
-    # 模块功能开关
-    case:
-      enabled: true
-    contract:
-      enabled: true
-    knowledge:
-      enabled: true
+  
+  # 自定义数据库配置（对应DataSourceConfig类）
+  database:
+    enabled: ${LAWFIRM_DATABASE_ENABLED:true}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DATABASE_PASSWORD:}}
+    pool:
+      min-idle: 5
+      max-pool-size: 15
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+    # 表结构自动生成配置
+    auto-generate-schema: ${LAWFIRM_DATABASE_AUTO_GENERATE_SCHEMA:true}
+    schema-output-dir: ${LAWFIRM_DATABASE_SCHEMA_OUTPUT_DIR:./db-scripts}
+  
   # 搜索服务配置
   search:
-    enabled: ${LAWFIRM_SEARCH_ENABLED:true}
+    enabled: ${LAWFIRM_SEARCH_ENABLED:false}
     type: ${LAWFIRM_SEARCH_TYPE:lucene}
+  
   # 存储服务配置
   storage:
     enabled: ${LAWFIRM_STORAGE_ENABLED:true}
@@ -233,19 +227,8 @@ lawfirm:
     local:
       enabled: true
       basePath: ${LAWFIRM_STORAGE_LOCAL_PATH:${user.home}/.law-firm/storage}
-
-# 日志配置
-logging:
-  level:
-    root: ${LOGGING_LEVEL_ROOT:INFO}
-    com.lawfirm: ${LOGGING_LEVEL_APP:INFO}
-    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
-    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:INFO}
-    org.apache.ibatis: ${LOGGING_LEVEL_MYBATIS:INFO}
-  file:
-    name: ${LOG_FILE:${user.home}/logs/law-firm.log}
-    max-size: ${LOG_FILE_MAX_SIZE:100MB}
-    max-history: ${LOG_FILE_MAX_HISTORY:30}
-  pattern:
-    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+  
+  # 缓存配置
+  cache:
+    enabled: false
+    type: LOCAL

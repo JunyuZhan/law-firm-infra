@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lawfirm.common.core.api.CommonResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -19,10 +19,13 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class LogoutHandler implements LogoutSuccessHandler {
     
     private final ObjectMapper objectMapper;
+    
+    public LogoutHandler(@Qualifier("objectMapper") ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
     
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {

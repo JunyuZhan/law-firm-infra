@@ -3,6 +3,7 @@ package com.lawfirm.task.converter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lawfirm.common.util.json.JsonUtils;
 import com.lawfirm.model.task.dto.WorkTaskDTO;
 import com.lawfirm.model.task.dto.WorkTaskTagDTO;
 import com.lawfirm.model.task.entity.WorkTask;
@@ -33,10 +34,7 @@ public interface WorkTaskConverter {
 
     WorkTaskConverter INSTANCE = Mappers.getMapper(WorkTaskConverter.class);
     
-    // 用于JSON转换的ObjectMapper
-    ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    
-    // 日志记录器
+    // 使用日志记录器
     Logger LOGGER = LoggerFactory.getLogger(WorkTaskConverter.class);
 
     /**
@@ -129,8 +127,9 @@ public interface WorkTaskConverter {
         }
         
         try {
-            return OBJECT_MAPPER.readValue(json, new TypeReference<List<Long>>() {});
-        } catch (JsonProcessingException e) {
+            // 使用JsonUtils中的ObjectMapper
+            return JsonUtils.parseArray(json, Long.class);
+        } catch (Exception e) {
             LOGGER.error("转换documentIds失败: {}", e.getMessage());
             return new ArrayList<>();
         }
@@ -146,8 +145,9 @@ public interface WorkTaskConverter {
         }
         
         try {
-            return OBJECT_MAPPER.writeValueAsString(list);
-        } catch (JsonProcessingException e) {
+            // 使用JsonUtils中的ObjectMapper
+            return JsonUtils.toJsonString(list);
+        } catch (Exception e) {
             LOGGER.error("转换documentIds失败: {}", e.getMessage());
             return "[]";
         }

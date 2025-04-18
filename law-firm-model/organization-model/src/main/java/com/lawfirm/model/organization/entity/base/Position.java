@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  * 职位实体
  */
 @Data
-@TableName("sys_position")
+@TableName("org_position")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class Position extends ModelBaseEntity {

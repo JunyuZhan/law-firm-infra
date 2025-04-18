@@ -34,7 +34,6 @@ public class AppCacheConfig {
      * 提供缓存属性Bean
      */
     @Bean(name = "appCacheProperties")
-    @Primary
     public CacheProperties cacheProperties() {
         log.info("初始化缓存配置：默认使用本地缓存");
         CacheProperties props = new CacheProperties();
@@ -75,7 +74,6 @@ public class AppCacheConfig {
      * 创建应用层的缓存管理器
      */
     @Bean("appCacheManager")
-    @Primary
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         log.info("初始化应用层的Redis缓存管理器");
         

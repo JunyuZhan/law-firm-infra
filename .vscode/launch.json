@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LawFirmApiApplicationStarter",
+            "request": "launch",
+            "mainClass": "com.lawfirm.api.LawFirmApiApplicationStarter",
+            "projectName": "law-firm-api"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -309,6 +310,51 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     @Override
     public boolean removeBatch(List<Long> idList) {
         return super.removeByIds(idList);
+    }
+
+    /**
+     * 获取用户详细信息，适配vue-vben-admin
+     */
+    @Override
+    public UserInfoVO getUserDetailInfo(Long userId) {
+        // 获取基本用户信息
+        UserInfoVO userInfoVO = getUserInfo(userId);
+        if (userInfoVO == null) {
+            return null;
+        }
+        
+        // 获取用户实体
+        User user = getById(userId);
+        
+        // 设置真实姓名 - 用用户名代替，实际项目应从员工表获取
+        userInfoVO.setRealName(user.getUsername());
+        
+        // 设置头像 - 使用默认头像，实际项目应从员工表获取
+        userInfoVO.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        
+        // 设置用户描述
+        userInfoVO.setDesc("系统用户");
+        
+        // 获取用户角色 - 转换为vue-vben-admin格式
+        List<Map<String, String>> roleList = getUserRoleIds(userId).stream()
+            .map(roleId -> {
+                java.util.Map<String, String> role = new java.util.HashMap<>();
+                // 从角色服务获取角色信息
+                String roleName = "角色" + roleId; // 简化处理，实际应从角色服务获取
+                String roleValue = "role_" + roleId;
+                role.put("roleName", roleName);
+                role.put("value", roleValue);
+                return role;
+            })
+            .collect(java.util.stream.Collectors.toList());
+        userInfoVO.setRoles(roleList);
+        
+        // 设置权限数组
+        List<String> permissions = getUserPermissions(userId);
+        userInfoVO.setPermissions(permissions);
+        userInfoVO.setPermissionList(permissions.toArray(new String[0]));
+        
+        return userInfoVO;
     }
 }
 

@@ -37,6 +37,13 @@
             <version>${revision}</version>
         </dependency>
         
+        <!-- 添加案件模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>case-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        
         <!-- 核心层依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>

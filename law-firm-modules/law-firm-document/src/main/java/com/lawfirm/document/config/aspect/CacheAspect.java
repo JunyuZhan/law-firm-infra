@@ -29,7 +29,7 @@ public class CacheAspect {
     
     public CacheAspect(
             @Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate,
-            CacheProperties cacheProperties) {
+            @Qualifier("appCacheProperties") CacheProperties cacheProperties) {
         this.redisTemplate = redisTemplate;
         this.cacheProperties = cacheProperties;
     }

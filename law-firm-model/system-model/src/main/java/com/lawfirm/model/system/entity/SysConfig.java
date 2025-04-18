@@ -50,8 +50,9 @@ public class SysConfig extends ModelBaseEntity {
 
     /**
      * 是否系统内置（0-否，1-是）
+     * 注：此字段当前数据库中不存在，待数据库升级后启用
      */
-    @TableField("is_system")
+    @TableField(exist = false)
     private Integer isSystem;
     
     /**
@@ -68,7 +69,22 @@ public class SysConfig extends ModelBaseEntity {
     
     /**
      * 版本号
+     * 注：此字段当前数据库中不存在，待数据库升级后启用
      */
-    @TableField("version")
+    @TableField(exist = false)
     private Integer version;
+    
+    /**
+     * 状态（0-禁用，1-启用）
+     * 注：此字段当前数据库中不存在，待数据库升级后启用
+     */
+    @TableField(exist = false)
+    private Integer status;
+    
+    /**
+     * 排序号
+     * 注：此字段当前数据库中不存在，待数据库升级后启用
+     */
+    @TableField(exist = false)
+    private Integer sort;
 }

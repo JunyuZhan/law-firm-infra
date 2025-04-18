@@ -33,16 +33,28 @@ public class LoginHistory extends TenantEntity {
     private String username;
     
     /**
-     * IP地址
+     * 登录时间
      */
-    @TableField("ip")
-    private String ip;
+    @TableField("login_time")
+    private LocalDateTime loginTime;
+    
+    /**
+     * 登出时间
+     */
+    @TableField("logout_time")
+    private LocalDateTime logoutTime;
+    
+    /**
+     * 登录IP
+     */
+    @TableField("login_ip")
+    private String loginIp;
     
     /**
      * 登录地点
      */
-    @TableField("location")
-    private String location;
+    @TableField("login_location")
+    private String loginLocation;
     
     /**
      * 浏览器
@@ -69,8 +81,8 @@ public class LoginHistory extends TenantEntity {
     private String msg;
     
     /**
-     * 登录时间
+     * 登录类型（用户名密码、手机号、微信等）
      */
-    @TableField("login_time")
-    private LocalDateTime loginTime;
+    @TableField("login_type")
+    private String loginType;
 }

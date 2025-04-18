@@ -9,6 +9,7 @@ import java.util.Objects;
 /**
  * 通用响应结果
  * 提供基础的响应结构和常用的静态工厂方法
+ * 已兼容Vue-Vben-Admin前端格式
  *
  * @param <T> 响应数据类型
  */
@@ -30,10 +31,23 @@ public class CommonResult<T> {
      */
     private String message;
 
+    /**
+     * 是否成功标志，兼容vue-vben-admin格式
+     */
+    private boolean success;
+    
+    /**
+     * 返回结果，与data内容相同，兼容vue-vben-admin格式
+     */
+    private T result;
+
     public CommonResult(int code, T data, String message) {
         this.code = code;
         this.data = data;
         this.message = message;
+        // 设置兼容vue-vben-admin的字段
+        this.success = code == ResultCode.SUCCESS.getCode();
+        this.result = data;
     }
 
     /**
@@ -126,13 +140,15 @@ public class CommonResult<T> {
         if (o == null || getClass() != o.getClass()) return false;
         CommonResult<?> that = (CommonResult<?>) o;
         return code == that.code &&
+               success == that.success &&
                Objects.equals(data, that.data) &&
-               Objects.equals(message, that.message);
+               Objects.equals(message, that.message) &&
+               Objects.equals(result, that.result);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, data, message);
+        return Objects.hash(code, data, message, success, result);
     }
 
     @Override
@@ -141,6 +157,8 @@ public class CommonResult<T> {
                "code=" + code +
                ", data=" + data +
                ", message='" + message + '\'' +
+               ", success=" + success +
+               ", result=" + result +
                '}';
     }
 } 

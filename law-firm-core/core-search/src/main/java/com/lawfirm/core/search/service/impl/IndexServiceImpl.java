@@ -22,7 +22,7 @@ import java.util.List;
  * 索引服务实现
  */
 @Slf4j
-@Component("searchIndexServiceImpl")
+@Component("luceneIndexServiceImpl")
 @Transactional(rollbackFor = Exception.class)
 public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchIndex> implements IndexService {
 

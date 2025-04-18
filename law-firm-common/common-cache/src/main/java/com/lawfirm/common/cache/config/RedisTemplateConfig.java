@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,7 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @Configuration
 @EnableCaching
-@ConditionalOnProperty(prefix = "spring.redis", name = "host")
+@ConditionalOnProperty(prefix = "spring.data.redis", name = "host")
 @Profile("!test")
 public class RedisTemplateConfig {
 
@@ -42,5 +43,16 @@ public class RedisTemplateConfig {
         template.afterPropertiesSet();
 
         return template;
+    }
+    
+    /**
+     * 数据层Redis模板，用于数据操作
+     * 与commonRedisTemplate相同的配置，但提供不同的Bean名称以满足特定组件的依赖
+     */
+    @Bean(name = "dataRedisTemplate")
+    @Primary
+    public RedisTemplate<String, Object> dataRedisTemplate(RedisConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+        // 复用相同的配置
+        return redisTemplate(connectionFactory, objectMapper);
     }
 }

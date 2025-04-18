@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.lawfirm.client.constant.CacheConstant;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
@@ -80,19 +81,20 @@ public class CacheConfig {
     
     /**
      * 配置RedisTemplate
+     * 使用注入的ObjectMapper，避免依赖注入冲突
      */
     @Bean("clientRedisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory, @Qualifier("objectMapper") ObjectMapper objectMapper) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
         
-        // 设置序列化方式
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
+        // 设置序列化方式 - 使用注入的ObjectMapper
+        ObjectMapper redisObjectMapper = objectMapper.copy();
+        redisObjectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        redisObjectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
         
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = 
-            new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
+            new Jackson2JsonRedisSerializer<>(redisObjectMapper, Object.class);
         
         // key使用String序列化
         template.setKeySerializer(new StringRedisSerializer());

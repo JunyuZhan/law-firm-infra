@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -22,9 +23,14 @@ import java.util.Collections;
 /**
  * 动态数据源配置
  * 只有在配置 spring.datasource.dynamic.enabled=true 时才生效
+ * 并且必须在 lawfirm.database.enabled=true 时才启用
  */
+@Slf4j
 @Configuration
-@ConditionalOnProperty(prefix = "spring.datasource.dynamic", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(value = {
+    "spring.datasource.dynamic.enabled", 
+    "lawfirm.database.enabled"
+}, havingValue = "true", matchIfMissing = false)
 public class DynamicDataSourceConfig {
 
     @Autowired
@@ -33,6 +39,7 @@ public class DynamicDataSourceConfig {
     @Bean(name = "defaultDataSourceCreator")
     @ConditionalOnMissingBean
     public DefaultDataSourceCreator defaultDataSourceCreator() {
+        log.info("创建默认数据源创建器");
         return new DefaultDataSourceCreator();
     }
 
@@ -41,6 +48,7 @@ public class DynamicDataSourceConfig {
     public DynamicDataSourceProvider dynamicDataSourceProvider(
             @Qualifier("masterDataSource") DataSource masterDataSource,
             DefaultDataSourceCreator dataSourceCreator) {
+        log.info("创建动态数据源提供者");
         return new AbstractDataSourceProvider(dataSourceCreator) {
             @Override
             public Map<String, DataSource> loadDataSources() {
@@ -55,6 +63,7 @@ public class DynamicDataSourceConfig {
     @Primary
     @ConditionalOnMissingBean(name = "dataSource")
     public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
+        log.info("创建动态路由数据源");
         DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource(Collections.singletonList(dynamicDataSourceProvider));
         dataSource.setPrimary("master");
         dataSource.setStrict(true);
