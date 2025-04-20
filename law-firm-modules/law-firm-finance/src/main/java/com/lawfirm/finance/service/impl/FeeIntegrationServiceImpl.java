@@ -57,8 +57,7 @@ public class FeeIntegrationServiceImpl implements FeeIntegrationService {
                .setAmount(amount)
                .setCurrency(CurrencyEnum.valueOf(currency))
                .setDescription(description)
-               .setFeeTime(LocalDateTime.now())
-               .setContractId(contractId); // 关联合同ID
+               .setFeeTime(LocalDateTime.now());
             
             // 保存费用记录
             Long financeFeeId = feeService.createFee(fee);
@@ -128,8 +127,7 @@ public class FeeIntegrationServiceImpl implements FeeIntegrationService {
                .setAmount(amount)
                .setCurrency(CurrencyEnum.valueOf(currency))
                .setDescription(description)
-               .setFeeTime(LocalDateTime.now())
-               .setCaseId(caseId);
+               .setFeeTime(LocalDateTime.now());
             
             // 保存费用记录
             Long financeFeeId = feeService.createFee(fee);

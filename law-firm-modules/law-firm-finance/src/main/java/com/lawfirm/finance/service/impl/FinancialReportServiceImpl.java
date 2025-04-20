@@ -1,6 +1,7 @@
 package com.lawfirm.finance.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.finance.entity.FinancialReport;
 import com.lawfirm.model.finance.enums.ReportTypeEnum;
@@ -67,10 +68,17 @@ public class FinancialReportServiceImpl extends BaseServiceImpl<FinancialReportM
 
         // 检查是否已存在相同期间的报表
         String period = startTime.format(PERIOD_FORMATTER);
-        LambdaQueryWrapper<FinancialReport> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(FinancialReport::getReportType, reportType.getValue())
+        LambdaQueryWrapper<FinancialReport> lambdaWrapper = new LambdaQueryWrapper<>();
+        lambdaWrapper.eq(FinancialReport::getReportType, reportType.getValue())
                .eq(FinancialReport::getReportPeriod, period)
                .eq(FinancialReport::getDepartmentId, departmentId);
+        
+        // 转换为QueryWrapper
+        QueryWrapper<FinancialReport> wrapper = new QueryWrapper<>();
+        wrapper.eq("report_type", reportType.getValue())
+                .eq("report_period", period)
+                .eq("department_id", departmentId);
+                
         if (exists(wrapper)) {
             log.warn("已存在相同期间的报表: period={}, departmentId={}", period, departmentId);
             return null;

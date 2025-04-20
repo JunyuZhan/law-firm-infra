@@ -269,11 +269,11 @@ public class WorkTaskTagServiceImpl extends ServiceImpl<WorkTaskTagMapper, WorkT
      * 检查标签名称是否重复
      */
     private void checkTagNameDuplicate(String name, Long excludeId) {
-        LambdaQueryWrapper<WorkTaskTag> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(WorkTaskTag::getName, name);
+        QueryWrapper<WorkTaskTag> wrapper = new QueryWrapper<>();
+        wrapper.eq("name", name);
         
         if (excludeId != null) {
-            wrapper.ne(WorkTaskTag::getId, excludeId);
+            wrapper.ne("id", excludeId);
         }
         
         if (exists(wrapper)) {

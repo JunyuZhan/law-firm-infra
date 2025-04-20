@@ -28,6 +28,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- 引入统一的依赖管理 -->
             <dependency>
                 <groupId>com.lawfirm</groupId>
                 <artifactId>law-firm-dependencies</artifactId>

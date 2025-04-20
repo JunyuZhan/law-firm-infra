@@ -461,10 +461,10 @@ public class ScheduleParticipantServiceImpl extends ServiceImpl<ScheduleParticip
     public boolean isParticipated(Long scheduleId, Long userId) {
         log.info("检查用户是否参与日程，日程ID：{}，用户ID：{}", scheduleId, userId);
         
-        // 构建查询条件
-        LambdaQueryWrapper<ScheduleParticipant> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ScheduleParticipant::getScheduleId, scheduleId)
-                .eq(ScheduleParticipant::getParticipantId, userId);
+        // 构建查询条件 - 使用QueryWrapper而非LambdaQueryWrapper
+        QueryWrapper<ScheduleParticipant> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("schedule_id", scheduleId)
+                .eq("participant_id", userId);
         
         // 查询是否存在
         return exists(queryWrapper);

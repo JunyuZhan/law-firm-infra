@@ -68,4 +68,4 @@ public interface DictItemService extends BaseService<SysDictItem> {
      * @return 字典项列表
      */
     List<DictItemVO> listDictItemsByDictId(Long dictId);
-} 
+}

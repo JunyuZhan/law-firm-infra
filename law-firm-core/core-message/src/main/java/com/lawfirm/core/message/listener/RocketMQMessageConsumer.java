@@ -10,10 +10,10 @@ import com.lawfirm.model.message.entity.base.BaseMessage;
 
 /**
  * RocketMQ消息消费者
- * 只有在rocketmq.enabled=true时才启用
+ * 只有在rocketmq.enabled=true且message.enabled=true时才启用
  */
 @Component
-@ConditionalOnProperty(name = "rocketmq.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = {"rocketmq.enabled", "message.enabled"}, havingValue = "true", matchIfMissing = false)
 @RocketMQMessageListener(
     topic = "${message.rocketmq.topic:law-firm-message}",
     consumerGroup = "${message.rocketmq.consumer-group:law-firm-consumer}"

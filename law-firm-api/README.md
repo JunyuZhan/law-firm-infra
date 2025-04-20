@@ -895,3 +895,112 @@ law:
 2. Redis连接失败
    - 检查Redis服务是否运行: `redis-cli ping` 应返回PONG
    - 检查Redis配置信息: `redis-cli info` 查看详细信息
+
+## 兼容性问题分析
+
+在将系统升级到Spring Boot 3.2.3和MyBatis-Plus 3.5.3.1后，我们遇到了以下兼容性问题：
+
+### 1. MyBatis-Plus与Spring Boot 3.2.3集成问题
+
+**问题现象**：
+1. 项目中同时存在`mybatis-plus-boot-starter`(3.5.3.1)和`mybatis-plus-spring-boot3-starter`(3.5.9)
+2. 自动配置加载混乱，导致部分Bean注册失败
+3. 启动时出现ddlApplicationRunner Bean找不到的错误
+
+**问题分析**：
+1. `pom.xml`中存在版本不一致的MyBatis-Plus依赖
+2. `mybatis-plus-boot-starter`不完全兼容Spring Boot 3.2.3
+3. 自动配置优先级和加载顺序出现问题
+
+### 2. 模块间配置冲突
+
+**问题现象**：
+1. 多个模块各自定义MyBatis相关配置，可能存在覆盖
+2. 模块间组件扫描范围重叠，导致Bean定义冲突
+3. 缓存配置分散在不同模块，造成使用混乱
+
+### 3. 自动配置导入问题
+
+**问题现象**：
+1. `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`文件中手动指定了配置类
+2. 某些自动配置项在`@SpringBootApplication`注解中被排除，但在imports文件中又被导入
+
+## 解决方案
+
+### 1. 依赖管理优化
+
+1. 统一使用`mybatis-plus-spring-boot3-starter` 3.5.9，而不是混用多个starter
+2. 在`law-firm-dependencies/pom.xml`中明确定义所有相关依赖版本
+3. 添加核心MyBatis依赖，确保版本兼容性：
+   - mybatis 3.5.11
+   - mybatis-spring 2.1.1
+
+### 2. 配置类统一
+
+1. 创建`DdlConfig`类提供`ddlApplicationRunner` Bean，解决自动配置依赖问题
+2. 通过自动配置导入清单(`META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`)明确声明配置加载顺序
+3. 避免在不同模块中重复定义相同功能的配置类
+
+### 3. 组件扫描优化
+
+在`LawFirmApiApplication`中明确定义组件扫描顺序：
+1. Common模块（最先编译）
+2. Model模块（其次编译）
+3. Core模块（再次编译）
+4. 业务模块和API（最后编译）
+
+## 后续建议
+
+1. 构建依赖图，明确模块间依赖关系
+2. 对每个模块进行独立的兼容性测试
+3. 定期检查依赖更新，确保版本兼容性
+4. 减少配置重叠，明确每个模块的职责边界
+
+## 法律事务管理系统API模块
+
+## 项目介绍
+本模块是法律事务管理系统的API服务入口，集成了系统所有子模块功能，提供完整的业务API接口。
+
+## 技术架构
+- Spring Boot 3.2.3
+- MyBatis-Plus 3.5.3.1
+- MySQL 8.0
+- Redis
+- SpringDoc (OpenAPI 3)
+
+## 兼容性说明
+由于MyBatis-Plus 3.5.3.1版本与Spring Boot 3.2.3的兼容性问题，本项目做出以下处理方案：
+
+1. 在`DdlConfig`类中提供了`ddlApplicationRunner` Bean，用于解决MyBatis-Plus启动兼容性问题
+2. 在`application.yml`中配置了`default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler`，用于处理枚举类型
+3. 使用标准的MyBatis-Plus配置，避免使用已废弃的API
+
+以上方案确保了系统能够在Spring Boot 3.2.3环境下正常运行，当MyBatis-Plus发布完全兼容的版本后，可以考虑移除兼容性处理代码。
+
+## 配置说明
+系统支持通过环境变量或配置文件进行配置，主要配置项包括：
+
+- 数据库连接配置
+- 安全认证配置
+- 缓存配置
+- 存储服务配置
+- 各业务模块配置
+
+详细配置项见`application.yml`文件。
+
+## 模块依赖
+本模块依赖于：
+1. 公共基础模块（common-*）
+2. 核心功能模块（core-*）
+3. 业务模块（law-firm-*）
+4. 数据模型模块（*-model）
+
+## 启动说明
+1. 确保MySQL数据库已启动
+2. 配置正确的数据库连接信息
+3. 启动应用：`mvn spring-boot:run`或直接运行`LawFirmApiApplication`类
+
+## API文档
+应用启动后，可通过以下地址访问API文档：
+- OpenAPI文档：`http://localhost:8080/api/v3/api-docs`
+- Swagger UI：`http://localhost:8080/api/swagger-ui.html`

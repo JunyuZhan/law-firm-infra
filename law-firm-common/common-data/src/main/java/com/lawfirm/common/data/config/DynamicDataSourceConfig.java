@@ -64,10 +64,17 @@ public class DynamicDataSourceConfig {
     @ConditionalOnMissingBean(name = "dataSource")
     public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
         log.info("创建动态路由数据源");
-        DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource(Collections.singletonList(dynamicDataSourceProvider));
+        DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
         dataSource.setPrimary("master");
         dataSource.setStrict(true);
         dataSource.setStrategy(LoadBalanceDynamicDataSourceStrategy.class);
+        
+        // 直接获取并设置数据源，避免使用不兼容的API
+        Map<String, DataSource> dataSources = dynamicDataSourceProvider.loadDataSources();
+        for (Map.Entry<String, DataSource> entry : dataSources.entrySet()) {
+            dataSource.addDataSource(entry.getKey(), entry.getValue());
+        }
+        
         return dataSource;
     }
 } 

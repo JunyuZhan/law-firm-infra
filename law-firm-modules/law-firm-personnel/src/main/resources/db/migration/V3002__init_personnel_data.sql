@@ -78,25 +78,25 @@ ON DUPLICATE KEY UPDATE update_time = NOW();
 
 -- 添加人事管理相关菜单
 INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, icon, component, sort, status, create_time, create_by)
-SELECT NULL, NULL, '人事管理', 'personnel', 'menu', 0, '/personnel', 'team', NULL, 3, 0, NOW(), 'system'
+SELECT NULL, NULL, '人事管理', 'personnel', 0, 0, '/personnel', 'team', NULL, 3, 0, NOW(), 'system'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'personnel');
 
 -- 员工管理菜单
 INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, component, icon, sort, status, create_time, create_by)
-SELECT NULL, NULL, '员工管理', 'personnel:employee', 'menu', (SELECT id FROM auth_permission WHERE code = 'personnel'), 'employee', 'personnel/employee/index', 'user', 1, 0, NOW(), 'system'
+SELECT NULL, NULL, '员工管理', 'personnel:employee', 0, (SELECT id FROM auth_permission WHERE code = 'personnel'), 'employee', 'personnel/employee/index', 'user', 1, 0, NOW(), 'system'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'personnel:employee');
 
 -- 律师管理菜单
 INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, component, icon, sort, status, create_time, create_by)
-SELECT NULL, NULL, '律师管理', 'personnel:lawyer', 'menu', (SELECT id FROM auth_permission WHERE code = 'personnel'), 'lawyer', 'personnel/lawyer/index', 'user-solid', 2, 0, NOW(), 'system'
+SELECT NULL, NULL, '律师管理', 'personnel:lawyer', 0, (SELECT id FROM auth_permission WHERE code = 'personnel'), 'lawyer', 'personnel/lawyer/index', 'user-solid', 2, 0, NOW(), 'system'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'personnel:lawyer');
 
 -- 合同管理菜单
 INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, component, icon, sort, status, create_time, create_by)
-SELECT NULL, NULL, '合同管理', 'personnel:contract', 'menu', (SELECT id FROM auth_permission WHERE code = 'personnel'), 'contract', 'personnel/contract/index', 'document', 3, 0, NOW(), 'system'
+SELECT NULL, NULL, '合同管理', 'personnel:contract', 0, (SELECT id FROM auth_permission WHERE code = 'personnel'), 'contract', 'personnel/contract/index', 'document', 3, 0, NOW(), 'system'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'personnel:contract');
 
@@ -140,25 +140,25 @@ ON DUPLICATE KEY UPDATE update_time = NOW();
 
 -- 初始化组织架构菜单
 INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, icon, component, sort, status, create_time, create_by)
-SELECT NULL, NULL, '组织架构', 'organization', 'menu', 0, '/organization', 'office-building', NULL, 2, 0, NOW(), 'system'
+SELECT NULL, NULL, '组织架构', 'organization', 0, 0, '/organization', 'office-building', NULL, 2, 0, NOW(), 'system'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'organization');
 
 -- 部门管理菜单
 INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, component, icon, sort, status, create_time, create_by)
-SELECT NULL, NULL, '部门管理', 'organization:department', 'menu', (SELECT id FROM auth_permission WHERE code = 'organization'), 'department', 'personnel/organization/department/index', 'department', 1, 0, NOW(), 'system'
+SELECT NULL, NULL, '部门管理', 'organization:department', 0, (SELECT id FROM auth_permission WHERE code = 'organization'), 'department', 'personnel/organization/department/index', 'department', 1, 0, NOW(), 'system'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'organization:department');
 
 -- 团队管理菜单
 INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, component, icon, sort, status, create_time, create_by)
-SELECT NULL, NULL, '团队管理', 'organization:team', 'menu', (SELECT id FROM auth_permission WHERE code = 'organization'), 'team', 'personnel/organization/team/index', 'user-group', 2, 0, NOW(), 'system'
+SELECT NULL, NULL, '团队管理', 'organization:team', 0, (SELECT id FROM auth_permission WHERE code = 'organization'), 'team', 'personnel/organization/team/index', 'user-group', 2, 0, NOW(), 'system'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'organization:team');
 
 -- 职位管理菜单
 INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, component, icon, sort, status, create_time, create_by)
-SELECT NULL, NULL, '职位管理', 'organization:position', 'menu', (SELECT id FROM auth_permission WHERE code = 'organization'), 'position', 'personnel/organization/position/index', 'position', 3, 0, NOW(), 'system'
+SELECT NULL, NULL, '职位管理', 'organization:position', 0, (SELECT id FROM auth_permission WHERE code = 'organization'), 'position', 'personnel/organization/position/index', 'position', 3, 0, NOW(), 'system'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'organization:position');
 

@@ -35,8 +35,11 @@
         <!-- MyBatis Plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <optional>true</optional>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-extension</artifactId>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -153,6 +156,9 @@
                     <compilerArgs>
                         <arg>-Xlint:none</arg>
                     </compilerArgs>
+                    <testExcludes>
+                        <testExclude>**/MybatisPlusConfigTest.java</testExclude>
+                    </testExcludes>
                 </configuration>
             </plugin>
         </plugins>

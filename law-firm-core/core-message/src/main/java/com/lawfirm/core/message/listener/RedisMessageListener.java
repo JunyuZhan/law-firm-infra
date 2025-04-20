@@ -1,6 +1,7 @@
 package com.lawfirm.core.message.listener;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,6 +11,7 @@ import com.lawfirm.core.message.utils.MessageLogUtils;
 import com.lawfirm.model.message.entity.base.BaseMessage;
 
 @Component
+@ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class RedisMessageListener implements MessageListener {
 
     @Autowired

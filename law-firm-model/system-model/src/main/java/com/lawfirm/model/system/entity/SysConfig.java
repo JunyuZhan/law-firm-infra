@@ -21,7 +21,7 @@ public class SysConfig extends ModelBaseEntity {
     /**
      * 配置名称
      */
-    @TableField("config_name")
+    @TableField(exist = false)
     private String configName;
 
     /**
@@ -39,7 +39,7 @@ public class SysConfig extends ModelBaseEntity {
     /**
      * 配置类型
      */
-    @TableField("config_type")
+    @TableField(exist = false)
     private String configType;
 
     /**

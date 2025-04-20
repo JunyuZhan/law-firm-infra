@@ -96,6 +96,9 @@ mybatis-plus:
     auto-mapping-behavior: partial
     default-executor-type: SIMPLE
     default-statement-timeout: 30
+    default-scripting-language-driver: org.apache.ibatis.scripting.xmltags.XMLLanguageDriver
+    jdbc-type-for-null: null
+    call-setters-on-nulls: true
   global-config:
     db-config:
       logic-delete-field: deleted

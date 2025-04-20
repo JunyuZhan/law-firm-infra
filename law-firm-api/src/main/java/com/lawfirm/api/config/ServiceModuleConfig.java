@@ -1,6 +1,7 @@
 package com.lawfirm.api.config;
 
 import com.lawfirm.core.message.config.MessageAutoConfiguration;
+import com.lawfirm.system.config.SystemAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -17,7 +18,9 @@ import org.springframework.context.annotation.PropertySources;
 })
 @Import({
     // 导入消息服务自动配置
-    MessageAutoConfiguration.class
+    MessageAutoConfiguration.class,
+    // 导入系统模块自动配置（包含MonitorCacheConfig）
+    SystemAutoConfiguration.class
 })
 public class ServiceModuleConfig {
     // 此类主要用于组织和导入各模块的配置

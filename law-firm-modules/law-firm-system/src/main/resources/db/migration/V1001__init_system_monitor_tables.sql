@@ -3,10 +3,16 @@
 -- 模块: system/monitor
 -- 创建时间: 2023-06-10
 -- 说明: 创建系统监控相关表，基于实体类定义
+-- 依赖: V0001基础表结构，包括sys_dict_type和sys_dict_data表
 
 -- 设置字符集和数据库选项
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- 检查依赖表是否存在
+SELECT 1 FROM information_schema.tables 
+WHERE table_schema = DATABASE() 
+  AND table_name IN ('sys_dict_type', 'sys_dict_data');
 
 -- sys_app_monitor表（应用监控表）
 CREATE TABLE IF NOT EXISTS sys_app_monitor (

@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS fin_transaction (
   business_id BIGINT COMMENT '关联业务ID',
   business_type VARCHAR(50) COMMENT '关联业务类型',
   summary VARCHAR(200) COMMENT '交易摘要',
-  remark VARCHAR(500) COMMENT '交易备注',
+  transaction_remark VARCHAR(500) COMMENT '交易备注',
   department_id BIGINT COMMENT '部门ID',
   version INTEGER DEFAULT 0 COMMENT '版本号',
   sort INTEGER DEFAULT 0 COMMENT '排序号',

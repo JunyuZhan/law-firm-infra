@@ -55,6 +55,52 @@ CREATE TABLE IF NOT EXISTS sys_dict (
   UNIQUE KEY uk_dict_code (dict_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统字典表';
 
+-- sys_dict_type表（字典类型表）
+CREATE TABLE IF NOT EXISTS sys_dict_type (
+  id BIGINT NOT NULL AUTO_INCREMENT COMMENT '字典类型ID',
+  tenant_id BIGINT COMMENT '租户ID',
+  tenant_code VARCHAR(50) COMMENT '租户编码',
+  dict_name VARCHAR(100) NOT NULL COMMENT '字典名称',
+  dict_type VARCHAR(100) NOT NULL COMMENT '字典类型',
+  is_system TINYINT DEFAULT 0 COMMENT '是否系统字典（0-否，1-是）',
+  version INTEGER DEFAULT 0 COMMENT '版本号',
+  sort INTEGER DEFAULT 0 COMMENT '排序号',
+  status INTEGER DEFAULT 0 COMMENT '状态（0-正常，1-禁用）',
+  deleted INTEGER DEFAULT 0 COMMENT '删除标记（0-正常，1-删除）',
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  create_by VARCHAR(50) COMMENT '创建人',
+  update_time DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  update_by VARCHAR(50) COMMENT '更新人',
+  remark VARCHAR(255) COMMENT '备注',
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_dict_type (dict_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典类型表';
+
+-- sys_dict_data表（字典数据表）
+CREATE TABLE IF NOT EXISTS sys_dict_data (
+  id BIGINT NOT NULL AUTO_INCREMENT COMMENT '字典数据ID',
+  tenant_id BIGINT COMMENT '租户ID',
+  tenant_code VARCHAR(50) COMMENT '租户编码',
+  dict_type VARCHAR(100) NOT NULL COMMENT '字典类型',
+  dict_label VARCHAR(100) NOT NULL COMMENT '字典标签',
+  dict_value VARCHAR(100) NOT NULL COMMENT '字典值',
+  dict_sort INTEGER DEFAULT 0 COMMENT '字典排序',
+  is_default TINYINT DEFAULT 0 COMMENT '是否默认（0-否，1-是）',
+  css_class VARCHAR(100) COMMENT 'CSS样式',
+  list_class VARCHAR(100) COMMENT '表格样式',
+  version INTEGER DEFAULT 0 COMMENT '版本号',
+  sort INTEGER DEFAULT 0 COMMENT '排序号',
+  status INTEGER DEFAULT 0 COMMENT '状态（0-正常，1-禁用）',
+  deleted INTEGER DEFAULT 0 COMMENT '删除标记（0-正常，1-删除）',
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  create_by VARCHAR(50) COMMENT '创建人',
+  update_time DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  update_by VARCHAR(50) COMMENT '更新人',
+  remark VARCHAR(255) COMMENT '备注',
+  PRIMARY KEY (id),
+  KEY idx_dict_type (dict_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典数据表';
+
 -- sys_dict_item表（系统字典项表）
 CREATE TABLE IF NOT EXISTS sys_dict_item (
   id BIGINT NOT NULL AUTO_INCREMENT COMMENT '字典项ID',

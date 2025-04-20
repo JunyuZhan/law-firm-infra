@@ -3,6 +3,7 @@ package com.lawfirm.system.service.impl.dict;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -204,9 +205,9 @@ public class DictServiceImpl extends BaseServiceImpl<SysDictMapper, SysDict> imp
      * 检查字典类型是否唯一
      */
     private void checkDictTypeUnique(String dictType) {
-        LambdaQueryWrapper<SysDict> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysDict::getDictType, dictType);
-        wrapper.eq(SysDict::getDeleted, 0);
+        QueryWrapper<SysDict> wrapper = new QueryWrapper<>();
+        wrapper.eq("dict_type", dictType);
+        wrapper.eq("deleted", 0);
         
         if (exists(wrapper)) {
             throw new RuntimeException("字典类型已存在");
@@ -240,5 +241,61 @@ public class DictServiceImpl extends BaseServiceImpl<SysDictMapper, SysDict> imp
         }
         
         return vo;
+    }
+
+    @Override
+    public List<Map<String, Object>> getDictItems(String dictCode) {
+        // 获取字典ID
+        LambdaQueryWrapper<SysDict> dictWrapper = new LambdaQueryWrapper<>();
+        dictWrapper.eq(SysDict::getDictType, dictCode);
+        dictWrapper.eq(SysDict::getDeleted, 0);
+        SysDict dict = getOne(dictWrapper);
+        
+        if (dict == null) {
+            return List.of();
+        }
+        
+        // 查询字典项
+        QueryWrapper<SysDictItem> itemWrapper = new QueryWrapper<>();
+        itemWrapper.eq("dict_id", dict.getId());
+        itemWrapper.eq("deleted", 0);
+        itemWrapper.orderByAsc("sort_order");
+        
+        return dictItemMapper.selectList(itemWrapper).stream()
+                .map(item -> {
+                    Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("label", item.getLabel());
+                    map.put("value", item.getValue());
+                    map.put("id", item.getId());
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    @Cacheable(value = "sys_dict", key = "#dictCode")
+    public Map<String, String> getDictMap(String dictCode) {
+        // 获取字典ID
+        LambdaQueryWrapper<SysDict> dictWrapper = new LambdaQueryWrapper<>();
+        dictWrapper.eq(SysDict::getDictType, dictCode);
+        dictWrapper.eq(SysDict::getDeleted, 0);
+        SysDict dict = getOne(dictWrapper);
+        
+        if (dict == null) {
+            return Map.of();
+        }
+        
+        // 查询字典项
+        QueryWrapper<SysDictItem> itemWrapper = new QueryWrapper<>();
+        itemWrapper.eq("dict_id", dict.getId());
+        itemWrapper.eq("deleted", 0);
+        itemWrapper.orderByAsc("sort_order");
+        
+        return dictItemMapper.selectList(itemWrapper).stream()
+                .collect(Collectors.toMap(
+                    SysDictItem::getValue, 
+                    SysDictItem::getLabel,
+                    (v1, v2) -> v1 // 如果有重复键，保留第一个
+                ));
     }
 } 

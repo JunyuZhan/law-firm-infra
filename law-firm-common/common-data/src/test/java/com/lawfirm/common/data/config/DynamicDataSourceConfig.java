@@ -56,14 +56,17 @@ public class DynamicDataSourceConfig {
     @Primary
     public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider,
                                 DynamicDataSourceProperties properties) {
-        // 使用新的构造方法创建动态路由数据源
-        DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource(
-                Collections.singletonList(dynamicDataSourceProvider));
+        // 使用无参构造函数创建动态路由数据源
+        DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
         
         // 设置默认数据源名称
         dataSource.setPrimary(properties.getPrimary());
         
-        // 新版本不需要显式调用init，构造函数中会自动初始化
+        // 直接获取并设置数据源
+        Map<String, DataSource> dataSources = dynamicDataSourceProvider.loadDataSources();
+        for (Map.Entry<String, DataSource> entry : dataSources.entrySet()) {
+            dataSource.addDataSource(entry.getKey(), entry.getValue());
+        }
         
         return dataSource;
     }

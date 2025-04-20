@@ -15,8 +15,14 @@
     <artifactId>law-firm</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-    <name>Law Firm Project</name>
-    <description>法律事务管理系统</description>
+    <name>Law Firm Infrastructure</name>
+    <description>
+        法律事务管理系统基础设施
+        
+        版本兼容性说明：
+        - Spring Boot 3.2.3 需要使用 mybatis-plus-spring-boot3-starter 3.5.9 及以上版本
+        - 项目使用 DdlConfig 提供 ddlApplicationRunner Bean，解决MyBatis-Plus与Spring Boot的兼容性问题
+    </description>
 
     <developers>
         <developer>

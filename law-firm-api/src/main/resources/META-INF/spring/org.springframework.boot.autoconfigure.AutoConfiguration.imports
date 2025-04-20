@@ -1,6 +1,11 @@
 # Spring Boot自动配置导入清单
 # 这里只包含需要启用的自动配置
 
+# API模块自定义配置
+com.lawfirm.api.config.DdlConfig
+com.lawfirm.api.config.ApiBootConfiguration
+com.lawfirm.api.config.ApiCacheResolverConfig
+
 # 常用自动配置
 org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
 org.springframework.boot.autoconfigure.aop.AopAutoConfiguration
@@ -32,8 +37,11 @@ org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
 org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
 
 # MyBatis配置
-org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
+# org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
 com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
+
+# 系统模块配置
+com.lawfirm.system.config.SystemAutoConfiguration
 
 # 验证配置
 org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration

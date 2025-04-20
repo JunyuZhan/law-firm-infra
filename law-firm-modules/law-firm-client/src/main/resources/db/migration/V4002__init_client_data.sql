@@ -94,6 +94,8 @@ VALUES
 ON DUPLICATE KEY UPDATE update_time = NOW();
 
 -- 添加客户管理相关菜单
-INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, icon, component, sort, status, create_time, create_by)
-SELECT NULL, NULL, '客户管理', 'client', 'menu', 0, '/client', 'peoples', NULL, 4, 0, NOW(), 'system'
-FROM
+INSERT INTO auth_permission (tenant_id, tenant_code, name, code, type, parent_id, path, icon, component, sort, status, create_time, create_by)    
+SELECT NULL, NULL, '客户管理', 'client', 0, 0, '/client', 'peoples', 
+NULL, 4, 0, NOW(), 'system'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_permission WHERE code = 'client');

@@ -27,8 +27,8 @@ public class LoginHistoryServiceImpl implements LoginHistoryService {
             LoginHistory history = new LoginHistory();
             history.setUserId(userId);
             history.setUsername(username);
-            history.setIp(ip);
-            history.setLocation(location);
+            history.setLoginIp(ip);
+            history.setLoginLocation(location);
             history.setBrowser(browser);
             history.setOs(os);
             history.setStatus(status);

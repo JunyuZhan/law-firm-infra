@@ -8,9 +8,11 @@ import com.lawfirm.model.system.entity.dict.SysDict;
 import com.lawfirm.model.system.vo.dict.DictVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 系统字典服务接口
+ * 提供字典的CRUD操作和获取字典项的服务
  */
 public interface DictService extends BaseService<SysDict> {
 
@@ -83,6 +85,22 @@ public interface DictService extends BaseService<SysDict> {
      * @return 字典列表
      */
     List<DictVO> listDictsByType(String dictType);
+
+    /**
+     * 根据字典编码获取字典项
+     *
+     * @param dictCode 字典编码
+     * @return 字典项列表
+     */
+    List<Map<String, Object>> getDictItems(String dictCode);
+
+    /**
+     * 根据字典编码获取键值对
+     *
+     * @param dictCode 字典编码
+     * @return 键值对，key为字典项值，value为字典项标签
+     */
+    Map<String, String> getDictMap(String dictCode);
 
     /**
      * 刷新字典缓存
