@@ -17,6 +17,7 @@ import com.lawfirm.model.contract.vo.ContractConflictVO;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  * 合同冲突检查服务实现类
  */
 @Slf4j
-@Service("contractConflictService")
+@Service("contractConflictServiceImpl")
 public class ContractConflictServiceImpl extends ServiceImpl<ContractConflictMapper, ContractConflict> 
         implements ContractConflictService, BaseService<ContractConflict> {
 
@@ -59,7 +60,7 @@ public class ContractConflictServiceImpl extends ServiceImpl<ContractConflictMap
 
     @Override
     public boolean removeBatch(List<Long> ids) {
-        return baseMapper.deleteBatchIds(ids) > 0;
+        return removeByIds(ids);
     }
 
     @Override

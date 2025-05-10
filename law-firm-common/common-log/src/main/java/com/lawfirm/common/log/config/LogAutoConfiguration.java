@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lawfirm.common.log.aspect.LogAspect;
 import com.lawfirm.common.log.properties.LogProperties;
 import com.lawfirm.common.log.filter.MdcTraceIdFilter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +15,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 日志自动配置类
+ * 
+ * 提供日志相关功能的统一配置
  */
-@Configuration
+@Configuration("commonLogAutoConfiguration")
 @EnableConfigurationProperties(LogProperties.class)
+@ConditionalOnProperty(prefix = "law-firm.common.log", name = "enabled", matchIfMissing = true)
 public class LogAutoConfiguration {
 
     /**
@@ -32,7 +36,7 @@ public class LogAutoConfiguration {
     /**
      * 配置MDC过滤器，用于添加traceId
      */
-    @Bean(name = "mdcTraceIdFilter")
+    @Bean(name = "commonMdcTraceIdFilter")
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public MdcTraceIdFilter mdcTraceIdFilter() {
         return new MdcTraceIdFilter();
@@ -41,7 +45,7 @@ public class LogAutoConfiguration {
     /**
      * 配置异步日志线程池
      */
-    @Bean("asyncLogExecutor")
+    @Bean("commonAsyncLogExecutor")
     public ThreadPoolTaskExecutor asyncLogExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // 核心线程数

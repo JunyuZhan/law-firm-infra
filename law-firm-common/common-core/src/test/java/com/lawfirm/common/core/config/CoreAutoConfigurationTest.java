@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CoreAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withPropertyValues("app.name=测试应用")
+            .withPropertyValues("law-firm.common.app.name=测试应用")
             .withConfiguration(AutoConfigurations.of(CoreAutoConfiguration.class));
 
     @Test
@@ -38,8 +38,8 @@ class CoreAutoConfigurationTest {
     void shouldLoadAppProperties() {
         contextRunner
             .withPropertyValues(
-                "app.version=1.0.0-TEST",
-                "app.description=单元测试环境"
+                "law-firm.common.app.version=1.0.0-TEST",
+                "law-firm.common.app.description=单元测试环境"
             )
             .run(context -> {
                 // 验证AppProperties是否正确加载

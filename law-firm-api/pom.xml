@@ -12,7 +12,6 @@
     </parent>
 
     <artifactId>law-firm-api</artifactId>
-    <version>${revision}</version>
     <packaging>jar</packaging>
     <name>Law Firm API</name>
     <description>法律事务管理系统API层</description>
@@ -24,7 +23,7 @@
     </properties>
 
     <dependencies>
-        <!-- Common 模块依赖 -->
+        <!-- ============ Common模块依赖（提供基础设施） ============ -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
@@ -53,7 +52,8 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>common-message</artifactId>
         </dependency>
-        <!-- 业务模块依赖 -->
+        
+        <!-- ============ 业务模块Model依赖 ============ -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>auth-model</artifactId>
@@ -79,54 +79,77 @@
             <artifactId>knowledge-model</artifactId>
             <version>${revision}</version>
         </dependency>
+        
+        <!-- ============ 业务模块实现依赖 ============ -->
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-system</artifactId>
+            <artifactId>law-firm-system</artifactId>   <!-- 系统管理 -->
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-auth</artifactId>
+            <artifactId>law-firm-auth</artifactId>     <!-- 认证授权 -->
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-document</artifactId>
+            <artifactId>law-firm-document</artifactId> <!-- 文档管理 -->
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-personnel</artifactId>
+            <artifactId>law-firm-personnel</artifactId> <!-- 人员管理 -->
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-client</artifactId>
+            <artifactId>law-firm-client</artifactId>   <!-- 客户管理 -->
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-case</artifactId>
+            <artifactId>law-firm-case</artifactId>     <!-- 案件管理 -->
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-contract</artifactId>
+            <artifactId>law-firm-contract</artifactId> <!-- 合同管理 -->
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-finance</artifactId>
+            <artifactId>law-firm-finance</artifactId>  <!-- 财务管理 -->
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
-            <artifactId>law-firm-knowledge</artifactId>
+            <artifactId>law-firm-knowledge</artifactId> <!-- 知识管理 -->
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-task</artifactId>     <!-- 任务管理 -->
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-schedule</artifactId> <!-- 日程管理 -->
+            <version>${revision}</version>
+        </dependency>
+        <!-- 分析功能模块暂未开发
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-analysis</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-archive</artifactId>  <!-- 档案管理 -->
             <version>${revision}</version>
         </dependency>
         
-
-
+        <!-- ============ Spring Boot依赖 ============ -->
         <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -200,14 +223,12 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.3.0</version>
         </dependency>
 
         <!-- Mockito依赖 - 用于本地开发环境模拟Redis -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.2.0</version>
         </dependency>
     </dependencies>
 
@@ -216,6 +237,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.3</version>
                 <configuration>
                     <excludes>
                         <exclude>
@@ -224,7 +246,15 @@
                         </exclude>
                     </excludes>
                     <mainClass>com.lawfirm.api.LawFirmApiApplication</mainClass>
+                    <skip>false</skip>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

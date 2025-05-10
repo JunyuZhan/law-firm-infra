@@ -154,7 +154,7 @@ public class KnowledgeServiceImpl extends BaseServiceImpl<KnowledgeMapper, Knowl
             }
             
             // 根据搜索结果ID获取知识文档
-            return baseMapper.selectBatchIds(ids);
+            return baseMapper.selectList(new LambdaQueryWrapper<Knowledge>().in(Knowledge::getId, ids));
         } catch (Exception e) {
             log.error("搜索知识文档失败: {}", e.getMessage(), e);
             return new ArrayList<>();

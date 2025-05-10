@@ -27,8 +27,8 @@
 | contract | V7000xxx | V7000001__init_contract_tables.sql |
 | finance | V8000xxx | V8000001__init_finance_tables.sql |
 | knowledge | V9000xxx | V9000001__init_knowledge_tables.sql |
-| archive | V11000xxx | V11000001__init_archive_tables.sql |
-| task | V12000xxx | V12000001__init_task_tables.sql |
+| archive | V12000xxx | V12000001__init_archive_tables.sql |
+| task | V11000xxx | V11000001__init_task_tables.sql |
 | schedule | V13000xxx | V13000001__init_schedule_tables.sql |
 | analysis | V16000xxx | V16000001__init_analysis_tables.sql |
 

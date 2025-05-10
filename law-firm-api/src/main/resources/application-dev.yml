@@ -1,0 +1,78 @@
+spring:
+  # 开发环境数据源 - 可以使用H2内存数据库方便开发
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  
+  # 开发环境禁用Redis，使用内存模拟
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  
+  # 开发环境自动初始化数据库
+  flyway:
+    enabled: true
+    clean-disabled: false
+
+# 开发环境服务器配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# 开发环境允许所有跨域
+cors:
+  allowed-origins: "*"
+
+# 开发环境日志级别
+logging:
+  level:
+    root: INFO
+    com.lawfirm: DEBUG
+    org.springframework: INFO
+    org.springframework.web: INFO
+    org.springframework.security: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+    org.flywaydb: DEBUG
+
+# MyBatis Plus开发环境配置 
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 开发环境SpringDoc配置
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true
+
+# 开发环境安全配置
+law-firm:
+  security:
+    # 开发环境可以启用模拟用户
+    mock-user:
+      enabled: true
+      username: admin
+      role: ROLE_ADMIN
+    # 开发环境禁用某些安全限制
+    disable:
+      csrf: true
+      xss-filter: false
+  
+  # 开发环境核心模块配置
+  core:
+    workflow:
+      enabled: true
+    storage:
+      enabled: true
+      type: local
+      path: ./storage
+    search:
+      enabled: true
+      index-path: ./indices
+    audit:
+      enabled: true 

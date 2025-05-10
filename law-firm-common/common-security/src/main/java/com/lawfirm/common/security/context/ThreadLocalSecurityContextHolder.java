@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
  * 基于ThreadLocal的安全上下文持有者
  * 提供线程级别的安全上下文存储和管理
  */
-@Component
+@Component("commonThreadLocalSecurityContextHolder")
 public class ThreadLocalSecurityContextHolder {
     
     private final ThreadLocal<SecurityContext> contextHolder = new ThreadLocal<>();

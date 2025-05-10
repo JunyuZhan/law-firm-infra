@@ -21,11 +21,11 @@ import java.util.Map;
 public class SearchIntegrationService {
 
     @Autowired
-    @Qualifier("searchServiceImpl")
+    @Qualifier("coreSearchServiceImpl")
     private Object searchService;
 
     @Autowired
-    @Qualifier("searchIndexServiceImpl")
+    @Qualifier("coreIndexServiceImpl")
     private Object indexService;
 
     /**

@@ -2,15 +2,15 @@ package com.lawfirm.common.security.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 基础Web安全配置类
  * 提供通用的安全配置，可被各模块继承和扩展
  */
-@Configuration
+@Configuration("commonBaseWebSecurityConfig")
 public class BaseWebSecurityConfig {
 
     /**
@@ -19,9 +19,16 @@ public class BaseWebSecurityConfig {
      * 使用条件注解，仅在缺少webSecurityFilterChain Bean时创建
      * 避免与模块中定义的Bean冲突
      */
-    // @Bean("webSecurityFilterChain")
-    // @ConditionalOnMissingBean(name = "webSecurityFilterChain")
-    // public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
-       // ... implementation ...
-    // }
+    @Bean("commonWebSecurityFilterChain")
+    @ConditionalOnMissingBean(name = {"webSecurityFilterChain"})
+    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
+        // 提供默认的安全配置，通常用于开发环境或简单场景
+        http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+                .requestMatchers("/actuator/**", "/health/**", "/info/**").permitAll()
+                .anyRequest().authenticated());
+                
+        return http.build();
+    }
 } 

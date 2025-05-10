@@ -14,7 +14,7 @@ class UploadConfigTest {
 
     @Test
     void testMultipartConfigElement() {
-        MultipartConfigElement config = uploadConfig.multipartConfigElement();
+        MultipartConfigElement config = uploadConfig.commonMultipartConfigElement();
         
         assertNotNull(config);
         assertEquals(10 * 1024 * 1024, config.getMaxFileSize());

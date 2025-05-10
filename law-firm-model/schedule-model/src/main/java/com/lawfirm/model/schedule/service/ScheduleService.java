@@ -3,6 +3,7 @@ package com.lawfirm.model.schedule.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.schedule.dto.ScheduleDTO;
+import com.lawfirm.model.schedule.dto.ScheduleUpdateDTO;
 import com.lawfirm.model.schedule.entity.Schedule;
 import com.lawfirm.model.schedule.vo.ScheduleVO;
 
@@ -150,4 +151,12 @@ public interface ScheduleService extends BaseService<Schedule> {
      * @return 是否成功
      */
     boolean updateStatus(Long id, Integer statusCode);
+    
+    /**
+     * 使用ScheduleUpdateDTO更新日程
+     *
+     * @param scheduleUpdateDTO 日程更新DTO
+     * @return 是否成功
+     */
+    boolean updateScheduleByDTO(ScheduleUpdateDTO scheduleUpdateDTO);
 } 

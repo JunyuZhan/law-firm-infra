@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * 当存储功能禁用时使用此实现
  */
 @Slf4j
-@Component
+@Component("commonNoOpSecurityContext")
 @ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = true)
 public class NoOpSecurityContext implements SecurityContext {
 

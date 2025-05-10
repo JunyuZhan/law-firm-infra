@@ -4,27 +4,30 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
- * 缓存配置
+ * 基础缓存配置类
+ * 
+ * 职责：
+ * 1. 提供Redisson客户端
+ * 2. 提供内存缓存管理器作为备选方案
+ * 不再提供主要的CacheManager，避免与其他缓存管理器冲突
+ * 
+ * 注意：此类为纯粹的基础设施，不包含任何业务逻辑或业务相关配置
  */
 @Configuration("commonCacheConfig")
 @EnableCaching
-@Order(1)
+@Order(10) // 确保在其他缓存配置之后加载
 public class CacheConfig {
 
     @Value("${spring.data.redis.host:localhost}")
@@ -51,9 +54,12 @@ public class CacheConfig {
         this.environment = environment;
     }
 
+    /**
+     * 提供Redisson客户端，用于分布式锁等功能
+     */
     @Bean(name = "commonRedissonClient")
     @ConditionalOnProperty(prefix = "spring.data.redis", name = "host")
-    @Order(2)
+    @ConditionalOnMissingBean(name = "commonRedissonClient")
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
@@ -71,26 +77,14 @@ public class CacheConfig {
     }
 
     /**
-     * 定义缓存管理器，根据配置使用Redis或内存缓存
+     * 提供内存缓存管理器，仅在未配置Redis时使用
+     * 注意：这是一个通用的缓存管理器，不包含业务相关配置
      */
-    @Bean("commonCacheManager")
-    @Primary
-    @Order(3)
-    public CacheManager cacheManager() {
-        // 获取是否使用Redis的配置
-        boolean useRedis = "REDIS".equalsIgnoreCase(cacheType) && cacheEnabled && 
-                           environment.getProperty("dev.use-redis", Boolean.class, true);
-
-        // 定义需要缓存的项
-        List<String> cacheNames = Arrays.asList("common", "menu", "dict", "user", "role", "perm");
-        
-        // 根据配置选择缓存实现
-        if (useRedis) {
-            RedissonClient redissonClient = redissonClient();
-            if (redissonClient != null) {
-                return new RedissonSpringCacheManager(redissonClient);
-            }
-        }
-        return new ConcurrentMapCacheManager(cacheNames.toArray(new String[0]));
+    @Bean("localCacheManager")
+    @ConditionalOnProperty(name = "law.firm.cache.type", havingValue = "LOCAL")
+    @ConditionalOnMissingBean(name = "cacheManager")
+    public CacheManager localCacheManager() {
+        // 不指定具体缓存名称，让使用方自行定义业务缓存名称
+        return new ConcurrentMapCacheManager();
     }
 } 

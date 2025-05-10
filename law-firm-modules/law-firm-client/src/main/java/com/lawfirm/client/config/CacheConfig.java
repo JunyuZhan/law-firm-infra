@@ -18,7 +18,6 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -80,32 +79,11 @@ public class CacheConfig {
     }
     
     /**
-     * 配置RedisTemplate
-     * 使用注入的ObjectMapper，避免依赖注入冲突
+     * 获取客户端Redis模板
+     * 复用通用缓存模板，避免创建多个RedisTemplate导致冲突
      */
     @Bean("clientRedisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory, @Qualifier("objectMapper") ObjectMapper objectMapper) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(factory);
-        
-        // 设置序列化方式 - 使用注入的ObjectMapper
-        ObjectMapper redisObjectMapper = objectMapper.copy();
-        redisObjectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        redisObjectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
-        
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = 
-            new Jackson2JsonRedisSerializer<>(redisObjectMapper, Object.class);
-        
-        // key使用String序列化
-        template.setKeySerializer(new StringRedisSerializer());
-        // value使用JSON序列化
-        template.setValueSerializer(jackson2JsonRedisSerializer);
-        // Hash的key使用String序列化
-        template.setHashKeySerializer(new StringRedisSerializer());
-        // Hash的value使用JSON序列化
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
-        template.afterPropertiesSet();
-        
-        return template;
+    public RedisTemplate<String, Object> clientRedisTemplate(@Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> cacheRedisTemplate) {
+        return cacheRedisTemplate;
     }
 }

@@ -3,6 +3,7 @@ package com.lawfirm.model.cases.mapper.base;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.cases.entity.base.Case;
 import com.lawfirm.model.cases.constants.CaseSqlConstants;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * 案件Mapper接口
  */
+@Mapper
 public interface CaseMapper extends BaseMapper<Case> {
     
     /**

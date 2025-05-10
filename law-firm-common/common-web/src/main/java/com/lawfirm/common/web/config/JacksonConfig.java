@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Jackson配置
  */
-@Configuration
+@Configuration("commonJacksonConfig")
 public class JacksonConfig {
 
     /**
@@ -47,7 +47,7 @@ public class JacksonConfig {
      */
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
-    @Bean(name = "jacksonObjectMapper")
+    @Bean(name = "commonJacksonObjectMapper")
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
         // 使用JsonMapper.builder()替代原来的方式，以支持更多高级特性
         JsonMapper.Builder mapperBuilder = JsonMapper.builder()

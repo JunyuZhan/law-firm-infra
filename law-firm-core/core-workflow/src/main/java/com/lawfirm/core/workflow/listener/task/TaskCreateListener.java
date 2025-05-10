@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @author JunyuZhan
  */
 @Slf4j
-@Component
+@Component("coreTaskCreateListener")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class TaskCreateListener implements TaskListener {

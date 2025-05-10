@@ -146,5 +146,12 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- 业务模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>archive-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

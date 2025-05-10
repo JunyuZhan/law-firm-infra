@@ -16,9 +16,13 @@ law-firm-auth 与 auth-model 的关系是实现与定义的关系：
 - **用户名密码认证**：传统登录方式，支持多种密码策略
 - **登录安全**：多次失败锁定、验证码防护
 - **会话管理**：基于JWT的无状态会话，支持会话过期策略
+- **登录历史记录**：完整记录用户的登录历史，支持审计和异常检测
 
 ### 2. 授权体系
 - **RBAC权限模型**：基于角色的访问控制
+- **团队权限管理**：针对团队级别的权限控制和资源访问
+- **业务权限管理**：针对具体业务场景的细粒度权限管理
+- **权限请求流程**：支持用户申请权限的审批流程
 - **数据权限**：支持全部数据、团队数据、个人数据和自定义数据范围
 - **操作权限**：完全权限、只读权限、个人权限、审批权限和申请权限
 - **权限控制**：实现 auth-model 中定义的 PermissionChecker 接口
@@ -40,6 +44,7 @@ law-firm-auth 与 auth-model 的关系是实现与定义的关系：
 ┌───────────────────────────┼─────────────────────────────┐
 │                     服务层 (Service)                      │
 │   认证服务、用户服务、角色服务、权限服务                  │
+│   团队权限服务、业务权限服务、权限请求服务、登录历史服务  │
 └───────────────────────────┼─────────────────────────────┘
                             │
 ┌───────────────────────────┼─────────────────────────────┐
@@ -88,6 +93,10 @@ law-firm-auth/
 │       │               │   │   ├── UserServiceImpl.java         # 用户服务实现
 │       │               │   │   ├── RoleServiceImpl.java         # 角色服务实现
 │       │               │   │   ├── PermissionServiceImpl.java   # 权限服务实现
+│       │               │   │   ├── TeamPermissionServiceImpl.java # 团队权限服务实现
+│       │               │   │   ├── BusinessPermissionServiceImpl.java # 业务权限服务实现
+│       │               │   │   ├── PermissionRequestServiceImpl.java # 权限请求服务实现
+│       │               │   │   ├── LoginHistoryServiceImpl.java  # 登录历史服务实现
 │       │               │   │   └── UserPersonnelServiceImpl.java # 用户人员关联服务实现
 │       │               │   └── support/         # 支持服务
 │       │               │       └── PermissionCheckerImpl.java   # 权限检查器实现
@@ -105,6 +114,10 @@ law-firm-auth/
 - **UserServiceImpl**：实现 auth-model 中定义的 UserService 接口，处理用户管理功能
 - **RoleServiceImpl**：实现 auth-model 中定义的 RoleService 接口，处理角色管理功能
 - **PermissionServiceImpl**：实现 auth-model 中定义的 PermissionService 接口，处理权限管理功能
+- **TeamPermissionServiceImpl**：处理团队级别的权限分配和管理
+- **BusinessPermissionServiceImpl**：处理特定业务场景的权限管理
+- **PermissionRequestServiceImpl**：处理权限申请和审批流程
+- **LoginHistoryServiceImpl**：记录和管理用户登录历史
 - **UserPersonnelServiceImpl**：实现 auth-model 中定义的 UserPersonnelService 接口，处理用户与人员的关联
 
 ### 2. 安全组件

@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * </p>
  */
 @Slf4j
-@Configuration
+@Configuration("commonCacheResolverConfig")
 @EnableCaching
 public class CacheResolverConfig implements CachingConfigurer {
 
@@ -38,7 +38,7 @@ public class CacheResolverConfig implements CachingConfigurer {
      * 
      * @return 缓存解析器
      */
-    @Bean(name = "cacheResolver")
+    @Bean(name = "commonCacheResolver")
     @Primary
     @Override
     public CacheResolver cacheResolver() {

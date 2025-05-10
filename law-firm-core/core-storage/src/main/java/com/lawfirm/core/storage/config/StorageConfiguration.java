@@ -45,7 +45,7 @@ public class StorageConfiguration {
      * 配置MinIO客户端
      * 注意：这里复用common-data模块中的配置，如果已经存在则不需要重复配置
      */
-    @Bean(name = "minioClient")
+    @Bean(name = "coreMinioClient")
     public MinioClient minioClient() {
         StorageProperties.MinioConfig minioConfig = storageProperties.getMinio();
         

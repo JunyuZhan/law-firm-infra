@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * 公共模块 Web MVC 配置
  */
-@Configuration(value = "commonWebConfig")
+@Configuration("commonWebConfig")
 public class WebConfig implements WebMvcConfigurer {
     
     @Value("${cors.allowed-origins:*}") // 从配置读取，默认为*

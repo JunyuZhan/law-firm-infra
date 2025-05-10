@@ -22,12 +22,12 @@ import java.util.Collections;
  */
 @Slf4j
 @Aspect
-@Component
+@Component("commonRepeatSubmitAspect")
 public class RepeatSubmitAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
     
-    public RepeatSubmitAspect(@Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+    public RepeatSubmitAspect(@Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
     

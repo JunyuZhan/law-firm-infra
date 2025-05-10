@@ -2,6 +2,7 @@ package com.lawfirm.common.cache.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,7 @@ import java.time.Duration;
  * </p>
  */
 @Slf4j
-@Configuration("redisConnectionFactoryConfig")
+@Configuration("commonRedisConnectionFactoryConfig")
 @ConditionalOnProperty(prefix = "spring.data.redis", name = "host")
 public class RedisConnectionFactoryConfig {
 
@@ -50,9 +51,10 @@ public class RedisConnectionFactoryConfig {
     /**
      * 创建Redis连接工厂，正确处理空密码情况
      */
-    @Bean
+    @Bean("commonRedisConnectionFactory")
     @Primary
-    public RedisConnectionFactory redisConnectionFactory() {
+    @ConditionalOnMissingBean(RedisConnectionFactory.class)
+    public RedisConnectionFactory commonRedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
         redisConfig.setHostName(host);
         redisConfig.setPort(port);
@@ -83,43 +85,22 @@ public class RedisConnectionFactoryConfig {
      * 解析超时字符串为Duration
      * 支持纯数字（视为毫秒）和带单位的格式（如10s, 500ms）
      */
-    private Duration parseTimeout(String timeoutStr) {
-        if (timeoutStr == null || timeoutStr.trim().isEmpty()) {
-            return Duration.ofMillis(2000); // 默认2秒
-        }
-        
-        // 处理纯数字（毫秒）
-        if (timeoutStr.matches("^\\d+$")) {
-            try {
-                long millis = Long.parseLong(timeoutStr);
-                return Duration.ofMillis(millis);
-            } catch (NumberFormatException e) {
-                log.warn("无法解析超时值：{}，使用默认值2000ms", timeoutStr, e);
-                return Duration.ofMillis(2000);
-            }
-        }
-        
-        // 处理带单位的格式
+    private Duration parseTimeout(String timeoutString) {
         try {
-            if (timeoutStr.endsWith("ms")) {
-                String value = timeoutStr.substring(0, timeoutStr.length() - 2);
-                return Duration.ofMillis(Long.parseLong(value));
-            } else if (timeoutStr.endsWith("s")) {
-                String value = timeoutStr.substring(0, timeoutStr.length() - 1);
-                return Duration.ofSeconds(Long.parseLong(value));
-            } else if (timeoutStr.endsWith("m")) {
-                String value = timeoutStr.substring(0, timeoutStr.length() - 1);
-                return Duration.ofMinutes(Long.parseLong(value));
-            } else if (timeoutStr.endsWith("h")) {
-                String value = timeoutStr.substring(0, timeoutStr.length() - 1);
-                return Duration.ofHours(Long.parseLong(value));
+            // 尝试解析为数字（毫秒）
+            return Duration.ofMillis(Long.parseLong(timeoutString));
+        } catch (NumberFormatException e) {
+            // 如果不是纯数字，尝试按照标准格式解析
+            if (timeoutString.endsWith("ms")) {
+                return Duration.ofMillis(Long.parseLong(timeoutString.replace("ms", "")));
+            } else if (timeoutString.endsWith("s")) {
+                return Duration.ofSeconds(Long.parseLong(timeoutString.replace("s", "")));
+            } else if (timeoutString.endsWith("m")) {
+                return Duration.ofMinutes(Long.parseLong(timeoutString.replace("m", "")));
             } else {
-                log.warn("未知的时间单位格式：{}，使用默认值2000ms", timeoutStr);
+                // 默认解析为毫秒
                 return Duration.ofMillis(2000);
             }
-        } catch (Exception e) {
-            log.warn("解析带单位的超时值失败：{}，使用默认值2000ms", timeoutStr, e);
-            return Duration.ofMillis(2000);
         }
     }
 } 

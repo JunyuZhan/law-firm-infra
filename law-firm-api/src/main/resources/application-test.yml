@@ -1,85 +1,85 @@
-# 测试环境配置
 spring:
-  # 数据库配置
+  # 测试环境使用H2内存数据库
   datasource:
-    url: jdbc:mysql://localhost:3306/law_firm_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
-    username: ${TEST_DB_USERNAME:root}
-    password: ${TEST_DB_PASSWORD:}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:law_firm_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    username: sa
+    password: 
     hikari:
-      minimum-idle: 3
-      maximum-pool-size: 10
-      idle-timeout: 30000
-      max-lifetime: 1800000
-      connection-timeout: 30000
-    # 动态数据源配置，测试环境不启用
-    dynamic:
-      enabled: false
-  # Redis配置
+      minimum-idle: 5
+      maximum-pool-size: 20
+  
+  # 测试环境禁用Redis，使用内存模拟
   data:
     redis:
-      host: ${TEST_REDIS_HOST:localhost}
-      port: ${TEST_REDIS_PORT:6379}
-      database: 1  # 使用单独的库，避免影响开发环境
-      password: ${TEST_REDIS_PASSWORD:}
-  # 数据库迁移配置
+      enabled: false
+  
+  # 测试环境每次启动清空数据库
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
   flyway:
     enabled: true
-    locations: classpath:db/migration
-    validate-on-migrate: true
-    baseline-on-migrate: true
-    out-of-order: true
+    clean-on-validation-error: true
+    clean-disabled: false
 
-# 日志配置 - 测试环境减少DEBUG日志
+# 测试环境服务器配置
+server:
+  port: 8081
+  servlet:
+    context-path: /
+
+# 测试环境允许所有跨域
+cors:
+  allowed-origins: "*"
+
+# 测试环境日志级别
 logging:
   level:
     root: INFO
-    com.lawfirm: INFO  # 开发环境是DEBUG
+    com.lawfirm: DEBUG
     org.springframework: INFO
-    org.springframework.web: INFO  # 开发环境是DEBUG
-    com.lawfirm.common.data: INFO  # 开发环境是DEBUG
-    # 保留Flyway日志，以便查看SQL执行情况
-    org.flywaydb: INFO
+    org.springframework.test: DEBUG
+    org.springframework.security: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+    org.flywaydb: DEBUG
 
-# 启用基本安全组件
-security:
-  enabled: true
-  ignore-urls:
-    - "/favicon.ico"
-    - "/error"
-    - "/health"
-    - "/version"
-    - "/api/auth/login"
-    - "/api/auth/logout"
-    - "/api/auth/captcha"
-    - "/api/docs/**"
-    - "/swagger-ui/**"
-    - "/v3/api-docs/**"
+# 测试环境MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# 测试环境业务模块配置
-lawfirm:
-  # 搜索服务配置 - 测试环境开启
-  search:
+# 测试环境SpringDoc配置
+springdoc:
+  swagger-ui:
     enabled: true
-    type: lucene
-  # 存储服务配置
-  storage:
+  api-docs:
     enabled: true
-    defaultType: LOCAL
-    path:
-      baseDir: ${user.home}/.law-firm-test/storage
-      tempDir: ${user.home}/.law-firm-test/storage/temp
-  # 缓存配置 - 测试环境开启
-  cache:
-    enabled: true
-    type: REDIS
 
-# 管理端点配置 - 仅测试环境可见，生产环境会禁用
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: always 
+# 测试环境安全配置
+law-firm:
+  security:
+    # 测试环境模拟用户
+    mock-user:
+      enabled: true
+      username: test
+      role: ROLE_USER
+    # 测试环境禁用安全限制
+    disable:
+      csrf: true
+      xss-filter: true
+  
+  # 测试环境核心模块配置
+  core:
+    workflow:
+      enabled: false
+    storage:
+      enabled: true
+      type: memory
+    search:
+      enabled: true
+      index-path: ./indices-test
+    audit:
+      enabled: true 

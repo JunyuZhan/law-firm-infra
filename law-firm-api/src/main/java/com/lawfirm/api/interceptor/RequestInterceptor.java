@@ -10,7 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * 请求拦截器简化版
  */
 @Slf4j
-@Component
+@Component("apiRequestInterceptor")
 public class RequestInterceptor implements HandlerInterceptor {
 
     @Override

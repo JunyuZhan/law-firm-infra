@@ -50,7 +50,7 @@ public class UserInfoVO implements Serializable {
      * 角色列表 - vue-vben-admin格式
      * 格式: [{"roleName": "管理员", "value": "admin"}]
      */
-    private List<Map<String, String>> roles;
+    private transient List<Map<String, String>> roles;
     
     /**
      * 角色编码列表
@@ -60,7 +60,7 @@ public class UserInfoVO implements Serializable {
     /**
      * 权限列表
      */
-    private List<String> permissions;
+    private transient List<String> permissions;
     
     /**
      * 权限列表（数组形式）

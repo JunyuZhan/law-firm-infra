@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 @Configuration
 @ConditionalOnWebApplication
-@ImportAutoConfiguration({
+@Import({
     SecurityConfig.class,
 })
 @ComponentScan(basePackages = "com.lawfirm.auth")
@@ -28,7 +28,7 @@ public class AuthAutoConfiguration {
 
     public AuthAutoConfiguration(
             JwtTokenProvider tokenProvider,
-            @Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+            @Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.tokenProvider = tokenProvider;
         this.redisTemplate = redisTemplate;
     }

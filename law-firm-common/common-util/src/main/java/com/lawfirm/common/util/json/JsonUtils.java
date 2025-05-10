@@ -27,7 +27,7 @@ import com.lawfirm.common.util.SpringUtils;
  * JSON工具类，基于Jackson
  */
 @Slf4j
-@Component
+@Component("commonJsonUtils")
 public class JsonUtils {
 
     /**

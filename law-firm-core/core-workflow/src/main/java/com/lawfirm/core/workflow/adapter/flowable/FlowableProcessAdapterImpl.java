@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @author JunyuZhan
  */
 @Slf4j
-@Component
+@Component("coreFlowableProcessAdapterImpl")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class FlowableProcessAdapterImpl implements FlowableProcessAdapter {

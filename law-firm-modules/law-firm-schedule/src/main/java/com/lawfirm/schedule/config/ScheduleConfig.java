@@ -19,13 +19,14 @@ public class ScheduleConfig {
      */
     @Bean(name = "scheduleModuleInitializer")
     @ConditionalOnProperty(name = "lawfirm.schedule.enabled", havingValue = "true", matchIfMissing = true)
-    public String scheduleModuleInitializer(ScheduleProperties scheduleProperties) {
+    public Object scheduleModuleInitializer(ScheduleProperties scheduleProperties) {
         log.info("日程管理模块初始化完成");
         log.info("日程提醒功能: {}", scheduleProperties.getReminder().isEnabled() ? "已启用" : "已禁用");
         log.info("日程冲突检测: {}", scheduleProperties.getConflict().isEnabled() ? "已启用" : "已禁用");
         log.info("日程同步功能: {}", scheduleProperties.getSync().isEnabled() ? "已启用" : "已禁用");
         log.info("日程重复规则: {}", scheduleProperties.getRecurrence().isEnabled() ? "已启用" : "已禁用");
-        return "scheduleModuleInitializer";
+        
+        return new ScheduleModuleWrapper("scheduleModuleInitializer", scheduleProperties);
     }
 
     /**
@@ -48,6 +49,27 @@ public class ScheduleConfig {
          */
         public void process() {
             // 模块初始化后的业务处理逻辑
+        }
+    }
+    
+    /**
+     * 日程模块包装类
+     */
+    public static class ScheduleModuleWrapper {
+        private final String name;
+        private final ScheduleProperties properties;
+        
+        public ScheduleModuleWrapper(String name, ScheduleProperties properties) {
+            this.name = name;
+            this.properties = properties;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public ScheduleProperties getProperties() {
+            return properties;
         }
     }
 } 

@@ -26,7 +26,7 @@ public class BaseSecurityConfig {
      * 使用条件注解，仅在缺少passwordEncoder Bean时创建
      * 避免与API模块中定义的Bean冲突
      */
-    @Bean("basePasswordEncoder")
+    @Bean(name = "commonBasePasswordEncoder")
     @ConditionalOnMissingBean(PasswordEncoder.class)
     public PasswordEncoder basePasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -38,8 +38,8 @@ public class BaseSecurityConfig {
      * 使用条件注解，仅在缺少securityFilterChain Bean时创建
      * 避免与模块中定义的Bean冲突
      */
-    @Bean("baseSecurityFilterChain")
-    @ConditionalOnMissingBean(name = {"securityFilterChain", "apiDocSecurityFilterChain"}) 
+    @Bean(name = "commonBaseSecurityFilterChain")
+    @ConditionalOnMissingBean(name = {"securityFilterChain", "apiDocSecurityFilterChain", "authSecurityFilterChain"})
     public SecurityFilterChain baseSecurityFilterChain(HttpSecurity http) throws Exception {
         log.info("配置基础安全过滤链 - 默认配置");
         

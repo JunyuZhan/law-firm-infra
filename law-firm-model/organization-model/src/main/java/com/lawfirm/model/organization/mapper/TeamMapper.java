@@ -3,6 +3,7 @@ package com.lawfirm.model.organization.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.organization.entity.team.Team;
 import com.lawfirm.model.organization.constant.OrganizationSqlConstants;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * 团队数据访问接口
  */
+@Mapper
 public interface TeamMapper extends BaseMapper<Team> {
 
     /**

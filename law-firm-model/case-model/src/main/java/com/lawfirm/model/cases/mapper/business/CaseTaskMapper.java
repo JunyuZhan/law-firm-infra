@@ -3,14 +3,17 @@ package com.lawfirm.model.cases.mapper.business;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.cases.entity.business.CaseTask;
 import com.lawfirm.model.cases.constants.CaseSqlConstants;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * 案件任务Mapper接口
  */
+@Mapper
 public interface CaseTaskMapper extends BaseMapper<CaseTask> {
     
     /**

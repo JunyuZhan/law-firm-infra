@@ -7,6 +7,7 @@ import lombok.Data;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +15,9 @@ import java.util.List;
  * 日程DTO类
  */
 @Data
-public class ScheduleDTO {
+public class ScheduleDTO implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     /**
      * 主键ID
@@ -83,17 +86,17 @@ public class ScheduleDTO {
     /**
      * 参与者列表
      */
-    private List<ScheduleParticipantDTO> participants;
+    private transient List<ScheduleParticipantDTO> participants;
     
     /**
      * 提醒设置列表
      */
-    private List<ScheduleReminderDTO> reminders;
+    private transient List<ScheduleReminderDTO> reminders;
     
     /**
      * 关联的案件ID列表
      */
-    private List<Long> caseIds;
+    private transient List<Long> caseIds;
     
     /**
      * 关联的单个案件ID（便于单个关联操作）
@@ -103,7 +106,7 @@ public class ScheduleDTO {
     /**
      * 关联的任务ID列表
      */
-    private List<Long> taskIds;
+    private transient List<Long> taskIds;
     
     /**
      * 关联的单个任务ID（便于单个关联操作）

@@ -29,7 +29,7 @@ public class StorageConfig {
         private String secretKey;
         private String bucketName;
 
-        @Bean(name = "minioClient")
+        @Bean(name = "commonMinioClient")
         public MinioClient minioClient() {
             return MinioClient.builder()
                     .endpoint(endpoint)

@@ -23,7 +23,7 @@ import java.util.Map;
  * @date 2023/03/03
  */
 @Slf4j
-@Component
+@Component("coreProcessEndListener")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessEndListener implements FlowableEventListener {

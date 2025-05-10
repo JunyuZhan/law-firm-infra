@@ -7,7 +7,7 @@ echo.
 
 :menu
 echo 请选择要启动的环境:
-echo 1. 开发环境 (develop)
+echo 1. 开发环境 (dev)
 echo 2. 测试环境 (test)
 echo 3. 生产环境 (prod)
 echo 4. 自定义环境
@@ -15,7 +15,7 @@ echo 5. 退出
 echo.
 set /p ENV_CHOICE=请输入选择 (1-5): 
 
-if "%ENV_CHOICE%"=="1" set PROFILE=develop
+if "%ENV_CHOICE%"=="1" set PROFILE=dev
 if "%ENV_CHOICE%"=="2" set PROFILE=test
 if "%ENV_CHOICE%"=="3" set PROFILE=prod
 if "%ENV_CHOICE%"=="4" (
@@ -46,7 +46,7 @@ cd law-firm-api\target || (
     goto end
 )
 
-java -jar law-firm-api-1.0.0.jar --spring.profiles.active=%PROFILE%
+java -Dspring.main.allow-bean-definition-overriding=true -Dspring.factories.ignore-errors=true -Dspring.main.allow-circular-references=true -jar law-firm-api-1.0.0.jar --spring.profiles.active=%PROFILE%
 
 :end
 echo.

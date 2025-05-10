@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * </p>
  */
 @Slf4j
-@Configuration
+@Configuration("commonAsyncConfig")
 @EnableAsync
 public class AsyncConfig {
 
@@ -28,9 +28,9 @@ public class AsyncConfig {
      * 
      * @return 应用任务执行器
      */
-    @Bean(name = "applicationTaskExecutor")
+    @Bean(name = "commonApplicationTaskExecutor")
     @ConditionalOnMissingBean(name = "applicationTaskExecutor")
-    public TaskExecutor applicationTaskExecutor() {
+    public TaskExecutor commonApplicationTaskExecutor() {
         log.info("创建默认应用任务执行器");
         SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("app-task-");
         executor.setConcurrencyLimit(10);
@@ -45,9 +45,9 @@ public class AsyncConfig {
      * 
      * @return 异步任务执行器
      */
-    @Bean(name = "asyncTaskExecutor")
+    @Bean(name = "commonAsyncTaskExecutor")
     @ConditionalOnMissingBean(AsyncTaskExecutor.class)
-    public AsyncTaskExecutor asyncTaskExecutor() {
+    public AsyncTaskExecutor commonAsyncTaskExecutor() {
         log.info("创建默认异步任务执行器");
         SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("async-");
         executor.setConcurrencyLimit(10);

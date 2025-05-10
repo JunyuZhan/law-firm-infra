@@ -1,162 +1,117 @@
-# 生产环境配置
 spring:
-  # 数据库配置 - 生产环境应使用环境变量提供敏感信息
+  # 生产环境数据源
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
-    username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
     hikari:
+      # 生产环境连接池配置
       minimum-idle: 10
       maximum-pool-size: 50
       idle-timeout: 30000
       max-lifetime: 1800000
       connection-timeout: 30000
-      # 生产环境性能调优
-      connection-test-query: SELECT 1
-      validation-timeout: 3000
-    # 动态数据源配置 - 根据需要开启
-    dynamic:
-      enabled: ${SPRING_DATASOURCE_DYNAMIC_ENABLED:false}
-  # Redis配置
+      pool-name: LawFirmHikariCP
+  
+  # 生产环境Redis配置
   data:
     redis:
-      host: ${SPRING_REDIS_HOST:localhost}
-      port: ${SPRING_REDIS_PORT:6379}
-      database: ${SPRING_REDIS_DATABASE:0}
-      password: ${SPRING_REDIS_PASSWORD:}
-      # Redis连接池优化
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: 10000
       lettuce:
         pool:
-          min-idle: 8
-          max-idle: 16
-          max-active: 32
-          max-wait: 1000
-  # Spring主配置
-  main:
-    # 生产环境禁用懒加载，以在启动时验证所有bean
-    lazy-initialization: false
-    # 禁止bean覆盖，防止意外情况
-    allow-bean-definition-overriding: false
-    # 禁止循环引用，严格控制依赖关系
-    allow-circular-references: false
-  # 数据库迁移配置 - 生产环境应谨慎使用自动迁移
+          max-active: 500
+          max-wait: -1
+          max-idle: 50
+          min-idle: 10
+  
+  # 生产环境文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  
+  # 生产环境仅执行迁移，不清空数据库
   flyway:
-    enabled: ${SPRING_FLYWAY_ENABLED:false}
+    enabled: true
     clean-disabled: true
-    baseline-on-migrate: false
     validate-on-migrate: true
-    out-of-order: false
-    
-# 日志配置 - 生产环境关闭DEBUG日志
+
+# 生产环境服务器配置
+server:
+  port: ${SERVER_PORT:80}
+  servlet:
+    context-path: ${CONTEXT_PATH:/}
+  tomcat:
+    # 生产环境线程池配置
+    max-threads: 500
+    min-spare-threads: 30
+    max-connections: 10000
+    accept-count: 100
+    connection-timeout: 20000
+
+# 生产环境仅允许特定源跨域
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://admin.lawfirm.com,https://app.lawfirm.com}
+
+# 生产环境日志级别
 logging:
   level:
-    root: WARN
-    com.lawfirm: INFO
-    org.springframework: WARN
-    org.springframework.web: WARN
-    org.springframework.security: WARN
-    com.zaxxer.hikari: WARN
-    org.apache.ibatis: WARN
-  # 生产环境日志文件设置
+    root: ${LOGGING_LEVEL_ROOT:WARN}
+    com.lawfirm: ${LOGGING_LEVEL_APP:INFO}
+    org.springframework: ${LOGGING_LEVEL_SPRING:WARN}
+    com.baomidou.mybatisplus: ${LOGGING_LEVEL_MYBATIS:WARN}
   file:
-    name: ${LOG_PATH:/var/log/lawfirm}/lawfirm.log
-  logback:
-    rollingpolicy:
-      max-file-size: 100MB
-      max-history: 30
-      total-size-cap: 5GB
+    # 生产环境保留更多日志历史
+    max-history: ${LOG_FILE_MAX_HISTORY:90}
+    total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:10GB}
 
-# 启用完整安全组件
-security:
-  enabled: true
-  ignore-urls:
-    - "/favicon.ico"
-    - "/error"
-    - "/health"
-    - "/api/auth/login"
-    - "/api/auth/logout"
-  # 启用所有安全防护
-  cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:https://*.lawfirm.com}
-    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
-    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
-    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
-    max-age: ${CORS_MAX_AGE:3600}
-  xss:
-    enabled: true
-    exclude-urls: ${XSS_EXCLUDE_URLS:/api/upload}
-  sql-injection:
-    enabled: true
-    exclude-urls: ${SQL_INJECTION_EXCLUDE_URLS:}
+# 生产环境禁用MyBatis Plus详细日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
-# 服务器配置
-server:
-  port: ${SERVER_PORT:8080}
-  # Tomcat优化配置
-  tomcat:
-    threads:
-      max: 200
-      min-spare: 20
-    max-connections: 8192
-    accept-count: 100
-    connection-timeout: 5000
-  # 启用响应压缩
-  compression:
-    enabled: true
-    min-response-size: 2048
-    mime-types: application/json,application/xml,text/html,text/plain,text/css,application/javascript
+# 生产环境SpringDoc配置
+springdoc:
+  swagger-ui:
+    # 生产环境默认禁用Swagger UI
+    enabled: ${ENABLE_SWAGGER:false}
+  api-docs:
+    # 生产环境默认禁用API文档
+    enabled: ${ENABLE_API_DOCS:false}
 
-# 生产环境业务模块配置
-lawfirm:
-  # 工作流功能开关
-  workflow:
-    enabled: true
+# 生产环境安全配置
+law-firm:
+  security:
+    jwt:
+      # 生产环境更长的令牌有效期
+      expiration: ${JWT_EXPIRATION:86400}
+    # 生产环境禁用模拟用户
+    mock-user:
+      enabled: false
+    # 生产环境启用所有安全措施
+    disable:
+      csrf: false
+      xss-filter: false
   
-  # 审计相关配置
-  audit:
-    enabled: true
-    async:
+  # 生产环境启用所有核心模块
+  core:
+    workflow:
       enabled: true
-  
-  # 搜索服务配置
-  search:
-    enabled: ${LAWFIRM_SEARCH_ENABLED:true}
-    type: ${LAWFIRM_SEARCH_TYPE:elasticsearch} # 生产环境推荐使用ES
-  
-  # 存储服务配置
-  storage:
-    enabled: ${LAWFIRM_STORAGE_ENABLED:true}
-    defaultType: ${LAWFIRM_STORAGE_TYPE:MINIO} # 生产环境推荐使用对象存储
-    minio:
+    storage:
       enabled: true
-      endpoint: ${MINIO_ENDPOINT:http://minio:9000}
-      accessKey: ${MINIO_ACCESS_KEY:}
-      secretKey: ${MINIO_SECRET_KEY:}
-      bucketName: ${MINIO_BUCKET:lawfirm}
-    path:
-      baseDir: ${LAWFIRM_STORAGE_PATH:/data/lawfirm/storage}
-      tempDir: ${LAWFIRM_STORAGE_TEMP_PATH:/data/lawfirm/storage/temp}
-  
-  # 缓存配置
-  cache:
-    enabled: true
-    type: REDIS
-
-# 管理端点配置 - 生产环境限制暴露的端点
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-      base-path: /actuator
-      # 生产环境要求认证访问管理端点
-      path-mapping:
-        health: health
-        info: info
-  endpoint:
-    health:
-      show-details: never
-    # 启用shutdown端点，但要求认证
-    shutdown:
-      enabled: false 
+      # 生产环境使用云存储
+      type: ${STORAGE_TYPE:minio}
+      minio:
+        endpoint: ${MINIO_ENDPOINT:http://minio:9000}
+        access-key: ${MINIO_ACCESS_KEY:minioadmin}
+        secret-key: ${MINIO_SECRET_KEY:minioadmin}
+        bucket: ${MINIO_BUCKET:law-firm}
+    search:
+      enabled: true
+    audit:
+      enabled: true 

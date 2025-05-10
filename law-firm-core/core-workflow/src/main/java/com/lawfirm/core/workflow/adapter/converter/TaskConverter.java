@@ -20,7 +20,7 @@ import java.util.Date;
  * 
  * @author JunyuZhan
  */
-@Component
+@Component("coreTaskConverter")
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class TaskConverter {

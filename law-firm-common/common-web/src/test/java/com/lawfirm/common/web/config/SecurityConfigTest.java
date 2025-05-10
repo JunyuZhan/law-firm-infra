@@ -14,7 +14,7 @@ class SecurityConfigTest {
 
     @Test
     void testXssFilter() {
-        XssFilter filter = securityConfig.xssFilter();
+        XssFilter filter = securityConfig.commonXssFilter();
         assertNotNull(filter);
     }
 } 

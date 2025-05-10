@@ -2,7 +2,11 @@ package com.lawfirm.model.auth.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.auth.entity.UserRole;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -11,6 +15,7 @@ import java.util.List;
  * 
  * @author JunyuZhan
  */
+@Mapper
 public interface UserRoleMapper extends BaseMapper<UserRole> {
     
     /**

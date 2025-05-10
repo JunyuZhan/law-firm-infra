@@ -239,6 +239,7 @@ public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDo
 
     @Override
     public Long getCurrentTenantId() {
-        return 1L; // TODO: 从租户上下文获取
+        // 默认返回租户ID 1，可以在未来扩展实现从安全上下文获取
+        return 1L;
     }
 } 

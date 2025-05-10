@@ -35,6 +35,7 @@
         <module>ai-model</module>
         <module>schedule-model</module>
         <module>task-model</module>
+        <module>archive-model</module>
     </modules>
 
     <dependencyManagement>

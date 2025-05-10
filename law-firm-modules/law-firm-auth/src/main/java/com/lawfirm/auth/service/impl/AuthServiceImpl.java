@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthServiceImpl(
             AuthenticationManager authenticationManager,
             JwtTokenProvider tokenProvider,
-            @Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+            @Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.redisTemplate = redisTemplate;

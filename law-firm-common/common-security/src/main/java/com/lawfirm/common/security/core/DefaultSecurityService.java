@@ -13,7 +13,7 @@ import com.lawfirm.common.security.context.ThreadLocalSecurityContextHolder;
  * SecurityService接口的默认实现
  * 提供基于ThreadLocal的安全上下文管理
  */
-@Service
+@Service("commonDefaultSecurityService")
 @Primary
 public class DefaultSecurityService implements SecurityService {
     

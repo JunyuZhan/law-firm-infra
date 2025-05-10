@@ -19,8 +19,8 @@ public class SecurityConfig {
      * 加密服务
      * 提供通用的加解密功能
      */
-    @Bean("securityCryptoService")
-    public CryptoService cryptoService() {
+    @Bean("commonSecurityCryptoService")
+    public CryptoService commonSecurityCryptoService() {
         return new CryptoService();
     }
 } 

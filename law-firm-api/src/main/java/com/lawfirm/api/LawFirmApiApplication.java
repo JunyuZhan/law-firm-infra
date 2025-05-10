@@ -1,16 +1,18 @@
 package com.lawfirm.api;
 
-import com.lawfirm.api.config.CustomBeanNameGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.core.env.Environment;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -18,11 +20,16 @@ import java.util.Optional;
 
 /**
  * 律师事务所API应用入口类
+ * 
+ * 模块加载说明：
+ * 1. Common模块：通过依赖自动加载，提供基础功能
+ * 2. Core模块：使用自动配置机制加载，不通过profile配置引入
+ * 3. 业务模块：通过spring.profiles.include在application.yml中引入各模块配置
  */
 @Slf4j
 @SpringBootApplication(
     scanBasePackages = {
-        // 1. Common模块（最先编译）
+        // 1. Common模块（基础设施层）
         "com.lawfirm.common.core",
         "com.lawfirm.common.util",
         "com.lawfirm.common.web",
@@ -33,38 +40,16 @@ import java.util.Optional;
         "com.lawfirm.common.message",
         "com.lawfirm.common.test",
 
-        // 2. Model模块（其次编译）
-        "com.lawfirm.model.base",
-        "com.lawfirm.model.organization",
-        "com.lawfirm.model.personnel",
-        "com.lawfirm.model.auth",
-        "com.lawfirm.model.system",
-        "com.lawfirm.model.log",
-        "com.lawfirm.model.client",
-        "com.lawfirm.model.document",
-        "com.lawfirm.model.contract",
-        "com.lawfirm.model.cases",
-        "com.lawfirm.model.finance",
-        "com.lawfirm.model.workflow",
-        "com.lawfirm.model.storage",
-        "com.lawfirm.model.search",
-        "com.lawfirm.model.message",
-        "com.lawfirm.model.knowledge",
-        "com.lawfirm.model.ai",
-        "com.lawfirm.model.schedule",
-        "com.lawfirm.model.task",
+        // 2. Model模块（数据模型层）
+        "com.lawfirm.model",
 
-        // 3. Core模块（再次编译）
-        "com.lawfirm.core.audit",
-        "com.lawfirm.core.storage",
-        "com.lawfirm.core.search",
-        "com.lawfirm.core.ai",
-        "com.lawfirm.core.message",
-        "com.lawfirm.core.workflow",
+        // 3. Core模块（通过自动配置加载，不通过profile引入）
+        "com.lawfirm.core",
 
-        // 4. 业务模块和API（最后编译）
-        "com.lawfirm.system",
+        // 4. 业务模块（通过profile引入配置）
+        "com.lawfirm.api",
         "com.lawfirm.auth",
+        "com.lawfirm.system",
         "com.lawfirm.document",
         "com.lawfirm.personnel",
         "com.lawfirm.client",
@@ -74,23 +59,45 @@ import java.util.Optional;
         "com.lawfirm.knowledge",
         "com.lawfirm.schedule",
         "com.lawfirm.task",
-        "com.lawfirm.api"
+        "com.lawfirm.analysis",
+        "com.lawfirm.archive"
     },
     exclude = {
+        // 1. 安全相关
         SecurityAutoConfiguration.class,
         UserDetailsServiceAutoConfiguration.class,
-        // 排除所有JPA相关的自动配置
+        
+        // 2. 数据库相关
         DataSourceAutoConfiguration.class,
         HibernateJpaAutoConfiguration.class,
-        JpaRepositoriesAutoConfiguration.class
+        JpaRepositoriesAutoConfiguration.class,
+        
+        // 3. Redis相关 - 禁用官方的自动配置，使用我们自己的配置
+        RedisAutoConfiguration.class,
+        RedisRepositoriesAutoConfiguration.class
     }
 )
-@ComponentScan(basePackages = {"com.lawfirm"})
 public class LawFirmApiApplication {
 
+    /**
+     * 创建自定义Bean工厂后处理器，解决factoryBeanObjectType错误
+     */
+    @Bean
+    public static BeanFactoryPostProcessor customFactoryBeanRegistrar() {
+        return new CustomFactoryBeanRegistrar();
+    }
+
     public static void main(String[] args) {
+        // 调用FactoryBean类型修复工具
+        FactoryBeanTypeFixUtil.installTypeCheckFix();
+        
+        // 设置系统属性，禁用工厂类型错误检查，解决"factoryBeanObjectType"错误
+        System.setProperty("spring.main.allow-bean-definition-overriding", "true");
+        System.setProperty("spring.main.lazy-initialization", "false");
+        System.setProperty("spring.factories.ignore-errors", "true");
+        
+        // 启动应用
         SpringApplication application = new SpringApplication(LawFirmApiApplication.class);
-        application.setBeanNameGenerator(new CustomBeanNameGenerator());
         
         // 根据环境变量决定是否开启延迟初始化
         boolean isDockerEnv = Optional.ofNullable(System.getenv("SPRING_PROFILES_ACTIVE"))

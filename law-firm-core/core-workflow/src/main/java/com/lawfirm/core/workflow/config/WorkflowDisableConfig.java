@@ -34,8 +34,23 @@ public class WorkflowDisableConfig {
      * 处理工作流包路径
      */
     @Bean("workflowPackagePath")
-    public String workflowPackagePath() {
+    public Object workflowPackagePath() {
         log.info("工作流包路径设置为禁用路径");
-        return "com.lawfirm.core.workflow.disabled";
+        return new WorkflowPathConfig("com.lawfirm.core.workflow.disabled");
+    }
+    
+    /**
+     * 工作流路径配置包装类
+     */
+    public static class WorkflowPathConfig {
+        private final String path;
+        
+        public WorkflowPathConfig(String path) {
+            this.path = path;
+        }
+        
+        public String getPath() {
+            return path;
+        }
     }
 } 

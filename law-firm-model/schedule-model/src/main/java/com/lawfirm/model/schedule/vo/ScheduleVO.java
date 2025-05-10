@@ -5,6 +5,7 @@ import com.lawfirm.model.schedule.entity.enums.ScheduleStatus;
 import com.lawfirm.model.schedule.entity.enums.ScheduleType;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +13,9 @@ import java.util.List;
  * 日程VO类
  */
 @Data
-public class ScheduleVO {
+public class ScheduleVO implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     /**
      * 主键ID
@@ -117,37 +120,37 @@ public class ScheduleVO {
     /**
      * 参与者列表
      */
-    private List<ScheduleParticipantVO> participants;
+    private transient List<ScheduleParticipantVO> participants;
     
     /**
      * 提醒设置列表
      */
-    private List<ScheduleReminderVO> reminders;
+    private transient List<ScheduleReminderVO> reminders;
     
     /**
      * 关联的案件信息列表
      */
-    private List<CaseInfoVO> caseList;
+    private transient List<CaseInfoVO> caseList;
     
     /**
      * 关联的任务信息列表
      */
-    private List<TaskInfoVO> taskList;
+    private transient List<TaskInfoVO> taskList;
     
     /**
      * 会议室信息（如果是会议类型）
      */
-    private MeetingRoomVO meetingRoom;
+    private transient MeetingRoomVO meetingRoom;
     
     /**
      * 案件关联列表
      */
-    private List<ScheduleCaseRelationVO> caseRelations;
+    private transient List<ScheduleCaseRelationVO> caseRelations;
     
     /**
      * 任务关联列表
      */
-    private List<ScheduleTaskRelationVO> taskRelations;
+    private transient List<ScheduleTaskRelationVO> taskRelations;
     
     /**
      * 案件信息VO

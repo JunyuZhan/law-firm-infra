@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * 授权接口的默认实现
  */
-@Component
+@Component("commonDefaultAuthorization")
 public class DefaultAuthorization implements Authorization {
 
     private Set<String> permissions = new HashSet<>();

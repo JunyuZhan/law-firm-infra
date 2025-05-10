@@ -21,6 +21,8 @@ import com.lawfirm.model.cases.service.base.CaseService;
 import com.lawfirm.model.cases.vo.base.CaseDetailVO;
 import com.lawfirm.model.cases.vo.base.CaseQueryVO;
 import com.lawfirm.model.client.dto.ClientDTO;
+import com.lawfirm.model.archive.dto.CaseArchiveDTO;
+import com.lawfirm.model.archive.service.ArchiveService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -47,6 +49,7 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
     private final CaseMessageManager messageManager;
     private final ClientComponent clientComponent;
     private final CaseTeamMemberMapper caseTeamMemberMapper;
+    private final ArchiveService archiveService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -356,6 +359,33 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
                 Long.parseLong(caseEntity.getUpdateBy()),
                 "案件归档"
         );
+
+        // ====== 新增：同步到档案管理模块 ======
+        try {
+            CaseArchiveDTO archiveDTO = new CaseArchiveDTO();
+            archiveDTO.setCaseId(caseEntity.getId());
+            archiveDTO.setCaseTitle(caseEntity.getCaseName());
+            archiveDTO.setCaseNo(caseEntity.getCaseNumber());
+            archiveDTO.setCaseType(caseEntity.getCaseType() != null ? caseEntity.getCaseType().toString() : null);
+            archiveDTO.setLawyerId(caseEntity.getLawyerId());
+            archiveDTO.setLawyerName(caseEntity.getLawyerName());
+            archiveDTO.setDepartmentId(caseEntity.getDepartmentId());
+            archiveDTO.setDepartmentName(caseEntity.getDepartmentName());
+            archiveDTO.setClientId(caseEntity.getClientId());
+            archiveDTO.setClientName(caseEntity.getClientName());
+            archiveDTO.setStartTime(caseEntity.getFilingTime() != null ? caseEntity.getFilingTime().toString() : null);
+            archiveDTO.setEndTime(caseEntity.getClosingTime() != null ? caseEntity.getClosingTime().toString() : null);
+            archiveDTO.setHandlerId(caseEntity.getLastOperatorId());
+            archiveDTO.setHandlerName(caseEntity.getLastOperatorName());
+            archiveDTO.setCaseStatus(caseEntity.getCaseStatus() != null ? caseEntity.getCaseStatus().toString() : null);
+            archiveDTO.setCaseAmount(caseEntity.getActualAmount() != null ? caseEntity.getActualAmount().doubleValue() : null);
+            archiveDTO.setRemark(caseEntity.getRemarks());
+            // archiveDTO.setFileList(assembleArchiveFileList(caseEntity)); // 如有归档文件可补充
+            archiveService.createCaseArchive(archiveDTO);
+        } catch (Exception e) {
+            log.error("同步案件归档到档案管理模块失败，caseId={}", caseId, e);
+        }
+        // ====== 新增结束 ======
 
         log.info("案件归档成功, ID: {}", caseId);
         return result;

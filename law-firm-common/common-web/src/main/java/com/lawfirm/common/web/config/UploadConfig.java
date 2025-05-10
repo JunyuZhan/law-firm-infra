@@ -10,14 +10,14 @@ import jakarta.servlet.MultipartConfigElement;
 /**
  * 文件上传配置
  */
-@Configuration
+@Configuration("commonUploadConfig")
 public class UploadConfig {
 
     /**
      * 文件上传配置
      */
-    @Bean(name = "multipartConfigElement")
-    public MultipartConfigElement multipartConfigElement() {
+    @Bean(name = "commonMultipartConfigElement")
+    public MultipartConfigElement commonMultipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         // 单个文件最大
         factory.setMaxFileSize(DataSize.ofMegabytes(10));

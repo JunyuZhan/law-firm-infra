@@ -2,7 +2,7 @@ package com.lawfirm.common.web.response;
 
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.core.constant.ResultCode;
-import com.lawfirm.common.web.constant.WebConstants;
+import com.lawfirm.common.web.constants.WebConstants;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

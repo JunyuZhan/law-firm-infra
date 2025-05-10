@@ -78,7 +78,7 @@ public class ContractConflictConfig {
     /**
      * 配置合同冲突服务
      */
-    @Bean("contractConflictService")
+    @Bean("contractConflictServiceConfigBean")
     @Primary
     public ContractConflictService contractConflictService() {
         return new ContractConflictServiceImpl();

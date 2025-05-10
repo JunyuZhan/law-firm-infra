@@ -4,7 +4,6 @@ import com.lawfirm.model.log.dto.AuditLogDTO;
 import com.lawfirm.model.log.entity.audit.AuditLog;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.stereotype.Component;
 
 /**
  * 审计日志转换器
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Component;
  * @since 1.0.0
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, implementationName = "ModelAuditLogConverterImpl")
-@Component("modelAuditLogConverter")
 public interface AuditLogConverter {
 
     /**

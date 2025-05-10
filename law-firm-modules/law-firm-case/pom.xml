@@ -148,5 +148,18 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- 档案模型依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>archive-model</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <!-- 档案管理模块依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-archive</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 </project> 

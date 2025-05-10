@@ -2,51 +2,41 @@ package com.lawfirm.common.cache.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * 缓存自动配置类
- * <p>
- * 负责管理缓存相关的自动配置及其加载顺序
- * </p>
+ * 
+ * 职责：
+ * 1. 作为通用基础设施，提供缓存抽象层的配置入口
+ * 2. 整合所有缓存相关配置，确保配置的一致性
+ * 3. 不包含任何业务逻辑或特定业务场景的实现
+ * 4. 只负责导入其他配置类，维护缓存基础设施的完整性
  */
 @Slf4j
-@Configuration("lawFirmCacheAutoConfiguration")
+@Configuration("commonCacheAutoConfiguration")
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-@EnableConfigurationProperties
+@EnableConfigurationProperties(CacheProperties.class)
+@ConditionalOnProperty(prefix = "law-firm.common.cache", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Import({
-    CacheProperties.class, 
-    CacheConfig.class, 
-    RedisTemplateConfig.class,
-    RedisConnectionFactoryConfig.class,
-    AppCacheConfig.class
+    RedisConfig.class,
+    CacheConfig.class,
+    AppCacheConfig.class,
+    LegacyCompatConfig.class
 })
 public class CacheAutoConfiguration {
 
     /**
-     * 初始化缓存配置
-     */
-    @Bean
-    @Order(1)
-    @ConditionalOnMissingBean(name = "cacheAutoConfigProperties")
-    public CacheProperties cacheAutoConfigProperties() {
-        log.info("初始化通用缓存配置属性");
-        return new CacheProperties();
-    }
-    
-    /**
      * 初始化缓存状态检查器
+     * 作为基础设施组件，只提供通用的健康检查功能
      */
-    @Bean
+    @Bean(name = "commonCacheHealthIndicator")
     @Order(2)
     public CacheHealthIndicator cacheHealthIndicator() {
         log.info("初始化缓存健康检查器");
@@ -55,6 +45,7 @@ public class CacheAutoConfiguration {
     
     /**
      * 提供缓存健康状态检查
+     * 纯粹的基础设施工具类，不包含业务逻辑
      */
     @Slf4j
     public static class CacheHealthIndicator {

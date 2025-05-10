@@ -5,6 +5,7 @@ import com.lawfirm.model.auth.entity.User;
 import com.lawfirm.model.auth.constant.AuthSqlConstants;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * 
  * @author JunyuZhan
  */
+@Mapper
 public interface UserMapper extends BaseMapper<User> {
     
     /**

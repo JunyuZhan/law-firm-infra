@@ -10,7 +10,7 @@ import com.lawfirm.model.ai.enums.ModelStatus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import java.util.*;
@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * AI模型服务实现类
  */
-@Component("aiModelServiceImpl")
+@Service
 @RequiredArgsConstructor
 public class AIModelServiceImpl implements AIModelService {
     

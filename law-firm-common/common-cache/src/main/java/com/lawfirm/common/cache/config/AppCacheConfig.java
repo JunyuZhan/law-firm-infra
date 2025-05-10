@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -20,22 +21,25 @@ import java.time.Duration;
 
 /**
  * 应用缓存配置类
- * <p>
- * 提供API层和业务模块使用的缓存配置和管理器
- * </p>
+ * 
+ * 职责：
+ * 1. 提供应用层使用的缓存管理器
+ * 2. 作为上层模块使用的缓存设施
  */
-@Configuration
+@Configuration("commonAppCacheConfig")
 @EnableCaching
+@Order(20) // 在基础缓存配置之后加载
 public class AppCacheConfig {
 
     private static final Logger log = LoggerFactory.getLogger(AppCacheConfig.class);
 
     /**
-     * 提供缓存属性Bean
+     * 提供应用缓存属性配置
      */
-    @Bean(name = "appCacheProperties")
-    public CacheProperties cacheProperties() {
-        log.info("初始化缓存配置：默认使用本地缓存");
+    @Bean(name = "commonAppCacheProperties")
+    @ConditionalOnMissingBean(name = "commonAppCacheProperties")
+    public CacheProperties commonAppCacheProperties() {
+        log.info("初始化应用缓存配置");
         CacheProperties props = new CacheProperties();
         props.setEnabled(true);
         props.setType(CacheProperties.CacheType.LOCAL); // 默认使用本地缓存
@@ -45,37 +49,15 @@ public class AppCacheConfig {
     }
     
     /**
-     * 配置Redis缓存管理器
+     * 提供Redis缓存管理器，用于应用层
+     * 仅在配置了Redis时创建
      */
-    @Bean("appRedisCacheManager")
-    @ConditionalOnProperty(name = "spring.data.redis.enabled", havingValue = "true", matchIfMissing = false)
-    @ConditionalOnMissingBean(name = "appRedisCacheManager")
-    public CacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
-        log.info("初始化Redis缓存管理器");
-        // 默认配置
-        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                // 设置key为String
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                // 设置value为json
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                // 不缓存null
-                .disableCachingNullValues()
-                // 默认缓存过期时间
-                .entryTtl(Duration.ofMinutes(30));
-
-        // 创建Redis缓存管理器
-        return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(defaultCacheConfig)
-                .transactionAware()
-                .build();
-    }
-
-    /**
-     * 创建应用层的缓存管理器
-     */
-    @Bean("appCacheManager")
-    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        log.info("初始化应用层的Redis缓存管理器");
+    @Bean("commonAppCacheManager")
+    @Primary
+    @ConditionalOnProperty(name = "spring.data.redis.host")
+    @ConditionalOnMissingBean(name = "cacheManager")
+    public CacheManager commonAppCacheManager(RedisConnectionFactory connectionFactory) {
+        log.info("初始化应用层Redis缓存管理器");
         
         // 默认的Redis缓存配置
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
@@ -92,6 +74,33 @@ public class AppCacheConfig {
         
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(defaultCacheConfig)
+                .build();
+    }
+    
+    /**
+     * 提供备用Redis缓存管理器
+     * 仅在未被其他Bean覆盖且配置了Redis时创建
+     */
+    @Bean("commonFallbackRedisCacheManager")
+    @ConditionalOnProperty(name = "spring.data.redis.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnMissingBean(name = {"commonAppRedisCacheManager", "commonAppCacheManager"})
+    public CacheManager fallbackRedisCacheManager(RedisConnectionFactory connectionFactory) {
+        log.info("初始化备用Redis缓存管理器");
+        // 默认配置
+        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                // 设置key为String
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                // 设置value为json
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                // 不缓存null
+                .disableCachingNullValues()
+                // 默认缓存过期时间
+                .entryTtl(Duration.ofMinutes(30));
+
+        // 创建Redis缓存管理器
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(defaultCacheConfig)
+                .transactionAware()
                 .build();
     }
 } 

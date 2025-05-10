@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 团队权限Mapper
+ * 团队权限数据访问接口
  */
 @Mapper
 public interface TeamPermissionMapper extends BaseMapper<TeamPermission> {

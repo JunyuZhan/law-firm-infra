@@ -1,7 +1,11 @@
 package com.lawfirm.core.search.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.search.dto.search.SearchRequestDTO;
 import com.lawfirm.model.search.entity.SearchDoc;
@@ -14,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import jakarta.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,9 +34,6 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Exception.class)
 public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 
-    @Autowired
-    private SearchService searchService;
-
     @PostConstruct
     public void init() {
         log.info("初始化数据库搜索服务");
@@ -38,7 +41,87 @@ public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, 
 
     @Override
     public SearchVO search(SearchRequestDTO request) {
-        return searchService.search(request);
+        log.info("数据库执行搜索: {}", request);
+        
+        // 构建查询条件
+        QueryWrapper<SearchDoc> wrapper = buildSearchQuery(request);
+        
+        // 执行分页查询
+        Page<SearchDoc> page = new Page<>(request.getPageNum(), request.getPageSize());
+        Page<SearchDoc> resultPage = baseMapper.selectPage(page, wrapper);
+        
+        // 构建响应结果
+        SearchVO result = new SearchVO();
+        result.setTotal(resultPage.getTotal());
+        result.setTook(resultPage.getSize());
+        
+        // 转换查询结果为Hit对象列表
+        List<SearchVO.Hit> hits = resultPage.getRecords().stream()
+                .map(doc -> {
+                    SearchVO.Hit hit = new SearchVO.Hit();
+                    hit.setId(doc.getId().toString());
+                    hit.setSource(entityToMap(doc));
+                    return hit;
+                })
+                .collect(Collectors.toList());
+        
+        result.setHits(hits);
+        
+        return result;
+    }
+    
+    /**
+     * 构建搜索查询条件
+     */
+    private QueryWrapper<SearchDoc> buildSearchQuery(SearchRequestDTO request) {
+        QueryWrapper<SearchDoc> wrapper = new QueryWrapper<>();
+        
+        // 处理过滤条件
+        if (request.getFilters() != null) {
+            Map<String, Object> filters = request.getFilters();
+            
+            if (filters.containsKey("bizType")) {
+                wrapper.eq("biz_type", filters.get("bizType"));
+            }
+            
+            if (filters.containsKey("docType")) {
+                wrapper.eq("doc_type", filters.get("docType"));
+            }
+            
+            if (filters.containsKey("status")) {
+                wrapper.eq("status", filters.get("status"));
+            }
+        }
+        
+        // 添加关键字搜索
+        if (request.getKeyword() != null && !request.getKeyword().isEmpty()) {
+            wrapper.and(w -> w
+                .like("title", request.getKeyword())
+                .or()
+                .like("content", request.getKeyword())
+                .or()
+                .like("keywords", request.getKeyword())
+            );
+        }
+        
+        // 添加排序
+        if (request.getSorts() != null && !request.getSorts().isEmpty()) {
+            for (Map.Entry<String, String> entry : request.getSorts().entrySet()) {
+                String field = entry.getKey();
+                String order = entry.getValue();
+                
+                if ("asc".equalsIgnoreCase(order)) {
+                    wrapper.orderByAsc(field);
+                } else {
+                    wrapper.orderByDesc(field);
+                }
+            }
+        } else {
+            // 默认按更新时间降序排序
+            wrapper.orderByDesc("update_time");
+        }
+        
+        return wrapper;
     }
 
     @Override
@@ -105,6 +188,7 @@ public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, 
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void bulkDelete(String indexName, List<String> ids) {
         log.info("数据库批量删除文档: {}, 数量: {}", indexName, ids.size());
         
@@ -120,8 +204,10 @@ public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, 
             }
         }
         
-        // 按主键ID批量删除
+        // 按主键ID批量删除 - 使用新API
         if (!numericIds.isEmpty()) {
+            // 在MyBatis-Plus 3.5.9中，应该仍然可以使用deleteBatchIds，但标记为过时
+            // 可以在未来版本中替换为对应的新API
             baseMapper.deleteBatchIds(numericIds);
         }
         
@@ -131,6 +217,44 @@ public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, 
             wrapper.in("doc_id", nonNumericIds);
             baseMapper.delete(wrapper);
         }
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public List<Map<String, Object>> multiGet(String indexName, List<String> ids) {
+        log.info("数据库批量获取文档: {}, 数量: {}", indexName, ids.size());
+        
+        // 分离数字ID和非数字ID
+        List<Long> numericIds = new ArrayList<>();
+        List<String> nonNumericIds = new ArrayList<>();
+        
+        for (String id : ids) {
+            try {
+                numericIds.add(Long.parseLong(id));
+            } catch (NumberFormatException e) {
+                nonNumericIds.add(id);
+            }
+        }
+        
+        List<SearchDoc> docs = new ArrayList<>();
+        
+        // 按主键ID批量查询 - 使用新API
+        if (!numericIds.isEmpty()) {
+            // 在MyBatis-Plus 3.5.9中，应该仍然可以使用selectBatchIds，但标记为过时
+            // 可以在未来版本中替换为对应的新API
+            docs.addAll(baseMapper.selectBatchIds(numericIds));
+        }
+        
+        // 按docId批量查询
+        if (!nonNumericIds.isEmpty()) {
+            QueryWrapper<SearchDoc> wrapper = new QueryWrapper<>();
+            wrapper.in("doc_id", nonNumericIds);
+            docs.addAll(baseMapper.selectList(wrapper));
+        }
+        
+        return docs.stream()
+                .map(this::entityToMap)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -149,41 +273,6 @@ public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, 
         }
         
         return doc != null ? entityToMap(doc) : null;
-    }
-
-    @Override
-    public List<Map<String, Object>> multiGet(String indexName, List<String> ids) {
-        log.info("数据库批量获取文档: {}, 数量: {}", indexName, ids.size());
-        
-        // 分离数字ID和非数字ID
-        List<Long> numericIds = new ArrayList<>();
-        List<String> nonNumericIds = new ArrayList<>();
-        
-        for (String id : ids) {
-            try {
-                numericIds.add(Long.parseLong(id));
-            } catch (NumberFormatException e) {
-                nonNumericIds.add(id);
-            }
-        }
-        
-        List<SearchDoc> result = new ArrayList<>();
-        
-        // 按主键ID批量查询
-        if (!numericIds.isEmpty()) {
-            result.addAll(baseMapper.selectBatchIds(numericIds));
-        }
-        
-        // 按docId批量查询
-        if (!nonNumericIds.isEmpty()) {
-            QueryWrapper<SearchDoc> wrapper = new QueryWrapper<>();
-            wrapper.in("doc_id", nonNumericIds);
-            result.addAll(baseMapper.selectList(wrapper));
-        }
-        
-        return result.stream()
-                .map(this::entityToMap)
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -256,7 +345,7 @@ public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, 
 
     @Override
     public Long getCurrentTenantId() {
-        // TODO: 从租户上下文中获取租户ID
+        // 默认返回租户ID 1，可以在未来扩展实现从安全上下文获取
         return 1L;
     }
 

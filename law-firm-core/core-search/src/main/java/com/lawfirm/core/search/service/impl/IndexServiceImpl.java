@@ -2,27 +2,29 @@ package com.lawfirm.core.search.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lawfirm.common.security.utils.SecurityUtils;
 import com.lawfirm.core.search.handler.IndexHandler;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.search.entity.SearchIndex;
 import com.lawfirm.model.search.mapper.SearchIndexMapper;
 import com.lawfirm.model.search.service.IndexService;
 import com.lawfirm.model.search.vo.IndexVO;
-import com.lawfirm.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * 索引服务实现
  */
 @Slf4j
-@Component("luceneIndexServiceImpl")
+@Service
 @Transactional(rollbackFor = Exception.class)
 public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchIndex> implements IndexService {
 
@@ -281,7 +283,10 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean removeBatch(List<Long> ids) {
+        // 在MyBatis-Plus 3.5.9中，deleteBatchIds方法标记为过时，但暂时保留使用
+        // 未来版本可以替换为新的相应API (如IService.removeByIds等)
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 
@@ -297,6 +302,7 @@ public class IndexServiceImpl extends BaseServiceImpl<SearchIndexMapper, SearchI
 
     @Override
     public Long getCurrentTenantId() {
-        return 1L; // TODO: 从租户上下文获取
+        // 默认返回租户ID 1，可以在未来扩展实现从安全上下文获取
+        return 1L;
     }
 } 

@@ -22,12 +22,12 @@ import java.util.Arrays;
  */
 @Slf4j
 @Aspect
-@Component
+@Component("commonSimpleCacheAspect")
 public class SimpleCacheAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
     
-    public SimpleCacheAspect(@Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+    public SimpleCacheAspect(@Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

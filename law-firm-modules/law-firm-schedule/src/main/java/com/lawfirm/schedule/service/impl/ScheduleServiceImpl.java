@@ -597,4 +597,36 @@ public class ScheduleServiceImpl extends BaseServiceImpl<ScheduleMapper, Schedul
     private boolean exists(Long scheduleId) {
         return getById(scheduleId) != null;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateScheduleByDTO(com.lawfirm.model.schedule.dto.ScheduleUpdateDTO scheduleUpdateDTO) {
+        log.info("使用ScheduleUpdateDTO更新日程，ID：{}", scheduleUpdateDTO.getId());
+        // 1. 查询原始日程
+        com.lawfirm.model.schedule.entity.Schedule schedule = getById(scheduleUpdateDTO.getId());
+        if (schedule == null) {
+            log.error("更新日程失败，日程不存在，ID：{}", scheduleUpdateDTO.getId());
+            return false;
+        }
+        // 2. 更新主表字段
+        scheduleConverter.updateEntityFromUpdateDTO(schedule, scheduleUpdateDTO);
+        boolean success = updateById(schedule);
+        // 3. 处理参与者
+        if (scheduleUpdateDTO.getParticipants() != null) {
+            saveParticipants(schedule.getId(), scheduleUpdateDTO.getParticipants());
+        }
+        // 4. 处理提醒
+        if (scheduleUpdateDTO.getReminders() != null) {
+            saveReminders(schedule.getId(), scheduleUpdateDTO.getReminders());
+        }
+        // 5. 处理案件关联
+        if (scheduleUpdateDTO.getCaseId() != null) {
+            scheduleRelationService.linkCase(schedule.getId(), scheduleUpdateDTO.getCaseId(), schedule.getTitle());
+        }
+        // 6. 处理任务关联
+        if (scheduleUpdateDTO.getTaskId() != null) {
+            scheduleRelationService.linkTask(schedule.getId(), scheduleUpdateDTO.getTaskId(), schedule.getTitle());
+        }
+        return success;
+    }
 } 

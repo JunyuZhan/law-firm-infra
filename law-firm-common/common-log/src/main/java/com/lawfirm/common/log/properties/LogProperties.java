@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 日志配置属性
  */
 @Data
-@ConfigurationProperties(prefix = "law.firm.log")
+@ConfigurationProperties(prefix = "law-firm.common.log")
 public class LogProperties {
 
     /**

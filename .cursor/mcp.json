@@ -1,0 +1,45 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "D:\\weidi\\law-firm-infra"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "search": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-search"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "mysql": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mysql-mcp-server",
+        "mysql_mcp_server"
+      ],
+      "env": {
+        "MYSQL_HOST": "localhost",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "root",
+        "MYSQL_PASSWORD": "Zjy-1314",
+        "MYSQL_DATABASE": "law_firm"
+      }
+    }
+  }
+}

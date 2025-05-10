@@ -63,13 +63,14 @@
 - law-firm-schedule: 日程管理
 - law-firm-task: 任务管理
 - law-firm-archive: 档案管理
-- law-firm-analysis: 数据分析
+- law-firm-analysis: 数据分析（当前为空目录，预留后续实现）
 
 ### 6. API层 (law-firm-api)
 - 统一的API接口定义
 - 接口文档管理
 - 接口版本控制
 - 接口安全控制
+- adapter: 适配器扩展目录，当前暂无实现，预留扩展
 
 ## 架构依赖关系
 

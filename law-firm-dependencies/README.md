@@ -14,8 +14,7 @@
 ### 基础环境
 - Java: 21
 - Maven: 3.8+
-- Spring Boot: 3.4.4
-- Spring Cloud: 2023.x
+- Spring Boot: 3.2.3
 - Spring Security: 6.x
 
 ### 核心框架
@@ -27,40 +26,40 @@
 - Spring Boot Starter Test
 
 ### 数据库相关
-- MySQL Connector: 8.0.x
-- MyBatis Plus: 3.5.5
+- MySQL Connector: 8.2.0
+- MyBatis Plus: 3.5.9
 - Druid: 1.2.20
-- Dynamic DataSource: 4.2.0
+- Dynamic DataSource: 4.1.3
 - Flyway: 9.22.3
 
 ### 工具库
-- Hutool: 5.8.25
+- Hutool: 5.8.18
 - Guava: 32.1.3-jre
 - Apache Commons
   - commons-lang3: 3.14.0
   - commons-collections4: 4.4
   - commons-io: 2.15.1
   - commons-csv: 1.9.0
-- MapStruct: 1.5.5.Final
+- MapStruct: 1.5.3.Final
 - Lombok: 1.18.30
 - FastJSON2: 2.0.45
-- Jackson: 2.16.1
+- Jackson: 2.15.3
 - EasyExcel: 3.3.3
 
 ### Web相关
 - SpringDoc OpenAPI: 2.3.0
 - Knife4j: 4.3.0
-- Swagger Annotations: 1.6.11
+- Swagger Annotations: 2.2.20
 - Hibernate Validator: 8.0.1.Final
 
 ### 安全框架
 - Spring Security
-- JWT: 0.12.3
+- JWT: 0.12.5
 - Easy Captcha: 1.6.2
 
 ### 缓存
 - Redis: 6.x
-- Redisson: 3.25.2
+- Redisson: 3.23.0
 - Caffeine: 3.1.8
 
 ### 消息队列
@@ -79,7 +78,7 @@
 - XDocReport: 2.0.3
 
 ### 工作流
-- Flowable: 7.0.0
+- Flowable: 6.8.0
   - flowable-spring-boot-starter-process
   - flowable-spring-boot-starter-actuator
   - flowable-engine-common-api

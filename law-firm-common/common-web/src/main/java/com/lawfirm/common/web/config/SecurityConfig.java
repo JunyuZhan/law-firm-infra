@@ -12,7 +12,7 @@ import org.springframework.core.annotation.Order;
  * 提供通用Web安全功能，如XSS过滤
  * 注意：此配置优先级低于专用安全模块配置（如auth模块）
  */
-@Configuration("webSecurityConfig")
+@Configuration("commonWebSecurityConfig")
 @Order(100)  // 优先级低于auth模块的安全配置
 public class SecurityConfig {
 
@@ -20,9 +20,9 @@ public class SecurityConfig {
      * XSS过滤器
      * 当没有其他同类Bean时才创建
      */
-    @Bean("xssFilter")
+    @Bean("commonXssFilter")
     @ConditionalOnMissingBean
-    public XssFilter xssFilter() {
+    public XssFilter commonXssFilter() {
         return new XssFilter();
     }
 } 

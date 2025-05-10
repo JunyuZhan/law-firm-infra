@@ -78,7 +78,9 @@ public class OrganizationPersonnelRelationServiceImpl implements OrganizationPer
             return List.of();
         }
         
-        return employeeMapper.selectBatchIds(employeeIds);
+        LambdaQueryWrapper<Employee> queryWrapper = Wrappers.<Employee>lambdaQuery()
+                .in(Employee::getId, employeeIds);
+        return employeeMapper.selectList(queryWrapper);
     }
 
     public List<Employee> getOrganizationEmployeesWithSubOrgs(Long organizationId) {
@@ -88,7 +90,9 @@ public class OrganizationPersonnelRelationServiceImpl implements OrganizationPer
             return List.of();
         }
         
-        return employeeMapper.selectBatchIds(employeeIds);
+        LambdaQueryWrapper<Employee> queryWrapper = Wrappers.<Employee>lambdaQuery()
+                .in(Employee::getId, employeeIds);
+        return employeeMapper.selectList(queryWrapper);
     }
 
     public List<Department> getEmployeeOrganizations(Long employeeId) {
@@ -98,7 +102,9 @@ public class OrganizationPersonnelRelationServiceImpl implements OrganizationPer
             return List.of();
         }
         
-        return departmentMapper.selectBatchIds(organizationIds);
+        LambdaQueryWrapper<Department> queryWrapper = Wrappers.<Department>lambdaQuery()
+                .in(Department::getId, organizationIds);
+        return departmentMapper.selectList(queryWrapper);
     }
 
     public Department getEmployeePrimaryOrganization(Long employeeId) {

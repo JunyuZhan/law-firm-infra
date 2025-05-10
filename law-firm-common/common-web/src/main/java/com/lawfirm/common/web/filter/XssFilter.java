@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * XSS过滤器
  */
-@Component
+@Component("commonXssFilter")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class XssFilter implements Filter {
 

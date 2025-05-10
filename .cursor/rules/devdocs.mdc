@@ -51,7 +51,7 @@ alwaysApply: false
 - core-ai: AI能力
 - core-audit: 审计日志
 - core-message: 消息处理
-- core-search: 搜索服务
+- core-search: 搜索服务（Lucene实现）
 - core-storage: 存储服务
 - core-workflow: 工作流引擎
 
@@ -107,15 +107,23 @@ alwaysApply: false
 [README.md](mdc:README.md)D:\weidi\law-firm-infra\README.md
 核心依赖
 - Spring Boot 3.2.x
-- Spring Cloud 2023.x
 - MyBatis Plus 3.5.x - ORM框架，负责数据库交互和数据映射
 - Redis 6.x
 - Spring Security 6.x
 - Swagger 3.0.0
-- Elasticsearch 8.0
 - RocketMQ 5.0
 - Flowable 6.8
+- Lucene 9.x（内嵌式全文检索，已替代Elasticsearch）
 
 
 - You can @ files here
 - You can use markdown but dont have to
+
+# 业务开发规范补充
+
+- 业务逻辑只能写在 modules 层，api 层只做参数校验、调用和返回，禁止在 controller 写业务逻辑。
+- 所有数据结构必须复用 law-firm-model 层，禁止在 modules 或 api 层重复定义实体。
+- controller 层必须对入参做校验（如 @Valid），并返回统一包装结构（如 Result/Response）。
+- 新建配置类、配置文件必须指定唯一 bean 名称，防止 Spring Bean 冲突。
+- 所有对外接口必须添加 Swagger 注解，保证接口文档自动生成。
+- 重要变更需同步到 README 或相关文档，核心业务逻辑需有注释。

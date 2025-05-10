@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
  * 缓存属性配置类
  */
 @Data
-@Component
-@ConfigurationProperties(prefix = "law.firm.cache")
+@Component("commonCacheProperties")
+@ConfigurationProperties(prefix = "law-firm.common.cache")
 public class CacheProperties {
 
     /**

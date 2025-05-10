@@ -3,7 +3,6 @@ package com.lawfirm.common.data.config;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,9 +22,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * 负责创建和配置SqlSessionFactory
  * 只有在lawfirm.database.enabled=true时才启用
  * </p>
+ * <p>
+ * 注意：此类不再负责Mapper接口扫描，遵循架构分层原则
+ * Mapper扫描职责已移至API层的ApiMapperScanConfig类
+ * 基础设施层不应直接依赖领域模型层
+ * </p>
  */
 @Configuration
-@MapperScan(basePackages = {"com.lawfirm.model.**.mapper"})
 @ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
 public class SessionFactoryConfig {
 

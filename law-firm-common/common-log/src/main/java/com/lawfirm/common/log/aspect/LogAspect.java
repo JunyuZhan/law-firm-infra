@@ -22,7 +22,7 @@ import java.util.Arrays;
  */
 @Slf4j
 @Aspect
-@Component
+@Component("commonLogAspect")
 @RequiredArgsConstructor
 public class LogAspect {
 

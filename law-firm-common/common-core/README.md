@@ -8,25 +8,35 @@
 ### 1. 统一响应处理
 ```java
 // 成功响应
+CommonResult.success();
 CommonResult.success(data);
+CommonResult.success("操作成功");
+CommonResult.success(data, "操作成功");
 
 // 失败响应
-CommonResult.error(message);
+CommonResult.error();
+CommonResult.error("操作失败");
+CommonResult.error(ResultCode.INTERNAL_ERROR);
+CommonResult.error(500, "操作失败");
 
-// 自定义响应
-CommonResult.build(code, message, data);
+// 验证失败响应
+CommonResult.validateFailed("参数验证失败");
+
+// 权限相关响应
+CommonResult.unauthorized("未授权");
+CommonResult.forbidden("禁止访问");
 ```
 
 ### 2. 统一异常处理
 ```java
 // 业务异常
-throw new BusinessException(message);
+throw new BusinessException(ResultCode.ERROR, "业务处理失败");
 
 // 验证异常
-throw new ValidationException(message);
+throw new ValidationException("数据验证失败");
 
 // 框架异常
-throw new FrameworkException(message);
+throw new FrameworkException(ResultCode.INTERNAL_ERROR, "框架处理错误");
 ```
 
 ### 3. 基础配置支持
@@ -58,9 +68,13 @@ BaseContextHandler.clear();
 
 ### 6. 常量定义
 ```java
-// 使用常量
-CommonConstants.SUCCESS_CODE;
-CommonConstants.ERROR_CODE;
+// 使用响应码常量
+ResultCode.SUCCESS.getCode();
+ResultCode.ERROR.getCode();
+
+// 使用通用常量
+CommonConstants.DEFAULT_PAGE_SIZE;
+CommonConstants.DEFAULT_PAGE_NUM;
 ```
 
 ## 使用示例
@@ -72,9 +86,10 @@ CommonConstants.ERROR_CODE;
 public class DemoController {
     
     @GetMapping("/data")
-    public CommonResult getData() {
+    public CommonResult<Object> getData() {
         try {
             // 业务处理
+            Object data = service.getData();
             return CommonResult.success(data);
         } catch (Exception e) {
             return CommonResult.error(e.getMessage());
@@ -96,7 +111,7 @@ public class DemoService {
         
         // 业务处理
         if (error) {
-            throw new BusinessException("业务处理失败");
+            throw new BusinessException(ResultCode.ERROR, "业务处理失败");
         }
     }
 }
@@ -146,19 +161,13 @@ public class DemoService {
 law-firm:
   common:
     core:
-      enabled: true
-      response:
-        enabled: true
-      exception:
-        enabled: true
-      context:
         enabled: true
 ```
 
 ### 2. 自定义配置
 ```java
 @Configuration
-public class CustomCoreConfig extends CoreAutoConfiguration {
+public class CustomCoreConfig {
     
     @Bean
     public CustomBean customBean() {
@@ -170,9 +179,10 @@ public class CustomCoreConfig extends CoreAutoConfiguration {
 ## 最佳实践
 
 ### 1. 响应处理
-- 使用统一的响应格式
+- 使用统一的 CommonResult 响应格式
 - 合理使用响应码
 - 规范响应消息
+- 使用结构化的响应处理
 
 ### 2. 异常处理
 - 使用统一的异常类型
@@ -195,6 +205,7 @@ public class CustomCoreConfig extends CoreAutoConfiguration {
 - 不要直接返回原始数据
 - 不要使用自定义响应格式
 - 不要忽略异常处理
+- 始终使用CommonResult作为统一响应格式
 
 ### 2. 异常处理
 - 不要吞掉异常
@@ -230,6 +241,7 @@ Q: 如何处理上下文并发？
 A: 使用ThreadLocal存储上下文数据。
 
 ## 更新日志
+- 2024-03-19: 更新文档，确保与代码实现一致
 - 2024-03-18: 初始版本发布
 
 ## 核心类说明
@@ -243,69 +255,66 @@ A: 使用ThreadLocal存储上下文数据。
 - **BaseException**: 异常基类，所有自定义异常的父类
   - 提供基础的异常属性和行为
   - 支持错误码和消息传递
+- **BusinessException**: 业务异常，用于处理业务逻辑异常
+  - 继承自 BaseException
+  - 处理业务相关的异常情况
 - **FrameworkException**: 框架级异常，用于处理框架内部异常
   - 继承自 BaseException
   - 处理框架内部的异常情况
 - **ValidationException**: 参数验证异常
   - 继承自 FrameworkException
-  - 专门用于处理参数验证失败的情况
+  - 处理参数验证的异常情况
 - **GlobalExceptionHandler**: 全局异常处理器
-  - 统一的异常处理机制
-  - 异常转换为标准响应格式
-  - 支持多种异常类型的处理
+  - 统一处理系统异常
+  - 返回规范化的异常响应
 
-### 3. API 响应 (api)
-- **CommonResult**: 统一响应结果封装
-  - 标准的响应格式定义
-  - 支持泛型数据返回
-  - 提供多种静态工厂方法
-  - 支持成功/失败状态判断
+### 3. 响应处理 (api)
+- **CommonResult**: 通用响应结果
+  - 提供统一的响应格式
+  - 支持各种响应场景的静态工厂方法
+  - 兼容前端框架需求
 
 ### 4. 常量定义 (constant)
-- **CommonConstants**: 框架级通用常量定义
-  - 基础状态常量
-  - 通用数值常量
-  - 时间格式常量
-  - 字符集常量
-  - 基础符号常量
-- **ResultCode**: 响应状态码定义
-  - 基础响应码（2xx, 4xx, 5xx）
-  - 框架级错误码（6xx）
-  - 包含码值和描述信息
+- **ResultCode**: 响应码常量
+  - 定义系统常用的响应码
+  - 提供统一的错误码规范
+- **CommonConstants**: 通用常量
+  - 定义系统通用的常量值
+  - 提供全局使用的配置参数
 
-### 5. 上下文管理 (context)
-- **BaseContextHandler**: 基础上下文处理器
-  - 基于 ThreadLocal 的线程安全实现
-  - 支持多种数据类型的存取
-  - 提供上下文生命周期管理
-  - 支持默认值机制
-
-### 6. 基础实体 (entity)
-- **BaseEntity**: 实体基类
-  - 提供基础字段（ID、创建时间、更新时间）
-  - 实现序列化接口
-  - 使用 Lombok 简化代码
-  - 支持链式调用
+### 5. 实体支持 (entity)
+- **BaseEntity**: 基础实体类
+  - 提供公共字段
+  - 支持审计功能
+  - 支持序列化
 
 ## 目录结构
 ```
 com.lawfirm.common.core
-├── api
-│   └── CommonResult.java
-├── config
-│   └── CoreAutoConfiguration.java
-├── constant
-│   ├── CommonConstants.java
-│   └── ResultCode.java
-├── context
-│   └── BaseContextHandler.java
-├── entity
-│   └── BaseEntity.java
-└── exception
-    ├── BaseException.java
-    ├── FrameworkException.java
-    ├── ValidationException.java
-    └── GlobalExceptionHandler.java
+├── api                 # API响应相关类
+│   └── CommonResult.java   # 通用响应结果类
+├── config              # 配置相关类
+│   ├── AsyncConfig.java    # 异步配置
+│   ├── BaseConfig.java     # 基础配置
+│   ├── BeanConfig.java     # Bean配置
+│   ├── CoreAutoConfiguration.java  # 核心自动配置
+│   ├── BaseAutoConfiguration.java  # 基础自动配置
+│   ├── CommonAutoConfiguration.java # 通用自动配置
+│   └── properties      # 配置属性
+├── constant            # 常量定义
+│   ├── CommonConstants.java  # 通用常量
+│   └── ResultCode.java     # 响应码枚举
+├── context             # 上下文管理
+│   └── BaseContextHandler.java  # 基础上下文处理器
+├── entity              # 实体相关
+│   └── BaseEntity.java      # 基础实体类
+└── exception           # 异常处理
+    ├── BaseException.java   # 基础异常
+    ├── BusinessException.java  # 业务异常
+    ├── FileNotFoundException.java  # 文件未找到异常
+    ├── FrameworkException.java  # 框架异常
+    ├── GlobalExceptionHandler.java  # 全局异常处理器
+    └── ValidationException.java  # 验证异常
 ```
 
 ## 主要功能

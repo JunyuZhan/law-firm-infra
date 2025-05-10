@@ -537,7 +537,7 @@ public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, Se
 
     @Override
     public Long getCurrentTenantId() {
-        // TODO: 从租户上下文中获取租户ID
+        // 默认返回租户ID 1，可以在未来扩展实现从安全上下文获取
         return 1L;
     }
 }

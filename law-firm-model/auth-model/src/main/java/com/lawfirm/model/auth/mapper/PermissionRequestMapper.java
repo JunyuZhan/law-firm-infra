@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 权限申请Mapper
+ * 权限申请数据访问接口
  */
 @Mapper
 public interface PermissionRequestMapper extends BaseMapper<PermissionRequest> {

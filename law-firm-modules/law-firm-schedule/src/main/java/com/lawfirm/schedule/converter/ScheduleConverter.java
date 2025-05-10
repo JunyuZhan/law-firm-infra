@@ -1,6 +1,7 @@
 package com.lawfirm.schedule.converter;
 
 import com.lawfirm.model.schedule.dto.ScheduleDTO;
+import com.lawfirm.model.schedule.dto.ScheduleUpdateDTO;
 import com.lawfirm.model.schedule.entity.Schedule;
 import com.lawfirm.model.schedule.entity.enums.PriorityLevel;
 import com.lawfirm.model.schedule.entity.enums.ScheduleStatus;
@@ -42,6 +43,14 @@ public interface ScheduleConverter {
     @Mapping(target = "type", expression = "java(dto.getType() != null ? dto.getType().getCode() : entity.getType())")
     @Mapping(target = "priority", expression = "java(dto.getPriority() != null ? dto.getPriority().getCode() : entity.getPriority())")
     void updateEntity(@MappingTarget Schedule entity, ScheduleDTO dto);
+
+    /**
+     * 根据ScheduleUpdateDTO更新实体
+     */
+    @Mapping(target = "status", expression = "java(dto.getStatus() != null ? dto.getStatus().getCode() : entity.getStatus())")
+    @Mapping(target = "type", expression = "java(dto.getType() != null ? dto.getType().getCode() : entity.getType())")
+    @Mapping(target = "priority", expression = "java(dto.getPriority() != null ? dto.getPriority().getCode() : entity.getPriority())")
+    void updateEntityFromUpdateDTO(@MappingTarget Schedule entity, ScheduleUpdateDTO dto);
     
     /**
      * 获取状态名称

@@ -88,7 +88,9 @@ public class TeamPermissionServiceImpl extends ServiceImpl<TeamPermissionMapper,
                 .collect(Collectors.toList());
         
         // 查询权限信息
-        List<Permission> permissions = permissionMapper.selectBatchIds(permissionIds);
+        LambdaQueryWrapper<Permission> permissionQueryWrapper = new LambdaQueryWrapper<>();
+        permissionQueryWrapper.in(Permission::getId, permissionIds);
+        List<Permission> permissions = permissionMapper.selectList(permissionQueryWrapper);
         
         // 转换为VO
         return permissions.stream()
@@ -135,7 +137,9 @@ public class TeamPermissionServiceImpl extends ServiceImpl<TeamPermissionMapper,
         }
         
         // 检查权限是否存在
-        List<Permission> permissions = permissionMapper.selectBatchIds(newPermissionIds);
+        LambdaQueryWrapper<Permission> permissionQueryWrapper = new LambdaQueryWrapper<>();
+        permissionQueryWrapper.in(Permission::getId, newPermissionIds);
+        List<Permission> permissions = permissionMapper.selectList(permissionQueryWrapper);
         if (permissions.size() != newPermissionIds.size()) {
             log.warn("部分权限不存在: {}", newPermissionIds);
             return false;
@@ -181,7 +185,9 @@ public class TeamPermissionServiceImpl extends ServiceImpl<TeamPermissionMapper,
         }
         
         // 查询权限信息
-        List<Permission> permissions = permissionMapper.selectBatchIds(permissionIds);
+        LambdaQueryWrapper<Permission> permissionQueryWrapper = new LambdaQueryWrapper<>();
+        permissionQueryWrapper.in(Permission::getId, permissionIds);
+        List<Permission> permissions = permissionMapper.selectList(permissionQueryWrapper);
         
         // 转换为VO
         return permissions.stream()

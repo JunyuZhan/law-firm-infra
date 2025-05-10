@@ -39,9 +39,24 @@ public class CaseModuleConfiguration {
      * 配置模块初始化完成日志记录器
      */
     @Bean(name = "caseModuleInitializer")
-    public String caseModuleInitializer() {
+    public Object caseModuleInitializer() {
         log.info("案件管理模块初始化完成");
-        return "caseModuleInitializer";
+        return new CaseModuleWrapper("caseModuleInitializer");
+    }
+    
+    /**
+     * 案件模块包装类
+     */
+    public static class CaseModuleWrapper {
+        private final String moduleName;
+        
+        public CaseModuleWrapper(String moduleName) {
+            this.moduleName = moduleName;
+        }
+        
+        public String getModuleName() {
+            return moduleName;
+        }
     }
     
     /**

@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * 案件合同关联Mapper接口
  */
+@Mapper
 public interface CaseContractRelationMapper extends BaseMapper<CaseContractRelation> {
     
     /**

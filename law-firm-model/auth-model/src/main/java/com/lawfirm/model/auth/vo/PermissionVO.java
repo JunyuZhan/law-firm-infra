@@ -166,12 +166,12 @@ public class PermissionVO extends BaseVO {
     /**
      * 权限标识列表
      */
-    private List<String> permissions;
+    private transient List<String> permissions;
     
     /**
      * 角色列表
      */
-    private List<String> roles;
+    private transient List<String> roles;
     
     /**
      * 是否隐藏面包屑

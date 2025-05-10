@@ -15,6 +15,15 @@ import java.util.List;
 public interface CaseTeamMemberMapper extends BaseMapper<CaseTeamMember> {
     
     /**
+     * 根据团队ID查询成员列表
+     *
+     * @param teamId 团队ID
+     * @return 成员列表
+     */
+    @Select("SELECT * FROM case_team_member WHERE team_id = #{teamId} AND deleted = 0")
+    List<CaseTeamMember> selectByTeamId(@Param("teamId") Long teamId);
+
+    /**
      * 根据成员ID查询关联的所有案件ID
      * 
      * @param memberId 成员ID

@@ -28,7 +28,7 @@ public class CacheAspect {
     private final CacheProperties cacheProperties;
     
     public CacheAspect(
-            @Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate,
+            @Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate,
             @Qualifier("appCacheProperties") CacheProperties cacheProperties) {
         this.redisTemplate = redisTemplate;
         this.cacheProperties = cacheProperties;

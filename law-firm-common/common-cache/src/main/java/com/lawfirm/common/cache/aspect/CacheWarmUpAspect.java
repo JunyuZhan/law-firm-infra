@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Aspect
-@Component
+@Component("commonCacheWarmUpAspect")
 public class CacheWarmUpAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private static final long DEFAULT_CACHE_TIME = 24;
     private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.HOURS;
     
-    public CacheWarmUpAspect(@Qualifier("dataRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+    public CacheWarmUpAspect(@Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
