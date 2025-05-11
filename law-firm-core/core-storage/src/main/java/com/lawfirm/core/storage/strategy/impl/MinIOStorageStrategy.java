@@ -38,7 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Component
 @Slf4j
-@ConditionalOnProperty(prefix = "storage.minio", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(name = "law-firm.core.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class MinIOStorageStrategy extends AbstractStorageStrategy {
 
     private MinioClient minioClient;

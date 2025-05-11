@@ -7,6 +7,7 @@ import java.net.URL;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
+@ConditionalOnProperty(name = "law-firm.core.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class AliyunOssStorageStrategy extends AbstractStorageStrategy {
 
     private OSS ossClient;

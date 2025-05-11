@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 @Import({
     StorageConfiguration.class
 })
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.core.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class StorageAutoConfiguration {
 
     /**

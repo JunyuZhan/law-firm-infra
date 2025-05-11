@@ -14,6 +14,7 @@ import com.lawfirm.model.log.mapper.AuditRecordMapper;
 import com.lawfirm.model.log.converter.AuditLogConverter;
 import com.lawfirm.model.log.converter.AuditRecordConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component("auditQueryServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
 public class AuditQueryServiceImpl implements AuditQueryService {
 
     private final AuditLogMapper auditLogMapper;

@@ -34,6 +34,7 @@ import com.lawfirm.model.storage.vo.PageVO;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /**
  * 文件服务实现类
@@ -41,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @Component("storageFileServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "law-firm.core.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class FileServiceImpl extends BaseServiceImpl<FileObjectMapper, FileObject> implements FileService {
 
     private final FileUploader fileUploader;

@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 @Configuration
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "law-firm.audit.async.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
 public class AuditAsyncConfig {
 
     private final AuditProperties auditProperties;

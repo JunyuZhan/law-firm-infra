@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Aspect
 @Component
-@ConditionalOnProperty(prefix = "law-firm.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
 @ConditionalOnBean(name = "coreAuditServiceImpl")
 public class AuditLogAspect {
 

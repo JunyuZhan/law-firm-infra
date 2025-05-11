@@ -40,6 +40,10 @@
         "MYSQL_PASSWORD": "Zjy-1314",
         "MYSQL_DATABASE": "law_firm"
       }
+    },
+    "browsermcp": {
+      "command": "npx",
+      "args": ["@browsermcp/mcp@latest"]
     }
   }
 }

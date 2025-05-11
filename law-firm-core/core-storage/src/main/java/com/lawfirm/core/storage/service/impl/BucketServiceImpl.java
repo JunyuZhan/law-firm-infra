@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @Component("storageBucketServiceImpl")
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "law-firm.core.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class BucketServiceImpl extends BaseServiceImpl<StorageBucketMapper, StorageBucket> implements BucketService {
 
     private final StorageContext storageContext;

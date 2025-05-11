@@ -89,9 +89,7 @@ springdoc:
     workflow:
       enabled: true
     storage:
-      enabled: true
-      type: local
-      path: ./storage
+      enabled: false
     search:
       enabled: true
       searchEngineType: database
