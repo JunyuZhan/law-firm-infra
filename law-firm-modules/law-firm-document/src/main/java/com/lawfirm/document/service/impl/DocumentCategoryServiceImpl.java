@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Slf4j
 @Service("documentCategoryServiceImpl")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategoryMapper, DocumentCategory> implements DocumentCategoryService {
 
     private final SecurityManager securityManager;

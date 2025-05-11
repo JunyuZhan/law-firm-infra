@@ -33,7 +33,7 @@ import java.util.List;
  */
 @Slf4j
 @Service("documentServiceImpl")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDocument> implements DocumentService {
 
     private final StorageManager storageManager;

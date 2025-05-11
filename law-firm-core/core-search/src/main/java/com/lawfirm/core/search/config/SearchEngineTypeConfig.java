@@ -14,10 +14,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "lawfirm.search.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.search.enabled", havingValue = "true", matchIfMissing = true)
 public class SearchEngineTypeConfig {
 
-    @Value("${lawfirm.search.type:database}")
+    @Value("${law-firm.search.type:database}")
     private String searchType;
     
     /**
@@ -29,7 +29,7 @@ public class SearchEngineTypeConfig {
         log.info("核心搜索模块初始化, 使用搜索类型: {}", searchType);
         
         // 设置系统属性，供其他组件参考
-        System.setProperty("lawfirm.search.current.type", searchType);
+        System.setProperty("law-firm.search.current.type", searchType);
         
         return searchType;
     }

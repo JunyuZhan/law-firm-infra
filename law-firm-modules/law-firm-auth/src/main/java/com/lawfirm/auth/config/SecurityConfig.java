@@ -51,7 +51,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Order(90)  // 确保此配置在通用安全配置之前加载
-@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "true", matchIfMissing = true)
 @MapperScan(basePackages = {"com.lawfirm.model.auth.mapper"})
 public class SecurityConfig extends BaseSecurityConfig {
     

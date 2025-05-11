@@ -10,7 +10,7 @@ import java.util.Map;
  * 审计配置属性
  */
 @Data
-@ConfigurationProperties(prefix = "law.firm.audit")
+@ConfigurationProperties(prefix = "law-firm.audit")
 public class AuditProperties {
     
     /**

@@ -30,13 +30,13 @@ import java.nio.file.Paths;
 @RequestMapping("/system/db/schema")
 @Tag(name = "数据库表结构管理", description = "提供数据库表结构生成和查看功能")
 @Profile({"dev", "develop"})
-@ConditionalOnProperty(name = "lawfirm.database.auto-generate-schema", havingValue = "true")
+@ConditionalOnProperty(name = "law-firm.database.auto-generate-schema", havingValue = "true")
 public class DatabaseSchemaController {
 
     private final DatabaseSchemaGenerator schemaGenerator;
     private final Environment environment;
     
-    @Value("${lawfirm.database.schema-output-dir:./db-scripts}")
+    @Value("${law-firm.database.schema-output-dir:./db-scripts}")
     private String schemaOutputDir;
     
     @GetMapping("/generate")

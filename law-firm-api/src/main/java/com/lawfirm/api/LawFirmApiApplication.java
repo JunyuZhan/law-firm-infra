@@ -11,8 +11,6 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.core.env.Environment;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -79,18 +77,7 @@ import java.util.Optional;
 )
 public class LawFirmApiApplication {
 
-    /**
-     * 创建自定义Bean工厂后处理器，解决factoryBeanObjectType错误
-     */
-    @Bean
-    public static BeanFactoryPostProcessor customFactoryBeanRegistrar() {
-        return new CustomFactoryBeanRegistrar();
-    }
-
     public static void main(String[] args) {
-        // 调用FactoryBean类型修复工具
-        FactoryBeanTypeFixUtil.installTypeCheckFix();
-        
         // 设置系统属性，禁用工厂类型错误检查，解决"factoryBeanObjectType"错误
         System.setProperty("spring.main.allow-bean-definition-overriding", "true");
         System.setProperty("spring.main.lazy-initialization", "false");

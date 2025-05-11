@@ -1,9 +1,6 @@
 # Spring Boot自动配置导入清单
 # 这里只包含需要启用的自动配置
 
-# 类型修复配置（优先加载）
-com.lawfirm.api.FactoryBeanFixAutoConfiguration
-
 # 系统模块配置（优先加载，确保monitorCache可用）
 com.lawfirm.system.config.SystemAutoConfiguration
 com.lawfirm.system.config.MonitorCacheConfig

@@ -27,7 +27,7 @@ public class LoginHistoryServiceConfig {
      */
     @Bean(name = "noopLoginHistoryService")
     @Primary
-    @ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "false")
+    @ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "false")
     public LoginHistoryService noopLoginHistoryService() {
         log.info("数据库服务禁用，创建NoopLoginHistoryService");
         return new NoopLoginHistoryService();

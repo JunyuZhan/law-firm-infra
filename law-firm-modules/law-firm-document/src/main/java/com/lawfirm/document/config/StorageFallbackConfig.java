@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "false", matchIfMissing = true)
 public class StorageFallbackConfig {
 
     /**

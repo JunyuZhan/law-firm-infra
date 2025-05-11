@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "lawfirm.finance")
+@ConfigurationProperties(prefix = "law-firm.finance")
 public class FinanceConfig {
     private CacheConfig cache;
     private EventConfig event;

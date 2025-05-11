@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @Service("documentCategoryServiceImpl")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "false", matchIfMissing = false)
 public class NoOpDocumentCategoryServiceImpl extends BaseServiceImpl<BaseMapper<DocumentCategory>, DocumentCategory> implements DocumentCategoryService {
 
     @Override

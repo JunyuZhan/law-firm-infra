@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @Service("documentServiceImpl")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "false", matchIfMissing = true)
 public class NoOpDocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDocument> implements DocumentService {
 
     @Override

@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 @Component("coreProcessEndListener")
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessEndListener implements FlowableEventListener {
 
     private final RuntimeService runtimeService;

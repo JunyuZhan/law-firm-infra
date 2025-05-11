@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component("coreTaskCompleteListener")
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class TaskCompleteListener implements TaskListener {
 
     private static final long serialVersionUID = 1L;

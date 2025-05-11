@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "lawfirm.personnel")
+@ConfigurationProperties(prefix = "law-firm.personnel")
 public class PersonnelConfig {
     
     /**

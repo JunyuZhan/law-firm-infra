@@ -26,7 +26,7 @@ import java.util.Map;
 @Slf4j
 @Component("coreProcessStartListener")
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessStartListener implements FlowableEventListener {
 
     // private final ProcessService processService;

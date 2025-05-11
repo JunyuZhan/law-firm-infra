@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityManager {
 
     private final SecurityContext securityContext;

@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * 认证配置属性类
  */
 @Data
-@ConfigurationProperties(prefix = "law.firm.auth")
+@ConfigurationProperties(prefix = "law-firm.auth")
 public class AuthProperties {
     
     /**

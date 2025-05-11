@@ -16,7 +16,7 @@ import java.util.Arrays;
  */
 @Configuration("workflowCacheConfig")
 @EnableCaching
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class CacheConfig {
     
     /**

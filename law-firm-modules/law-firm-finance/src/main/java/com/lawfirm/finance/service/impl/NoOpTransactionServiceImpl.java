@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @Service("financeTransactionServiceImpl")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "false", matchIfMissing = false)
 public class NoOpTransactionServiceImpl extends BaseServiceImpl<BaseMapper<Transaction>, Transaction>
         implements TransactionService {
 

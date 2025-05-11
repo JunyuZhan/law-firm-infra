@@ -25,13 +25,13 @@ public class DifyAIProvider implements AIProvider {
 
     private final RestTemplate restTemplate;
 
-    @Value("${lawfirm.ai.providers.dify.api-url:http://localhost:5001}")
+    @Value("${law-firm.ai.providers.dify.api-url:http://localhost:5001}")
     private String apiUrl;
 
-    @Value("${lawfirm.ai.providers.dify.api-key:}")
+    @Value("${law-firm.ai.providers.dify.api-key:}")
     private String apiKey;
 
-    @Value("${lawfirm.ai.providers.dify.timeout:30000}")
+    @Value("${law-firm.ai.providers.dify.timeout:30000}")
     private int timeout;
 
     public DifyAIProvider(@Qualifier("aiRestTemplate") RestTemplate restTemplate) {

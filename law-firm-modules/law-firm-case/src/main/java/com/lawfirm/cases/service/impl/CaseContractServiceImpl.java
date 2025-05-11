@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("caseContractService")
 @Primary
-@ConditionalOnProperty(name = "lawfirm.module.case", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.module.case", havingValue = "true", matchIfMissing = false)
 public class CaseContractServiceImpl implements CaseContractService {
 
     @Autowired

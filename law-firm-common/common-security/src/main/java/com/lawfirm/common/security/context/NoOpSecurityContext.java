@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component("commonNoOpSecurityContext")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "false", matchIfMissing = true)
 public class NoOpSecurityContext implements SecurityContext {
 
     @Override

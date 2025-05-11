@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component("documentSearchProperties")
-@ConfigurationProperties(prefix = "lawfirm.document.search")
+@ConfigurationProperties(prefix = "law-firm.document.search")
 public class SearchProperties {
     
     /**
@@ -26,7 +26,7 @@ public class SearchProperties {
     /**
      * 索引前缀
      */
-    private String indexPrefix = "lawfirm_";
+    private String indexprefix = "law-firm_";
     
     /**
      * 搜索结果数量限制

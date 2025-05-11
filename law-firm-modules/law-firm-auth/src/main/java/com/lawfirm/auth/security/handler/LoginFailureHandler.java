@@ -25,7 +25,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "true", matchIfMissing = true)
 public class LoginFailureHandler implements AuthenticationFailureHandler {
     
     private final LoginHistoryService loginHistoryService;
@@ -49,7 +49,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         
         // 检查是否启用数据库功能
         boolean isDatabaseEnabled = Boolean.parseBoolean(
-            environment.getProperty("lawfirm.database.enabled", "true"));
+            environment.getProperty("law-firm.database.enabled", "true"));
         
         // 记录登录失败历史 - 只在数据库功能启用时记录
         if (isDatabaseEnabled && loginHistoryService != null) {

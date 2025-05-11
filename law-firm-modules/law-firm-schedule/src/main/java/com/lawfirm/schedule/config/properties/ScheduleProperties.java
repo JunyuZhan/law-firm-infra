@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @Component("scheduleProperties")
-@ConfigurationProperties(prefix = "lawfirm.schedule")
+@ConfigurationProperties(prefix = "law-firm.schedule")
 public class ScheduleProperties {
     
     /**

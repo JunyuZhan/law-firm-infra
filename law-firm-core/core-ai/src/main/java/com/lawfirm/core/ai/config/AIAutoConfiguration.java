@@ -19,7 +19,7 @@ import java.time.Duration;
 @Slf4j
 @AutoConfiguration
 @ComponentScan(basePackages = "com.lawfirm.core.ai")
-@ConditionalOnProperty(prefix = "law.firm.ai", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm.ai", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class AIAutoConfiguration {
 
     /**

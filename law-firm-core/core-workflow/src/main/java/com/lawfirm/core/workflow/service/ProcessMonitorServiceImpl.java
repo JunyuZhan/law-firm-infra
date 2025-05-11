@@ -20,7 +20,7 @@ import java.util.Map;
 @Slf4j
 @Component("coreProcessMonitorServiceImpl")
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessMonitorServiceImpl implements ProcessMonitorService {
 
     @Override

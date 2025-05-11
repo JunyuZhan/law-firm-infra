@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @Primary
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
 public class NoopWorkflowServiceImpl implements WorkflowService {
 
     @Override

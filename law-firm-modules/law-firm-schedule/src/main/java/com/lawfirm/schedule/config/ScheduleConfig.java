@@ -18,7 +18,7 @@ public class ScheduleConfig {
      * 初始化日程配置
      */
     @Bean(name = "scheduleModuleInitializer")
-    @ConditionalOnProperty(name = "lawfirm.schedule.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "law-firm.schedule.enabled", havingValue = "true", matchIfMissing = true)
     public Object scheduleModuleInitializer(ScheduleProperties scheduleProperties) {
         log.info("日程管理模块初始化完成");
         log.info("日程提醒功能: {}", scheduleProperties.getReminder().isEnabled() ? "已启用" : "已禁用");
@@ -33,7 +33,7 @@ public class ScheduleConfig {
      * 配置日程处理器
      */
     @Bean(name = "scheduleProcessor")
-    @ConditionalOnProperty(name = "lawfirm.schedule.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "law-firm.schedule.enabled", havingValue = "true", matchIfMissing = true)
     public ScheduleProcessor scheduleProcessor() {
         return new ScheduleProcessor();
     }

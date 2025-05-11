@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
     "com.lawfirm.core.workflow.listener",
     "com.lawfirm.core.workflow.service"
 })
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class WorkflowConfig {
     
     public WorkflowConfig() {

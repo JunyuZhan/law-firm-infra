@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("caseDocumentServiceImpl")
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class CaseDocumentServiceImpl implements CaseDocumentService {
 
     private final CaseDocumentMapper documentMapper;

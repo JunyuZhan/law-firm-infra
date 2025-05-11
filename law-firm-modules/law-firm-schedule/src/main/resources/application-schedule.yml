@@ -28,7 +28,7 @@ spring:
       continue-on-error: true
 
 # 律师事务所配置
-lawfirm:
+law-firm:
   # 日程模块配置
   schedule:
     # 模块是否启用

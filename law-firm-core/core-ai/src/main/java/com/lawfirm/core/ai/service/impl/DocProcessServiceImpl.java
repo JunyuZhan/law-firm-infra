@@ -27,7 +27,7 @@ public class DocProcessServiceImpl implements DocProcessService {
     
     private final AIProviderFactory providerFactory;
     
-    @Value("${lawfirm.ai.default-provider:openai}")
+    @Value("${law-firm.ai.default-provider:openai}")
     private String defaultProviderName;
     
     @Override

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * SecurityContext接口的默认实现
  */
 @Component("commonDefaultSecurityContext")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class DefaultSecurityContext implements SecurityContext {
 
     private Authentication authentication;

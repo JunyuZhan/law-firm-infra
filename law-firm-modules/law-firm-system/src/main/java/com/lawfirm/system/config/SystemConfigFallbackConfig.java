@@ -33,7 +33,7 @@ public class SystemConfigFallbackConfig {
      */
     @Bean
     @Primary
-    @ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "false")
+    @ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "false")
     public SysConfigMapper noopSysConfigMapper() {
         log.info("数据库功能已禁用，使用动态代理创建SysConfigMapper的空实现");
         

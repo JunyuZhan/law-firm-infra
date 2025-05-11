@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
     "org.flowable.spring.boot.app.AppEngineAutoConfiguration",
     "org.flowable.spring.boot.ProcessEngineServicesAutoConfiguration"
 })
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
 public class WorkflowDisableAutoConfiguration {
     // 通过导入完成自动配置
 } 

@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service("documentTemplateServiceImpl")
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "false", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "false", matchIfMissing = false)
 public class NoOpTemplateServiceImpl extends BaseServiceImpl<BaseMapper<TemplateDocument>, TemplateDocument> implements TemplateService {
 
     @Override

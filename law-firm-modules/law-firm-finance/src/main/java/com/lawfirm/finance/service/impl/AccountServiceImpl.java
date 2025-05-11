@@ -31,7 +31,7 @@ import java.util.List;
 @Slf4j
 @Service("financeAccountServiceImpl")
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class AccountServiceImpl extends BaseServiceImpl<AccountMapper, Account> implements AccountService {
 
     private final TransactionService transactionService;

@@ -30,7 +30,7 @@ import java.util.Map;
  */
 @Configuration("clientCacheConfig")
 @EnableCaching
-@ConditionalOnProperty(name = "lawfirm.client.cache.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.client.cache.enabled", havingValue = "true", matchIfMissing = false)
 public class CacheConfig {
 
     /**

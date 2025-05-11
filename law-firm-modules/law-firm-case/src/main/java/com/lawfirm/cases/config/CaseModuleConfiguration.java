@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AutoConfiguration
-@ConditionalOnProperty(prefix = "lawfirm.module", name = "case", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm.module", name = "case", havingValue = "true", matchIfMissing = true)
 @ComponentScan(basePackages = "com.lawfirm.cases")
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
@@ -87,7 +87,7 @@ public class CaseModuleConfiguration {
      * 案件配置属性
      */
     @Data
-    @ConfigurationProperties(prefix = "lawfirm.case")
+    @ConfigurationProperties(prefix = "law-firm.case")
     public static class CaseProperties {
         
         /**
@@ -178,7 +178,7 @@ public class CaseModuleConfiguration {
      * 案件服务配置
      */
     @Bean(name = "caseServiceConfig")
-    @ConditionalOnProperty(name = "lawfirm.case.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "law-firm.case.enabled", havingValue = "true", matchIfMissing = true)
     public CaseServiceConfig caseServiceConfig(CaseProperties properties) {
         log.info("案件服务配置初始化，编号前缀：{}，状态流转：{}", 
                 properties.getCaseNumber().getPrefix(),

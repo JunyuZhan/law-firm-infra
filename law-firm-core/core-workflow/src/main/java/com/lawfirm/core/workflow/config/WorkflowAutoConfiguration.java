@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
     WorkflowConfig.class,
     CacheConfig.class
 })
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class WorkflowAutoConfiguration {
 
     /**

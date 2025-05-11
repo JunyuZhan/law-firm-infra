@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "law.firm.ai.model")
+@ConfigurationProperties(prefix = "law-firm.ai.model")
 public class ModelConfig {
 
     /**

@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Order(90)
-@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "false")
+@ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "false")
 public class SimpleSecurityConfig extends BaseSecurityConfig {
     
     private final AntPathMatcher pathMatcher = new AntPathMatcher();

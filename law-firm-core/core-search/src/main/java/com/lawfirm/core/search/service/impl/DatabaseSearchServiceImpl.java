@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service("databaseSearchService")
-@ConditionalOnProperty(prefix = "lawfirm.search", name = "type", havingValue = "database", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm.search", name = "type", havingValue = "database", matchIfMissing = true)
 @Transactional(rollbackFor = Exception.class)
 public class DatabaseSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 

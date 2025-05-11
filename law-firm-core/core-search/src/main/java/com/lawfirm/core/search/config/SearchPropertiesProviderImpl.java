@@ -18,7 +18,7 @@ public class SearchPropertiesProviderImpl {
      */
     @Bean(name = "searchPropertiesProvider")
     @Primary
-    @ConditionalOnProperty(name = "lawfirm.search.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "law-firm.search.enabled", havingValue = "true", matchIfMissing = true)
     public SearchPropertiesProvider searchPropertiesProvider(SearchProperties properties) {
         log.info("创建搜索配置提供者, 引擎类型: {}", properties.getType());
         return () -> {

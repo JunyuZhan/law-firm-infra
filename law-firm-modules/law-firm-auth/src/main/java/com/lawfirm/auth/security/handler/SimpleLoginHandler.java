@@ -31,7 +31,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "false")
+@ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "false")
 public class SimpleLoginHandler implements AuthenticationSuccessHandler, AuthenticationFailureHandler {
     
     private final ObjectMapper objectMapper;

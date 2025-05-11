@@ -13,7 +13,7 @@ import java.util.concurrent.Executor;
  */
 @Configuration
 @EnableAsync
-@ConditionalOnProperty(prefix = "lawfirm.finance.event", name = "async", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm.finance.event", name = "async", havingValue = "true", matchIfMissing = false)
 public class EventConfig {
     
     /**

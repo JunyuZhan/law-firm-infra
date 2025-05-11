@@ -23,7 +23,7 @@ import java.io.IOException;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class FlowableConfig implements EngineConfigurationConfigurer<SpringProcessEngineConfiguration> {
 
     private final WorkflowProperties workflowProperties;
@@ -81,7 +81,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 流程运行时服务
      */
     @Bean(name = "workflowRuntimeService")
-    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public RuntimeService runtimeService(ProcessEngine processEngine) {
         return processEngine.getRuntimeService();
     }
@@ -90,7 +90,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 任务服务
      */
     @Bean(name = "workflowTaskService")
-    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public TaskService taskService(ProcessEngine processEngine) {
         return processEngine.getTaskService();
     }
@@ -99,7 +99,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 表单服务
      */
     @Bean(name = "workflowFormService")
-    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public FormService formService(ProcessEngine processEngine) {
         return processEngine.getFormService();
     }
@@ -108,7 +108,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 历史服务
      */
     @Bean(name = "workflowHistoryService")
-    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public HistoryService historyService(ProcessEngine processEngine) {
         return processEngine.getHistoryService();
     }
@@ -117,7 +117,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 存储库服务
      */
     @Bean(name = "workflowRepositoryService")
-    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public RepositoryService repositoryService(ProcessEngine processEngine) {
         return processEngine.getRepositoryService();
     }
@@ -126,7 +126,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 管理服务
      */
     @Bean(name = "workflowManagementService")
-    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public ManagementService managementService(ProcessEngine processEngine) {
         return processEngine.getManagementService();
     }
@@ -135,7 +135,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
      * 动态表单服务
      */
     @Bean(name = "workflowDynamicBpmnService")
-    @ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
     public DynamicBpmnService dynamicBpmnService(ProcessEngine processEngine) {
         return processEngine.getDynamicBpmnService();
     }

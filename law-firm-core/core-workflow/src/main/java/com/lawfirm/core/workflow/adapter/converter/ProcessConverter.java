@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("coreProcessConverter")
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "true", matchIfMissing = false)
 public class ProcessConverter {
 
     /**

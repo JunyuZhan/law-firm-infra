@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-@ConditionalOnProperty(prefix = "lawfirm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
 public class TaskServiceImpl implements TaskService {
 
     // =============== 基础任务操作 ===============

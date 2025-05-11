@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 // @Component("coreSearchProperties")
-@ConfigurationProperties(prefix = "lawfirm.search")
+@ConfigurationProperties(prefix = "law-firm.search")
 public class SearchProperties {
     /**
      * 是否启用搜索功能

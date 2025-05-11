@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
     "org.flowable.spring.boot.EngineConfigurationConfigurer",
     "org.flowable.engine.ProcessEngine"
 })
-@ConditionalOnProperty(name = "lawfirm.workflow.enabled", havingValue = "false", matchIfMissing = false)
+@ConditionalOnProperty(name = "law-firm.workflow.enabled", havingValue = "false", matchIfMissing = false)
 public class WorkflowDisableConfig {
     
     /**

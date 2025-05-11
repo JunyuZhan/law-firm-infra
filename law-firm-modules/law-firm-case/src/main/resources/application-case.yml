@@ -13,7 +13,7 @@ spring:
     out-of-order: false
 
 # 案件模块业务配置
-lawfirm:
+law-firm:
   case:
     # 模块是否启用
     enabled: true

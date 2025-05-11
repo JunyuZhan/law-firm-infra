@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component("documentSecurityProperties")
-@ConfigurationProperties(prefix = "law.firm.document.security")
+@ConfigurationProperties(prefix = "law-firm.document.security")
 public class SecurityProperties {
     
     /**
