@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -23,6 +26,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,8 +34,6 @@ import org.springframework.stereotype.Component;
 
 import com.lawfirm.core.search.config.SearchProperties;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -78,190 +80,191 @@ public class LuceneIndexHandler implements IndexHandler {
             log.error("关闭Lucene索引处理器失败", e);
         }
     }
+    
+    /**
+     * 获取索引目录
+     */
+    private Directory getDirectory(String indexName) throws IOException {
+        Directory directory = directoryMap.get(indexName);
+        if (directory == null) {
+            String indexDir = searchProperties.getLucene().getIndexDir();
+            Path path = Paths.get(indexDir, indexName);
+            if (!Files.exists(path)) {
+                Files.createDirectories(path);
+            }
+            directory = FSDirectory.open(path);
+            directoryMap.put(indexName, directory);
+        }
+        return directory;
+    }
 
     @Override
     public void createIndex(String indexName, Object mapping) throws IOException {
-        Path indexPath = getIndexPath(indexName);
-        Directory directory = getDirectory(indexName);
-        
-        log.info("创建Lucene索引: {}", indexName);
-        
-        // 确保索引目录存在
-        Files.createDirectories(indexPath);
-        
-        // 配置索引写入器
-        IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-        config.setRAMBufferSizeMB(searchProperties.getLucene().getRamBufferSizeMb());
-        
-        // 创建索引写入器
-        IndexWriter writer = new IndexWriter(directory, config);
-        writerMap.put(indexName, writer);
-        
-        // 提交变更
-        writer.commit();
-        
-        log.info("Lucene索引创建成功: {}", indexName);
+        log.info("创建索引: {}", indexName);
+        getIndexWriter(indexName);
     }
 
     @Override
     public void deleteIndex(String indexName) throws IOException {
-        log.info("删除Lucene索引: {}", indexName);
+        log.info("删除索引: {}", indexName);
+        closeIndex(indexName);
         
-        // 关闭相关资源
-        closeResources(indexName);
+        // 关闭并移除所有资源
+        IndexWriter writer = writerMap.remove(indexName);
+        if (writer != null) {
+            writer.close();
+        }
         
-        // 获取索引路径
-        Path indexPath = getIndexPath(indexName);
+        IndexReader reader = readerMap.remove(indexName);
+        if (reader != null) {
+            reader.close();
+        }
+        
+        searcherMap.remove(indexName);
+        
+        Directory directory = directoryMap.remove(indexName);
+        if (directory != null) {
+            directory.close();
+        }
         
         // 删除索引目录
-        if (Files.exists(indexPath)) {
-            Files.walk(indexPath)
-                .sorted((a, b) -> -a.compareTo(b))
-                .forEach(path -> {
+        String indexDir = searchProperties.getLucene().getIndexDir();
+        Path path = Paths.get(indexDir, indexName);
+        if (Files.exists(path)) {
+            Files.walk(path)
+                .sorted((a, b) -> b.compareTo(a))
+                .forEach(p -> {
                     try {
-                        Files.delete(path);
+                        Files.delete(p);
                     } catch (IOException e) {
-                        log.error("删除索引文件失败: {}", path, e);
+                        log.error("删除索引文件失败: {}", p, e);
                     }
                 });
-            
-            log.info("Lucene索引删除成功: {}", indexName);
-        } else {
-            log.warn("Lucene索引不存在: {}", indexName);
         }
     }
 
     @Override
     public void updateSettings(String indexName, String settings) throws IOException {
-        log.info("更新Lucene索引设置: {}", indexName);
-        // Lucene没有直接的索引设置更新机制，暂不实现
+        log.info("更新索引设置: {}", indexName);
+        // Lucene没有单独的设置更新机制，忽略此操作
     }
 
     @Override
     public void updateMapping(String indexName, Object mapping) throws IOException {
-        log.info("更新Lucene索引映射: {}", indexName);
-        // Lucene没有直接的映射更新机制，暂不实现
+        log.info("更新索引映射: {}", indexName);
+        // Lucene没有单独的映射更新机制，忽略此操作
     }
 
     @Override
     public Object getIndex(String indexName) throws IOException {
-        log.info("获取Lucene索引信息: {}", indexName);
-        
-        // 获取索引目录
-        Path indexPath = getIndexPath(indexName);
-        
-        // 构建返回对象
+        log.info("获取索引信息: {}", indexName);
         Map<String, Object> result = new HashMap<>();
-        Map<String, Object> indexInfo = new HashMap<>();
-        
-        // 添加基本信息
-        indexInfo.put("name", indexName);
-        indexInfo.put("path", indexPath.toString());
-        
-        // 添加索引统计信息
-        try {
+        if (existsIndex(indexName)) {
+            result.put("name", indexName);
+            result.put("exists", true);
+            
+            // 获取文档数量
             IndexReader reader = getIndexReader(indexName);
-            indexInfo.put("numDocs", reader.numDocs());
-            indexInfo.put("maxDoc", reader.maxDoc());
-            indexInfo.put("hasDeletions", reader.hasDeletions());
-            indexInfo.put("deletedDocs", reader.maxDoc() - reader.numDocs());
-        } catch (Exception e) {
-            log.warn("获取索引统计信息失败: {}", indexName, e);
-            indexInfo.put("error", e.getMessage());
+            result.put("docs", reader.numDocs());
+            result.put("deleted_docs", reader.numDeletedDocs());
+            
+            // 获取索引目录信息
+            String indexDir = searchProperties.getLucene().getIndexDir();
+            Path path = Paths.get(indexDir, indexName);
+            result.put("path", path.toString());
+            
+            // 获取索引文件大小
+            long size = 0;
+            if (Files.exists(path)) {
+                size = Files.walk(path)
+                    .filter(Files::isRegularFile)
+                    .mapToLong(p -> {
+                        try {
+                            return Files.size(p);
+                        } catch (IOException e) {
+                            return 0;
+                        }
+                    })
+                    .sum();
+            }
+            result.put("size", size);
+        } else {
+            result.put("name", indexName);
+            result.put("exists", false);
         }
-        
-        // 添加设置和映射信息
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("index.directory", indexPath.toString());
-        settings.put("index.analyzer", analyzer.getClass().getSimpleName());
-        
-        Map<String, Object> mappings = new HashMap<>();
-        
-        indexInfo.put("settings", settings);
-        indexInfo.put("mappings", mappings);
-        
-        result.put(indexName, indexInfo);
-        
         return result;
     }
 
     @Override
     public boolean existsIndex(String indexName) throws IOException {
-        Path indexPath = getIndexPath(indexName);
-        boolean exists = Files.exists(indexPath) && Files.isDirectory(indexPath);
-        return exists;
+        log.debug("检查索引是否存在: {}", indexName);
+        String indexDir = searchProperties.getLucene().getIndexDir();
+        Path path = Paths.get(indexDir, indexName);
+        return Files.exists(path) && Files.list(path).findAny().isPresent();
     }
 
     @Override
     public void openIndex(String indexName) throws IOException {
-        log.info("打开Lucene索引: {}", indexName);
-        
-        if (!existsIndex(indexName)) {
-            createIndex(indexName, null);
-        }
-        
-        // 确保资源已初始化
-        getDirectory(indexName);
-        getIndexWriter(indexName);
+        log.info("打开索引: {}", indexName);
         getIndexReader(indexName);
-        getIndexSearcher(indexName);
     }
 
     @Override
     public void closeIndex(String indexName) throws IOException {
-        log.info("关闭Lucene索引: {}", indexName);
-        closeResources(indexName);
+        log.info("关闭索引: {}", indexName);
+        
+        // 关闭并移除读取器和搜索器
+        IndexReader reader = readerMap.remove(indexName);
+        if (reader != null) {
+            reader.close();
+        }
+        
+        searcherMap.remove(indexName);
+        
+        // 提交并保留写入器
+        IndexWriter writer = writerMap.get(indexName);
+        if (writer != null) {
+            writer.commit();
+        }
     }
 
     @Override
     public void refreshIndex(String indexName) throws IOException {
-        log.info("刷新Lucene索引: {}", indexName);
+        log.debug("刷新索引: {}", indexName);
         
-        // 提交写入器
-        IndexWriter writer = getIndexWriter(indexName);
-        writer.commit();
+        // 提交更改
+        IndexWriter writer = writerMap.get(indexName);
+        if (writer != null) {
+            writer.commit();
+        }
         
-        // 刷新读取器和搜索器
-        refreshReaderAndSearcher(indexName);
+        // 重新打开读取器
+        IndexReader oldReader = readerMap.remove(indexName);
+        if (oldReader != null) {
+            IndexReader newReader = DirectoryReader.openIfChanged((DirectoryReader) oldReader);
+            if (newReader != null) {
+                oldReader.close();
+                readerMap.put(indexName, newReader);
+                
+                // 更新搜索器
+                searcherMap.put(indexName, new IndexSearcher(newReader));
+            } else {
+                // 没有变化，保留原读取器
+                readerMap.put(indexName, oldReader);
+            }
+        }
     }
 
     @Override
     public void createAlias(String indexName, String alias) throws IOException {
-        log.info("创建Lucene索引别名: {} -> {}", indexName, alias);
-        
-        // Lucene没有直接的索引别名机制，我们创建一个软链接
-        Path indexPath = getIndexPath(indexName);
-        Path aliasPath = getIndexPath(alias);
-        
-        // 如果别名已经存在，先删除
-        if (Files.exists(aliasPath)) {
-            if (Files.isSymbolicLink(aliasPath)) {
-                Files.delete(aliasPath);
-            } else {
-                log.warn("别名路径已存在且不是符号链接: {}", aliasPath);
-                return;
-            }
-        }
-        
-        // 创建符号链接
-        Files.createSymbolicLink(aliasPath, indexPath);
-        log.info("Lucene索引别名创建成功: {} -> {}", indexName, alias);
+        log.info("创建索引别名: {} -> {}", indexName, alias);
+        // Lucene不支持别名，忽略此操作
     }
 
     @Override
     public void deleteAlias(String indexName, String alias) throws IOException {
-        log.info("删除Lucene索引别名: {} -> {}", indexName, alias);
-        
-        Path aliasPath = getIndexPath(alias);
-        
-        // 如果别名存在且是符号链接，则删除
-        if (Files.exists(aliasPath) && Files.isSymbolicLink(aliasPath)) {
-            Files.delete(aliasPath);
-            log.info("Lucene索引别名删除成功: {}", alias);
-        } else {
-            log.warn("Lucene索引别名不存在或不是符号链接: {}", alias);
-        }
+        log.info("删除索引别名: {} -> {}", indexName, alias);
+        // Lucene不支持别名，忽略此操作
     }
 
     @Override
@@ -349,7 +352,7 @@ public class LuceneIndexHandler implements IndexHandler {
                 readerMap.put(indexName, reader);
             } catch (IOException e) {
                 // 如果目录是空的，先创建一个空的索引
-                if (e.getMessage().contains("no segments* file found")) {
+                if (e.getMessage() != null && e.getMessage().contains("no segments* file found")) {
                     IndexWriter writer = getIndexWriter(indexName);
                     writer.commit();
                     reader = DirectoryReader.open(directory);
@@ -374,58 +377,4 @@ public class LuceneIndexHandler implements IndexHandler {
         }
         return writer;
     }
-    
-    private Directory getDirectory(String indexName) throws IOException {
-        Directory directory = directoryMap.get(indexName);
-        if (directory == null) {
-            Path indexPath = getIndexPath(indexName);
-            Files.createDirectories(indexPath);
-            directory = FSDirectory.open(indexPath);
-            directoryMap.put(indexName, directory);
-        }
-        return directory;
-    }
-    
-    private Path getIndexPath(String indexName) {
-        String basePath = searchProperties.getLucene().getIndexDir();
-        return Paths.get(basePath, indexName);
-    }
-    
-    private void refreshReaderAndSearcher(String indexName) throws IOException {
-        // 关闭旧的读取器
-        IndexReader oldReader = readerMap.remove(indexName);
-        if (oldReader != null) {
-            oldReader.close();
-        }
-        
-        // 关闭旧的搜索器
-        searcherMap.remove(indexName);
-        
-        // 重新初始化读取器和搜索器
-        getIndexReader(indexName);
-        getIndexSearcher(indexName);
-    }
-    
-    private void closeResources(String indexName) throws IOException {
-        // 关闭搜索器
-        searcherMap.remove(indexName);
-        
-        // 关闭读取器
-        IndexReader reader = readerMap.remove(indexName);
-        if (reader != null) {
-            reader.close();
-        }
-        
-        // 关闭写入器
-        IndexWriter writer = writerMap.remove(indexName);
-        if (writer != null) {
-            writer.close();
-        }
-        
-        // 关闭目录
-        Directory directory = directoryMap.remove(indexName);
-        if (directory != null) {
-            directory.close();
-        }
-    }
-} 
+}

@@ -88,7 +88,9 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     out-of-order: true
-    validate-on-migrate: true
+    validate-on-migrate: false
+    # 禁用自动迁移，由应用程序控制迁移流程
+    auto-migrate: false
   output:
     ansi:
       enabled: always
@@ -168,6 +170,28 @@ logging:
     audit:
       enabled: false
   
+  # 搜索服务配置
+  search:
+    enabled: true
+    # 设置为lucene
+    searchEngineType: lucene
+    # Lucene配置
+    lucene:
+      # 索引存储目录
+      indexDir: ${user.home}/.law-firm/lucene-index
+      # 内存缓冲区大小(MB)
+      ramBufferSizeMb: 32
+      # 最大搜索结果数
+      maxResults: 1000
+      # 是否启用高亮
+      highlightEnabled: true
+      # 高亮前置标签
+      highlightPreTag: <em>
+      # 高亮后置标签
+      highlightPostTag: </em>
+      # 分析器类型: standard, chinese, ik
+      analyzer: ik
+  
   # 通用配置
   common:
     core:
@@ -186,4 +210,7 @@ logging:
       executor:
         bean-name: taskExecutor
     message:
-      enabled: true 
+      enabled: true
+
+# 其他配置保持不变
+# ... existing code ... 

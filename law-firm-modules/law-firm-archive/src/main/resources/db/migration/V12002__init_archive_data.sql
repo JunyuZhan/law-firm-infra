@@ -16,11 +16,11 @@ ON DUPLICATE KEY UPDATE dict_name='档案类型', status=0, update_time=NOW();
 -- 档案类型字典数据
 INSERT INTO sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, remark, create_by, create_time)
 VALUES 
-(1, '案件档案', '1', 'archive_type', '', 'primary', 'Y', 0, '案件相关档案', 'admin', NOW()),
-(2, '合同档案', '2', 'archive_type', '', 'success', 'N', 0, '合同相关档案', 'admin', NOW()),
-(3, '文档档案', '3', 'archive_type', '', 'info', 'N', 0, '普通文档档案', 'admin', NOW()),
-(4, '行政档案', '4', 'archive_type', '', 'warning', 'N', 0, '行政相关档案', 'admin', NOW()),
-(5, '财务档案', '5', 'archive_type', '', 'danger', 'N', 0, '财务相关档案', 'admin', NOW())
+(1, '案件档案', '1', 'archive_type', '', 'primary', 1, 0, '案件相关档案', 'admin', NOW()),
+(2, '合同档案', '2', 'archive_type', '', 'success', 0, 0, '合同相关档案', 'admin', NOW()),
+(3, '文档档案', '3', 'archive_type', '', 'info', 0, 0, '普通文档档案', 'admin', NOW()),
+(4, '行政档案', '4', 'archive_type', '', 'warning', 0, 0, '行政相关档案', 'admin', NOW()),
+(5, '财务档案', '5', 'archive_type', '', 'danger', 0, 0, '财务相关档案', 'admin', NOW())
 ON DUPLICATE KEY UPDATE dict_label=VALUES(dict_label), dict_value=VALUES(dict_value), status=VALUES(status), update_time=NOW();
 
 -- 档案状态字典
@@ -31,11 +31,11 @@ ON DUPLICATE KEY UPDATE dict_name='档案状态', status=0, update_time=NOW();
 -- 档案状态字典数据
 INSERT INTO sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, remark, create_by, create_time)
 VALUES 
-(1, '正常', '1', 'archive_status', '', 'primary', 'Y', 0, '正常状态', 'admin', NOW()),
-(2, '借出', '2', 'archive_status', '', 'warning', 'N', 0, '已借出状态', 'admin', NOW()),
-(3, '遗失', '3', 'archive_status', '', 'danger', 'N', 0, '遗失状态', 'admin', NOW()),
-(4, '损坏', '4', 'archive_status', '', 'danger', 'N', 0, '损坏状态', 'admin', NOW()),
-(5, '已销毁', '5', 'archive_status', '', 'info', 'N', 0, '已销毁状态', 'admin', NOW())
+(1, '正常', '1', 'archive_status', '', 'primary', 1, 0, '正常状态', 'admin', NOW()),
+(2, '借出', '2', 'archive_status', '', 'warning', 0, 0, '已借出状态', 'admin', NOW()),
+(3, '遗失', '3', 'archive_status', '', 'danger', 0, 0, '遗失状态', 'admin', NOW()),
+(4, '损坏', '4', 'archive_status', '', 'danger', 0, 0, '损坏状态', 'admin', NOW()),
+(5, '已销毁', '5', 'archive_status', '', 'info', 0, 0, '已销毁状态', 'admin', NOW())
 ON DUPLICATE KEY UPDATE dict_label=VALUES(dict_label), dict_value=VALUES(dict_value), status=VALUES(status), update_time=NOW();
 
 -- 同步状态字典
@@ -46,9 +46,9 @@ ON DUPLICATE KEY UPDATE dict_name='同步状态', status=0, update_time=NOW();
 -- 同步状态字典数据
 INSERT INTO sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, remark, create_by, create_time)
 VALUES 
-(1, '未同步', '0', 'sync_status', '', 'info', 'Y', 0, '未同步状态', 'admin', NOW()),
-(2, '已同步', '1', 'sync_status', '', 'success', 'N', 0, '已同步状态', 'admin', NOW()),
-(3, '同步失败', '2', 'sync_status', '', 'danger', 'N', 0, '同步失败状态', 'admin', NOW())
+(1, '未同步', '0', 'sync_status', '', 'info', 1, 0, '未同步状态', 'admin', NOW()),
+(2, '已同步', '1', 'sync_status', '', 'success', 0, 0, '已同步状态', 'admin', NOW()),
+(3, '同步失败', '2', 'sync_status', '', 'danger', 0, 0, '同步失败状态', 'admin', NOW())
 ON DUPLICATE KEY UPDATE dict_label=VALUES(dict_label), dict_value=VALUES(dict_value), status=VALUES(status), update_time=NOW();
 
 -- 借阅状态字典
@@ -59,8 +59,8 @@ ON DUPLICATE KEY UPDATE dict_name='借阅状态', status=0, update_time=NOW();
 -- 借阅状态字典数据
 INSERT INTO sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, remark, create_by, create_time)
 VALUES 
-(1, '未借出', '0', 'borrow_status', '', 'primary', 'Y', 0, '未借出状态', 'admin', NOW()),
-(2, '已借出', '1', 'borrow_status', '', 'warning', 'N', 0, '已借出状态', 'admin', NOW())
+(1, '未借出', '0', 'borrow_status', '', 'primary', 1, 0, '未借出状态', 'admin', NOW()),
+(2, '已借出', '1', 'borrow_status', '', 'warning', 0, 0, '已借出状态', 'admin', NOW())
 ON DUPLICATE KEY UPDATE dict_label=VALUES(dict_label), dict_value=VALUES(dict_value), status=VALUES(status), update_time=NOW();
 
 -- 业务类型字典
@@ -71,9 +71,9 @@ ON DUPLICATE KEY UPDATE dict_name='档案业务类型', status=0, update_time=NO
 -- 业务类型字典数据
 INSERT INTO sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, remark, create_by, create_time)
 VALUES 
-(1, '案件', 'CASE', 'archive_business_type', '', 'primary', 'Y', 0, '案件业务', 'admin', NOW()),
-(2, '合同', 'CONTRACT', 'archive_business_type', '', 'success', 'N', 0, '合同业务', 'admin', NOW()),
-(3, '文档', 'DOCUMENT', 'archive_business_type', '', 'info', 'N', 0, '文档业务', 'admin', NOW()),
-(4, '行政', 'ADMIN', 'archive_business_type', '', 'warning', 'N', 0, '行政业务', 'admin', NOW()),
-(5, '财务', 'FINANCE', 'archive_business_type', '', 'danger', 'N', 0, '财务业务', 'admin', NOW())
+(1, '案件', 'CASE', 'archive_business_type', '', 'primary', 1, 0, '案件业务', 'admin', NOW()),
+(2, '合同', 'CONTRACT', 'archive_business_type', '', 'success', 0, 0, '合同业务', 'admin', NOW()),
+(3, '文档', 'DOCUMENT', 'archive_business_type', '', 'info', 0, 0, '文档业务', 'admin', NOW()),
+(4, '行政', 'ADMIN', 'archive_business_type', '', 'warning', 0, 0, '行政业务', 'admin', NOW()),
+(5, '财务', 'FINANCE', 'archive_business_type', '', 'danger', 0, 0, '财务业务', 'admin', NOW())
 ON DUPLICATE KEY UPDATE dict_label=VALUES(dict_label), dict_value=VALUES(dict_value), status=VALUES(status), update_time=NOW(); 

@@ -73,4 +73,4 @@ public class LuceneSearchConfig {
     public IndexHandler luceneIndexHandler(SearchProperties searchProperties, @Qualifier("ikAnalyzer") Analyzer analyzer) {
         return new LuceneIndexHandler(searchProperties, analyzer);
     }
-} 
+}

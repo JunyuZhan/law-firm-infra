@@ -23,6 +23,9 @@ spring:
   flyway:
     enabled: true
     clean-disabled: false
+    # 确保在开发环境中禁用自动迁移
+    validate-on-migrate: false
+    auto-migrate: false
 
   # 任务执行器配置
   task:

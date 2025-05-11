@@ -30,32 +30,11 @@ if "%ENV_CHOICE%"=="2" (
 )
 echo.
 
-echo Disable storage module?
-echo [1] Yes - Disable storage module
-echo [2] No - Enable storage module
-set /p STORAGE_CHOICE=Please select (1-2) [default 1]: 
-
-if "%STORAGE_CHOICE%"=="2" (
-    set STORAGE_ENABLED=true
-    echo Storage Module: Enabled
-) else (
-    set STORAGE_ENABLED=false
-    echo Storage Module: Disabled
-)
-echo.
-
-echo Disable audit module?
-echo [1] Yes - Disable audit module
-echo [2] No - Enable audit module
-set /p AUDIT_CHOICE=Please select (1-2) [default 1]: 
-
-if "%AUDIT_CHOICE%"=="2" (
-    set AUDIT_ENABLED=true
-    echo Audit Module: Enabled
-) else (
-    set AUDIT_ENABLED=false
-    echo Audit Module: Disabled
-)
+REM 存储服务和审计服务都设置为强制启用，这些是系统必需的核心服务
+set STORAGE_ENABLED=true
+set AUDIT_ENABLED=true
+echo Storage Module: Enabled (必需组件)
+echo Audit Module: Enabled (必需组件)
 echo.
 
 cd law-firm-api\target
@@ -75,6 +54,11 @@ java %JAVA_OPTS% -jar law-firm-api-1.0.0.jar ^
   --spring.datasource.url="%JDBC_URL%" ^
   --spring.datasource.username=%MYSQL_USERNAME% ^
   --spring.datasource.password=%MYSQL_PASSWORD% ^
+  --mybatis-plus.mapper-locations=classpath*:/mapper/**/*.xml ^
+  --mybatis-plus.type-aliases-package=com.lawfirm.model ^
+  --mybatis-plus.mapper-package=com.lawfirm.model.**.mapper ^
+  --mybatis-plus.configuration.map-underscore-to-camel-case=true ^
+  --mybatis-plus.configuration.cache-enabled=false ^
   --law-firm.core.storage.enabled=%STORAGE_ENABLED% ^
   --law-firm.core.audit.enabled=%AUDIT_ENABLED%
 

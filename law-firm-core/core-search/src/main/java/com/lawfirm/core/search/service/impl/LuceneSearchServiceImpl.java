@@ -324,7 +324,7 @@ public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, Se
     public void deleteDoc(String indexName, String id) {
         try {
             Term term = new Term("id", id);
-            luceneManager.deleteDocument(indexName, new TermQuery(term));
+            luceneManager.deleteDocuments(indexName, new TermQuery(term));
             log.info("删除文档成功，索引: {}, ID: {}", indexName, id);
         } catch (IOException e) {
             log.error("删除文档失败", e);
@@ -341,7 +341,7 @@ public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, Se
                 builder.add(new TermQuery(term), BooleanClause.Occur.SHOULD);
             }
             
-            luceneManager.deleteDocument(indexName, builder.build());
+            luceneManager.deleteDocuments(indexName, builder.build());
             log.info("批量删除文档成功，索引: {}, ID数量: {}", indexName, ids.size());
         } catch (IOException e) {
             log.error("批量删除文档失败", e);

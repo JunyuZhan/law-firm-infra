@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Import;
     DatabaseSearchConfig.class,
     LuceneSearchConfig.class,
     SearchEngineTypeConfig.class,
-    SearchPropertiesProviderImpl.class
+    SearchPropertiesProviderImpl.class,
+    IndexHandlerConfiguration.class
 })
 public class SearchAutoConfiguration {
     

@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS archive_file (
   update_by VARCHAR(50) COMMENT '更新人',
   PRIMARY KEY (id),
   KEY idx_archive_no (archive_no),
-  KEY idx_business (business_type, business_id(191)),
+  KEY idx_business (business_type, business_id(100)),
   KEY idx_borrow_status (borrow_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='档案文件表';
 

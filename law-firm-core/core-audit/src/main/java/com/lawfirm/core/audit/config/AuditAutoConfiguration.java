@@ -29,7 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 @Import({
     AuditAsyncConfig.class,
     DevLogConfig.class,
-    AuditConverterConfig.class
+    AuditConverterConfig.class,
+    LogModuleConfig.class
 })
 public class AuditAutoConfiguration {
 
