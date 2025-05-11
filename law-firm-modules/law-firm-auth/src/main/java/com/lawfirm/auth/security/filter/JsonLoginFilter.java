@@ -45,6 +45,16 @@ public class JsonLoginFilter extends AbstractAuthenticationProcessingFilter {
      * @return JSON登录过滤器实例
      */
     public static JsonLoginFilter create(String loginUrl, AuthenticationManager authenticationManager, ObjectMapper objectMapper) {
+        if (loginUrl == null || loginUrl.trim().isEmpty()) {
+            throw new IllegalArgumentException("登录URL不能为空");
+        }
+        if (authenticationManager == null) {
+            throw new IllegalArgumentException("认证管理器不能为空");
+        }
+        if (objectMapper == null) {
+            throw new IllegalArgumentException("ObjectMapper不能为空");
+        }
+        
         JsonLoginFilter filter = new JsonLoginFilter(new AntPathRequestMatcher(loginUrl, "POST"));
         filter.setAuthenticationManager(authenticationManager);
         filter.objectMapper = objectMapper;
@@ -57,9 +67,19 @@ public class JsonLoginFilter extends AbstractAuthenticationProcessingFilter {
         // 从请求体中读取JSON数据
         String body = StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8);
         
+        if (body == null || body.trim().isEmpty()) {
+            log.warn("登录请求体为空");
+            throw new AuthenticationException("登录请求体不能为空") {};
+        }
+        
         try {
             // 将JSON转换为LoginDTO对象
             LoginDTO loginDTO = objectMapper.readValue(body, LoginDTO.class);
+            
+            // 校验登录参数
+            if (loginDTO == null || loginDTO.getUsername() == null || loginDTO.getPassword() == null) {
+                throw new AuthenticationException("用户名和密码不能为空") {};
+            }
             
             // 创建认证令牌
             UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
@@ -70,6 +90,9 @@ public class JsonLoginFilter extends AbstractAuthenticationProcessingFilter {
             
             // 执行认证
             return this.getAuthenticationManager().authenticate(authRequest);
+        } catch (AuthenticationException e) {
+            log.error("认证失败: {}", e.getMessage());
+            throw e;
         } catch (Exception e) {
             log.error("JSON登录解析失败", e);
             throw new AuthenticationException("JSON登录解析失败: " + e.getMessage()) {};

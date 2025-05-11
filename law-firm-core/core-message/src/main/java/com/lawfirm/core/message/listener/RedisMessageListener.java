@@ -23,7 +23,7 @@ public class RedisMessageListener implements MessageListener {
      * 注入cacheRedisTemplate作为消息处理模板
      */
     @Autowired
-    @Qualifier("cacheRedisTemplate")
+    @Qualifier("commonCacheRedisTemplate")
     private RedisTemplate<String, Object> messageRedisTemplate;
 
     @Autowired

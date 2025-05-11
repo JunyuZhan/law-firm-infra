@@ -7,12 +7,23 @@ spring:
     password: ${MYSQL_PASSWORD:root}
     hikari:
       # 生产环境连接池配置
-      minimum-idle: 10
-      maximum-pool-size: 50
-      idle-timeout: 30000
+      minimum-idle: 20
+      maximum-pool-size: 100
+      idle-timeout: 60000
       max-lifetime: 1800000
       connection-timeout: 30000
       pool-name: LawFirmHikariCP
+      # 连接测试配置
+      connection-test-query: SELECT 1
+      validation-timeout: 10000
+      # 自动提交设置
+      auto-commit: true
+      # 连接初始化SQL
+      connection-init-sql: SET NAMES utf8mb4
+      # 泄漏检测
+      leak-detection-threshold: 60000
+      # 注册JMX监控
+      register-mbeans: true
   
   # 生产环境Redis配置
   data:
@@ -113,5 +124,12 @@ law-firm:
         bucket: ${MINIO_BUCKET:law-firm}
     search:
       enabled: true
+      searchEngineType: ${SEARCH_ENGINE_TYPE:database}
     audit:
       enabled: true 
+  
+  # 定义系统数据库名
+  common:
+    data:
+      system-database: ${SYSTEM_DATABASE:law_firm}
+      module-init-enabled: true 

@@ -1,6 +1,16 @@
-// AI响应对象
+package com.lawfirm.model.ai.vo;
 
-public class AIResponseVO {
+import com.lawfirm.model.base.vo.BaseVO;
+import java.io.Serializable;
+
+/**
+ * AI响应视图对象
+ * 用于封装AI服务返回给前端的响应数据
+ */
+public class AIResponseVO implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     private String outputData; // 输出数据
     private String status; // 状态
 
@@ -8,6 +18,10 @@ public class AIResponseVO {
     public AIResponseVO(String outputData, String status) {
         this.outputData = outputData;
         this.status = status;
+    }
+    
+    public AIResponseVO() {
+        // 默认无参构造函数
     }
 
     // Getter和Setter

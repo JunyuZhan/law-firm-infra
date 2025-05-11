@@ -51,13 +51,13 @@ public class MybatisPlusConfig {
      * 初始化MyBatis-Plus相关配置
      * 注意：
      * 1. 避免Set<Class<?>>类型的使用，解决FactoryBean类型推断问题
-     * 2. 使用void返回类型，避免Spring容器进行类型推断
+     * 2. 返回一个对象，符合Spring的@Bean方法要求
      */
     @Bean(name = "mybatisPlusConfigInit")
-    public void initMybatisPlusConfig(@Value("${mybatis-plus.typeEnumsPackage:}") String typeEnumsPackage) {
+    public Object initMybatisPlusConfig(@Value("${mybatis-plus.typeEnumsPackage:}") String typeEnumsPackage) {
         if (!StringUtils.hasText(typeEnumsPackage)) {
             log.info("未配置枚举类包路径，跳过枚举类扫描");
-            return;
+            return new Object(); // 返回一个简单对象
         }
         
         try {
@@ -76,6 +76,8 @@ public class MybatisPlusConfig {
         } catch (Exception e) {
             log.warn("枚举类型扫描失败", e);
         }
+        
+        return new Object(); // 返回一个简单对象
     }
     
     /**

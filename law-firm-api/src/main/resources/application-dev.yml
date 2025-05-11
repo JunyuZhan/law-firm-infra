@@ -2,9 +2,16 @@ spring:
   # 开发环境数据源 - 可以使用H2内存数据库方便开发
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
-    password: root
+    password: ${MYSQL_PASSWORD}
+    hikari:
+      # 开发环境连接池配置
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-test-query: SELECT 1
+      # 自动注册JMX监控
+      register-mbeans: true
   
   # 开发环境禁用Redis，使用内存模拟
   data:
@@ -16,6 +23,16 @@ spring:
   flyway:
     enabled: true
     clean-disabled: false
+
+  # 任务执行器配置
+  task:
+    execution:
+      enabled: true
+      pool:
+        core-size: 5
+        max-size: 10
+        queue-capacity: 100
+        thread-name-prefix: app-task-
 
 # 开发环境服务器配置
 server:
@@ -51,17 +68,21 @@ springdoc:
     enabled: true
 
 # 开发环境安全配置
-law-firm:
+"law-firm":
   security:
     # 开发环境可以启用模拟用户
-    mock-user:
+    "mock-user":
       enabled: true
       username: admin
       role: ROLE_ADMIN
     # 开发环境禁用某些安全限制
     disable:
       csrf: true
-      xss-filter: false
+      "xss-filter": false
+    # 开发环境启用密码解密（可选配置）
+    "db-password":
+      enabled: false
+      "secret-key": DevSecretKey
   
   # 开发环境核心模块配置
   core:
@@ -73,6 +94,25 @@ law-firm:
       path: ./storage
     search:
       enabled: true
-      index-path: ./indices
+      searchEngineType: database
+      "index-path": ./indices
     audit:
-      enabled: true 
+      enabled: false
+      
+  # 开发环境日志模块配置
+  common:
+    log:
+      enabled: false
+      executor:
+        bean-name: taskExecutor
+      
+    # 开发环境数据库配置
+    data:
+      enabled: true
+      "module-init-enabled": true
+      "system-database": law_firm
+      # 数据库监控
+      monitoring:
+        enabled: true
+        performance:
+          enabled: true 

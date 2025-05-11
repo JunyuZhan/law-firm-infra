@@ -40,7 +40,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     
     public LoginSuccessHandler(
             LoginHistoryService loginHistoryService, 
-            @Qualifier("objectMapper") ObjectMapper objectMapper, 
+            @Qualifier("commonWebObjectMapper") ObjectMapper objectMapper, 
             JwtTokenProvider tokenProvider,
             Environment environment) {
         this.loginHistoryService = loginHistoryService;

@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * 基础安全配置类
  * 提供通用的安全配置，可被各模块继承和扩展
  */
-@Configuration
+@Configuration("commonBaseSecurityConfig")
 @Slf4j
 public class BaseSecurityConfig {
 
@@ -25,10 +25,13 @@ public class BaseSecurityConfig {
      * 
      * 使用条件注解，仅在缺少passwordEncoder Bean时创建
      * 避免与API模块中定义的Bean冲突
+     * 
+     * @return BCryptPasswordEncoder实例
      */
     @Bean(name = "commonBasePasswordEncoder")
     @ConditionalOnMissingBean(PasswordEncoder.class)
-    public PasswordEncoder basePasswordEncoder() {
+    public PasswordEncoder commonBasePasswordEncoder() {
+        log.info("创建基础密码编码器");
         return new BCryptPasswordEncoder();
     }
     
@@ -37,10 +40,14 @@ public class BaseSecurityConfig {
      * 
      * 使用条件注解，仅在缺少securityFilterChain Bean时创建
      * 避免与模块中定义的Bean冲突
+     * 
+     * @param http HttpSecurity实例
+     * @return 配置好的SecurityFilterChain
+     * @throws Exception 配置过程中可能抛出的异常
      */
     @Bean(name = "commonBaseSecurityFilterChain")
     @ConditionalOnMissingBean(name = {"securityFilterChain", "apiDocSecurityFilterChain", "authSecurityFilterChain"})
-    public SecurityFilterChain baseSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain commonBaseSecurityFilterChain(HttpSecurity http) throws Exception {
         log.info("配置基础安全过滤链 - 默认配置");
         
         return http

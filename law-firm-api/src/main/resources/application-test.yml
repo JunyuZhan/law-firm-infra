@@ -80,6 +80,7 @@ law-firm:
       type: memory
     search:
       enabled: true
+      searchEngineType: database
       index-path: ./indices-test
     audit:
       enabled: true 

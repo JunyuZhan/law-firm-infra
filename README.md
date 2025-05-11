@@ -203,6 +203,30 @@
 - Spring Security 6.x
 - MyBatis Plus 3.5.x
 
+### 重要版本兼容性说明
+- **Spring Boot 3.2.x与MyBatis兼容性**：
+  - Spring Boot 3.2.x需要使用mybatis-spring 3.0.3或更高版本
+  - 较低版本的mybatis-spring（如3.0.2）与Spring Boot 3.2.x不兼容，会导致"Invalid value type for attribute 'factoryBeanObjectType': java.lang.String"错误
+  - 当使用MyBatis-Plus时，请确保排除其内置的mybatis-spring依赖，并显式添加3.0.3+版本
+  ```xml
+  <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus-boot-starter</artifactId>
+      <version>${mybatis-plus.version}</version>
+      <exclusions>
+          <exclusion>
+              <groupId>org.mybatis</groupId>
+              <artifactId>mybatis-spring</artifactId>
+          </exclusion>
+      </exclusions>
+  </dependency>
+  <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>3.0.3</version>
+  </dependency>
+  ```
+
 ### 3. 中间件
 - MySQL 8.0+
 - Redis 6.x

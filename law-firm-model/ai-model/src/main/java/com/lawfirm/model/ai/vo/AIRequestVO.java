@@ -1,6 +1,16 @@
-// AI请求对象
+package com.lawfirm.model.ai.vo;
 
-public class AIRequestVO {
+import com.lawfirm.model.base.vo.BaseVO;
+import java.io.Serializable;
+
+/**
+ * AI请求视图对象
+ * 用于封装前端发送的AI请求数据
+ */
+public class AIRequestVO implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     private String inputData; // 输入数据
     private String modelVersion; // 模型版本
 
@@ -8,6 +18,10 @@ public class AIRequestVO {
     public AIRequestVO(String inputData, String modelVersion) {
         this.inputData = inputData;
         this.modelVersion = modelVersion;
+    }
+    
+    public AIRequestVO() {
+        // 默认无参构造函数
     }
 
     // Getter和Setter

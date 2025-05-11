@@ -10,13 +10,13 @@ import java.util.Map;
  * 审计配置属性
  */
 @Data
-@ConfigurationProperties(prefix = "law-firm.audit")
+@ConfigurationProperties(prefix = "law-firm.core.audit")
 public class AuditProperties {
     
     /**
      * 是否启用审计
      */
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     /**
      * 异步配置

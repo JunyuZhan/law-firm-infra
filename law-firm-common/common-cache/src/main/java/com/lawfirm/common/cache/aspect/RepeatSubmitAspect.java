@@ -27,7 +27,7 @@ public class RepeatSubmitAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
     
-    public RepeatSubmitAspect(@Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+    public RepeatSubmitAspect(@Qualifier("commonCacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
     

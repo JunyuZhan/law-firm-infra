@@ -9,6 +9,7 @@ import com.lawfirm.model.auth.vo.LoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,17 +32,20 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "false")
+@ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "false", matchIfMissing = false)
 public class SimpleLoginHandler implements AuthenticationSuccessHandler, AuthenticationFailureHandler {
     
     private final ObjectMapper objectMapper;
     private final JwtTokenProvider tokenProvider;
+    private final Environment environment;
     
     public SimpleLoginHandler(
-            @Qualifier("objectMapper") ObjectMapper objectMapper,
-            JwtTokenProvider tokenProvider) {
+            @Qualifier("commonWebObjectMapper") ObjectMapper objectMapper,
+            JwtTokenProvider tokenProvider,
+            Environment environment) {
         this.objectMapper = objectMapper;
         this.tokenProvider = tokenProvider;
+        this.environment = environment;
     }
     
     @Override

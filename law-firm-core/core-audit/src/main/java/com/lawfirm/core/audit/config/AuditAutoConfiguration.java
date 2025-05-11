@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(AuditProperties.class)
-@ConditionalOnProperty(prefix = "law-firm.audit", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
 @Import({
     AuditAsyncConfig.class,
     DevLogConfig.class,
@@ -35,19 +35,25 @@ public class AuditAutoConfiguration {
 
     @Bean(name = "auditPointcut")
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
     public AuditPointcut auditPointcut() {
+        log.info("初始化审计切点");
         return new AuditPointcut();
     }
 
     @Bean(name = "auditLogAspect")
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
     public AuditLogAspect auditLogAspect(AuditService auditService, PermissionService permissionService) {
+        log.info("初始化审计日志切面");
         return new AuditLogAspect(auditService, permissionService);
     }
 
     @Bean(name = "auditFieldAspect")
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
     public AuditFieldAspect auditFieldAspect(AuditService auditService) {
+        log.info("初始化审计字段切面");
         return new AuditFieldAspect(auditService);
     }
     
@@ -56,6 +62,7 @@ public class AuditAutoConfiguration {
      */
     @Bean(name = "defaultAuditPropertiesProvider")
     @ConditionalOnMissingBean(AuditPropertiesProvider.class)
+    @ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
     public AuditPropertiesProvider defaultAuditPropertiesProvider(AuditProperties auditProperties) {
         log.info("创建默认审计配置提供者");
         return () -> auditProperties;
@@ -64,6 +71,7 @@ public class AuditAutoConfiguration {
     @Bean(name = "coreAuditServiceImpl")
     @Primary
     @ConditionalOnMissingBean(name = "coreAuditServiceImpl")
+    @ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
     public AuditService coreAuditServiceImpl(AuditLogMapper auditLogMapper, 
                                             AuditRecordMapper auditRecordMapper,
                                             AuditLogConverter auditLogConverter, 

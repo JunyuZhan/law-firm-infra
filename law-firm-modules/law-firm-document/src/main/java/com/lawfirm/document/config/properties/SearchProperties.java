@@ -15,8 +15,9 @@ public class SearchProperties {
     /**
      * 搜索引擎类型：elasticsearch/solr
      * 默认使用database数据库搜索，不再使用付费的ElasticSearch
+     * 改名为searchEngineType避免与Spring框架保留名称"type"冲突
      */
-    private String type = "database";
+    private String searchEngineType = "database";
     
     /**
      * 是否启用搜索引擎

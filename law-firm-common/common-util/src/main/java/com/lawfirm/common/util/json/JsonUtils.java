@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.lawfirm.common.core.exception.BusinessException;
 import com.lawfirm.common.util.SpringUtils;
@@ -30,15 +31,67 @@ import com.lawfirm.common.util.SpringUtils;
 @Component("commonJsonUtils")
 public class JsonUtils {
 
+    // 静态引用，由@PostConstruct初始化
+    private static volatile ObjectMapper staticObjectMapper;
+    
+    // 读写锁，确保线程安全
+    private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
+    private static final ReentrantReadWriteLock.ReadLock READ_LOCK = LOCK.readLock();
+    private static final ReentrantReadWriteLock.WriteLock WRITE_LOCK = LOCK.writeLock();
+
+    @Autowired
+    @Qualifier("commonCoreObjectMapper")
+    private ObjectMapper objectMapper;
+    
     /**
-     * 从Spring容器获取ObjectMapper
+     * 初始化静态ObjectMapper
+     */
+    @PostConstruct
+    public void init() {
+        WRITE_LOCK.lock();
+        try {
+            if (staticObjectMapper == null) {
+                staticObjectMapper = objectMapper;
+                log.info("JsonUtils初始化完成，注入commonCoreObjectMapper");
+            }
+        } finally {
+            WRITE_LOCK.unlock();
+        }
+    }
+
+    /**
+     * 获取ObjectMapper实例
+     * 使用双重检查锁定模式确保线程安全
      */
     private static ObjectMapper getObjectMapper() {
+        ObjectMapper localMapper = staticObjectMapper;
+        if (localMapper != null) {
+            return localMapper;
+        }
+        
+        WRITE_LOCK.lock();
         try {
-            return SpringUtils.getBean(ObjectMapper.class);
-        } catch (Exception e) {
-            // 如果从Spring容器获取失败，则使用默认配置
-            return new ObjectMapper();
+            localMapper = staticObjectMapper;
+            if (localMapper != null) {
+                return localMapper;
+            }
+            
+            // 从Spring容器获取或创建新实例
+            try {
+                // 从Spring容器获取ObjectMapper Bean
+                ObjectMapper beanMapper = SpringUtils.getBean("commonCoreObjectMapper", ObjectMapper.class);
+                staticObjectMapper = beanMapper;
+                log.info("从Spring容器获取到ObjectMapper成功");
+                return staticObjectMapper;
+            } catch (Exception e) {
+                log.warn("无法从Spring容器获取ObjectMapper，使用默认配置：{}", e.getMessage());
+                ObjectMapper defaultMapper = new ObjectMapper();
+                defaultMapper.findAndRegisterModules();
+                staticObjectMapper = defaultMapper;
+                return staticObjectMapper;
+            }
+        } finally {
+            WRITE_LOCK.unlock();
         }
     }
 

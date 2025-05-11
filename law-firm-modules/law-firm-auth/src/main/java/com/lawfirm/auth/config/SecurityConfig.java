@@ -63,7 +63,7 @@ public class SecurityConfig extends BaseSecurityConfig {
     @Autowired
     private LoginFailureHandler loginFailureHandler;
     @Autowired
-    @Qualifier("objectMapper")
+    @Qualifier("commonWebObjectMapper")
     private ObjectMapper objectMapper;
     
     private final AntPathMatcher pathMatcher = new AntPathMatcher();

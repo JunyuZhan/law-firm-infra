@@ -83,7 +83,7 @@ public class CacheConfig {
      * 复用通用缓存模板，避免创建多个RedisTemplate导致冲突
      */
     @Bean("clientRedisTemplate")
-    public RedisTemplate<String, Object> clientRedisTemplate(@Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> cacheRedisTemplate) {
+    public RedisTemplate<String, Object> clientRedisTemplate(@Qualifier("commonCacheRedisTemplate") RedisTemplate<String, Object> cacheRedisTemplate) {
         return cacheRedisTemplate;
     }
 }

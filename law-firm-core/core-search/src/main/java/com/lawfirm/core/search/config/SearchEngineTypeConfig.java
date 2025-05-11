@@ -1,10 +1,10 @@
 package com.lawfirm.core.search.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 /**
  * 搜索引擎类型配置
@@ -14,23 +14,26 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "law-firm.search.enabled", havingValue = "true", matchIfMissing = true)
 public class SearchEngineTypeConfig {
 
-    @Value("${law-firm.search.type:database}")
-    private String searchType;
+    private final Environment environment;
     
     /**
-     * 初始化搜索引擎类型
-     * 将类型存储在系统属性中，以便其他组件使用
+     * 从配置文件中读取搜索引擎类型
+     * 属性名已从type更新为searchEngineType
      */
-    @Bean(name = "searchEngineType")
-    public Object searchEngineTypeBean() {
-        log.info("核心搜索模块初始化, 使用搜索类型: {}", searchType);
+    @Value("${law-firm.search.searchEngineType:database}")
+    private String searchType;
+    
+    public SearchEngineTypeConfig(Environment environment) {
+        this.environment = environment;
+    }
+    
+    @PostConstruct
+    public void init() {
+        log.info("设置搜索引擎类型系统属性: {}", searchType);
         
-        // 设置系统属性，供其他组件参考
+        // 设置一个系统属性，便于其他模块获取当前搜索引擎类型
         System.setProperty("law-firm.search.current.type", searchType);
-        
-        return searchType;
     }
 } 

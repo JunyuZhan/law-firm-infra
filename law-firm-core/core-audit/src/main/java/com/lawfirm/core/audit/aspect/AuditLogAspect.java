@@ -16,6 +16,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
  */
 @Aspect
 @Component
+@ConditionalOnProperty(prefix = "law-firm.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnBean(name = "coreAuditServiceImpl")
 public class AuditLogAspect {
 
     private final AuditService auditService;

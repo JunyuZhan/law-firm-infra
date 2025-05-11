@@ -50,11 +50,15 @@ public class RedisConnectionFactoryConfig {
 
     /**
      * 创建Redis连接工厂，正确处理空密码情况
+     * 明确命名为commonRedisConnectionFactory，避免与Spring Boot自动配置冲突
      */
     @Bean("commonRedisConnectionFactory")
     @Primary
     @ConditionalOnMissingBean(RedisConnectionFactory.class)
     public RedisConnectionFactory commonRedisConnectionFactory() {
+        log.info("初始化Redis连接工厂，连接到 {}:{}", host, port);
+        
+        // 创建Redis标准配置
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
         redisConfig.setHostName(host);
         redisConfig.setPort(port);
@@ -74,11 +78,18 @@ public class RedisConnectionFactoryConfig {
         Duration timeout = parseTimeout(timeoutString);
         log.info("Redis连接超时设置为：{}", timeout);
 
+        // 创建Lettuce客户端配置
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
                 .commandTimeout(timeout)
                 .build();
 
-        return new LettuceConnectionFactory(redisConfig, clientConfig);
+        // 创建并返回连接工厂
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(redisConfig, clientConfig);
+        // 确保连接工厂完全初始化
+        factory.afterPropertiesSet();
+        log.info("Redis连接工厂创建完成");
+        
+        return factory;
     }
     
     /**

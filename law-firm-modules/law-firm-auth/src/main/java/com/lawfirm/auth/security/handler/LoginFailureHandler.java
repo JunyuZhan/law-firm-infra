@@ -34,7 +34,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
     
     public LoginFailureHandler(
             LoginHistoryService loginHistoryService,
-            @Qualifier("objectMapper") ObjectMapper objectMapper,
+            @Qualifier("commonWebObjectMapper") ObjectMapper objectMapper,
             Environment environment) {
         this.loginHistoryService = loginHistoryService;
         this.objectMapper = objectMapper;

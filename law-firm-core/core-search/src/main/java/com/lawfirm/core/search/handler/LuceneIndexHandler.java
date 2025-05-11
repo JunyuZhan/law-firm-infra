@@ -38,7 +38,8 @@ import lombok.extern.slf4j.Slf4j;
  * Lucene索引处理实现
  */
 @Slf4j
-@ConditionalOnProperty(prefix = "law-firm.search", name = "type", havingValue = "lucene")
+@Component
+@ConditionalOnProperty(prefix = "law-firm.search", name = "searchEngineType", havingValue = "lucene")
 public class LuceneIndexHandler implements IndexHandler {
 
     private final SearchProperties searchProperties;

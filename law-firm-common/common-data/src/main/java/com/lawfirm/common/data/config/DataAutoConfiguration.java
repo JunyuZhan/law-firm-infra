@@ -17,12 +17,12 @@ import org.springframework.context.annotation.Import;
 @Import({
     DataSourceConfig.class,
     MybatisPlusConfig.class,
-    SessionFactoryConfig.class,
     DynamicDataSourceConfig.class,
     StorageConfig.class,
     SqlInitDisableConfig.class,
     DatabaseInitializer.class,
-    DatabaseRegistry.class
+    DatabaseRegistry.class,
+    DataSourceEnhancementConfig.class
 })
 public class DataAutoConfiguration {
     // 此类作为配置聚合器，不需要其他实现

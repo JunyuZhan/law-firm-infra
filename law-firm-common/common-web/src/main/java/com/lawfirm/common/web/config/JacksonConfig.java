@@ -17,6 +17,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -29,7 +32,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Jackson配置
  */
-@Configuration("commonJacksonConfig")
+@Configuration("commonWebJacksonConfig")
 public class JacksonConfig {
 
     /**
@@ -47,28 +50,50 @@ public class JacksonConfig {
      */
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
-    @Bean(name = "commonJacksonObjectMapper")
-    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
-        // 使用JsonMapper.builder()替代原来的方式，以支持更多高级特性
-        JsonMapper.Builder mapperBuilder = JsonMapper.builder()
-                .addModule(new ParameterNamesModule())
-                .enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES)
-                .enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES)
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-                
-        // 构建ObjectMapper
-        ObjectMapper objectMapper = mapperBuilder.build();
+    /**
+     * 配置Web模块专用的ObjectMapper，用于处理HTTP请求响应
+     * 
+     * 优先使用common-core中已定义的ObjectMapper作为基础，
+     * 若不存在则创建新实例。避免重复定义导致的冲突。
+     */
+    @Bean(name = "commonWebObjectMapper")
+    @ConditionalOnMissingBean(name = "commonWebObjectMapper")
+    public ObjectMapper webObjectMapper(
+            @Autowired(required = false) @Qualifier("commonCoreObjectMapper") ObjectMapper coreObjectMapper) {
         
-        // 通用配置
+        // 使用commonCoreObjectMapper作为基础，若存在
+        ObjectMapper objectMapper = coreObjectMapper != null 
+            ? coreObjectMapper.copy() 
+            : JsonMapper.builder()
+                .addModule(new ParameterNamesModule())
+                .build();
+        
+        // Web模块特有的配置
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         
         // 设置命名策略为SNAKE_CASE（下划线命名）
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         
-        // 注册时间模块
+        // 功能特性配置
+        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        objectMapper.enable(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        
+        // 配置日期时间格式
+        configureJavaTimeModule(objectMapper);
+        
+        return objectMapper;
+    }
+    
+    /**
+     * 配置Java时间模块
+     */
+    private void configureJavaTimeModule(ObjectMapper objectMapper) {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         
         // 处理LocalDateTime
@@ -90,21 +115,5 @@ public class JacksonConfig {
             new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
 
         objectMapper.registerModule(javaTimeModule);
-        
-        // 为API文档生成添加特殊处理，防止循环引用和深度嵌套问题
-        SimpleModule openApiModule = new SimpleModule("OpenApiModule");
-        objectMapper.registerModule(openApiModule);
-        
-        // 配置处理循环引用
-        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-        objectMapper.enable(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
-        
-        // 添加额外配置，处理API文档生成
-        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
-        objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-        
-        return objectMapper;
     }
 } 

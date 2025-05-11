@@ -78,6 +78,18 @@ public class AppCacheConfig {
     }
     
     /**
+     * 为了兼容旧代码，提供一个commonCacheManager的别名，指向commonAppCacheManager
+     * 这样可以确保使用@Qualifier("commonCacheManager")的代码能正常工作
+     */
+    @Bean("commonCacheManager")
+    @ConditionalOnProperty(name = "spring.data.redis.host")
+    @ConditionalOnMissingBean(name = "commonCacheManager")
+    public CacheManager commonCacheManager(CacheManager commonAppCacheManager) {
+        log.info("创建commonCacheManager别名，指向commonAppCacheManager");
+        return commonAppCacheManager;
+    }
+    
+    /**
      * 提供备用Redis缓存管理器
      * 仅在未被其他Bean覆盖且配置了Redis时创建
      */

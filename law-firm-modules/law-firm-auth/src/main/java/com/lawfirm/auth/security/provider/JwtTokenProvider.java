@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.SecureDigestAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  * JWT令牌提供者
  */
 @Slf4j
-@Component
+@Component("auth_jwtTokenProvider")
 public class JwtTokenProvider {
     
     @Value("${law.firm.security.jwt.secret:HmacSHA256SecretKey}")

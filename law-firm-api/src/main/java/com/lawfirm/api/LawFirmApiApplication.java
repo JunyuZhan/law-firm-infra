@@ -12,10 +12,6 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.core.env.Environment;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Optional;
-
 /**
  * 律师事务所API应用入口类
  * 
@@ -23,6 +19,11 @@ import java.util.Optional;
  * 1. Common模块：通过依赖自动加载，提供基础功能
  * 2. Core模块：使用自动配置机制加载，不通过profile配置引入
  * 3. 业务模块：通过spring.profiles.include在application.yml中引入各模块配置
+ * 
+ * 【Spring Boot版本规划】
+ * 当前使用Spring Boot 3.x版本。
+ * 计划在2024年Q4前升级到最新稳定版本，以确保安全和功能更新。
+ * OSS支持截止日期：2024-12-31
  */
 @Slf4j
 @SpringBootApplication(
@@ -61,79 +62,79 @@ import java.util.Optional;
         "com.lawfirm.archive"
     },
     exclude = {
-        // 1. 安全相关
-        SecurityAutoConfiguration.class,
-        UserDetailsServiceAutoConfiguration.class,
-        
-        // 2. 数据库相关
+        // 使用自定义数据源配置
         DataSourceAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class,
+        // 不使用JPA
         JpaRepositoriesAutoConfiguration.class,
-        
-        // 3. Redis相关 - 禁用官方的自动配置，使用我们自己的配置
+        HibernateJpaAutoConfiguration.class,
+        // 使用自定义Redis配置
         RedisAutoConfiguration.class,
-        RedisRepositoriesAutoConfiguration.class
+        RedisRepositoriesAutoConfiguration.class,
+        // 使用自定义安全配置
+        SecurityAutoConfiguration.class,
+        UserDetailsServiceAutoConfiguration.class
     }
 )
 public class LawFirmApiApplication {
 
     public static void main(String[] args) {
-        // 设置系统属性，禁用工厂类型错误检查，解决"factoryBeanObjectType"错误
-        System.setProperty("spring.main.allow-bean-definition-overriding", "true");
-        System.setProperty("spring.main.lazy-initialization", "false");
-        System.setProperty("spring.factories.ignore-errors", "true");
+        // 设置系统属性
+        setSystemProperties();
         
-        // 启动应用
-        SpringApplication application = new SpringApplication(LawFirmApiApplication.class);
+        SpringApplication app = new SpringApplication(LawFirmApiApplication.class);
+        Environment env = app.run(args).getEnvironment();
         
-        // 根据环境变量决定是否开启延迟初始化
-        boolean isDockerEnv = Optional.ofNullable(System.getenv("SPRING_PROFILES_ACTIVE"))
-                .map(profile -> profile.contains("docker"))
-                .orElse(false);
-                
-        if (isDockerEnv) {
-            log.info("检测到Docker环境，启用资源优化配置");
+        // 输出应用程序信息
+        String protocol = "http";
+        if (env.getProperty("server.ssl.key-store") != null) {
+            protocol = "https";
         }
-        
-        Environment env = application.run(args).getEnvironment();
-        logApplicationStartup(env);
-    }
-    
-    /**
-     * 输出应用启动信息，包括访问地址、激活的配置文件等
-     */
-    private static void logApplicationStartup(Environment env) {
-        String protocol = Optional.ofNullable(env.getProperty("server.ssl.key-store"))
-                .map(key -> "https")
-                .orElse("http");
-                
         String serverPort = env.getProperty("server.port", "8080");
-        String contextPath = Optional.ofNullable(env.getProperty("server.servlet.context-path"))
-                .filter(path -> !path.isEmpty())
-                .orElse("/");
-                
+        String contextPath = env.getProperty("server.servlet.context-path", "/");
         if (!contextPath.startsWith("/")) {
             contextPath = "/" + contextPath;
         }
         
-        String hostAddress = "localhost";
-        try {
-            hostAddress = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            log.warn("无法确定主机地址", e);
-        }
-        
         log.info("\n----------------------------------------------------------\n\t" +
-                "应用 '{}' 正在运行! 访问地址:\n\t" +
+                 "应用程序 '{}' 已启动! 访问地址:\n\t" +
                 "本地: \t\t{}://localhost:{}{}\n\t" +
                 "外部: \t\t{}://{}:{}{}\n\t" +
-                "配置: \t\t{}\n\t" +
                 "环境: \t\t{}\n" +
                 "----------------------------------------------------------",
-                env.getProperty("spring.application.name"),
-                protocol, serverPort, contextPath,
-                protocol, hostAddress, serverPort, contextPath,
-                env.getActiveProfiles(),
-                env.getProperty("spring.profiles.active"));
+                "律师事务所管理系统",
+                protocol,
+                serverPort,
+                contextPath,
+                protocol,
+                "localhost",
+                serverPort,
+                contextPath,
+                env.getActiveProfiles().length == 0 ? "默认配置" : env.getActiveProfiles()[0]);
+    }
+    
+    /**
+     * 设置必要的系统属性
+     */
+    private static void setSystemProperties() {
+        // 允许覆盖Bean定义
+        System.setProperty("spring.main.allow-bean-definition-overriding", "true");
+        
+        // 启用延迟初始化以提高启动性能
+        System.setProperty("spring.main.lazy-initialization", "false");
+        
+        // 允许循环引用（开发阶段）
+        System.setProperty("spring.main.allow-circular-references", "true");
+        
+        // 设置默认区域
+        System.setProperty("user.timezone", "Asia/Shanghai");
+        
+        // 设置文件编码
+        System.setProperty("file.encoding", "UTF-8");
+        
+        // 设置日志级别
+        System.setProperty("org.springframework.boot.logging.LoggingSystem", "org.springframework.boot.logging.logback.LogbackLoggingSystem");
+        
+        // 确保只排除Spring Boot自动配置类
+        System.clearProperty("spring.autoconfigure.exclude");
     }
 }

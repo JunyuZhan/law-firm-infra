@@ -23,7 +23,7 @@ public class LogoutHandler implements LogoutSuccessHandler {
     
     private final ObjectMapper objectMapper;
     
-    public LogoutHandler(@Qualifier("objectMapper") ObjectMapper objectMapper) {
+    public LogoutHandler(@Qualifier("commonWebObjectMapper") ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
     

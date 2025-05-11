@@ -36,14 +36,14 @@ public class SearchEngineFactory {
 
     @PostConstruct
     public void init() {
-        log.info("初始化搜索引擎工厂，当前搜索引擎类型: {}", searchProperties.getType());
+        log.info("初始化搜索引擎工厂，当前搜索引擎类型: {}", searchProperties.getSearchEngineType());
     }
 
     /**
      * 获取当前配置的搜索服务
      */
     public SearchService getSearchService() {
-        String type = searchProperties.getType();
+        String type = searchProperties.getSearchEngineType();
         
         if ("lucene".equals(type)) {
             if (luceneSearchService != null) {

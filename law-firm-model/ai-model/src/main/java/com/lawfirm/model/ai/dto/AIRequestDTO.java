@@ -1,6 +1,16 @@
-// AI请求对象
+package com.lawfirm.model.ai.dto;
 
-public class AIRequestDTO {
+import com.lawfirm.model.base.dto.BaseDTO;
+import java.io.Serializable;
+
+/**
+ * AI请求数据传输对象
+ * 用于封装发送给AI服务的请求数据
+ */
+public class AIRequestDTO implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     private String inputData; // 输入数据
     private String modelVersion; // 模型版本
 
@@ -8,6 +18,10 @@ public class AIRequestDTO {
     public AIRequestDTO(String inputData, String modelVersion) {
         this.inputData = inputData;
         this.modelVersion = modelVersion;
+    }
+    
+    public AIRequestDTO() {
+        // 默认无参构造函数
     }
 
     // Getter和Setter

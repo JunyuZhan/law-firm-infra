@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.sql.DataSource;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Collections;
 
 /**
  * 动态数据源配置
@@ -26,7 +25,7 @@ import java.util.Collections;
  * 并且必须在 law-firm.common.data.enabled=true 时才启用
  */
 @Slf4j
-@Configuration
+@Configuration("commonDynamicDataSourceConfig")
 @ConditionalOnProperty(value = {
     "spring.datasource.dynamic.enabled", 
     "law-firm.common.data.enabled"
@@ -36,18 +35,25 @@ public class DynamicDataSourceConfig {
     @Autowired
     private DynamicDataSourceProperties properties;
 
-    @Bean(name = "defaultDataSourceCreator")
-    @ConditionalOnMissingBean
-    public DefaultDataSourceCreator defaultDataSourceCreator() {
+    /**
+     * 默认数据源创建器
+     */
+    @Bean(name = "commonDefaultDataSourceCreator")
+    @ConditionalOnMissingBean(name = "commonDefaultDataSourceCreator")
+    public DefaultDataSourceCreator commonDefaultDataSourceCreator() {
         log.info("创建默认数据源创建器");
         return new DefaultDataSourceCreator();
     }
 
-    @Bean(name = "dynamicDataSourceProvider")
-    @ConditionalOnMissingBean(name = "dynamicDataSourceProvider")
-    public DynamicDataSourceProvider dynamicDataSourceProvider(
-            @Qualifier("masterDataSource") DataSource masterDataSource,
-            DefaultDataSourceCreator dataSourceCreator) {
+    /**
+     * 动态数据源提供者
+     * 整合主数据源和其他数据源
+     */
+    @Bean(name = "commonDynamicDataSourceProvider")
+    @ConditionalOnMissingBean(name = "commonDynamicDataSourceProvider")
+    public DynamicDataSourceProvider commonDynamicDataSourceProvider(
+            @Qualifier("dataSource") DataSource masterDataSource,
+            @Qualifier("commonDefaultDataSourceCreator") DefaultDataSourceCreator dataSourceCreator) {
         log.info("创建动态数据源提供者");
         return new AbstractDataSourceProvider(dataSourceCreator) {
             @Override
@@ -59,10 +65,14 @@ public class DynamicDataSourceConfig {
         };
     }
 
-    @Bean(name = "dataSource")
-    @Primary
-    @ConditionalOnMissingBean(name = "dataSource")
-    public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
+    /**
+     * 提供动态路由数据源
+     * 用于支持多数据源切换
+     */
+    @Bean(name = "commonDynamicRoutingDataSource")
+    @ConditionalOnMissingBean(name = "commonDynamicRoutingDataSource")
+    public DataSource commonDynamicRoutingDataSource(
+            @Qualifier("commonDynamicDataSourceProvider") DynamicDataSourceProvider dynamicDataSourceProvider) {
         log.info("创建动态路由数据源");
         DynamicRoutingDataSource dataSource = new DynamicRoutingDataSource();
         dataSource.setPrimary("master");

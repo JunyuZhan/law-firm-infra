@@ -96,7 +96,7 @@ document:
   # 文档搜索配置
   search:
     enabled: ${DOCUMENT_SEARCH_ENABLED:true}
-    type: ${DOCUMENT_SEARCH_TYPE:lucene}
+    searchEngineType: ${DOCUMENT_SEARCH_TYPE:lucene}
     lucene:
       index-path: ${DOCUMENT_LUCENE_INDEX_PATH:./lucene/documents}
       analyzer: standard

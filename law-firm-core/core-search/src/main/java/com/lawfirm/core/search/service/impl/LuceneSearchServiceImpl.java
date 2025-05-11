@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @Service("luceneSearchService")
-@ConditionalOnProperty(prefix = "law-firm.search", name = "type", havingValue = "lucene")
+@ConditionalOnProperty(prefix = "law-firm.search", name = "searchEngineType", havingValue = "lucene")
 public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 
     @Autowired

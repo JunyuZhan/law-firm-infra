@@ -27,7 +27,7 @@ public class SimpleCacheAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
     
-    public SimpleCacheAspect(@Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+    public SimpleCacheAspect(@Qualifier("commonCacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

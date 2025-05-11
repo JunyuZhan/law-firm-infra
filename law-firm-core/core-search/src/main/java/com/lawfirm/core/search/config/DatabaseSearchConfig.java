@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(prefix = "law-firm.search", name = "type", havingValue = "database", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "law-firm.search", name = "searchEngineType", havingValue = "database", matchIfMissing = true)
 public class DatabaseSearchConfig {
     
     public DatabaseSearchConfig() {

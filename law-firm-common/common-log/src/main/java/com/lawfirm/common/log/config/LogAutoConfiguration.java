@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lawfirm.common.log.aspect.LogAspect;
 import com.lawfirm.common.log.properties.LogProperties;
 import com.lawfirm.common.log.filter.MdcTraceIdFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +27,13 @@ public class LogAutoConfiguration {
 
     /**
      * 配置日志切面
+     * 优先使用commonCoreObjectMapper，避免创建重复实例
      */
     @Bean("commonLogAspect")
-    public LogAspect logAspect(ObjectMapper objectMapper, 
-                              LogProperties logProperties,
-                              ThreadPoolTaskExecutor asyncLogExecutor) {
+    public LogAspect logAspect(
+            @Autowired @Qualifier("commonCoreObjectMapper") ObjectMapper objectMapper, 
+            LogProperties logProperties,
+            @Qualifier("commonAsyncLogExecutor") ThreadPoolTaskExecutor asyncLogExecutor) {
         return new LogAspect(objectMapper, logProperties, asyncLogExecutor);
     }
 

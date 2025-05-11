@@ -19,7 +19,7 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(prefix = "law-firm.search", name = "type", havingValue = "lucene")
+@ConditionalOnProperty(prefix = "law-firm.search", name = "searchEngineType", havingValue = "lucene")
 public class LuceneSearchConfig {
 
     /**

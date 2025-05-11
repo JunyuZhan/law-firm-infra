@@ -12,6 +12,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -22,6 +24,8 @@ import java.util.Arrays;
  */
 @Aspect
 @Component
+@ConditionalOnProperty(prefix = "law-firm.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnBean(name = "coreAuditServiceImpl")
 public class AuditFieldAspect {
 
     private final AuditService auditService;

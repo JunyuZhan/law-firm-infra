@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @ConditionalOnWebApplication
 @Import({
     SecurityConfig.class,
+    AuthMybatisConfig.class,
 })
 @ComponentScan(basePackages = "com.lawfirm.auth")
 public class AuthAutoConfiguration {
@@ -28,7 +29,7 @@ public class AuthAutoConfiguration {
 
     public AuthAutoConfiguration(
             JwtTokenProvider tokenProvider,
-            @Qualifier("cacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+            @Qualifier("commonCacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.tokenProvider = tokenProvider;
         this.redisTemplate = redisTemplate;
     }

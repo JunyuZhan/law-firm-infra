@@ -1,3 +1,5 @@
+package com.lawfirm.model.ai.dto;
+
 // AI响应对象
 
 public class AIResponseDTO {

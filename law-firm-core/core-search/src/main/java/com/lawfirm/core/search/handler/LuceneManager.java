@@ -27,7 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 负责创建、更新、删除索引以及执行搜索操作
  */
 @Slf4j
-@ConditionalOnProperty(prefix = "law-firm.search", name = "type", havingValue = "lucene")
+@Component
+@ConditionalOnProperty(prefix = "law-firm.search", name = "searchEngineType", havingValue = "lucene")
 public class LuceneManager {
 
     private final SearchProperties searchProperties;

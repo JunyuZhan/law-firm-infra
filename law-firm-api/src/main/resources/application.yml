@@ -22,25 +22,21 @@ spring:
   # 允许Bean定义覆盖 - 重要，解决Bean冲突问题
   main:
     allow-bean-definition-overriding: true
-    # 禁用自动检测FactoryBean类型，解决"factoryBeanObjectType"错误
+    # 禁用懒加载，确保所有Bean在启动时完全初始化
     lazy-initialization: false
     # 允许循环引用
     allow-circular-references: true
-    # 设置FactoryBean相关参数，避免类型推断问题
+    # 主应用类
     sources:
       - com.lawfirm.api.LawFirmApiApplication
-  # 完全禁用FactoryBean类型推断，解决Spring Boot 3.x中的"factoryBeanObjectType"错误
+  # 排除不需要的自动配置
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-  # 设置工厂Bean相关配置
-  factory-beans:
-    type-inference:
-      enabled: false
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:root}
     hikari:
@@ -67,6 +63,15 @@ spring:
       # 禁用Redis自动配置的存储库支持，使用自定义配置
       repositories:
         enabled: false
+  # 线程池任务执行器配置
+  task:
+    execution:
+      enabled: true
+      pool:
+        core-size: 5
+        max-size: 10
+        queue-capacity: 100
+        thread-name-prefix: law-firm-task-
   # 控制器Bean名称后缀，避免冲突
   mvc:
     pathmatch:
@@ -84,6 +89,9 @@ spring:
     baseline-on-migrate: true
     out-of-order: true
     validate-on-migrate: true
+  output:
+    ansi:
+      enabled: always
 
 # 服务器配置
 server:
@@ -145,15 +153,20 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 # 系统参数配置 - 这里只放顶层配置，模块内配置通过include引入
-law-firm:
+"law-firm":
   # 安全配置
   security:
     jwt:
       secret: ${JWT_SECRET:lawfirm123456}
       expiration: ${JWT_EXPIRATION:86400}
       header: ${JWT_HEADER:Authorization}
-      token-start-with: ${JWT_TOKEN_START_WITH:Bearer }
-      token-header: ${JWT_TOKEN_HEADER:Authorization}
+      "token-start-with": ${JWT_TOKEN_START_WITH:Bearer }
+      "token-header": ${JWT_TOKEN_HEADER:Authorization}
+  
+  # 核心模块配置
+  core:
+    audit:
+      enabled: false
   
   # 通用配置
   common:
@@ -163,12 +176,14 @@ law-firm:
       enabled: true
     data:
       enabled: true
-      module-init-enabled: true
+      "module-init-enabled": true
     cache:
       enabled: true
     security:
       enabled: true
     log:
-      enabled: true
+      enabled: false
+      executor:
+        bean-name: taskExecutor
     message:
       enabled: true 

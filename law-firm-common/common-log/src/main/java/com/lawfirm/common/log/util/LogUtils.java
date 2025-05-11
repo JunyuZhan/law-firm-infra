@@ -3,18 +3,67 @@ package com.lawfirm.common.log.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 
 /**
  * 日志工具类
  */
+@Component("commonLogUtils")
 public class LogUtils {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static volatile ObjectMapper staticObjectMapper;
+    
+    // 读写锁，确保线程安全
+    private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
+    private static final ReentrantReadWriteLock.ReadLock READ_LOCK = LOCK.readLock();
+    private static final ReentrantReadWriteLock.WriteLock WRITE_LOCK = LOCK.writeLock();
+    
+    @Autowired
+    @Qualifier("commonCoreObjectMapper")
+    private ObjectMapper objectMapper;
+    
+    @PostConstruct
+    public void init() {
+        WRITE_LOCK.lock();
+        try {
+            if (staticObjectMapper == null) {
+                staticObjectMapper = objectMapper;
+            }
+        } finally {
+            WRITE_LOCK.unlock();
+        }
+    }
+    
+    /**
+     * 获取ObjectMapper实例，确保线程安全
+     */
+    private static ObjectMapper getObjectMapper() {
+        ObjectMapper localMapper = staticObjectMapper;
+        if (localMapper != null) {
+            return localMapper;
+        }
+        
+        // 如果还未初始化，创建默认实例
+        WRITE_LOCK.lock();
+        try {
+            if (staticObjectMapper == null) {
+                staticObjectMapper = new ObjectMapper();
+                staticObjectMapper.findAndRegisterModules();
+            }
+            return staticObjectMapper;
+        } finally {
+            WRITE_LOCK.unlock();
+        }
+    }
 
     /**
      * 获取方法调用的完整信息
@@ -69,7 +118,7 @@ public class LogUtils {
             return Arrays.toString((Object[]) arg);
         }
         try {
-            return objectMapper.writeValueAsString(arg);
+            return getObjectMapper().writeValueAsString(arg);
         } catch (JsonProcessingException e) {
             return arg.toString();
         }

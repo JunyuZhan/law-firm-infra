@@ -20,11 +20,11 @@ public class SearchPropertiesProviderImpl {
     @Primary
     @ConditionalOnProperty(name = "law-firm.search.enabled", havingValue = "true", matchIfMissing = true)
     public SearchPropertiesProvider searchPropertiesProvider(SearchProperties properties) {
-        log.info("创建搜索配置提供者, 引擎类型: {}", properties.getType());
+        log.info("创建搜索配置提供者, 引擎类型: {}", properties.getSearchEngineType());
         return () -> {
             // 确保配置被正确加载
-            if (properties.getType() == null || properties.getType().isEmpty()) {
-                properties.setType("database");
+            if (properties.getSearchEngineType() == null || properties.getSearchEngineType().isEmpty()) {
+                properties.setSearchEngineType("database");
             }
             
             // 确保Lucene配置存在
