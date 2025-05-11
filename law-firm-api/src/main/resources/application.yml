@@ -24,6 +24,19 @@ spring:
     allow-bean-definition-overriding: true
     # 禁用自动检测FactoryBean类型，解决"factoryBeanObjectType"错误
     lazy-initialization: false
+    # 允许循环引用
+    allow-circular-references: true
+    # 设置FactoryBean相关参数，避免类型推断问题
+    sources:
+      - com.lawfirm.api.LawFirmApiApplication
+  # 完全禁用FactoryBean类型推断，解决Spring Boot 3.x中的"factoryBeanObjectType"错误
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  # 设置工厂Bean相关配置
+  factory-beans:
+    type-inference:
+      enabled: false
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -85,7 +98,8 @@ server:
 # MyBatis Plus配置
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
-  type-aliases-package: com.lawfirm.*.entity
+  # 不设置typeEnumsPackage以避免枚举扫描导致的类型推断问题
+  # type-aliases-package: com.lawfirm.*.entity
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     map-underscore-to-camel-case: true

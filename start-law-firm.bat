@@ -46,7 +46,7 @@ cd law-firm-api\target || (
     goto end
 )
 
-java -Dspring.main.allow-bean-definition-overriding=true -Dspring.factories.ignore-errors=true -Dspring.main.allow-circular-references=true -jar law-firm-api-1.0.0.jar --spring.profiles.active=%PROFILE%
+java -Dspring.main.allow-bean-definition-overriding=true -Dspring.factories.ignore-errors=true -Dspring.main.allow-circular-references=true -Dspring.boot.factorybean.type-inferencing.enabled=false -jar law-firm-api-1.0.0.jar --spring.profiles.active=%PROFILE%
 
 :end
 echo.

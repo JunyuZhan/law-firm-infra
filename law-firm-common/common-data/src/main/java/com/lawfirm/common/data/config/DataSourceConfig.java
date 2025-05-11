@@ -21,11 +21,11 @@ import java.util.regex.Pattern;
 /**
  * 数据源配置类
  * 提供统一的数据源配置，避免硬编码和配置分散
- * 只有在lawfirm.database.enabled=true或未设置时才启用
+ * 只有在law-firm.common.data.enabled=true或未设置时才启用
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.common.data.enabled", havingValue = "true", matchIfMissing = true)
 public class DataSourceConfig {
     
     @Autowired
@@ -33,7 +33,7 @@ public class DataSourceConfig {
 
     /**
      * 创建主数据源
-     * 优先使用spring.datasource标准配置，兼容lawfirm.database配置
+     * 优先使用spring.datasource标准配置，兼容law-firm.common.data配置
      */
     @Bean
     @Primary
@@ -49,18 +49,18 @@ public class DataSourceConfig {
         // 如果标准配置不存在，则使用自定义配置
         if (url == null) {
             url = environment.getProperty("SPRING_DATASOURCE_URL", 
-                    environment.getProperty("lawfirm.database.url", 
+                    environment.getProperty("law-firm.common.data.url", 
                     "jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"));
         }
         
         if (username == null) {
             username = environment.getProperty("SPRING_DATASOURCE_USERNAME", 
-                    environment.getProperty("lawfirm.database.username", "root"));
+                    environment.getProperty("law-firm.common.data.username", "root"));
         }
         
         if (password == null) {
             password = environment.getProperty("SPRING_DATASOURCE_PASSWORD", 
-                    environment.getProperty("lawfirm.database.password", ""));
+                    environment.getProperty("law-firm.common.data.password", ""));
         }
         
         log.info("创建数据源：{}, username: {}", url, username);
@@ -79,31 +79,31 @@ public class DataSourceConfig {
         // 连接池配置 - 优先使用标准配置
         Integer minIdle = environment.getProperty("spring.datasource.hikari.minimum-idle", Integer.class);
         if (minIdle == null) {
-            minIdle = environment.getProperty("lawfirm.database.pool.min-idle", Integer.class, 5);
+            minIdle = environment.getProperty("law-firm.common.data.pool.min-idle", Integer.class, 5);
         }
         config.setMinimumIdle(minIdle);
         
         Integer maxPoolSize = environment.getProperty("spring.datasource.hikari.maximum-pool-size", Integer.class);
         if (maxPoolSize == null) {
-            maxPoolSize = environment.getProperty("lawfirm.database.pool.max-pool-size", Integer.class, 20);
+            maxPoolSize = environment.getProperty("law-firm.common.data.pool.max-pool-size", Integer.class, 20);
         }
         config.setMaximumPoolSize(maxPoolSize);
         
         Long connTimeout = environment.getProperty("spring.datasource.hikari.connection-timeout", Long.class);
         if (connTimeout == null) {
-            connTimeout = environment.getProperty("lawfirm.database.pool.connection-timeout", Long.class, 30000L);
+            connTimeout = environment.getProperty("law-firm.common.data.pool.connection-timeout", Long.class, 30000L);
         }
         config.setConnectionTimeout(connTimeout);
         
         Long idleTimeout = environment.getProperty("spring.datasource.hikari.idle-timeout", Long.class);
         if (idleTimeout == null) {
-            idleTimeout = environment.getProperty("lawfirm.database.pool.idle-timeout", Long.class, 600000L);
+            idleTimeout = environment.getProperty("law-firm.common.data.pool.idle-timeout", Long.class, 600000L);
         }
         config.setIdleTimeout(idleTimeout);
         
         Long maxLifetime = environment.getProperty("spring.datasource.hikari.max-lifetime", Long.class);
         if (maxLifetime == null) {
-            maxLifetime = environment.getProperty("lawfirm.database.pool.max-lifetime", Long.class, 1800000L);
+            maxLifetime = environment.getProperty("law-firm.common.data.pool.max-lifetime", Long.class, 1800000L);
         }
         config.setMaxLifetime(maxLifetime);
         

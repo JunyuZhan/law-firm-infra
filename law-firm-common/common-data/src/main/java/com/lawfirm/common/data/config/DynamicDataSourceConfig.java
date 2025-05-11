@@ -23,13 +23,13 @@ import java.util.Collections;
 /**
  * 动态数据源配置
  * 只有在配置 spring.datasource.dynamic.enabled=true 时才生效
- * 并且必须在 lawfirm.database.enabled=true 时才启用
+ * 并且必须在 law-firm.common.data.enabled=true 时才启用
  */
 @Slf4j
 @Configuration
 @ConditionalOnProperty(value = {
     "spring.datasource.dynamic.enabled", 
-    "lawfirm.database.enabled"
+    "law-firm.common.data.enabled"
 }, havingValue = "true", matchIfMissing = false)
 public class DynamicDataSourceConfig {
 

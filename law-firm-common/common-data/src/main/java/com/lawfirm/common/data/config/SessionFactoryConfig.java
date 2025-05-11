@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * MyBatis会话工厂配置
  * <p>
  * 负责创建和配置SqlSessionFactory
- * 只有在lawfirm.database.enabled=true时才启用
+ * 只有在law-firm.common.data.enabled=true时才启用
  * </p>
  * <p>
  * 注意：此类不再负责Mapper接口扫描，遵循架构分层原则
@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * </p>
  */
 @Configuration
-@ConditionalOnProperty(name = "lawfirm.database.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "law-firm.common.data.enabled", havingValue = "true", matchIfMissing = true)
 public class SessionFactoryConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SessionFactoryConfig.class);

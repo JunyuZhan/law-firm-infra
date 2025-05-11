@@ -1,8 +1,6 @@
 package com.lawfirm.common.data.config;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.ibatis.type.TypeHandler;
 import org.slf4j.Logger;
@@ -17,6 +15,7 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
@@ -49,40 +48,42 @@ public class MybatisPlusConfig {
     }
     
     /**
-     * 配置枚举类型处理器
-     * 在MyBatis-Plus 3.5.3.1+版本中，全局配置方式已变更
-     * 现在应该在application.yml中通过mybatis-plus.configuration.default-enum-type-handler进行配置
-     *
-     * @param typeEnumsPackage 枚举类所在的包路径
-     * @return 返回枚举类信息配置对象
+     * 初始化MyBatis-Plus相关配置
+     * 注意：
+     * 1. 避免Set<Class<?>>类型的使用，解决FactoryBean类型推断问题
+     * 2. 使用void返回类型，避免Spring容器进行类型推断
      */
-    @Bean
-    public EnumTypeConfig configureEnumTypeHandlers(@Value("${mybatis-plus.typeEnumsPackage:com.lawfirm.model}") String typeEnumsPackage) {
-        EnumTypeConfig config = new EnumTypeConfig(typeEnumsPackage);
+    @Bean(name = "mybatisPlusConfigInit")
+    public void initMybatisPlusConfig(@Value("${mybatis-plus.typeEnumsPackage:}") String typeEnumsPackage) {
+        if (!StringUtils.hasText(typeEnumsPackage)) {
+            log.info("未配置枚举类包路径，跳过枚举类扫描");
+            return;
+        }
         
         try {
-            Set<Class<?>> enumClasses = scanEnumClasses(typeEnumsPackage);
-            if (!enumClasses.isEmpty()) {
-                log.info("发现{}个枚举类，请确保在application.yml中配置了'mybatis-plus.configuration.default-enum-type-handler'", enumClasses.size());
-                for (Class<?> enumClass : enumClasses) {
-                    if (enumClass.isEnum()) {
-                        log.debug("检测到枚举类: {}", enumClass.getName());
-                        config.addEnumClass(enumClass);
+            // 处理多个包路径，以逗号分隔
+            int totalCount = 0;
+            for (String packageName : typeEnumsPackage.split(",")) {
+                if (StringUtils.hasText(packageName)) {
+                    int count = scanEnumClasses(packageName.trim());
+                    totalCount += count;
+                    if (count > 0) {
+                        log.info("在{}包中发现{}个枚举类", packageName.trim(), count);
                     }
                 }
             }
+            log.info("共扫描到{}个枚举类", totalCount);
         } catch (Exception e) {
             log.warn("枚举类型扫描失败", e);
         }
-        
-        return config;
     }
     
     /**
-     * 扫描并注册所有枚举类
+     * 扫描并加载所有枚举类
+     * 返回整数而不是Set<Class<?>>类型，避免类型推断问题
      */
-    private Set<Class<?>> scanEnumClasses(String basePackage) throws IOException, ClassNotFoundException {
-        Set<Class<?>> enumClasses = new HashSet<>();
+    private int scanEnumClasses(String basePackage) throws IOException {
+        int count = 0;
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resolver);
         
@@ -92,39 +93,22 @@ public class MybatisPlusConfig {
         Resource[] resources = resolver.getResources(packageSearchPath);
         for (Resource resource : resources) {
             if (resource.isReadable()) {
-                MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
-                String className = metadataReader.getClassMetadata().getClassName();
-                Class<?> clazz = Class.forName(className);
-                if (clazz.isEnum()) {
-                    enumClasses.add(clazz);
+                try {
+                    MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
+                    String className = metadataReader.getClassMetadata().getClassName();
+                    
+                    // 检查是否为枚举类，但不保存Class对象的引用
+                    Class<?> clazz = Class.forName(className);
+                    if (clazz.isEnum()) {
+                        count++;
+                        log.debug("检测到枚举类: {}", className);
+                    }
+                } catch (ClassNotFoundException e) {
+                    log.warn("加载类失败: {}", e.getMessage());
                 }
             }
         }
         
-        return enumClasses;
-    }
-    
-    /**
-     * 枚举类型配置类，用于保存扫描到的枚举类信息
-     */
-    public static class EnumTypeConfig {
-        private final String packageName;
-        private final Set<Class<?>> enumClasses = new HashSet<>();
-        
-        public EnumTypeConfig(String packageName) {
-            this.packageName = packageName;
-        }
-        
-        public void addEnumClass(Class<?> enumClass) {
-            enumClasses.add(enumClass);
-        }
-        
-        public Set<Class<?>> getEnumClasses() {
-            return enumClasses;
-        }
-        
-        public String getPackageName() {
-            return packageName;
-        }
+        return count;
     }
 } 

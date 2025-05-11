@@ -21,8 +21,8 @@ public class StorageConfig {
      */
     @Data
     @Configuration
-    @ConfigurationProperties(prefix = "storage.minio")
-    @ConditionalOnProperty(prefix = "storage.minio", name = "enabled", havingValue = "true")
+    @ConfigurationProperties(prefix = "law-firm.common.storage.minio")
+    @ConditionalOnProperty(prefix = "law-firm.common.storage.minio", name = "enabled", havingValue = "true")
     public static class MinioConfig {
         private String endpoint;
         private String accessKey;
@@ -43,8 +43,8 @@ public class StorageConfig {
      */
     @Data
     @Configuration
-    @ConfigurationProperties(prefix = "storage.aliyun")
-    @ConditionalOnProperty(prefix = "storage.aliyun", name = "enabled", havingValue = "true")
+    @ConfigurationProperties(prefix = "law-firm.common.storage.aliyun")
+    @ConditionalOnProperty(prefix = "law-firm.common.storage.aliyun", name = "enabled", havingValue = "true")
     public static class AliyunOssConfig {
         private String endpoint;
         private String accessKeyId;
