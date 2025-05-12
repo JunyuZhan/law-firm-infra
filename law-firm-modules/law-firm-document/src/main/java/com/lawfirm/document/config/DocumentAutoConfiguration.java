@@ -13,7 +13,8 @@ import org.springframework.context.annotation.Import;
     DocumentLogConfig.class,
     DocumentSearchConfig.class,
     StorageFallbackConfig.class,
-    DocumentSecurityConfig.class
+    DocumentSecurityConfig.class,
+    DocumentModuleConfig.class
 })
 public class DocumentAutoConfiguration {
     // 通过导入完成自动配置

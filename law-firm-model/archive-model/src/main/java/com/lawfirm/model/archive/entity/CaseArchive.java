@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("case_archive")
+@TableName("archive_case")
 public class CaseArchive extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;

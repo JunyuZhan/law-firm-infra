@@ -3,7 +3,7 @@
 -- 模块: system/monitor
 -- 创建时间: 2023-06-16
 -- 说明: 初始化系统监控相关权限，从V1002脚本中移出
--- 依赖: V2001, V2002
+-- 依赖: V1001, V1002, V1003, V1004, V2001, V2002
 
 -- 设置字符集和数据库选项
 SET NAMES utf8mb4;
@@ -58,4 +58,4 @@ WHERE permission.code LIKE 'system:monitor%'
   
 -- 恢复外键约束
 -- 注意：下面的语句在Flyway执行时是有效的，如果在SQL编辑器中报错可以忽略
--- SET FOREIGN_KEY_CHECKS=1;
+-- SET FOREIGN_KEY_CHECKS=1; 

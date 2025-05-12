@@ -1,5 +1,6 @@
 package com.lawfirm.system.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import lombok.Setter;
  */
 @Configuration
 @EnableCaching
+@MapperScan(basePackages = {"com.lawfirm.model.system.mapper"})
 public class SystemModuleConfig {
 
     /**

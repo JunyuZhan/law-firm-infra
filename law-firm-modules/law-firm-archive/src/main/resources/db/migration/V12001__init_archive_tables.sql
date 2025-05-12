@@ -87,8 +87,8 @@ CREATE TABLE IF NOT EXISTS archive_file (
   KEY idx_borrow_status (borrow_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='档案文件表';
 
--- case_archive表（案件档案表）
-CREATE TABLE IF NOT EXISTS case_archive (
+-- archive_case表（案件档案表）
+CREATE TABLE IF NOT EXISTS archive_case (
   id BIGINT NOT NULL AUTO_INCREMENT COMMENT 'ID',
   tenant_id BIGINT COMMENT '租户ID',
   tenant_code VARCHAR(50) COMMENT '租户编码',

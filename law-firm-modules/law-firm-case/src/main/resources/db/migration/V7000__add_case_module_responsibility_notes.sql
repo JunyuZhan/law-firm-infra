@@ -23,8 +23,8 @@ Case模块职责说明：
    - 其他与案件相关的表
 
 2. 现有脚本说明：
-   - V6001__init_case_tables.sql：创建案件相关表结构
-   - V6002__init_case_data.sql：初始化案件相关基础数据
+   - V7001__init_case_tables.sql：创建案件相关表结构
+   - V7002__init_case_data.sql：初始化案件相关基础数据
 
 3. 后续开发规范：
    a) 表命名规范：
