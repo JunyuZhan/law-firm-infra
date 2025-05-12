@@ -5,7 +5,7 @@
     
     <!-- 定义控制台输出 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder charset="GBK"> <!-- 使用GBK编码 -->
+        <encoder charset="UTF-8"> <!-- 改为使用UTF-8编码 -->
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>

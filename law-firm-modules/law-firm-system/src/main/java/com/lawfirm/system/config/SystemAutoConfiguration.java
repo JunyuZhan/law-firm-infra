@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
  */
 @AutoConfiguration
 @ComponentScan("com.lawfirm.system")
-@Import({MonitorCacheConfig.class})
+@Import({MonitorCacheConfig.class, SystemMybatisConfig.class})
 public class SystemAutoConfiguration {
     // 系统模块自动配置类
 } 

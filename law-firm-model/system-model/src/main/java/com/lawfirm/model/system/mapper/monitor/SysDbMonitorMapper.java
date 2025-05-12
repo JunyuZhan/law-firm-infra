@@ -2,6 +2,7 @@ package com.lawfirm.model.system.mapper.monitor;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.system.entity.monitor.SysDbMonitor;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -40,4 +41,15 @@ public interface SysDbMonitorMapper extends BaseMapper<SysDbMonitor> {
      */
     @Select("SELECT DISTINCT db_name FROM sys_db_monitor WHERE db_status = 'WARNING' OR db_status = 'ERROR' ORDER BY monitor_time DESC LIMIT 10")
     List<String> getPoorPerformanceDatabases();
-} 
+    
+    /**
+     * 插入数据库监控数据
+     * 显式定义insert方法解决"Invalid bound statement"问题
+     *
+     * @param entity 数据库监控实体
+     * @return 影响行数
+     */
+    @Insert("INSERT INTO sys_db_monitor (db_name, db_url, active_connections, max_connections, qps, tps, slow_queries, table_size, index_size, db_status, monitor_time, version, status, sort, deleted, create_time, update_time) " +
+           "VALUES (#{dbName}, #{dbUrl}, #{activeConnections}, #{maxConnections}, #{qps}, #{tps}, #{slowQueries}, #{tableSize}, #{indexSize}, #{dbStatus}, #{monitorTime}, #{version}, #{status}, #{sort}, #{deleted}, #{createTime}, #{updateTime})")
+    int insert(SysDbMonitor entity);
+}
