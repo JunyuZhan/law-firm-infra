@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS sys_app_monitor (
   instance_id VARCHAR(100) NOT NULL COMMENT '实例ID',
   jvm_memory_used BIGINT COMMENT 'JVM内存使用(bytes)',
   jvm_memory_max BIGINT COMMENT 'JVM最大内存(bytes)',
+  thread_count INTEGER COMMENT '线程数量',
   jvm_threads INTEGER COMMENT 'JVM线程数',
   heap_used BIGINT COMMENT '堆内存使用(bytes)',
   non_heap_used BIGINT COMMENT '非堆内存使用(bytes)',

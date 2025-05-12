@@ -94,12 +94,20 @@ spring:
   output:
     ansi:
       enabled: always
+  # 确保消息转换器使用UTF-8
+  messages:
+    encoding: UTF-8
 
 # 服务器配置
 server:
   port: ${SERVER_PORT:8080}
   servlet:
     context-path: ${CONTEXT_PATH:/}
+    # 确保Servlet使用UTF-8编码
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
   tomcat:
     uri-encoding: UTF-8
     max-threads: 200
@@ -130,13 +138,44 @@ cors:
 # SpringDoc配置
 springdoc:
   api-docs:
+    # 确保API文档生成
     enabled: true
     path: /v3/api-docs
+    # 添加组配置
+    groups:
+      enabled: true
+    # 确保API文档显示正确
+    resolve-schema-properties: true
   swagger-ui:
+    # 启用Swagger UI
     enabled: true
     path: /swagger-ui.html
-  packages-to-scan: com.lawfirm
-  paths-to-match: /**
+    # 直接访问API路径
+    urls-primary-name: default
+    # 在文档页面展示请求URL
+    display-request-duration: true
+    # 文档分组
+    tags-sorter: alpha
+    operations-sorter: alpha
+    # 默认展开所有操作
+    doc-expansion: none
+    # 禁用验证
+    validator-url: none
+  # 扩展包扫描范围，确保包含所有API控制器
+  packages-to-scan: 
+    - com.lawfirm
+  # 匹配所有API路径
+  paths-to-match: 
+    - /**
+  # 默认包含所有端点
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+  # 禁用默认异常处理
+  model-converters:
+    pageable-converter:
+      enabled: false
+  # 使用完全限定名
+  use-fqn: true
 
 # 日志配置
 logging:

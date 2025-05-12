@@ -52,4 +52,4 @@ public interface SysDbMonitorMapper extends BaseMapper<SysDbMonitor> {
     @Insert("INSERT INTO sys_db_monitor (db_name, db_url, active_connections, max_connections, qps, tps, slow_queries, table_size, index_size, db_status, monitor_time, version, status, sort, deleted, create_time, update_time) " +
            "VALUES (#{dbName}, #{dbUrl}, #{activeConnections}, #{maxConnections}, #{qps}, #{tps}, #{slowQueries}, #{tableSize}, #{indexSize}, #{dbStatus}, #{monitorTime}, #{version}, #{status}, #{sort}, #{deleted}, #{createTime}, #{updateTime})")
     int insert(SysDbMonitor entity);
-}
+} 

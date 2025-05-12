@@ -77,6 +77,45 @@ import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 )
 public class LawFirmApiApplication {
 
+    static {
+        // 在静态块中设置系统属性，确保尽早生效
+        // 设置文件编码
+        System.setProperty("file.encoding", "UTF-8");
+        System.setProperty("sun.jnu.encoding", "UTF-8");
+        
+        // 设置语言和区域
+        System.setProperty("user.language", "zh");
+        System.setProperty("user.country", "CN");
+        System.setProperty("user.timezone", "Asia/Shanghai");
+        
+        // 设置日志编码
+        System.setProperty("logging.charset.console", "UTF-8");
+        System.setProperty("logging.charset.file", "UTF-8");
+        System.setProperty("spring.output.ansi.enabled", "always");
+        
+        // 配置Jansi以支持ANSI颜色输出
+        System.setProperty("log4j.skipJansi", "false");
+        
+        // 配置Spring MVC编码
+        System.setProperty("spring.http.encoding.charset", "UTF-8");
+        System.setProperty("spring.http.encoding.enabled", "true");
+        System.setProperty("spring.http.encoding.force", "true");
+        System.setProperty("spring.mvc.charset", "UTF-8");
+        
+        // 配置服务器编码
+        System.setProperty("server.servlet.encoding.charset", "UTF-8");
+        System.setProperty("server.servlet.encoding.enabled", "true");
+        System.setProperty("server.servlet.encoding.force", "true");
+        
+        // 确保Tomcat使用UTF-8
+        System.setProperty("server.tomcat.uri-encoding", "UTF-8");
+        
+        // 启用SpringDoc
+        System.setProperty("springdoc.swagger-ui.enabled", "true");
+        System.setProperty("springdoc.api-docs.enabled", "true");
+        System.setProperty("springdoc.api-docs.charset", "UTF-8");
+    }
+
     public static void main(String[] args) {
         // 设置系统属性
         setSystemProperties();
@@ -99,7 +138,9 @@ public class LawFirmApiApplication {
                  "应用程序 '{}' 已启动! 访问地址:\n\t" +
                 "本地: \t\t{}://localhost:{}{}\n\t" +
                 "外部: \t\t{}://{}:{}{}\n\t" +
-                "环境: \t\t{}\n" +
+                "环境: \t\t{}\n\t" +
+                "编码: \t\t{}\n\t" +
+                "区域: \t\t{}\n" +
                 "----------------------------------------------------------",
                 "律师事务所管理系统",
                 protocol,
@@ -109,7 +150,9 @@ public class LawFirmApiApplication {
                 "localhost",
                 serverPort,
                 contextPath,
-                env.getActiveProfiles().length == 0 ? "默认配置" : env.getActiveProfiles()[0]);
+                env.getActiveProfiles().length == 0 ? "默认配置" : env.getActiveProfiles()[0],
+                System.getProperty("file.encoding"),
+                System.getProperty("user.language") + "_" + System.getProperty("user.country"));
     }
     
     /**
@@ -125,14 +168,12 @@ public class LawFirmApiApplication {
         // 允许循环引用（开发阶段）
         System.setProperty("spring.main.allow-circular-references", "true");
         
-        // 设置默认区域
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        
-        // 设置文件编码
-        System.setProperty("file.encoding", "UTF-8");
-        
         // 设置日志级别
         System.setProperty("org.springframework.boot.logging.LoggingSystem", "org.springframework.boot.logging.logback.LogbackLoggingSystem");
+        
+        // 设置Swagger相关配置
+        System.setProperty("springdoc.swagger-ui.enabled", "true");
+        System.setProperty("springdoc.api-docs.enabled", "true");
         
         // 确保只排除Spring Boot自动配置类
         System.clearProperty("spring.autoconfigure.exclude");

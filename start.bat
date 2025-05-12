@@ -1,5 +1,5 @@
 @echo off
-chcp 65001
+rem 不使用chcp 65001，因为GBK在Windows控制台中更稳定
 echo ================================================
 echo         Law Firm Management System
 echo ================================================
@@ -45,7 +45,7 @@ if not exist law-firm-api-1.0.0.jar (
     exit /b 1
 )
 
-set JAVA_OPTS=-Xms512m -Xmx1024m -Dfile.encoding=UTF-8
+set JAVA_OPTS=-Xms512m -Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=en -Duser.country=US
 set JDBC_URL=jdbc:mysql://%MYSQL_HOST%:%MYSQL_PORT%/%MYSQL_DATABASE%?useUnicode=true^&characterEncoding=utf8^&useSSL=false^&serverTimezone=Asia/Shanghai^&allowPublicKeyRetrieval=true
 
 echo Starting application...

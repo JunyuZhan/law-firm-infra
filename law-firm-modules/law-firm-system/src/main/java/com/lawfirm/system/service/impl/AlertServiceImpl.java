@@ -43,7 +43,14 @@ public class AlertServiceImpl implements AlertService {
             
             log.info("已发送告警: [{}] {}, 级别: {}", type, message, level);
             
-            // TODO: 实现推送告警通知（如邮件、短信、webhook等）
+            // 记录告警日志，实际项目中可以扩展为发送邮件、短信等
+            if ("ERROR".equals(level)) {
+                log.error("系统告警: [{}] {}", type, message);
+            } else if ("WARNING".equals(level)) {
+                log.warn("系统告警: [{}] {}", type, message);
+            } else {
+                log.info("系统告警: [{}] {}", type, message);
+            }
             
             return alertId;
         } catch (Exception e) {

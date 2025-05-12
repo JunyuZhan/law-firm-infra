@@ -3,16 +3,20 @@
     <!-- 引入Spring Boot默认的配置 -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     
-    <!-- 定义控制台输出 -->
+    <!-- 定义控制台输出 - 使用UTF-8编码 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder charset="UTF-8"> <!-- 改为使用UTF-8编码 -->
+        <encoder charset="UTF-8">
+            <charset>UTF-8</charset>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
+        <!-- 确保Windows环境下控制台能正确处理中文 -->
+        <withJansi>true</withJansi>
     </appender>
     
     <!-- 文件输出使用UTF-8编码 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder charset="UTF-8">
+            <charset>UTF-8</charset>
             <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
         <file>${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}</file>
@@ -28,4 +32,9 @@
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
+    
+    <!-- 添加对SpringDoc包的详细日志配置 -->
+    <logger name="org.springdoc" level="DEBUG" />
+    <logger name="org.springframework.web" level="DEBUG" />
+    <logger name="org.springframework.http.converter" level="DEBUG" />
 </configuration> 

@@ -121,17 +121,15 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
                 return "unknown";
             }
             
-            // 尝试从JDBC URL中提取数据库名称
-            // 示例: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8
-            int lastSlashIndex = url.lastIndexOf('/');
-            if (lastSlashIndex > 0 && lastSlashIndex < url.length() - 1) {
-                String dbNameWithParams = url.substring(lastSlashIndex + 1);
-                // 去除URL中可能的参数
-                int paramIndex = dbNameWithParams.indexOf('?');
-                if (paramIndex > 0) {
-                    return dbNameWithParams.substring(0, paramIndex);
-                }
-                return dbNameWithParams;
+            // 处理标准JDBC URL格式
+            // 示例1: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8
+            // 示例2: jdbc:mysql://localhost:3306/law_firm
+            String regex = "jdbc:mysql://[^/]+/([^?]+)";
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+            java.util.regex.Matcher matcher = pattern.matcher(url);
+            
+            if (matcher.find() && matcher.groupCount() >= 1) {
+                return matcher.group(1);
             }
             
             return "unknown";

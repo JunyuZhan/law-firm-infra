@@ -38,6 +38,11 @@ public class SysAppMonitor extends ModelBaseEntity {
     private Long jvmMemoryMax;
 
     /**
+     * 线程数量
+     */
+    private Integer threadCount;
+
+    /**
      * JVM线程数
      */
     private Integer jvmThreads;
