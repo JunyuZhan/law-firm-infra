@@ -24,6 +24,7 @@ import com.lawfirm.schedule.integration.CaseIntegration;
 import com.lawfirm.schedule.integration.PersonnelIntegration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,14 +46,25 @@ import com.lawfirm.model.cases.vo.base.CaseDetailVO;
  * 日程服务实现类
  */
 @Service("scheduleService")
-@RequiredArgsConstructor
 @Slf4j
 public class ScheduleServiceImpl extends BaseServiceImpl<ScheduleMapper, Schedule> implements ScheduleService {
 
     private final ScheduleConverter scheduleConverter;
-    private final ScheduleRelationService scheduleRelationService;
+    
+    @Autowired
+    private ScheduleRelationService scheduleRelationService;
+    
     private final PersonnelIntegration personnelIntegration;
     private final CaseIntegration caseIntegration;
+    
+    public ScheduleServiceImpl(
+            ScheduleConverter scheduleConverter,
+            PersonnelIntegration personnelIntegration,
+            CaseIntegration caseIntegration) {
+        this.scheduleConverter = scheduleConverter;
+        this.personnelIntegration = personnelIntegration;
+        this.caseIntegration = caseIntegration;
+    }
     
     @Override
     @Transactional(rollbackFor = Exception.class)

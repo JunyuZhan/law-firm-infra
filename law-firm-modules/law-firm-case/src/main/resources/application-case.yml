@@ -14,9 +14,11 @@ spring:
 
 # 案件模块业务配置
 law-firm:
+  module:
+    case: true  # 启用案件模块
   case:
     # 模块是否启用
-    enabled: true
+    enabled: true  # 启用案件基础功能
     
     # 案件编号生成规则配置
     case-number:
@@ -91,16 +93,35 @@ notification:
     # 提前提醒天数(多个值)
     days-before: [30, 15, 7, 3, 1]
 
-# MyBatis Plus配置
+# MyBatis配置
 mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.lawfirm.model
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: false
   global-config:
     db-config:
-      id-type: AUTO
+      id-type: auto
       logic-delete-field: deleted
-      logic-delete-value: true
-      logic-not-delete-value: false
-  type-aliases-package: com.lawfirm.model.cases.entity
-  mapper-locations: classpath*:/mapper/**/*.xml 
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 数据源配置
+datasource:
+  dynamic:
+    datasource:
+      case:
+        url: ${spring.datasource.master.url}
+        username: ${spring.datasource.master.username}
+        password: ${spring.datasource.master.password}
+        driver-class-name: ${spring.datasource.master.driver-class-name}
+
+# 存储服务配置
+storage:
+  enabled: true
+
+# 确保同时配置无连字符版本以兼容旧代码
+lawfirm:
+  storage:
+    enabled: true 

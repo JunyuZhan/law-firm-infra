@@ -9,6 +9,108 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- 检查case_party表是否存在
+SELECT COUNT(*) INTO @case_party_exists 
+FROM information_schema.tables 
+WHERE table_schema = DATABASE() 
+AND table_name = 'case_party';
+
+-- 检查module_documentation表是否存在
+SELECT COUNT(*) INTO @module_documentation_exists 
+FROM information_schema.tables 
+WHERE table_schema = DATABASE() 
+AND table_name = 'module_documentation';
+
+-- 如果module_documentation表不存在，先创建它
+DROP PROCEDURE IF EXISTS create_module_documentation_if_not_exists;
+DELIMITER //
+CREATE PROCEDURE create_module_documentation_if_not_exists()
+BEGIN
+    IF @module_documentation_exists = 0 THEN
+        CREATE TABLE IF NOT EXISTS module_documentation (
+            id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+            module_name VARCHAR(50) NOT NULL COMMENT '模块名称',
+            version_range VARCHAR(50) NOT NULL COMMENT '版本范围',
+            responsibility_description TEXT COMMENT '职责描述',
+            author VARCHAR(50) COMMENT '作者',
+            last_updated DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+            version INTEGER DEFAULT 0 COMMENT '版本号',
+            sort INTEGER DEFAULT 0 COMMENT '排序号',
+            status INTEGER DEFAULT 0 COMMENT '状态（0-正常，1-禁用）',
+            deleted INTEGER DEFAULT 0 COMMENT '删除标记（0-正常，1-删除）',
+            create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+            create_by VARCHAR(50) COMMENT '创建人',
+            update_time DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+            update_by VARCHAR(50) COMMENT '更新人',
+            remark VARCHAR(255) COMMENT '备注',
+            PRIMARY KEY (id),
+            UNIQUE KEY uk_module_version (module_name, version_range)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='模块文档表';
+        
+        -- 记录创建表日志
+        INSERT INTO sys_operation_log(operate_type, module, description, create_time, operator_name)
+        VALUES ('CREATE', 'system', 'Created module_documentation table in V7004', NOW(), 'system');
+    END IF;
+END //
+DELIMITER ;
+
+-- 执行检查并创建module_documentation表的存储过程
+CALL create_module_documentation_if_not_exists();
+DROP PROCEDURE IF EXISTS create_module_documentation_if_not_exists;
+
+-- 如果case_party表不存在，先创建它
+DROP PROCEDURE IF EXISTS create_case_party_if_not_exists;
+DELIMITER //
+CREATE PROCEDURE create_case_party_if_not_exists()
+BEGIN
+    IF @case_party_exists = 0 THEN
+        CREATE TABLE IF NOT EXISTS case_party (
+            id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+            tenant_id BIGINT COMMENT '租户ID',
+            tenant_code VARCHAR(50) COMMENT '租户编码',
+            case_id BIGINT NOT NULL COMMENT '案件ID',
+            relation_type VARCHAR(50) NOT NULL COMMENT '关系类型',
+            source_client_id BIGINT NOT NULL COMMENT '源客户ID',
+            target_client_id BIGINT NOT NULL COMMENT '目标客户ID',
+            relation_desc VARCHAR(255) COMMENT '关系描述',
+            party_type INTEGER NOT NULL COMMENT '当事人类型（1-原告 2-被告 3-第三人）',
+            party_role VARCHAR(50) COMMENT '当事人角色',
+            agent_type INTEGER COMMENT '代理类型（1-特别授权 2-一般授权）',
+            entrust_time DATETIME COMMENT '委托时间',
+            agent_authorities TEXT COMMENT '代理权限（JSON格式）',
+            case_status INTEGER DEFAULT 0 COMMENT '案件状态（0-未开始 1-进行中 2-已结束）',
+            start_time DATETIME COMMENT '开始时间',
+            end_time DATETIME COMMENT '结束时间',
+            status INTEGER DEFAULT 1 COMMENT '状态（0-停用 1-正常）',
+            effective_time DATETIME COMMENT '生效时间',
+            expiry_time DATETIME COMMENT '失效时间',
+            priority INTEGER DEFAULT 0 COMMENT '优先级',
+            attributes TEXT COMMENT '关系属性（JSON格式）',
+            version INTEGER DEFAULT 0 COMMENT '版本号',
+            sort INTEGER DEFAULT 0 COMMENT '排序号',
+            deleted INTEGER DEFAULT 0 COMMENT '删除标记（0-正常，1-删除）',
+            create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+            create_by VARCHAR(50) COMMENT '创建人',
+            update_time DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+            update_by VARCHAR(50) COMMENT '更新人',
+            remark VARCHAR(255) COMMENT '备注',
+            PRIMARY KEY (id),
+            KEY idx_case_id (case_id),
+            KEY idx_source_client_id (source_client_id),
+            KEY idx_party_type (party_type)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='案件当事人表';
+        
+        -- 记录创建表日志
+        INSERT INTO sys_operation_log(operate_type, module, description, create_time, operator_name)
+        VALUES ('CREATE', 'case', 'Created case_party table in V7004 due to missing dependency', NOW(), 'system');
+    END IF;
+END //
+DELIMITER ;
+
+-- 执行检查并创建表的存储过程
+CALL create_case_party_if_not_exists();
+DROP PROCEDURE IF EXISTS create_case_party_if_not_exists;
+
 -- 创建临时表存储case_party中的数据
 CREATE TABLE IF NOT EXISTS temp_case_party_data AS
 SELECT 
@@ -90,8 +192,8 @@ ON DUPLICATE KEY UPDATE
     last_updated = NOW();
 
 -- 添加迁移说明到系统日志
-INSERT INTO sys_operation_log(operation_type, operation_module, operation_description, operation_time, operator)
-VALUES ('DATA_MIGRATION', 'case', 'Merged case_party data into case_participant table to resolve duplicate functionality', NOW(), 'system');
+INSERT INTO sys_operation_log(operate_type, module, description, create_time, operator_name)
+VALUES ('MIGRATE', 'case', 'Merged case_party data into case_participant table to resolve duplicate functionality', NOW(), 'system');
 
 -- 删除临时表
 DROP TABLE IF EXISTS temp_case_party_data;

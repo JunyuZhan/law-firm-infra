@@ -78,7 +78,7 @@ public class WorkTaskAttachmentController {
      * 获取任务附件列表
      */
     @Operation(summary = "获取任务附件列表", description = "获取指定任务的所有附件")
-    @GetMapping
+    @GetMapping("/list")
     public CommonResult<List<WorkTaskAttachmentDTO>> getTaskAttachments(
             @Parameter(description = "任务ID") 
             @PathVariable Long taskId) {

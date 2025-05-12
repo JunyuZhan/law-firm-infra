@@ -32,6 +32,18 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 
+# 律师事务所系统核心配置
+lawfirm:
+  storage:
+    enabled: true  # 启用存储服务 (无连字符)
+  
+law-firm:
+  storage:
+    enabled: true  # 启用存储服务 (有连字符)
+  core:
+    storage:
+      enabled: true  # 启用核心存储服务
+
 # 文档模块业务配置
 document:
   # 存储配置

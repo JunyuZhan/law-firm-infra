@@ -6,6 +6,7 @@ import com.lawfirm.common.log.annotation.AuditLog;
 import com.lawfirm.model.system.entity.monitor.SysDbMonitor;
 import com.lawfirm.model.system.mapper.monitor.SysDbMonitorMapper;
 import com.lawfirm.system.config.SystemModuleConfig.MonitorProperties;
+import com.lawfirm.model.system.service.AlertService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +37,7 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
     private final SysDbMonitorMapper dbMonitorMapper;
     private final JdbcTemplate jdbcTemplate;
     private final MonitorProperties monitorProperties;
+    private final AlertService alertService;
     
     @Value("${spring.datasource.url:jdbc:mysql://localhost:3306/law_firm}")
     private String datasourceUrl;
@@ -56,8 +58,8 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
             
             // 收集数据库连接数据
             Map<String, Object> connInfo = getConnectionInfo();
-            monitor.setActiveConnections((Integer) connInfo.getOrDefault("active", 0));
-            monitor.setMaxConnections((Integer) connInfo.getOrDefault("max", 100));
+            monitor.setActiveConnections(((Number) connInfo.getOrDefault("active", 0)).intValue());
+            monitor.setMaxConnections(((Number) connInfo.getOrDefault("max", 100)).intValue());
             
             // 收集性能数据
             monitor.setQps(getQps());
@@ -206,16 +208,28 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
             // 实际项目中应该查询information_schema
             String dbName = extractDbNameFromUrl(datasourceUrl);
             String sql = "SELECT " +
-                "SUM(data_length) AS tableSize, " +
-                "SUM(index_length) AS indexSize " +
+                "COALESCE(SUM(data_length), 0) AS tableSize, " +
+                "COALESCE(SUM(index_length), 0) AS indexSize " +
                 "FROM information_schema.tables " +
                 "WHERE table_schema = ?";
             
             Map<String, Object> result = jdbcTemplate.queryForMap(sql, dbName);
             
+            // 安全处理，防止null值出现
+            Long tableSize = 0L;
+            Long indexSize = 0L;
+            
+            if (result.get("tableSize") != null) {
+                tableSize = ((Number) result.get("tableSize")).longValue();
+            }
+            
+            if (result.get("indexSize") != null) {
+                indexSize = ((Number) result.get("indexSize")).longValue();
+            }
+            
             return Map.of(
-                "tableSize", ((Number) result.getOrDefault("tableSize", 0)).longValue(),
-                "indexSize", ((Number) result.getOrDefault("indexSize", 0)).longValue()
+                "tableSize", tableSize,
+                "indexSize", indexSize
             );
         } catch (Exception e) {
             log.error("获取数据库大小信息异常", e);
@@ -268,7 +282,10 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
                 if (connUsage > 80) {
                     log.warn("数据库连接使用率超过阈值: {}%, 数据库: {}", 
                         String.format("%.2f", connUsage), monitor.getDbName());
-                    // TODO: 调用告警服务发送告警
+                    
+                    // 发送告警
+                    String message = String.format("数据库连接使用率超过阈值: %.2f%%", connUsage);
+                    alertService.sendDbAlert(monitor.getDbName(), "WARNING", message);
                 }
             }
             
@@ -276,14 +293,20 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
             if (monitor.getSlowQueries() != null && monitor.getSlowQueries() > 5) {
                 log.warn("数据库慢查询数超过阈值: {}, 数据库: {}", 
                     monitor.getSlowQueries(), monitor.getDbName());
-                // TODO: 调用告警服务发送告警
+                
+                // 发送告警
+                String message = String.format("数据库慢查询数超过阈值: %d", monitor.getSlowQueries());
+                alertService.sendDbAlert(monitor.getDbName(), "WARNING", message);
             }
             
             // 检查状态
             if (!"NORMAL".equals(monitor.getDbStatus())) {
                 log.warn("数据库状态异常: {}, 数据库: {}", 
                     monitor.getDbStatus(), monitor.getDbName());
-                // TODO: 调用告警服务发送告警
+                
+                // 发送告警
+                String message = String.format("数据库状态异常: %s", monitor.getDbStatus());
+                alertService.sendDbAlert(monitor.getDbName(), "ERROR", message);
             }
         } catch (Exception e) {
             log.error("检查告警异常", e);

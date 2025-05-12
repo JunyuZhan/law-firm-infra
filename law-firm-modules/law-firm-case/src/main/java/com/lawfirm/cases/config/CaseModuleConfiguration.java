@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableAspectJAutoProxy
 @EnableAsync
 @EnableConfigurationProperties(CaseModuleConfiguration.CaseProperties.class)
-@Import(ClientAutoConfiguration.class)
+@Import({ClientAutoConfiguration.class})
 public class CaseModuleConfiguration {
 
     /**

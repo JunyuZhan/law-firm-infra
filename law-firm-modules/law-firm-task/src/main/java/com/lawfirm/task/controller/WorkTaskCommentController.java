@@ -75,7 +75,7 @@ public class WorkTaskCommentController {
      * 获取任务评论列表
      */
     @Operation(summary = "获取任务评论列表", description = "获取指定任务的所有评论")
-    @GetMapping
+    @GetMapping("/list")
     public CommonResult<List<WorkTaskCommentDTO>> getTaskComments(
             @Parameter(description = "任务ID") 
             @PathVariable Long taskId) {

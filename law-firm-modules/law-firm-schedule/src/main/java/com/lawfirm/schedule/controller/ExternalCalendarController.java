@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -42,13 +43,15 @@ import java.util.stream.Collectors;
 @Tag(name = "外部日历管理")
 @RestController("externalCalendarController")
 @RequestMapping(ScheduleConstants.API_EXTERNAL_CALENDAR_PREFIX)
-@RequiredArgsConstructor
 @Validated
 @Slf4j
 public class ExternalCalendarController {
     
-    private final ExternalCalendarService externalCalendarService;
-    private final ExternalCalendarSyncService externalCalendarSyncService;
+    @Autowired
+    private ExternalCalendarService externalCalendarService;
+    
+    @Autowired
+    private ExternalCalendarSyncService externalCalendarSyncService;
     
     @Operation(summary = "创建外部日历")
     @PostMapping

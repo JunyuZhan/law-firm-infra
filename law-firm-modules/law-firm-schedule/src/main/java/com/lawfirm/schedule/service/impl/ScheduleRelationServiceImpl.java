@@ -20,6 +20,7 @@ import com.lawfirm.schedule.converter.ScheduleTaskRelationConvert;
 import com.lawfirm.schedule.integration.CaseIntegration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,17 +35,33 @@ import java.util.stream.Collectors;
  * 日程关联服务实现类
  */
 @Service("scheduleRelationService")
-@RequiredArgsConstructor
 @Slf4j
 public class ScheduleRelationServiceImpl extends BaseServiceImpl<ScheduleCaseRelationMapper, ScheduleCaseRelation> implements ScheduleRelationService {
 
     private final ScheduleCaseRelationMapper caseRelationMapper;
     private final ScheduleTaskRelationMapper taskRelationMapper;
-    private final ScheduleService scheduleService;
     private final ScheduleEventService eventService;
     private final ScheduleCaseRelationConvert caseRelationConvert;
     private final ScheduleTaskRelationConvert taskRelationConvert;
     private final CaseIntegration caseIntegration;
+    
+    @Autowired
+    private ScheduleService scheduleService;
+    
+    public ScheduleRelationServiceImpl(
+            ScheduleCaseRelationMapper caseRelationMapper,
+            ScheduleTaskRelationMapper taskRelationMapper,
+            ScheduleEventService eventService,
+            ScheduleCaseRelationConvert caseRelationConvert,
+            ScheduleTaskRelationConvert taskRelationConvert,
+            CaseIntegration caseIntegration) {
+        this.caseRelationMapper = caseRelationMapper;
+        this.taskRelationMapper = taskRelationMapper;
+        this.eventService = eventService;
+        this.caseRelationConvert = caseRelationConvert;
+        this.taskRelationConvert = taskRelationConvert;
+        this.caseIntegration = caseIntegration;
+    }
     
     @Override
     @Transactional(rollbackFor = Exception.class)

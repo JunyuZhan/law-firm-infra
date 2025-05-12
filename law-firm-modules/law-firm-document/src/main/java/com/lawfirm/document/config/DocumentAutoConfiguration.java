@@ -14,7 +14,9 @@ import org.springframework.context.annotation.Import;
     DocumentSearchConfig.class,
     StorageFallbackConfig.class,
     DocumentSecurityConfig.class,
-    DocumentModuleConfig.class
+    DocumentModuleConfig.class,
+    CoreStorageConfiguration.class,
+    MybatisConfiguration.class
 })
 public class DocumentAutoConfiguration {
     // 通过导入完成自动配置

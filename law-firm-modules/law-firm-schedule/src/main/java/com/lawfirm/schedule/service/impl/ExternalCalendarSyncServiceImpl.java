@@ -6,6 +6,7 @@ import com.lawfirm.model.schedule.service.ScheduleService;
 import com.lawfirm.model.schedule.vo.ExternalCalendarAccountVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +19,11 @@ import java.util.*;
  * 外部日历同步服务实现类
  */
 @Service("externalCalendarSyncService")
-@RequiredArgsConstructor
 @Slf4j
 public class ExternalCalendarSyncServiceImpl implements ExternalCalendarSyncService {
 
-    private final ScheduleService scheduleService;
+    @Autowired
+    private ScheduleService scheduleService;
     
     // 模拟用户的日历连接信息
     private final Map<Long, Map<String, Map<String, Object>>> userCalendarAccounts = new HashMap<>();

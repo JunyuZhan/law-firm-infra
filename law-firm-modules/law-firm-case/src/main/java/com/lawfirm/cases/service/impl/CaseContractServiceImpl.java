@@ -10,7 +10,6 @@ import com.lawfirm.model.contract.enums.ContractStatusEnum;
 import com.lawfirm.model.contract.service.ContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("caseContractService")
 @Primary
-@ConditionalOnProperty(name = "law-firm.module.case", havingValue = "true", matchIfMissing = false)
 public class CaseContractServiceImpl implements CaseContractService {
 
     @Autowired
@@ -200,7 +198,7 @@ public class CaseContractServiceImpl implements CaseContractService {
             
             return vo;
         } catch (Exception e) {
-            log.error("获取合同详情失败，ID：{}", contractId, e);
+            log.error("转换合同VO对象失败，合同ID：{}", contractId, e);
             return null;
         }
     }
