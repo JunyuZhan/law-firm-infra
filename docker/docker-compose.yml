@@ -134,7 +134,7 @@ services:
     container_name: law-mysql
     restart: always
     ports:
-      - "13306:3306"
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=lawfirm_default
       - MYSQL_DATABASE=law_firm

@@ -89,10 +89,10 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-# 开发环境SpringDoc配置 - 确保与主配置一致，禁用API文档功能
+# 开发环境SpringDoc配置 - 启用API文档功能
 springdoc:
   swagger-ui:
-    enabled: false
+    enabled: true
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
@@ -102,13 +102,13 @@ springdoc:
     doc-expansion: none
     urls-primary-name: default
   api-docs:
-    enabled: false
+    enabled: true
     path: /v3/api-docs
     version: OPENAPI_3_0
     resolve-schema-properties: true
     writer-with-default-pretty-printer: true
     groups:
-      enabled: false
+      enabled: true
   cache:
     disabled: true  # 开发环境禁用文档缓存
   show-actuator: false
@@ -167,7 +167,7 @@ springdoc:
         performance:
           enabled: true
 
-# Knife4j配置 - 禁用
+# Knife4j配置 - 启用
 knife4j:
-  enable: false
-  production: true 
+  enable: true
+  production: false 

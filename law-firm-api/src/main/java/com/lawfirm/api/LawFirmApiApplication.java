@@ -116,7 +116,7 @@ public class LawFirmApiApplication {
         System.setProperty("spring.mvc.servlet.path", "/");
         System.setProperty("spring.security.filter.order", "15");
         
-        // 配置SpringDoc和Knife4j - 禁用所有API文档功能
+        // 配置SpringDoc和Knife4j - 由环境配置控制，默认禁用
         System.setProperty("springdoc.swagger-ui.enabled", "false");
         System.setProperty("springdoc.api-docs.enabled", "false");
         System.setProperty("knife4j.enable", "false");
@@ -188,10 +188,11 @@ public class LawFirmApiApplication {
         // 设置日志级别
         System.setProperty("org.springframework.boot.logging.LoggingSystem", "org.springframework.boot.logging.logback.LogbackLoggingSystem");
         
-        // 设置Swagger相关配置 - 禁用所有API文档功能
+        // 设置Swagger相关配置 - 由环境配置控制，默认禁用
         System.setProperty("springdoc.swagger-ui.enabled", "false");
         System.setProperty("springdoc.api-docs.enabled", "false");
         System.setProperty("knife4j.enable", "false");
+        System.setProperty("knife4j.production", "true");
         
         // 确保只排除Spring Boot自动配置类
         System.clearProperty("spring.autoconfigure.exclude");

@@ -6,11 +6,33 @@ echo         Law Firm Management System
 echo ================================================
 echo.
 
-set MYSQL_HOST=localhost
-set MYSQL_PORT=3306
-set MYSQL_DATABASE=law_firm
-set MYSQL_USERNAME=root
-set /p MYSQL_PASSWORD=MySQL Password: 
+rem Default database configuration
+set DEFAULT_MYSQL_HOST=localhost
+set DEFAULT_MYSQL_PORT=3306
+set DEFAULT_MYSQL_DATABASE=law_firm
+set DEFAULT_MYSQL_USERNAME=root
+
+echo Database Configuration (Press Enter to use default values):
+set /p MYSQL_HOST=Database Host [%DEFAULT_MYSQL_HOST%]: 
+if "%MYSQL_HOST%"=="" set MYSQL_HOST=%DEFAULT_MYSQL_HOST%
+
+set /p MYSQL_PORT=Database Port [%DEFAULT_MYSQL_PORT%]: 
+if "%MYSQL_PORT%"=="" set MYSQL_PORT=%DEFAULT_MYSQL_PORT%
+
+set /p MYSQL_DATABASE=Database Name [%DEFAULT_MYSQL_DATABASE%]: 
+if "%MYSQL_DATABASE%"=="" set MYSQL_DATABASE=%DEFAULT_MYSQL_DATABASE%
+
+set /p MYSQL_USERNAME=Database Username [%DEFAULT_MYSQL_USERNAME%]: 
+if "%MYSQL_USERNAME%"=="" set MYSQL_USERNAME=%DEFAULT_MYSQL_USERNAME%
+
+set /p MYSQL_PASSWORD=Database Password: 
+echo.
+
+echo Database Connection Information:
+echo Host: %MYSQL_HOST%
+echo Port: %MYSQL_PORT%
+echo Database: %MYSQL_DATABASE%
+echo Username: %MYSQL_USERNAME%
 echo.
 
 echo Select running environment:
@@ -34,8 +56,8 @@ echo.
 REM 存储服务和审计服务都设置为强制启用，这些是系统必需的核心服务
 set STORAGE_ENABLED=true
 set AUDIT_ENABLED=true
-echo Storage Module: Enabled (必需组件)
-echo Audit Module: Enabled (必需组件)
+echo Storage Module: Enabled (Required Component)
+echo Audit Module: Enabled (Required Component)
 echo.
 
 cd law-firm-api\target
