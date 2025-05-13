@@ -42,13 +42,24 @@ public class SecurityConstants {
 
     /**
      * 公开资源路径
-     * API文档功能已禁用，此处不再包含相关路径
+     * 添加API文档相关路径
      */
     public static final String[] PUBLIC_RESOURCE_PATHS = {
             // 静态资源
             "/favicon.ico",
             // 基础路径
-            "/", "/error/**", "/api/**"
+            "/", "/error/**", "/api/**",
+            // API文档相关路径
+            "/doc.html", "/swagger-ui.html", "/swagger-ui/**", 
+            "/v3/api-docs/**", "/webjars/**", "/swagger-resources/**",
+            "/api-docs/**",
+            // Knife4j文档相关路径
+            "/swagger-resources", 
+            "/swagger-config", 
+            "/swagger-config/**",
+            "/swagger-uiConfiguration",
+            "/swagger-resources/configuration/ui",
+            "/swagger-resources/configuration/security"
     };
 
     private SecurityConstants() {

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -26,7 +25,6 @@ public class BeanConfig {
      * @return 自定义配置的ObjectMapper
      */
     @Bean(name = "commonCoreObjectMapper")
-    @Primary
     @ConditionalOnMissingBean(name = "commonCoreObjectMapper")
     public ObjectMapper commonCoreObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();

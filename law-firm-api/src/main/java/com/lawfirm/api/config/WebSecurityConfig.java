@@ -31,7 +31,13 @@ public class WebSecurityConfig {
         log.info("配置公共路径安全访问策略");
         
         return http
-            .securityMatcher(SecurityConstants.PUBLIC_RESOURCE_PATHS)
+            // 匹配公共资源路径和API文档路径
+            .securityMatcher(
+                "/doc.html", "/swagger-ui.html", "/swagger-ui/**", 
+                "/v3/api-docs/**", "/webjars/**", "/swagger-resources/**",
+                "/swagger-resources", "/swagger-config", "/v3/api-docs/swagger-config", 
+                "/swagger-resources/configuration/ui", "/swagger-resources/configuration/security"
+            )
             .authorizeHttpRequests(authorize -> authorize
                 .anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)

@@ -215,29 +215,11 @@
         </dependency>
         -->
 
-        <!-- 只使用Knife4j作为API文档解决方案，彻底排除SpringDoc -->
+        <!-- 只使用Knife4j作为API文档解决方案，但不排除SpringDoc依赖 -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-            <exclusions>
-                <!-- 排除所有SpringDoc相关依赖 -->
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-starter-common</artifactId>
-                </exclusion>
-            </exclusions>
+            <!-- 移除所有SpringDoc排除项，因为Knife4j依赖SpringDoc才能正常工作 -->
         </dependency>
         
         <!-- 添加Swagger3的核心依赖，但不包含SpringDoc -->

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
@@ -44,6 +45,7 @@ public class ApiDocController {
     private boolean apiDocsEnabled;
 
     @Autowired
+    @Qualifier("lawfirmSpringDocConfigProperties")
     private SpringDocConfigProperties springDocConfigProperties;
 
     /**
@@ -81,7 +83,7 @@ public class ApiDocController {
         healthInfo.put("encoding", StandardCharsets.UTF_8.name());
         
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
         headers.add("X-API-Doc-Encoding", StandardCharsets.UTF_8.name());
         
         return new ResponseEntity<>(healthInfo, headers, HttpStatus.OK);
@@ -92,7 +94,7 @@ public class ApiDocController {
      * 用于测试API文档的编码问题
      */
     @Hidden
-    @GetMapping(value = "/api-docs/encoding-test", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/api-docs/encoding-test", produces = "application/json;charset=UTF-8")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> encodingTest(HttpServletRequest request) {
         Map<String, Object> result = new HashMap<>();
@@ -102,7 +104,7 @@ public class ApiDocController {
         result.put("systemEncoding", System.getProperty("file.encoding"));
         
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
         headers.add("X-Content-Type-Options", "nosniff");
         
         return new ResponseEntity<>(result, headers, HttpStatus.OK);

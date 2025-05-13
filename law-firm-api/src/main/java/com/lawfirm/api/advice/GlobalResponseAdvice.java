@@ -35,8 +35,16 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
         boolean isHealthController = returnType.getDeclaringClass().getName().contains("HealthCheckController");
         boolean isHomeController = returnType.getDeclaringClass().getName().contains("HomeController");
         
-        // 不处理已经是标准格式或特定控制器的响应
-        return !isCommonResult && !isErrorController && !isHealthController && !isHomeController;
+        // 排除API文档相关类
+        boolean isApiDocClass = className.contains("springdoc") || 
+                                 className.contains("swagger") ||
+                                 className.contains("openapi") ||
+                                 className.contains("knife4j") ||
+                                 className.contains("ApiDoc");
+        
+        // 不处理已经是标准格式或特定控制器的响应，或API文档相关响应
+        return !isCommonResult && !isErrorController && !isHealthController && 
+               !isHomeController && !isApiDocClass;
     }
 
     @SneakyThrows
@@ -44,6 +52,20 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                 Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                 ServerHttpRequest request, ServerHttpResponse response) {
+        // 获取请求路径
+        String path = request.getURI().getPath();
+        
+        // 排除API文档相关路径
+        if (path.contains("/v3/api-docs") || 
+            path.contains("/swagger-ui") || 
+            path.contains("/doc.html") || 
+            path.contains("/api-docs") ||
+            path.contains("/webjars") ||
+            path.contains("/swagger-resources")) {
+            log.debug("API文档请求，不包装响应: {}", path);
+            return body;
+        }
+        
         // HTML类型响应不包装
         if (MediaType.TEXT_HTML.equals(selectedContentType) ||
             (selectedContentType != null && selectedContentType.toString().contains("text/html"))) {
