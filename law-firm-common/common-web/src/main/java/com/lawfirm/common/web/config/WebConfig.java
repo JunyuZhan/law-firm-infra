@@ -16,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.util.List;
 
@@ -46,17 +47,14 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Knife4j 资源映射
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/")
+        // 静态资源映射
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/")
                 .resourceChain(false);
                 
-        registry.addResourceHandler("/doc.html", "/swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/")
-                .resourceChain(false);
-                
-        registry.addResourceHandler("/swagger-resources/**", "/v3/api-docs/**", "/knife4j/**")
-                .addResourceLocations("classpath:/META-INF/resources/")
+        // 公共资源
+        registry.addResourceHandler("/favicon.ico")
+                .addResourceLocations("classpath:/static/")
                 .resourceChain(false);
     }
 

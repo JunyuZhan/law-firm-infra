@@ -43,9 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             pathPrefix = contextPath.startsWith("/") ? contextPath : "/" + contextPath;
         }
         
-        for (String pattern : SecurityConstants.API_DOC_PATHS) {
+        for (String pattern : SecurityConstants.PUBLIC_RESOURCE_PATHS) {
             if (pathMatcher.match(pathPrefix + pattern, requestUri)) {
-                log.debug("请求路径 {} 匹配API文档路径，跳过JWT认证", requestUri);
+                log.debug("请求路径 {} 匹配公共资源路径，跳过JWT认证", requestUri);
                 filterChain.doFilter(request, response);
                 return;
             }

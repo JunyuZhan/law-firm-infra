@@ -1,42 +1,45 @@
 package com.lawfirm.api.config;
 
+import com.lawfirm.common.security.constants.SecurityConstants;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
- * Web安全配置 - 只处理公共资源访问
- * 与系统自带的安全配置共存
+ * Web安全配置 - 处理公共资源访问
  */
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @ConditionalOnProperty(name = "law-firm.common.security.enabled", havingValue = "true", matchIfMissing = true)
 public class WebSecurityConfig {
 
     /**
-     * 配置安全过滤器链 - 只处理公共路径
-     * 优化通配符模式确保API文档正常访问
+     * 配置安全过滤器链 - 处理公共路径
      */
     @Bean
     @Order(1)
     public SecurityFilterChain publicResourcesSecurityFilterChain(HttpSecurity http) throws Exception {
-        // 仅配置文档和静态资源路径
+        log.info("配置公共路径安全访问策略");
+        
         return http
-            .securityMatcher("/", "/api/**", "/error/**", "/swagger-ui/**", "/swagger-ui.html", 
-                           "/v3/api-docs/**", "/actuator/**", "/assets/**", "/css/**", 
-                           "/js/**", "/images/**", "/webjars/**")
-            .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+            .securityMatcher(SecurityConstants.PUBLIC_RESOURCE_PATHS)
+            .authorizeHttpRequests(authorize -> authorize
+                .anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)  // 禁用CORS
+            .cors(cors -> cors.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .headers(headers -> headers.frameOptions(Customizer.withDefaults())) // 允许iframe嵌入
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())
+                .cacheControl(cache -> cache.disable()))
             .build();
     }
     
@@ -46,10 +49,17 @@ public class WebSecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        log.info("配置默认安全过滤器链");
+        
         return http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/**").permitAll())  // 临时允许所有访问，解决400错误
-            .csrf(AbstractHttpConfigurer::disable)    // 禁用CSRF
+                // 放行所有公共资源路径
+                .requestMatchers(SecurityConstants.PUBLIC_RESOURCE_PATHS).permitAll()
+                // 临时允许所有访问，解决400错误
+                .requestMatchers("/**").permitAll())
+            .csrf(AbstractHttpConfigurer::disable)
+            .headers(headers -> headers
+                .cacheControl(cache -> cache.disable()))
             .build();
     }
 } 

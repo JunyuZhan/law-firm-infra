@@ -42,6 +42,12 @@ server:
   port: 8080
   servlet:
     context-path: /
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  tomcat:
+    uri-encoding: UTF-8
 
 # 开发环境允许所有跨域
 cors:
@@ -83,12 +89,31 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-# 开发环境SpringDoc配置
+# 开发环境SpringDoc配置 - 确保与主配置一致，禁用API文档功能
 springdoc:
   swagger-ui:
-    enabled: true
+    enabled: false
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+    config-url: /v3/api-docs/swagger-config
+    doc-expansion: none
+    urls-primary-name: default
   api-docs:
-    enabled: true
+    enabled: false
+    path: /v3/api-docs
+    version: OPENAPI_3_0
+    resolve-schema-properties: true
+    writer-with-default-pretty-printer: true
+    groups:
+      enabled: false
+  cache:
+    disabled: true  # 开发环境禁用文档缓存
+  show-actuator: false
+  default-produces-media-type: application/json;charset=UTF-8
+  default-consumes-media-type: application/json;charset=UTF-8
 
 # 开发环境安全配置
 "law-firm":
@@ -140,4 +165,9 @@ springdoc:
       monitoring:
         enabled: true
         performance:
-          enabled: true 
+          enabled: true
+
+# Knife4j配置 - 禁用
+knife4j:
+  enable: false
+  production: true 

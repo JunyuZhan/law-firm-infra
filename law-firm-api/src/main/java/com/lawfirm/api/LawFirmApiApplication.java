@@ -110,10 +110,17 @@ public class LawFirmApiApplication {
         // 确保Tomcat使用UTF-8
         System.setProperty("server.tomcat.uri-encoding", "UTF-8");
         
-        // 启用SpringDoc
-        System.setProperty("springdoc.swagger-ui.enabled", "true");
-        System.setProperty("springdoc.api-docs.enabled", "true");
-        System.setProperty("springdoc.api-docs.charset", "UTF-8");
+        // 禁用HandlerMappingIntrospector缓存，解决Spring Framework兼容性问题
+        System.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER");
+        System.setProperty("spring.mvc.problemdetails.enabled", "false");
+        System.setProperty("spring.mvc.servlet.path", "/");
+        System.setProperty("spring.security.filter.order", "15");
+        
+        // 配置SpringDoc和Knife4j - 禁用所有API文档功能
+        System.setProperty("springdoc.swagger-ui.enabled", "false");
+        System.setProperty("springdoc.api-docs.enabled", "false");
+        System.setProperty("knife4j.enable", "false");
+        System.setProperty("knife4j.production", "true");
     }
 
     public static void main(String[] args) {
@@ -153,6 +160,16 @@ public class LawFirmApiApplication {
                 env.getActiveProfiles().length == 0 ? "默认配置" : env.getActiveProfiles()[0],
                 System.getProperty("file.encoding"),
                 System.getProperty("user.language") + "_" + System.getProperty("user.country"));
+                
+        // 输出系统版本信息
+        log.info("系统版本信息: \n\t" +
+                "Spring版本: {}\n\t" +
+                "Java版本: {}\n\t" +
+                "操作系统: {} ({})",
+                org.springframework.core.SpringVersion.getVersion(),
+                System.getProperty("java.version"),
+                System.getProperty("os.name"),
+                System.getProperty("os.arch"));
     }
     
     /**
@@ -171,9 +188,10 @@ public class LawFirmApiApplication {
         // 设置日志级别
         System.setProperty("org.springframework.boot.logging.LoggingSystem", "org.springframework.boot.logging.logback.LogbackLoggingSystem");
         
-        // 设置Swagger相关配置
-        System.setProperty("springdoc.swagger-ui.enabled", "true");
-        System.setProperty("springdoc.api-docs.enabled", "true");
+        // 设置Swagger相关配置 - 禁用所有API文档功能
+        System.setProperty("springdoc.swagger-ui.enabled", "false");
+        System.setProperty("springdoc.api-docs.enabled", "false");
+        System.setProperty("knife4j.enable", "false");
         
         // 确保只排除Spring Boot自动配置类
         System.clearProperty("spring.autoconfigure.exclude");

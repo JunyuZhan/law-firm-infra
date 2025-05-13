@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,47 +27,51 @@ import java.util.List;
  */
 @Configuration
 @EnableWebMvc
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
 
     /**
      * 注册错误页面
      * 将所有错误请求重定向到我们的HomeController
      */
-    @Bean
-    public ErrorPageRegistrar errorPageRegistrar() {
-        return new ErrorPageRegistrar() {
-            @Override
-            public void registerErrorPages(ErrorPageRegistry registry) {
-                // 注册400错误页面
-                registry.addErrorPages(new ErrorPage(HttpStatus.BAD_REQUEST, "/error"));
-                // 注册404错误页面
-                registry.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/error"));
-                // 注册500错误页面
-                registry.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/error"));
-                // 注册所有其他错误
-                registry.addErrorPages(new ErrorPage(Throwable.class, "/error"));
-            }
-        };
+    @Override
+    public void registerErrorPages(ErrorPageRegistry registry) {
+        // 注册400错误页面
+        registry.addErrorPages(new ErrorPage(HttpStatus.BAD_REQUEST, "/error"));
+        // 注册404错误页面
+        registry.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/error"));
+        // 注册500错误页面
+        registry.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/error"));
+        // 注册所有其他错误
+        registry.addErrorPages(new ErrorPage(Throwable.class, "/error"));
     }
     
     /**
      * 配置消息转换器
-     * 确保字符串转换器使用UTF-8编码，解决中文乱码问题
+     * 确保正确处理不同内容类型，特别是JSON和文本内容
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        // 添加UTF-8编码的StringHttpMessageConverter，处理文本内容
+        // 添加JSON转换器
+        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        // 添加API文档相关MediaType
+        jsonConverter.setSupportedMediaTypes(Arrays.asList(
+            MediaType.APPLICATION_JSON,
+            new MediaType("application", "*+json"),
+            new MediaType("application", "json"),
+            new MediaType("application", "vnd.api+json")
+        ));
+        // 将JSON转换器添加到最前面，确保它优先处理JSON内容
+        converters.add(0, jsonConverter);
+
+        // 添加字符串转换器
         StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-        
-        // 清除默认支持的媒体类型，只保留需要的类型，避免干扰其他转换器
-        stringConverter.setSupportedMediaTypes(List.of(
+        stringConverter.setSupportedMediaTypes(Arrays.asList(
             MediaType.TEXT_PLAIN,
             MediaType.TEXT_HTML,
-            new MediaType("text", "javascript", StandardCharsets.UTF_8)
+            new MediaType("text", "javascript")
         ));
-        
-        // 将字符串转换器添加到最前面
-        converters.add(0, stringConverter);
+        // 将字符串转换器添加到JSON转换器之后
+        converters.add(1, stringConverter);
     }
     
     /**
@@ -86,30 +92,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     
     /**
      * 配置静态资源处理程序
-     * 确保Swagger UI可以正常访问
+     * 注意：API文档相关资源处理已移至专门的配置类
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 访问Swagger UI
-        registry.addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/")
-                .resourceChain(false);
-                
-        // 访问Swagger UI HTML
-        registry.addResourceHandler("/swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/")
-                .resourceChain(false);
-                
-        // 访问webjars资源
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/")
-                .resourceChain(false);
-                
-        // 访问Swagger配置资源
-        registry.addResourceHandler("/swagger-resources/**")
-                .addResourceLocations("classpath:/META-INF/resources/swagger-resources/")
-                .resourceChain(false);
-                
         // 访问静态资源
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/")
@@ -127,5 +113,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
+    }
+
+    /**
+     * 配置字符编码过滤器
+     */
+    @Bean
+    public FilterRegistrationBean<CharacterEncodingFilter> characterEncodingFilter() {
+        CharacterEncodingFilter filter = new CharacterEncodingFilter();
+        filter.setEncoding(StandardCharsets.UTF_8.name());
+        filter.setForceEncoding(true);
+        FilterRegistrationBean<CharacterEncodingFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(filter);
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setOrder(1);
+        return registrationBean;
     }
 } 

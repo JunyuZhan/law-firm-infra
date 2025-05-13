@@ -32,6 +32,10 @@ public class LogbackEncodingConfig {
     @PostConstruct
     public void init() {
         try {
+            // 设置系统级编码属性
+            System.setProperty("file.encoding", "UTF-8");
+            System.setProperty("sun.jnu.encoding", "UTF-8");
+            
             LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
             
             // 获取根日志记录器
@@ -57,13 +61,17 @@ public class LogbackEncodingConfig {
                         PatternLayoutEncoder encoder = (PatternLayoutEncoder) consoleAppender.getEncoder();
                         // 确保使用UTF-8编码
                         encoder.setCharset(StandardCharsets.UTF_8);
-                        // 重新启动编码器应用更改
-                        try {
-                            encoder.start();
-                        } catch (Exception e) {
-                            log.warn("无法重启控制台编码器: {}", e.getMessage());
-                        }
+                        
+                        // 停止并重新启动编码器应用更改
+                        encoder.stop();
+                        encoder.start();
+                        
+                        log.info("已为控制台输出配置UTF-8编码");
                     }
+                    
+                    // 停止并重新启动附加器
+                    consoleAppender.stop();
+                    consoleAppender.start();
                 }
                 
                 // 处理文件输出
@@ -75,18 +83,26 @@ public class LogbackEncodingConfig {
                         PatternLayoutEncoder encoder = (PatternLayoutEncoder) fileAppender.getEncoder();
                         // 确保使用UTF-8编码
                         encoder.setCharset(StandardCharsets.UTF_8);
-                        // 重新启动编码器应用更改
-                        try {
-                            encoder.start();
-                        } catch (Exception e) {
-                            log.warn("无法重启文件编码器: {}", e.getMessage());
-                        }
+                        
+                        // 停止并重新启动编码器应用更改
+                        encoder.stop();
+                        encoder.start();
+                        
+                        log.info("已为文件输出配置UTF-8编码: {}", fileAppender.getFile());
                     }
+                    
+                    // 停止并重新启动附加器
+                    fileAppender.stop();
+                    fileAppender.start();
                 }
             }
             
-            // 输出日志配置信息
-            log.info("日志编码配置已应用 - 编码: UTF-8");
+            // 输出编码测试信息
+            log.info("===== 日志编码测试 =====");
+            log.info("当前系统编码: {}", System.getProperty("file.encoding"));
+            log.info("中文测试: 这是一段中文测试文本");
+            log.info("特殊字符测试: 特殊字符ÄÖÜäöüß");
+            log.info("========================");
         } catch (Exception e) {
             log.error("日志编码配置失败: {}", e.getMessage(), e);
         }

@@ -29,90 +29,82 @@ import java.util.Map;
  * 提供API文档入口点和辅助功能
  */
 @Slf4j
-@Hidden
 @Controller
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "springdoc.api-docs", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "springdoc.api-docs", name = "enabled", havingValue = "true", matchIfMissing = false)
 public class ApiDocController {
-
-    @Value("${springdoc.api-docs.path:/v3/api-docs}")
-    private String apiDocsPath;
 
     @Value("${springdoc.swagger-ui.path:/swagger-ui.html}")
     private String swaggerUiPath;
 
-    @Autowired(required = false)
+    @Value("${springdoc.api-docs.path:/v3/api-docs}")
+    private String apiDocsPath;
+    
+    @Value("${springdoc.api-docs.enabled:true}")
+    private boolean apiDocsEnabled;
+
+    @Autowired
     private SpringDocConfigProperties springDocConfigProperties;
 
     /**
-     * 重定向到Swagger UI首页
+     * 重定向到Swagger UI
      */
-    @GetMapping(value = "/api-docs", produces = MediaType.TEXT_HTML_VALUE)
-    public RedirectView apiDocs() {
-        log.debug("重定向到Swagger UI");
-        return new RedirectView("/swagger-ui.html");
-    }
-
-    /**
-     * 用于检查API文档服务状态
-     */
-    @GetMapping("/api-docs/health")
-    public ResponseEntity<Map<String, Object>> apiDocHealth() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("status", "UP");
-        result.put("encoding", StandardCharsets.UTF_8.name());
-        result.put("message", "API文档服务运行正常");
-        
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(result);
-    }
-
-    /**
-     * 重定向到API文档根目录
-     */
-    @RequestMapping(value = {"/swagger", "/docs"})
-    public RedirectView redirectToSwagger() {
-        return new RedirectView("/swagger-ui.html");
-    }
-
-    /**
-     * API文档清除缓存 - 解决文档不更新的问题
-     */
-    @GetMapping("/v3/api-docs/clear-cache")
-    @ResponseBody
     @Hidden
-    public ResponseEntity<Map<String, String>> clearApiDocsCache() {
-        Map<String, String> result = new HashMap<>();
+    @GetMapping("/api/docs")
+    public RedirectView redirectToSwaggerUi() {
+        return new RedirectView(swaggerUiPath);
+    }
+
+    /**
+     * 文档入口点
+     */
+    @Hidden
+    @GetMapping("/")
+    public RedirectView index() {
+        // 在开发环境中重定向到API文档
+        return new RedirectView(swaggerUiPath);
+    }
+
+    /**
+     * API文档健康检查
+     * 用于确认API文档服务正常工作
+     */
+    @Hidden
+    @GetMapping("/api-docs/health")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> apiDocsHealth() {
+        Map<String, Object> healthInfo = new HashMap<>();
+        healthInfo.put("status", "UP");
+        healthInfo.put("enabled", apiDocsEnabled);
+        healthInfo.put("apiDocsPath", apiDocsPath);
+        healthInfo.put("swaggerUiPath", swaggerUiPath);
+        healthInfo.put("encoding", StandardCharsets.UTF_8.name());
         
-        try {
-            if (springDocConfigProperties != null) {
-                // 使用反射调用setCacheDisabled方法以兼容不同版本的SpringDoc
-                try {
-                    Method method = springDocConfigProperties.getClass().getMethod("setCacheDisabled", boolean.class);
-                    method.invoke(springDocConfigProperties, true);
-                    log.info("API文档缓存已清空");
-                    result.put("status", "success");
-                    result.put("message", "API文档缓存已清空");
-                } catch (NoSuchMethodException e) {
-                    log.warn("SpringDocConfigProperties不支持setCacheDisabled方法，尝试其他方式清除缓存");
-                    // 尝试通过设置系统属性的方式
-                    System.setProperty("springdoc.cache.disabled", "true");
-                    result.put("status", "partial");
-                    result.put("message", "通过系统属性方式尝试清除缓存");
-                }
-            } else {
-                log.warn("SpringDocConfigProperties不可用，无法清空缓存");
-                result.put("status", "warning");
-                result.put("message", "SpringDocConfigProperties不可用，无法清空缓存");
-            }
-        } catch (Exception e) {
-            log.error("清空API文档缓存失败", e);
-            result.put("status", "error");
-            result.put("message", "清空API文档缓存失败: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("X-API-Doc-Encoding", StandardCharsets.UTF_8.name());
         
-        return ResponseEntity.ok(result);
+        return new ResponseEntity<>(healthInfo, headers, HttpStatus.OK);
+    }
+
+    /**
+     * 字符编码测试端点
+     * 用于测试API文档的编码问题
+     */
+    @Hidden
+    @GetMapping(value = "/api-docs/encoding-test", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> encodingTest(HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("测试中文", "这是一段测试文本");
+        result.put("specialChars", "特殊字符: ÄÖÜäöüß");
+        result.put("requestEncoding", request.getCharacterEncoding());
+        result.put("systemEncoding", System.getProperty("file.encoding"));
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("X-Content-Type-Options", "nosniff");
+        
+        return new ResponseEntity<>(result, headers, HttpStatus.OK);
     }
 } 

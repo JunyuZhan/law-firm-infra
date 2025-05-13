@@ -19,13 +19,17 @@ import org.springframework.beans.factory.annotation.Value;
 /**
  * OpenAPI自动配置类
  * <p>
- * 只有在明确启用API文档且没有其他OpenAPI bean的情况下才生效
+ * API文档功能已禁用，此配置类不会加载
  * </p>
  */
 @AutoConfiguration
 @ConditionalOnWebApplication
 @ConditionalOnClass(OpenAPI.class)
-@ConditionalOnProperty(prefix = "springdoc.api-docs", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(
+    name = {"springdoc.api-docs.enabled", "knife4j.enable"}, 
+    havingValue = "true", 
+    matchIfMissing = false
+)
 public class OpenApiAutoConfiguration {
 
     @Value("${spring.application.name:律所管理系统}")
@@ -36,12 +40,13 @@ public class OpenApiAutoConfiguration {
 
     /**
      * 配置OpenAPI基本信息
-     * 仅当没有其他OpenAPI bean时生效
+     * 仅当API文档功能明确启用且没有其他OpenAPI bean时生效
      */
-    @Bean(name = "defaultOpenAPI")
+    @Bean(name = "openAPI")
     @ConditionalOnMissingBean(OpenAPI.class)
     public OpenAPI defaultOpenAPI() {
         return new OpenAPI()
+                .openapi("3.0.1")
                 .info(new Info()
                         .title(applicationName + " API")
                         .version(applicationVersion)
@@ -64,7 +69,7 @@ public class OpenApiAutoConfiguration {
 
     /**
      * 配置默认API分组
-     * 仅当没有其他GroupedOpenApi bean时生效
+     * 仅当API文档功能明确启用且没有其他GroupedOpenApi bean时生效
      */
     @Bean(name = "defaultGroupedOpenApi")
     @ConditionalOnMissingBean(name = "defaultGroupedOpenApi")
@@ -77,7 +82,7 @@ public class OpenApiAutoConfiguration {
     
     /**
      * 配置认证模块API分组
-     * 该Bean可能与API模块中的配置冲突，增加条件判断
+     * 仅当API文档功能明确启用才生效
      */
     @Bean(name = "authGroupedOpenApi")
     @ConditionalOnMissingBean(name = "authGroupedOpenApi")

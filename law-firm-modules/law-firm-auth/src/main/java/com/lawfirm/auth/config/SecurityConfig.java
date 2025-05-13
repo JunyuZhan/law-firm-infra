@@ -136,8 +136,8 @@ public class SecurityConfig extends BaseSecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(request -> {
                     String uri = request.getRequestURI();
-                    // 检查是否是API文档路径
-                    for (String pattern : SecurityConstants.API_DOC_PATHS) {
+                    // 检查是否是公共资源路径
+                    for (String pattern : SecurityConstants.PUBLIC_RESOURCE_PATHS) {
                         if (pathMatcher.match(pattern, uri)) {
                             return true;
                         }

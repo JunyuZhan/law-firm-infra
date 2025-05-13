@@ -106,12 +106,17 @@ server:
     # 确保Servlet使用UTF-8编码
     encoding:
       charset: UTF-8
-      force: true
       enabled: true
+      force: true
+      force-request: true
+      force-response: true
   tomcat:
     uri-encoding: UTF-8
     max-threads: 200
     max-connections: 8192
+    # 确保响应正确使用UTF-8
+    relaxed-query-chars: [ ]
+    relaxed-path-chars: [ ]
 
 # MyBatis Plus配置
 mybatis-plus:
@@ -135,47 +140,17 @@ mybatis-plus:
 cors:
   allowed-origins: "*"
 
-# SpringDoc配置
+# SpringDoc配置 - 禁用API文档功能
 springdoc:
   api-docs:
-    # 确保API文档生成
-    enabled: true
-    path: /v3/api-docs
-    # 添加组配置
-    groups:
-      enabled: true
-    # 确保API文档显示正确
-    resolve-schema-properties: true
+    enabled: false # 禁用API文档生成
   swagger-ui:
-    # 启用Swagger UI
-    enabled: true
-    path: /swagger-ui.html
-    # 直接访问API路径
-    urls-primary-name: default
-    # 在文档页面展示请求URL
-    display-request-duration: true
-    # 文档分组
-    tags-sorter: alpha
-    operations-sorter: alpha
-    # 默认展开所有操作
-    doc-expansion: none
-    # 禁用验证
-    validator-url: none
-  # 扩展包扫描范围，确保包含所有API控制器
-  packages-to-scan: 
-    - com.lawfirm
-  # 匹配所有API路径
-  paths-to-match: 
-    - /**
-  # 默认包含所有端点
-  default-produces-media-type: application/json
-  default-consumes-media-type: application/json
-  # 禁用默认异常处理
-  model-converters:
-    pageable-converter:
-      enabled: false
-  # 使用完全限定名
-  use-fqn: true
+    enabled: false # 禁用Swagger UI
+
+# Knife4j配置 - 禁用
+knife4j:
+  enable: false
+  production: true
 
 # 日志配置
 logging:
