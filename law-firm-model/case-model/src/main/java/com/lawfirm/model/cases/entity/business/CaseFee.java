@@ -6,6 +6,7 @@ import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 @Accessors(chain = true)
 @TableName("case_fee")
+@Schema(description = "案件费用实体类")
 public class CaseFee extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -27,174 +29,203 @@ public class CaseFee extends ModelBaseEntity {
     /**
      * 案件ID
      */
+    @Schema(description = "案件ID")
     @TableField("case_id")
     private Long caseId;
 
     /**
      * 案件编号
      */
+    @Schema(description = "案件编号")
     @TableField("case_number")
     private String caseNumber;
 
     /**
      * 费用名称
      */
+    @Schema(description = "费用名称")
     @TableField("fee_name")
     private String feeName;
 
     /**
      * 费用类型（1:律师费, 2:诉讼费, 3:仲裁费, 4:调解费, 5:公证费, 6:鉴定费, 7:差旅费, 8:其他费用）
      */
+    @Schema(description = "费用类型（1:律师费, 2:诉讼费, 3:仲裁费, 4:调解费, 5:公证费, 6:鉴定费, 7:差旅费, 8:其他费用）")
     @TableField("fee_type")
     private Integer feeType;
 
     /**
      * 费用金额
      */
+    @Schema(description = "费用金额")
     @TableField("fee_amount")
     private BigDecimal feeAmount;
 
     /**
      * 币种（CNY:人民币, USD:美元, EUR:欧元, GBP:英镑, JPY:日元, HKD:港币）
      */
+    @Schema(description = "币种（CNY:人民币, USD:美元, EUR:欧元, GBP:英镑, JPY:日元, HKD:港币）")
     @TableField("currency")
     private String currency;
 
     /**
      * 费用状态（1:待支付, 2:部分支付, 3:已支付, 4:已取消, 5:已退款）
      */
+    @Schema(description = "费用状态（1:待支付, 2:部分支付, 3:已支付, 4:已取消, 5:已退款）")
     @TableField("fee_status")
     private Integer feeStatus;
 
     /**
      * 费用描述
      */
+    @Schema(description = "费用描述")
     @TableField("fee_description")
     private String feeDescription;
 
     /**
      * 已支付金额
      */
+    @Schema(description = "已支付金额")
     @TableField("paid_amount")
     private BigDecimal paidAmount;
 
     /**
      * 支付方式（1:现金, 2:银行转账, 3:支票, 4:信用卡, 5:微信, 6:支付宝, 7:其他）
      */
+    @Schema(description = "支付方式（1:现金, 2:银行转账, 3:支票, 4:信用卡, 5:微信, 6:支付宝, 7:其他）")
     @TableField("payment_method")
     private Integer paymentMethod;
 
     /**
      * 付款时间
      */
+    @Schema(description = "付款时间")
     @TableField("payment_time")
     private transient LocalDateTime paymentTime;
 
     /**
      * 支付人
      */
+    @Schema(description = "支付人")
     @TableField("payer")
     private String payer;
 
     /**
      * 收款人
      */
+    @Schema(description = "收款人")
     @TableField("payee")
     private String payee;
 
     /**
      * 交易编号
      */
+    @Schema(description = "交易编号")
     @TableField("transaction_number")
     private String transactionNumber;
 
     /**
      * 发票号码
      */
+    @Schema(description = "发票号码")
     @TableField("invoice_number")
     private String invoiceNumber;
 
     /**
      * 是否已开票
      */
+    @Schema(description = "是否已开票")
     @TableField("is_invoiced")
     private Boolean isInvoiced;
 
     /**
      * 开票时间
      */
+    @Schema(description = "开票时间")
     @TableField("invoice_time")
     private transient LocalDateTime invoiceTime;
 
     /**
      * 是否需要审核
      */
+    @Schema(description = "是否需要审核")
     @TableField("need_review")
     private Boolean needReview;
 
     /**
      * 审核人ID
      */
+    @Schema(description = "审核人ID")
     @TableField("reviewer_id")
     private Long reviewerId;
 
     /**
      * 审核人姓名
      */
+    @Schema(description = "审核人姓名")
     @TableField("reviewer_name")
     private String reviewerName;
 
     /**
      * 审核时间
      */
+    @Schema(description = "审核时间")
     @TableField("review_time")
     private transient LocalDateTime reviewTime;
 
     /**
      * 审核状态（0:未审核, 1:审核通过, 2:审核不通过）
      */
+    @Schema(description = "审核状态（0:未审核, 1:审核通过, 2:审核不通过）")
     @TableField("review_status")
     private Integer reviewStatus;
 
     /**
      * 审核意见
      */
+    @Schema(description = "审核意见")
     @TableField("review_opinion")
     private String reviewOpinion;
 
     /**
      * 创建人ID
      */
+    @Schema(description = "创建人ID")
     @TableField("creator_id")
     private Long creatorId;
 
     /**
      * 创建人姓名
      */
+    @Schema(description = "创建人姓名")
     @TableField("creator_name")
     private String creatorName;
 
     /**
      * 关联文档IDs（逗号分隔）
      */
+    @Schema(description = "关联文档IDs（逗号分隔）")
     @TableField("document_ids")
     private String documentIds;
 
     /**
      * 备注
      */
+    @Schema(description = "备注")
     @TableField("remarks")
     private String remarks;
 
     /**
      * 审核人角色
      */
+    @Schema(description = "审核人角色")
     @TableField("reviewer_role")
     private String reviewerRole;
 
     /**
      * 支付人角色
      */
+    @Schema(description = "支付人角色")
     @TableField("payer_role")
     private String payerRole;
 

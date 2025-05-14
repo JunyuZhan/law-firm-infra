@@ -33,7 +33,6 @@ import java.util.List;
  * Web MVC配置
  */
 @Configuration
-@EnableWebMvc
 @Slf4j
 public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
 

@@ -21,7 +21,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
  * REST API全局异常处理
  * 处理所有API请求中的异常，并返回标准格式的错误响应
  */
-@RestControllerAdvice
+// @RestControllerAdvice
 @Slf4j
 public class RestExceptionHandler {
 

@@ -1,5 +1,4 @@
 com.lawfirm.common.web.config.WebAutoConfiguration
 com.lawfirm.common.web.config.WebConfig
 com.lawfirm.common.web.config.JacksonConfig
-com.lawfirm.common.web.config.OpenApiAutoConfiguration
 com.lawfirm.common.web.config.UploadConfig 

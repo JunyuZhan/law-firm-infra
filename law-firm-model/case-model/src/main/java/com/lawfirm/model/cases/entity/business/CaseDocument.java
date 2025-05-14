@@ -9,6 +9,7 @@ import com.lawfirm.model.cases.enums.doc.DocumentTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @Setter
 @Accessors(chain = true)
 @TableName("case_document")
+@Schema(description = "案件文档实体类")
 public class CaseDocument extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -29,180 +31,210 @@ public class CaseDocument extends ModelBaseEntity {
     /**
      * 案件ID
      */
+    @Schema(description = "案件ID")
     @TableField("case_id")
     private Long caseId;
 
     /**
      * 案件编号
      */
+    @Schema(description = "案件编号")
     @TableField("case_number")
     private String caseNumber;
 
     /**
      * 文档名称
      */
+    @Schema(description = "文档名称")
     @TableField("document_name")
     private String documentName;
 
     /**
      * 文档类型
      */
+    @Schema(description = "文档类型")
     @TableField("document_type")
     private Integer documentType;
 
     /**
      * 文档状态
      */
+    @Schema(description = "文档状态")
     @TableField("document_status")
     private Integer documentStatus;
 
     /**
      * 文档安全级别
      */
+    @Schema(description = "文档安全级别")
     @TableField("security_level")
     private Integer securityLevel;
 
     /**
      * 文档路径
      */
+    @Schema(description = "文档路径")
     @TableField("document_path")
     private String documentPath;
 
     /**
      * 文档格式
      */
+    @Schema(description = "文档格式")
     @TableField("document_format")
     private String documentFormat;
 
     /**
      * 文档大小（字节）
      */
+    @Schema(description = "文档大小（字节）")
     @TableField("document_size")
     private Long documentSize;
 
     /**
      * 文档描述
      */
+    @Schema(description = "文档描述")
     @TableField("document_description")
     private String documentDescription;
 
     /**
      * 文档关键词
      */
+    @Schema(description = "文档关键词")
     @TableField("document_keywords")
     private String documentKeywords;
 
     /**
      * 版本号
      */
+    @Schema(description = "版本号")
     @TableField("version_number")
     private String versionNumber;
 
     /**
      * 是否为最新版本
      */
+    @Schema(description = "是否为最新版本")
     @TableField("is_latest_version")
     private Boolean isLatestVersion;
 
     /**
      * 上一版本ID
      */
+    @Schema(description = "上一版本ID")
     @TableField("previous_version_id")
     private Long previousVersionId;
 
     /**
      * 创建人ID
      */
+    @Schema(description = "创建人ID")
     @TableField("creator_id")
     private Long creatorId;
 
     /**
      * 创建人姓名
      */
+    @Schema(description = "创建人姓名")
     @TableField("creator_name")
     private String creatorName;
 
     /**
      * 最后修改人ID
      */
+    @Schema(description = "最后修改人ID")
     @TableField("last_modifier_id")
     private Long lastModifierId;
 
     /**
      * 最后修改人姓名
      */
+    @Schema(description = "最后修改人姓名")
     @TableField("last_modifier_name")
     private String lastModifierName;
 
     /**
      * 最后修改时间
      */
+    @Schema(description = "最后修改时间")
     @TableField("last_modified_time")
     private transient LocalDateTime lastModifiedTime;
 
     /**
      * 是否加密
      */
+    @Schema(description = "是否加密")
     @TableField("is_encrypted")
     private Boolean isEncrypted;
 
     /**
      * 加密方式
      */
+    @Schema(description = "加密方式")
     @TableField("encryption_method")
     private String encryptionMethod;
 
     /**
      * 是否需要审核
      */
+    @Schema(description = "是否需要审核")
     @TableField("need_review")
     private Boolean needReview;
 
     /**
      * 审核人ID
      */
+    @Schema(description = "审核人ID")
     @TableField("reviewer_id")
     private Long reviewerId;
 
     /**
      * 审核人姓名
      */
+    @Schema(description = "审核人姓名")
     @TableField("reviewer_name")
     private String reviewerName;
 
     /**
      * 审核时间
      */
+    @Schema(description = "审核时间")
     @TableField("review_time")
     private transient LocalDateTime reviewTime;
 
     /**
      * 审核意见
      */
+    @Schema(description = "审核意见")
     @TableField("review_opinion")
     private String reviewOpinion;
 
     /**
      * 是否对外提供
      */
+    @Schema(description = "是否对外提供")
     @TableField("is_external")
     private Boolean isExternal;
 
     /**
      * 是否归档
      */
+    @Schema(description = "是否归档")
     @TableField("is_archived")
     private Boolean isArchived;
 
     /**
      * 归档时间
      */
+    @Schema(description = "归档时间")
     @TableField("archive_time")
     private transient LocalDateTime archiveTime;
 
     /**
      * 备注
      */
+    @Schema(description = "备注")
     @TableField("remarks")
     private String remarks;
 

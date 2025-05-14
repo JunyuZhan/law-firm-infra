@@ -9,6 +9,7 @@ import com.lawfirm.model.cases.enums.event.EventTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -23,6 +24,7 @@ import java.time.Duration;
 @Setter
 @Accessors(chain = true)
 @TableName("case_event")
+@Schema(description = "案件事件实体类")
 public class CaseEvent extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -30,192 +32,224 @@ public class CaseEvent extends ModelBaseEntity {
     /**
      * 案件ID
      */
+    @Schema(description = "案件ID")
     @TableField("case_id")
     private Long caseId;
 
     /**
      * 案件编号
      */
+    @Schema(description = "案件编号")
     @TableField("case_number")
     private String caseNumber;
 
     /**
      * 事件标题
      */
+    @Schema(description = "事件标题")
     @TableField("event_title")
     private String eventTitle;
 
     /**
      * 事件类型
      */
+    @Schema(description = "事件类型")
     @TableField("event_type")
     private Integer eventType;
 
     /**
      * 事件状态
      */
+    @Schema(description = "事件状态")
     @TableField("event_status")
     private Integer eventStatus;
 
     /**
      * 事件优先级
      */
+    @Schema(description = "事件优先级")
     @TableField("event_priority")
     private Integer eventPriority;
 
     /**
      * 事件描述
      */
+    @Schema(description = "事件描述")
     @TableField("event_description")
     private String eventDescription;
 
     /**
      * 开始时间
      */
+    @Schema(description = "开始时间")
     @TableField("start_time")
     private transient LocalDateTime startTime;
 
     /**
      * 结束时间
      */
+    @Schema(description = "结束时间")
     @TableField("end_time")
     private transient LocalDateTime endTime;
 
     /**
      * 是否全天事件
      */
+    @Schema(description = "是否全天事件")
     @TableField("is_all_day")
     private Boolean isAllDay;
 
     /**
      * 地点
      */
+    @Schema(description = "地点")
     @TableField("location")
     private String location;
 
     /**
      * 地址
      */
+    @Schema(description = "地址")
     @TableField("address")
     private String address;
 
     /**
      * 经度
      */
+    @Schema(description = "经度")
     @TableField("longitude")
     private Double longitude;
 
     /**
      * 纬度
      */
+    @Schema(description = "纬度")
     @TableField("latitude")
     private Double latitude;
 
     /**
      * 组织者ID
      */
+    @Schema(description = "组织者ID")
     @TableField("organizer_id")
     private Long organizerId;
 
     /**
      * 组织者姓名
      */
+    @Schema(description = "组织者姓名")
     @TableField("organizer_name")
     private String organizerName;
 
     /**
      * 参与人IDs（逗号分隔）
      */
+    @Schema(description = "参与人IDs（逗号分隔）")
     @TableField("participant_ids")
     private String participantIds;
 
     /**
      * 参与人姓名（逗号分隔）
      */
+    @Schema(description = "参与人姓名（逗号分隔）")
     @TableField("participant_names")
     private String participantNames;
 
     /**
      * 是否需要提醒
      */
+    @Schema(description = "是否需要提醒")
     @TableField("need_reminder")
     private Boolean needReminder;
 
     /**
      * 提醒时间
      */
+    @Schema(description = "提醒时间")
     @TableField("reminder_time")
     private transient LocalDateTime reminderTime;
 
     /**
      * 提醒方式（1:系统消息, 2:邮件, 3:短信, 4:多种方式）
      */
+    @Schema(description = "提醒方式（1:系统消息, 2:邮件, 3:短信, 4:多种方式）")
     @TableField("reminder_method")
     private Integer reminderMethod;
 
     /**
      * 是否已提醒
      */
+    @Schema(description = "是否已提醒")
     @TableField("is_reminded")
     private Boolean isReminded;
 
     /**
      * 是否重复事件
      */
+    @Schema(description = "是否重复事件")
     @TableField("is_recurring")
     private Boolean isRecurring;
 
     /**
      * 重复规则（iCalendar RRULE格式）
      */
+    @Schema(description = "重复规则（iCalendar RRULE格式）")
     @TableField("recurrence_rule")
     private String recurrenceRule;
 
     /**
      * 父事件ID（重复事件的原始事件）
      */
+    @Schema(description = "父事件ID（重复事件的原始事件）")
     @TableField("parent_event_id")
     private Long parentEventId;
 
     /**
      * 关联文档IDs（逗号分隔）
      */
+    @Schema(description = "关联文档IDs（逗号分隔）")
     @TableField("document_ids")
     private String documentIds;
 
     /**
      * 关联任务IDs（逗号分隔）
      */
+    @Schema(description = "关联任务IDs（逗号分隔）")
     @TableField("task_ids")
     private String taskIds;
 
     /**
      * 是否公开
      */
+    @Schema(description = "是否公开")
     @TableField("is_public")
     private Boolean isPublic;
 
     /**
      * 是否已取消
      */
+    @Schema(description = "是否已取消")
     @TableField("is_cancelled")
     private Boolean isCancelled;
 
     /**
      * 取消原因
      */
+    @Schema(description = "取消原因")
     @TableField("cancel_reason")
     private String cancelReason;
 
     /**
      * 取消时间
      */
+    @Schema(description = "取消时间")
     @TableField("cancel_time")
     private transient LocalDateTime cancelTime;
 
     /**
      * 备注
      */
+    @Schema(description = "备注")
     @TableField("remarks")
     private String remarks;
 

@@ -140,17 +140,17 @@ mybatis-plus:
 cors:
   allowed-origins: "*"
 
-# SpringDoc配置 - 禁用API文档功能
+# SpringDoc配置 - 默认配置（由环境配置文件控制开启/禁用）
 springdoc:
   api-docs:
-    enabled: false # 禁用API文档生成
+    enabled: ${SPRINGDOC_ENABLED:false} # 由环境变量或profile控制
   swagger-ui:
-    enabled: false # 禁用Swagger UI
+    enabled: ${SPRINGDOC_ENABLED:false} # 由环境变量或profile控制
 
-# Knife4j配置 - 禁用
+# Knife4j配置 - 默认配置（由环境配置文件控制开启/禁用）
 knife4j:
-  enable: false
-  production: true
+  enable: ${KNIFE4J_ENABLED:false}
+  production: ${KNIFE4J_PRODUCTION:true}
 
 # 日志配置
 logging:

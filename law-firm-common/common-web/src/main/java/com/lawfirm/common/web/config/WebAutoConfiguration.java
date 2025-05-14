@@ -17,8 +17,7 @@ import org.springframework.context.annotation.Import;
     WebConfig.class,
     JacksonConfig.class,
     UploadConfig.class,
-    SecurityConfig.class,
-    OpenApiAutoConfiguration.class
+    SecurityConfig.class
 })
 public class WebAutoConfiguration {
     // 此类作为配置聚合器，不需要其他实现

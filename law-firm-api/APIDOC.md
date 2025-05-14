@@ -1269,10 +1269,10 @@ spring:
    - 添加环境感知的API文档访问保护
    ```java
    @Configuration
-   @ConditionalOnProperty(name = "law-firm.api-doc.secure-access.enabled", havingValue = "true")
+   @ConditionalOnProperty(name = "law-firm.swagger.auth.enabled", havingValue = "true")
    public class ApiDocSecurityConfig {
        
-       @Value("${law-firm.api-doc.secure-access.key}")
+       @Value("${law-firm.swagger.auth.key}")
        private String accessKey;
        
        @Bean
@@ -1323,4 +1323,63 @@ spring:
    ```
 
 通过实施这些增强措施，可以在保持API文档功能的同时，提高系统的安全性和可维护性。特别是在生产环境中，这些措施可以有效防止未授权访问API文档。
+
+## 错误分析：API文档相关的500错误
+
+经过检查，我们发现系统返回500错误的原因与API文档配置有关：
+
+### 1. 配置冲突问题
+
+当访问根路径`http://localhost:8080/`或相关API文档路径时，系统返回501错误（服务器内部错误）。
+这是由于API文档相关配置存在冲突：
+
+1. **配置文件层面的冲突**：
+   - `application.yml`中禁用了API文档功能：
+     ```yaml
+     springdoc:
+       api-docs:
+         enabled: false
+       swagger-ui:
+         enabled: false
+     knife4j:
+       enable: false
+       production: true
+     ```
+   - 而`application-dev.yml`中启用了API文档功能：
+     ```yaml
+     springdoc:
+       swagger-ui:
+         enabled: true
+       api-docs:
+         enabled: true
+     knife4j:
+       enable: true
+       production: false
+     ```
+
+2. **依赖关系问题**：
+   - `pom.xml`中虽然注释掉了SpringDoc相关依赖，但通过Knife4j的传递依赖仍然引入了SpringDoc
+   - 代码中创建了条件性的配置类，如`ApiDocConfiguration`和`SwaggerWebMvcConfigurer`，它们都依赖条件注解才会生效
+
+3. **配置类层面的冲突**：
+   - 有一个特殊的空白类`SwaggerConfig`用于解决Knife4j传递依赖问题
+   - `ApiDocConfiguration`通过条件注解只在springdoc.api-docs.enabled=true时生效
+   - `SwaggerWebMvcConfigurer`通过条件注解只在knife4j.enable=true时生效
+
+4. **代码中的配置设置冲突**：
+   - 在`LawFirmApiApplication.java`中注释掉了手动设置系统属性的代码，但系统状态不一致
+
+### 2. 错误原因分析
+
+1. 当访问系统时，配置混乱导致Bean初始化失败或运行时异常。
+2. 系统健康检查显示服务状态为"DOWN"（`http://localhost:8080/actuator/health`）。
+3. 此类错误通常表现为Spring容器加载时Bean之间的冲突或依赖注入问题。
+
+### 3. 解决方向
+
+1. **统一配置**：确保所有环境下API文档配置一致，要么全部启用，要么全部禁用
+2. **整理依赖**：解决SpringDoc和Knife4j之间的依赖关系，选择一种方案
+3. **简化配置类**：减少条件注解的使用，避免配置类之间的冲突
+4. **统一URL路径**：确保不同的文档工具使用不同的URL路径，避免冲突
+5. **检查异常处理**：改进系统的错误处理机制，提供更有用的错误信息
 

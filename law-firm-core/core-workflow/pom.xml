@@ -135,15 +135,18 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
-        <!-- API文档 -->
+        <!-- Swagger依赖（仅保留注解和模型依赖） -->
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
         </dependency>
-        <!-- OpenAPI 3.0注解支持 -->
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-models-jakarta</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-core-jakarta</artifactId>
         </dependency>
 
         <!-- 消息队列 -->

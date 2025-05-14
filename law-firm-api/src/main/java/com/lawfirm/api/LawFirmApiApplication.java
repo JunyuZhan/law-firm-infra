@@ -190,21 +190,18 @@ public class LawFirmApiApplication {
         String activeProfile = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"));
         boolean isDevelopment = activeProfile == null || activeProfile.contains("dev");
         
-        // 设置Swagger相关配置 - 根据环境决定是否启用API文档功能
-        // 注释掉API文档相关系统属性设置
-        // if (isDevelopment) {
-        //     // 开发环境启用API文档
-        //     System.setProperty("springdoc.swagger-ui.enabled", "true");
-        //     System.setProperty("springdoc.api-docs.enabled", "true");
-        //     System.setProperty("knife4j.enable", "true");
-        //     System.setProperty("knife4j.production", "false");
-        // } else {
-        //     // 非开发环境禁用API文档
-        // System.setProperty("springdoc.swagger-ui.enabled", "false");
-        // System.setProperty("springdoc.api-docs.enabled", "false");
-        // System.setProperty("knife4j.enable", "false");
-        //     System.setProperty("knife4j.production", "true");
-        // }
+        // 根据环境设置API文档配置，确保配置一致性
+        if (isDevelopment) {
+            // 开发环境启用API文档
+            System.setProperty("SPRINGDOC_ENABLED", "true");
+            System.setProperty("KNIFE4J_ENABLED", "true");
+            System.setProperty("KNIFE4J_PRODUCTION", "false");
+        } else {
+            // 非开发环境禁用API文档
+            System.setProperty("SPRINGDOC_ENABLED", "false");
+            System.setProperty("KNIFE4J_ENABLED", "false");
+            System.setProperty("KNIFE4J_PRODUCTION", "true");
+        }
         
         // 确保只排除Spring Boot自动配置类
         System.clearProperty("spring.autoconfigure.exclude");

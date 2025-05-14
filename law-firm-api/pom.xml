@@ -187,42 +187,12 @@
         </dependency>
         
         <!-- API文档依赖 -->
-        <!-- 完全删除SpringDoc相关依赖 -->
-        <!--
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-webmvc-ui</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-ui</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-webmvc-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-common</artifactId>
-            <version>2.4.0</version>
-        </dependency>
-        -->
-
-        <!-- 只使用Knife4j作为API文档解决方案，但不排除SpringDoc依赖 -->
+        <!-- 只保留 Knife4j 作为唯一 API 文档 starter -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-            <!-- 移除所有SpringDoc排除项，因为Knife4j依赖SpringDoc才能正常工作 -->
         </dependency>
-        
-        <!-- 添加Swagger3的核心依赖，但不包含SpringDoc -->
+        <!-- Swagger依赖（仅保留注解和模型依赖） -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations-jakarta</artifactId>
@@ -294,6 +264,12 @@
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- SpringDoc OpenAPI 3 主依赖（必须加！版本号由父pom统一管理） -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
     </dependencies>
 

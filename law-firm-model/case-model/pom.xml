@@ -65,6 +65,12 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Swagger注解依赖，支持 @Schema 等注解 -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

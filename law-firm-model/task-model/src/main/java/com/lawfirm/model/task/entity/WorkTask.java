@@ -3,6 +3,7 @@ package com.lawfirm.model.task.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Accessors(chain = true)
 @TableName("work_task")
+@Schema(description = "工作任务实体类")
 public class WorkTask extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -21,66 +23,77 @@ public class WorkTask extends ModelBaseEntity {
     /**
      * 任务标题
      */
+    @Schema(description = "任务标题")
     @TableField("title")
     private String title;
 
     /**
      * 任务描述
      */
+    @Schema(description = "任务描述")
     @TableField("description")
     private String description;
 
     /**
      * 任务状态
      */
+    @Schema(description = "任务状态")
     @TableField("status")
     private Integer status;
 
     /**
      * 任务优先级
      */
+    @Schema(description = "任务优先级")
     @TableField("priority")
     private Integer priority;
 
     /**
      * 开始时间
      */
+    @Schema(description = "开始时间")
     @TableField("start_time")
     private LocalDateTime startTime;
 
     /**
      * 结束时间
      */
+    @Schema(description = "结束时间")
     @TableField("end_time")
     private LocalDateTime endTime;
 
     /**
      * 负责人ID
      */
+    @Schema(description = "负责人ID")
     @TableField("assignee_id")
     private Long assigneeId;
 
     /**
      * 父任务ID
      */
+    @Schema(description = "父任务ID")
     @TableField("parent_id")
     private Long parentId;
 
     /**
      * 租户ID
      */
+    @Schema(description = "租户ID")
     @TableField("tenant_id")
     private Long tenantId;
 
     /**
      * 案例ID
      */
+    @Schema(description = "案例ID")
     @TableField("case_id")
     private Long caseId;
 
     /**
      * 客户ID
      */
+    @Schema(description = "客户ID")
     @TableField("client_id")
     private Long clientId;
 

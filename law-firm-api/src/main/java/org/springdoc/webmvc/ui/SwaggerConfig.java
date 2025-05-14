@@ -2,6 +2,7 @@ package org.springdoc.webmvc.ui;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,12 +11,19 @@ import lombok.extern.slf4j.Slf4j;
  * 仅用于解决Knife4j传递依赖问题
  * 
  * 通过条件注解确保此配置不会被激活
+ * 通过高优先级确保在其他配置之前加载
  * 
  * @author LawFirm Dev Team
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "springdoc.api-docs.enabled", havingValue = "false", matchIfMissing = false)
+@Order(Integer.MIN_VALUE + 100) // 确保高优先级
+@ConditionalOnProperty(name = {"springdoc.api-docs.enabled", "knife4j.enable"}, havingValue = "false", matchIfMissing = true)
 public class SwaggerConfig {
-    // 空实现，通过设置matchIfMissing=false确保不会被激活
+    
+    public SwaggerConfig() {
+        log.info("初始化SwaggerConfig（空配置）- 用于解决Knife4j依赖问题");
+    }
+    
+    // 空实现，不含任何Bean定义
 } 

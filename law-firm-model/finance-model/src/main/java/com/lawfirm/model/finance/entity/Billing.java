@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @Setter
 @Accessors(chain = true)
 @TableName("fin_billing")
+@Schema(description = "账单实体类")
 public class Billing extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -29,6 +31,7 @@ public class Billing extends ModelBaseEntity {
     /**
      * 账单编号
      */
+    @Schema(description = "账单编号")
     @NotBlank(message = "账单编号不能为空")
     @Size(max = 32, message = "账单编号长度不能超过32个字符")
     @TableField("billing_number")
@@ -37,6 +40,7 @@ public class Billing extends ModelBaseEntity {
     /**
      * 账单状态
      */
+    @Schema(description = "账单状态")
     @NotNull(message = "账单状态不能为空")
     @TableField("billing_status")
     private BillingStatusEnum billingStatus;
@@ -44,6 +48,7 @@ public class Billing extends ModelBaseEntity {
     /**
      * 账单金额
      */
+    @Schema(description = "账单金额")
     @NotNull(message = "账单金额不能为空")
     @TableField("amount")
     private BigDecimal amount;
@@ -51,18 +56,21 @@ public class Billing extends ModelBaseEntity {
     /**
      * 已付金额
      */
+    @Schema(description = "已付金额")
     @TableField("paid_amount")
     private BigDecimal paidAmount;
 
     /**
      * 未付金额
      */
+    @Schema(description = "未付金额")
     @TableField("unpaid_amount")
     private BigDecimal unpaidAmount;
 
     /**
      * 币种
      */
+    @Schema(description = "币种")
     @NotNull(message = "币种不能为空")
     @TableField("currency")
     private CurrencyEnum currency;
@@ -70,6 +78,7 @@ public class Billing extends ModelBaseEntity {
     /**
      * 账单日期
      */
+    @Schema(description = "账单日期")
     @NotNull(message = "账单日期不能为空")
     @TableField("billing_date")
     private LocalDateTime billingDate;
@@ -77,6 +86,7 @@ public class Billing extends ModelBaseEntity {
     /**
      * 付款截止日期
      */
+    @Schema(description = "付款截止日期")
     @NotNull(message = "付款截止日期不能为空")
     @TableField("due_date")
     private LocalDateTime dueDate;
@@ -84,12 +94,14 @@ public class Billing extends ModelBaseEntity {
     /**
      * 关联案件ID
      */
+    @Schema(description = "关联案件ID")
     @TableField("case_id")
     private Long caseId;
 
     /**
      * 关联客户ID
      */
+    @Schema(description = "关联客户ID")
     @NotNull(message = "客户不能为空")
     @TableField("client_id")
     private Long clientId;
@@ -97,18 +109,21 @@ public class Billing extends ModelBaseEntity {
     /**
      * 关联律师ID
      */
+    @Schema(description = "关联律师ID")
     @TableField("lawyer_id")
     private Long lawyerId;
 
     /**
      * 关联部门ID
      */
+    @Schema(description = "关联部门ID")
     @TableField("department_id")
     private Long departmentId;
 
     /**
      * 账单说明
      */
+    @Schema(description = "账单说明")
     @Size(max = 500, message = "账单说明长度不能超过500个字符")
     @TableField("description")
     private String description;
@@ -116,36 +131,42 @@ public class Billing extends ModelBaseEntity {
     /**
      * 账单明细，JSON格式
      */
+    @Schema(description = "账单明细，JSON格式")
     @TableField("details")
     private String details;
 
     /**
      * 付款计划ID
      */
+    @Schema(description = "付款计划ID")
     @TableField("payment_plan_id")
     private Long paymentPlanId;
 
     /**
      * 开票状态（0-未开票，1-已开票）
      */
+    @Schema(description = "开票状态（0-未开票，1-已开票）")
     @TableField("invoice_status")
     private Integer invoiceStatus;
 
     /**
      * 开票时间
      */
+    @Schema(description = "开票时间")
     @TableField("invoice_time")
     private LocalDateTime invoiceTime;
 
     /**
      * 开票金额
      */
+    @Schema(description = "开票金额")
     @TableField("invoice_amount")
     private BigDecimal invoiceAmount;
 
     /**
      * 发票号码
      */
+    @Schema(description = "发票号码")
     @Size(max = 50, message = "发票号码长度不能超过50个字符")
     @TableField("invoice_number")
     private String invoiceNumber;
@@ -153,6 +174,7 @@ public class Billing extends ModelBaseEntity {
     /**
      * 租户ID
      */
+    @Schema(description = "租户ID")
     @TableField("tenant_id")
     private Long tenantId;
 

@@ -8,6 +8,7 @@ import com.lawfirm.model.cases.enums.note.NoteVisibilityEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @Setter
 @Accessors(chain = true)
 @TableName("case_note")
+@Schema(description = "案件笔记实体类")
 public class CaseNote extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -28,132 +30,154 @@ public class CaseNote extends ModelBaseEntity {
     /**
      * 案件ID
      */
+    @Schema(description = "案件ID")
     @TableField("case_id")
     private Long caseId;
 
     /**
      * 案件编号
      */
+    @Schema(description = "案件编号")
     @TableField("case_number")
     private String caseNumber;
 
     /**
      * 笔记标题
      */
+    @Schema(description = "笔记标题")
     @TableField("note_title")
     private String noteTitle;
 
     /**
      * 笔记内容
      */
+    @Schema(description = "笔记内容")
     @TableField("note_content")
     private String noteContent;
 
     /**
      * 笔记类型
      */
+    @Schema(description = "笔记类型")
     @TableField("note_type")
     private Integer noteType;
 
     /**
      * 可见性级别
      */
+    @Schema(description = "可见性级别")
     @TableField("visibility_level")
     private Integer visibilityLevel;
 
     /**
      * 创建人ID
      */
+    @Schema(description = "创建人ID")
     @TableField("creator_id")
     private Long creatorId;
 
     /**
      * 创建人姓名
      */
+    @Schema(description = "创建人姓名")
     @TableField("creator_name")
     private String creatorName;
 
     /**
      * 最后修改人ID
      */
+    @Schema(description = "最后修改人ID")
     @TableField("last_modifier_id")
     private Long lastModifierId;
 
     /**
      * 最后修改人姓名
      */
+    @Schema(description = "最后修改人姓名")
     @TableField("last_modifier_name")
     private String lastModifierName;
 
     /**
      * 最后修改时间
      */
+    @Schema(description = "最后修改时间")
     @TableField("last_modified_time")
     private LocalDateTime lastModifiedTime;
 
     /**
      * 是否重要
      */
+    @Schema(description = "是否重要")
     @TableField("is_important")
     private Boolean isImportant;
 
     /**
      * 是否置顶
      */
+    @Schema(description = "是否置顶")
     @TableField("is_pinned")
     private Boolean isPinned;
 
     /**
      * 是否已归档
      */
+    @Schema(description = "是否已归档")
     @TableField("is_archived")
     private Boolean isArchived;
 
     /**
      * 归档时间
      */
+    @Schema(description = "归档时间")
     @TableField("archive_time")
     private LocalDateTime archiveTime;
 
     /**
      * 可见人IDs（逗号分隔）
      */
+    @Schema(description = "可见人IDs（逗号分隔）")
     @TableField("visible_to_ids")
     private String visibleToIds;
 
     /**
      * 可见人姓名（逗号分隔）
      */
+    @Schema(description = "可见人姓名（逗号分隔）")
     @TableField("visible_to_names")
     private String visibleToNames;
 
     /**
      * 关联文档IDs（逗号分隔）
      */
+    @Schema(description = "关联文档IDs（逗号分隔）")
     @TableField("document_ids")
     private String documentIds;
 
     /**
      * 关联事件IDs（逗号分隔）
      */
+    @Schema(description = "关联事件IDs（逗号分隔）")
     @TableField("event_ids")
     private String eventIds;
 
     /**
      * 关联任务IDs（逗号分隔）
      */
+    @Schema(description = "关联任务IDs（逗号分隔）")
     @TableField("task_ids")
     private String taskIds;
 
     /**
      * 标签（逗号分隔）
      */
+    @Schema(description = "标签（逗号分隔）")
     @TableField("tags")
     private String tags;
 
     /**
      * 备注
      */
+    @Schema(description = "备注")
     @TableField("remarks")
     private String remarks;
 

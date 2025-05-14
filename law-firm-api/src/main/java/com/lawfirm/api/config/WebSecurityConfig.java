@@ -39,7 +39,14 @@ public class WebSecurityConfig {
                 "/swagger-resources/configuration/ui", "/swagger-resources/configuration/security"
             )
             .authorizeHttpRequests(authorize -> authorize
-                .anyRequest().permitAll())
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui.html",
+                    "/doc.html",
+                    "/swagger-resources/**",
+                    "/webjars/**",
+                    "/swagger-ui/**"
+                ).permitAll())
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

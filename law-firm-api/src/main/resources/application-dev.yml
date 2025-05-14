@@ -96,11 +96,11 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
+    url: /v3/api-docs
+    # config-url: /v3/api-docs/swagger-config （已注释）
     tags-sorter: alpha
     operations-sorter: alpha
     disable-swagger-default-url: true
-    url: /v3/api-docs
-    config-url: /v3/api-docs/swagger-config
     doc-expansion: none
     urls-primary-name: default
   api-docs:
@@ -188,3 +188,6 @@ knife4j:
     enable-footer: false
     enable-footer-custom: true
     footer-custom-content: "律师事务所管理系统 - 开发文档"
+    # 关闭首页自动重定向
+    enable-home-custom: true
+    home-custom-path: /api/welcome

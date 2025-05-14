@@ -18,6 +18,8 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.extern.slf4j.Slf4j;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 
 /**
  * API文档统一配置类
@@ -28,7 +30,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Slf4j
 @Configuration
 @ConditionalOnProperty(prefix = "springdoc", name = "api-docs.enabled", havingValue = "true", matchIfMissing = false)
-public class ApiDocConfiguration {
+public class ApiDocConfiguration implements EnvironmentAware {
 
     @Value("${spring.application.name:律师事务所管理系统}")
     private String applicationName;
@@ -36,28 +38,52 @@ public class ApiDocConfiguration {
     @Value("${app.version:1.0.0}")
     private String applicationVersion;
     
+    private Environment environment;
+    
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+        log.info("API文档配置初始化 - 当前环境: {}", 
+            environment.getActiveProfiles().length > 0 ? 
+            String.join(",", environment.getActiveProfiles()) : "default");
+        log.info("SpringDoc启用状态: {}", environment.getProperty("springdoc.api-docs.enabled", "false"));
+        log.info("Knife4j启用状态: {}", environment.getProperty("knife4j.enable", "false"));
+    }
+    
     /**
      * 配置全局OpenAPI对象，提供统一的文档信息
+     * 主要的OpenAPI Bean，其他组件默认使用此Bean
      */
     @Bean(name = "lawfirmOpenAPI")
+    @Primary
     public OpenAPI openAPI() {
-        log.info("初始化全局API文档配置");
-        return new OpenAPI()
-                .info(new Info()
-                        .title(applicationName + " API文档")
-                        .version(applicationVersion)
-                        .description("律师事务所管理系统接口文档")
-                        .contact(new Contact()
-                                .name("律师事务所开发团队")
-                                .email("dev@lawfirm.com")
-                                .url("https://lawfirm.com")))
-                .components(new Components()
-                        .addSecuritySchemes("JWT", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")
-                                .in(SecurityScheme.In.HEADER)
-                                .name("Authorization")));
+        log.info("初始化全局API文档配置(lawfirmOpenAPI)");
+        try {
+            return new OpenAPI()
+                    .info(new Info()
+                            .title(applicationName + " API文档")
+                            .version(applicationVersion)
+                            .description("律师事务所管理系统接口文档")
+                            .contact(new Contact()
+                                    .name("律师事务所开发团队")
+                                    .email("dev@lawfirm.com")
+                                    .url("https://lawfirm.com")))
+                    .components(new Components()
+                            .addSecuritySchemes("JWT", new SecurityScheme()
+                                    .type(SecurityScheme.Type.HTTP)
+                                    .scheme("bearer")
+                                    .bearerFormat("JWT")
+                                    .in(SecurityScheme.In.HEADER)
+                                    .name("Authorization")));
+        } catch (Exception e) {
+            log.error("初始化API文档配置时发生错误", e);
+            // 提供一个最小化配置作为备选
+            return new OpenAPI()
+                    .info(new Info()
+                            .title("API文档")
+                            .version("1.0")
+                            .description("API文档"));
+        }
     }
     
     /**
@@ -66,11 +92,20 @@ public class ApiDocConfiguration {
     @Bean(name = "lawfirmMainApi")
     public GroupedOpenApi mainApi() {
         log.info("配置简化的API文档主分组");
-        return GroupedOpenApi.builder()
-                .group("核心API")
-                // 只使用路径匹配，不使用包扫描
-                .pathsToMatch("/api/**", "/v3/api-docs/**", "/swagger-ui/**")
-                .build();
+        try {
+            return GroupedOpenApi.builder()
+                    .group("核心API")
+                    // 只使用路径匹配，不使用包扫描
+                    .pathsToMatch("/api/**", "/v3/api-docs/**", "/swagger-ui/**")
+                    .build();
+        } catch (Exception e) {
+            log.error("配置API文档主分组时发生错误", e);
+            // 提供一个最小化配置作为备选
+            return GroupedOpenApi.builder()
+                    .group("default")
+                    .pathsToMatch("/**")
+                    .build();
+        }
     }
     
     /**
@@ -79,10 +114,19 @@ public class ApiDocConfiguration {
     @Bean(name = "lawfirmAuthApi")
     public GroupedOpenApi authApi() {
         log.info("配置简化的认证API文档分组");
-        return GroupedOpenApi.builder()
-                .group("认证授权")
-                .pathsToMatch("/auth/**")
-                .build();
+        try {
+            return GroupedOpenApi.builder()
+                    .group("认证授权")
+                    .pathsToMatch("/auth/**")
+                    .build();
+        } catch (Exception e) {
+            log.error("配置认证API文档分组时发生错误", e);
+            // 提供一个最小化配置作为备选
+            return GroupedOpenApi.builder()
+                    .group("auth")
+                    .pathsToMatch("/auth/**")
+                    .build();
+        }
     }
     
     /**
@@ -92,21 +136,25 @@ public class ApiDocConfiguration {
     public OpenApiCustomizer openApiCustomizer() {
         return openApi -> {
             log.info("应用API文档自定义配置");
-            
-            // 确保所有响应内容类型包含UTF-8字符集
-            openApi.getPaths().values().forEach(pathItem -> {
-                pathItem.readOperations().forEach(operation -> {
-                    operation.getResponses().values().forEach(response -> {
-                        if (response.getContent() != null) {
-                            // 如果包含application/json，添加明确指定charset的版本
-                            if (response.getContent().containsKey("application/json")) {
-                                response.getContent().put("application/json;charset=UTF-8", 
-                                    response.getContent().get("application/json"));
+            try {
+                // 确保所有响应内容类型包含UTF-8字符集
+                openApi.getPaths().values().forEach(pathItem -> {
+                    pathItem.readOperations().forEach(operation -> {
+                        operation.getResponses().values().forEach(response -> {
+                            if (response.getContent() != null) {
+                                // 如果包含application/json，添加明确指定charset的版本
+                                if (response.getContent().containsKey("application/json")) {
+                                    response.getContent().put("application/json;charset=UTF-8", 
+                                        response.getContent().get("application/json"));
+                                }
                             }
-                        }
+                        });
                     });
                 });
-            });
+            } catch (Exception e) {
+                log.error("应用API文档自定义配置时发生错误", e);
+                // 自定义器发生错误时不影响整体配置
+            }
         };
     }
     
@@ -114,7 +162,7 @@ public class ApiDocConfiguration {
      * 更明确的SpringDoc配置属性
      * 避免与其他组件冲突
      */
-    @Bean
+    @Bean(name = "lawfirmSpringDocConfigProperties")
     @Primary
     public SpringDocConfigProperties springDocConfigProperties() {
         log.info("配置SpringDoc属性，使用默认配置");
@@ -145,16 +193,34 @@ public class ApiDocConfiguration {
     }
     
     /**
-     * 提供一个简化的OpenAPI配置，避免扫描问题
+     * 提供一个备用的OpenAPI配置，仅在需要特定场景使用
+     * 注意：此Bean不应该被自动注入，必须通过@Qualifier("backupOpenAPI")显式指定
      */
-    @Bean(name = "simpleOpenAPI")
-    public OpenAPI simpleOpenAPI() {
-        log.info("初始化简化的API文档配置");
-        return new OpenAPI()
-                .info(new Info()
-                        .title("律师事务所管理系统")
-                        .version("1.0.0")
-                        .description("律师事务所管理系统API文档"))
-                .components(new Components());
+    @Bean(name = "backupOpenAPI")
+    public OpenAPI backupOpenAPI() {
+        log.info("初始化备用API文档配置(backupOpenAPI)");
+        try {
+            return new OpenAPI()
+                    .info(new Info()
+                            .title("律师事务所管理系统 - 备用配置")
+                            .version("1.0.0")
+                            .description("律师事务所管理系统API文档(备用)"))
+                    .components(new Components());
+        } catch (Exception e) {
+            log.error("初始化备用API文档配置时发生错误", e);
+            // 提供一个最小化配置作为备选
+            return new OpenAPI()
+                    .info(new Info()
+                            .title("备用API")
+                            .version("1.0"));
+        }
+    }
+
+    @Bean
+    public GroupedOpenApi defaultApi() {
+        return GroupedOpenApi.builder()
+                .group("default")
+                .pathsToMatch("/**")
+                .build();
     }
 } 

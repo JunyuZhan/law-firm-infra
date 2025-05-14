@@ -9,6 +9,7 @@ import com.lawfirm.model.cases.enums.task.TaskTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -23,6 +24,7 @@ import java.time.Duration;
 @Setter
 @Accessors(chain = true)
 @TableName("case_task")
+@Schema(description = "案件任务实体类")
 public class CaseTask extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -30,6 +32,7 @@ public class CaseTask extends ModelBaseEntity {
     /**
      * 案件ID
      */
+    @Schema(description = "案件ID")
     @TableField("case_id")
     private Long caseId;
 
@@ -60,192 +63,224 @@ public class CaseTask extends ModelBaseEntity {
     /**
      * 任务优先级
      */
+    @Schema(description = "任务优先级")
     @TableField("task_priority")
     private Integer taskPriority;
 
     /**
      * 任务描述
      */
+    @Schema(description = "任务描述")
     @TableField("task_description")
     private String taskDescription;
 
     /**
      * 开始时间
      */
+    @Schema(description = "开始时间")
     @TableField("start_time")
     private transient LocalDateTime startTime;
 
     /**
      * 截止时间
      */
+    @Schema(description = "截止时间")
     @TableField("deadline")
     private transient LocalDateTime deadline;
 
     /**
      * 完成时间
      */
+    @Schema(description = "完成时间")
     @TableField("completion_time")
     private transient LocalDateTime completionTime;
 
     /**
      * 预计工时（小时）
      */
+    @Schema(description = "预计工时（小时）")
     @TableField("estimated_hours")
     private Double estimatedHours;
 
     /**
      * 实际工时（小时）
      */
+    @Schema(description = "实际工时（小时）")
     @TableField("actual_hours")
     private Double actualHours;
 
     /**
      * 创建人ID
      */
+    @Schema(description = "创建人ID")
     @TableField("creator_id")
     private Long creatorId;
 
     /**
      * 创建人姓名
      */
+    @Schema(description = "创建人姓名")
     @TableField("creator_name")
     private String creatorName;
 
     /**
      * 负责人ID
      */
+    @Schema(description = "负责人ID")
     @TableField("assignee_id")
     private Long assigneeId;
 
     /**
      * 负责人姓名
      */
+    @Schema(description = "负责人姓名")
     @TableField("assignee_name")
     private String assigneeName;
 
     /**
      * 协作人IDs（逗号分隔）
      */
+    @Schema(description = "协作人IDs（逗号分隔）")
     @TableField("collaborator_ids")
     private String collaboratorIds;
 
     /**
      * 协作人姓名（逗号分隔）
      */
+    @Schema(description = "协作人姓名（逗号分隔）")
     @TableField("collaborator_names")
     private String collaboratorNames;
 
     /**
      * 父任务ID
      */
+    @Schema(description = "父任务ID")
     @TableField("parent_task_id")
     private Long parentTaskId;
 
     /**
      * 进度百分比（0-100）
      */
+    @Schema(description = "进度百分比（0-100）")
     @TableField("progress_percentage")
     private Integer progressPercentage;
 
     /**
      * 是否需要审核
      */
+    @Schema(description = "是否需要审核")
     @TableField("need_review")
     private Boolean needReview;
 
     /**
      * 审核人ID
      */
+    @Schema(description = "审核人ID")
     @TableField("reviewer_id")
     private Long reviewerId;
 
     /**
      * 审核人姓名
      */
+    @Schema(description = "审核人姓名")
     @TableField("reviewer_name")
     private String reviewerName;
 
     /**
      * 审核时间
      */
+    @Schema(description = "审核时间")
     @TableField("review_time")
     private transient LocalDateTime reviewTime;
 
     /**
      * 审核意见
      */
+    @Schema(description = "审核意见")
     @TableField("review_opinion")
     private String reviewOpinion;
 
     /**
      * 是否需要提醒
      */
+    @Schema(description = "是否需要提醒")
     @TableField("need_reminder")
     private Boolean needReminder;
 
     /**
      * 提醒时间
      */
+    @Schema(description = "提醒时间")
     @TableField("reminder_time")
     private transient LocalDateTime reminderTime;
 
     /**
      * 是否已提醒
      */
+    @Schema(description = "是否已提醒")
     @TableField("is_reminded")
     private Boolean isReminded;
 
     /**
      * 关联文档IDs（逗号分隔）
      */
+    @Schema(description = "关联文档IDs（逗号分隔）")
     @TableField("document_ids")
     private String documentIds;
 
     /**
      * 关联事件IDs（逗号分隔）
      */
+    @Schema(description = "关联事件IDs（逗号分隔）")
     @TableField("event_ids")
     private String eventIds;
 
     /**
      * 标签（逗号分隔）
      */
+    @Schema(description = "标签（逗号分隔）")
     @TableField("tags")
     private String tags;
 
     /**
      * 备注
      */
+    @Schema(description = "备注")
     @TableField("remarks")
     private String remarks;
 
     /**
      * 工作流任务ID
      */
+    @Schema(description = "工作流任务ID")
     @TableField("workflow_task_id")
     private String workflowTaskId;
     
     /**
      * 暂停原因
      */
+    @Schema(description = "暂停原因")
     @TableField("pause_reason")
     private String pauseReason;
     
     /**
      * 取消原因
      */
+    @Schema(description = "取消原因")
     @TableField("cancel_reason")
     private String cancelReason;
     
     /**
      * 完成备注
      */
+    @Schema(description = "完成备注")
     @TableField("completion_note")
     private String completionNote;
     
     /**
      * 进度备注
      */
+    @Schema(description = "进度备注")
     @TableField("progress_note")
     private String progressNote;
 
