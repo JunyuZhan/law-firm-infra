@@ -29,6 +29,8 @@ public class HomeController implements ErrorController {
      * 
      * @return 欢迎信息
      */
+    // 注释此方法，让Spring Boot原始欢迎页面生效
+    /*
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> home() {
         String htmlContent = "<html><head>" 
@@ -55,6 +57,7 @@ public class HomeController implements ErrorController {
             .headers(headers)
             .body(htmlContent);
     }
+    */
     
     /**
      * 处理错误页面

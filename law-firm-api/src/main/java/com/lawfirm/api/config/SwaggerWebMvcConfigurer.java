@@ -10,8 +10,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Swagger配置 - 补充视图配置
- * 主要负责API文档的视图跳转，核心功能已移至Knife4jConfiguration
+ * API文档视图配置
+ * 负责API文档的视图跳转，避免与HomeController等其他组件冲突
  * 
  * @author LawFirm Dev Team
  */
@@ -33,18 +33,17 @@ public class SwaggerWebMvcConfigurer implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         log.info("配置API文档页面跳转");
         
-        // API文档入口跳转
-        registry.addViewController("/")
-                .setViewName("redirect:/doc.html");
+        // 完全移除根路径跳转，避免与欢迎页冲突
                 
-        // 添加Swagger重定向
-        registry.addViewController("/swagger")
+        // 使用更明确的路径前缀，避免冲突
+        registry.addViewController("/api-docs/swagger")
                 .setViewName("redirect:" + swaggerPath);
         
-        // 添加Knife4j文档访问路径
-        registry.addViewController("/api")
+        // 使用标准化的文档访问路径
+        registry.addViewController("/api-docs/ui")
                 .setViewName("redirect:/doc.html");
                 
-        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        // 设置较低的优先级，避免覆盖其他更重要的视图控制器
+        registry.setOrder(Ordered.LOWEST_PRECEDENCE);
     }
 } 

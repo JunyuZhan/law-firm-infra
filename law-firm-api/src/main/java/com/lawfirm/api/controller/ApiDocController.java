@@ -45,7 +45,6 @@ public class ApiDocController {
     private boolean apiDocsEnabled;
 
     @Autowired
-    @Qualifier("lawfirmSpringDocConfigProperties")
     private SpringDocConfigProperties springDocConfigProperties;
 
     /**
@@ -58,14 +57,16 @@ public class ApiDocController {
     }
 
     /**
-     * 文档入口点
+     * 文档入口点 - 注释掉根路径处理方法，让原生欢迎页生效
      */
+    /*
     @Hidden
     @GetMapping("/")
     public RedirectView index() {
         // 在开发环境中重定向到API文档
         return new RedirectView(swaggerUiPath);
     }
+    */
 
     /**
      * API文档健康检查
@@ -81,6 +82,27 @@ public class ApiDocController {
         healthInfo.put("apiDocsPath", apiDocsPath);
         healthInfo.put("swaggerUiPath", swaggerUiPath);
         healthInfo.put("encoding", StandardCharsets.UTF_8.name());
+        
+        // 添加详细的诊断信息
+        try {
+            healthInfo.put("springDocConfigPropertiesClass", 
+                springDocConfigProperties != null ? 
+                springDocConfigProperties.getClass().getName() : "null");
+            
+            healthInfo.put("apiDocsEnabled", 
+                springDocConfigProperties != null ? 
+                springDocConfigProperties.getApiDocs().isEnabled() : "unknown");
+            
+            healthInfo.put("contextPath", 
+                springDocConfigProperties != null ? 
+                springDocConfigProperties.getApiDocs().getPath() : "unknown");
+                
+            log.info("API文档健康检查 - SpringDoc配置: {}", healthInfo);
+        } catch (Exception e) {
+            log.error("API文档健康检查异常", e);
+            healthInfo.put("error", e.getMessage());
+            healthInfo.put("errorType", e.getClass().getName());
+        }
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));

@@ -19,14 +19,15 @@ import org.springframework.beans.factory.annotation.Value;
 /**
  * OpenAPI自动配置类
  * <p>
- * API文档功能已禁用，此配置类不会加载
+ * 提供API文档基础配置
  * </p>
  */
 @AutoConfiguration
 @ConditionalOnWebApplication
 @ConditionalOnClass(OpenAPI.class)
 @ConditionalOnProperty(
-    name = {"springdoc.api-docs.enabled", "knife4j.enable"}, 
+    prefix = "springdoc", 
+    name = "api-docs.enabled", 
     havingValue = "true", 
     matchIfMissing = false
 )
@@ -42,7 +43,7 @@ public class OpenApiAutoConfiguration {
      * 配置OpenAPI基本信息
      * 仅当API文档功能明确启用且没有其他OpenAPI bean时生效
      */
-    @Bean(name = "openAPI")
+    @Bean(name = "commonOpenAPI")
     @ConditionalOnMissingBean(OpenAPI.class)
     public OpenAPI defaultOpenAPI() {
         return new OpenAPI()
@@ -71,11 +72,11 @@ public class OpenApiAutoConfiguration {
      * 配置默认API分组
      * 仅当API文档功能明确启用且没有其他GroupedOpenApi bean时生效
      */
-    @Bean(name = "defaultGroupedOpenApi")
+    @Bean(name = "commonDefaultGroupedOpenApi")
     @ConditionalOnMissingBean(name = "defaultGroupedOpenApi")
     public GroupedOpenApi defaultGroupedOpenApi() {
         return GroupedOpenApi.builder()
-                .group("default")
+                .group("通用模块")
                 .pathsToMatch("/**")
                 .build();
     }
@@ -84,7 +85,7 @@ public class OpenApiAutoConfiguration {
      * 配置认证模块API分组
      * 仅当API文档功能明确启用才生效
      */
-    @Bean(name = "authGroupedOpenApi")
+    @Bean(name = "commonAuthGroupedOpenApi")
     @ConditionalOnMissingBean(name = "authGroupedOpenApi")
     public GroupedOpenApi authGroupedOpenApi() {
         return GroupedOpenApi.builder()

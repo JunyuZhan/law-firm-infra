@@ -6,8 +6,7 @@
         "/c",
         "npx",
         "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "D:\\weidi\\law-firm-infra"
+        "@modelcontextprotocol/server-filesystem"
       ],
       "env": {
         "NODE_ENV": "production"
@@ -44,6 +43,17 @@
     "browsermcp": {
       "command": "npx",
       "args": ["@browsermcp/mcp@latest"]
+    },
+    "apidocs": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-proxy"
+      ],
+      "env": {
+        "TARGET_URL": "http://localhost:8080",
+        "PROXY_PATH": "/api-docs"
+      }
     }
   }
 }

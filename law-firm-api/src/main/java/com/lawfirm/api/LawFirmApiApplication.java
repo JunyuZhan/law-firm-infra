@@ -119,21 +119,6 @@ public class LawFirmApiApplication {
         // 检测环境变量判断是否为开发环境
         String activeProfile = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"));
         boolean isDevelopment = activeProfile == null || activeProfile.contains("dev");
-        
-        // 配置SpringDoc和Knife4j - 根据环境决定是否启用API文档功能
-        if (isDevelopment) {
-            // 开发环境启用API文档
-            System.setProperty("springdoc.swagger-ui.enabled", "true");
-            System.setProperty("springdoc.api-docs.enabled", "true");
-            System.setProperty("knife4j.enable", "true");
-            System.setProperty("knife4j.production", "false");
-        } else {
-            // 非开发环境禁用API文档
-        System.setProperty("springdoc.swagger-ui.enabled", "false");
-        System.setProperty("springdoc.api-docs.enabled", "false");
-        System.setProperty("knife4j.enable", "false");
-        System.setProperty("knife4j.production", "true");
-        }
     }
 
     public static void main(String[] args) {
@@ -206,19 +191,20 @@ public class LawFirmApiApplication {
         boolean isDevelopment = activeProfile == null || activeProfile.contains("dev");
         
         // 设置Swagger相关配置 - 根据环境决定是否启用API文档功能
-        if (isDevelopment) {
-            // 开发环境启用API文档
-            System.setProperty("springdoc.swagger-ui.enabled", "true");
-            System.setProperty("springdoc.api-docs.enabled", "true");
-            System.setProperty("knife4j.enable", "true");
-            System.setProperty("knife4j.production", "false");
-        } else {
-            // 非开发环境禁用API文档
-        System.setProperty("springdoc.swagger-ui.enabled", "false");
-        System.setProperty("springdoc.api-docs.enabled", "false");
-        System.setProperty("knife4j.enable", "false");
-            System.setProperty("knife4j.production", "true");
-        }
+        // 注释掉API文档相关系统属性设置
+        // if (isDevelopment) {
+        //     // 开发环境启用API文档
+        //     System.setProperty("springdoc.swagger-ui.enabled", "true");
+        //     System.setProperty("springdoc.api-docs.enabled", "true");
+        //     System.setProperty("knife4j.enable", "true");
+        //     System.setProperty("knife4j.production", "false");
+        // } else {
+        //     // 非开发环境禁用API文档
+        // System.setProperty("springdoc.swagger-ui.enabled", "false");
+        // System.setProperty("springdoc.api-docs.enabled", "false");
+        // System.setProperty("knife4j.enable", "false");
+        //     System.setProperty("knife4j.production", "true");
+        // }
         
         // 确保只排除Spring Boot自动配置类
         System.clearProperty("spring.autoconfigure.exclude");

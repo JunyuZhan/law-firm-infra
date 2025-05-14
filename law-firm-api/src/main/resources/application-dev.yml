@@ -4,7 +4,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
-    password: ${MYSQL_PASSWORD}
     hikari:
       # 开发环境连接池配置
       minimum-idle: 5
@@ -56,13 +55,16 @@ cors:
 # 开发环境日志级别
 logging:
   level:
-    root: INFO
+    root: DEBUG
     com.lawfirm: DEBUG
-    org.springframework: INFO
+    org.springframework: DEBUG
     org.springframework.web: INFO
     org.springframework.security: DEBUG
     com.baomidou.mybatisplus: DEBUG
     org.flywaydb: DEBUG
+    org.springdoc: DEBUG
+    org.springdoc.api: DEBUG
+    org.springdoc.webmvc: DEBUG
 
 # MyBatis Plus开发环境配置 
 mybatis-plus:
@@ -132,6 +134,12 @@ springdoc:
       enabled: false
       "secret-key": DevSecretKey
   
+  # API文档安全配置
+  api-doc:
+    secure-access:
+      enabled: false  # 开发环境不启用API文档安全限制
+      key: devApiKey  # 开发环境API文档访问密钥
+  
   # 开发环境核心模块配置
   core:
     workflow:
@@ -167,7 +175,16 @@ springdoc:
         performance:
           enabled: true
 
-# Knife4j配置 - 启用
+# Knife4j配置 - 确保与springdoc配置一致
 knife4j:
   enable: true
   production: false 
+  setting:
+    language: zh-CN
+    enable-swagger-models: true
+    swagger-model-name: "实体类列表"
+    enable-document-manage: true
+    enable-home: true
+    enable-footer: false
+    enable-footer-custom: true
+    footer-custom-content: "律师事务所管理系统 - 开发文档"

@@ -168,7 +168,8 @@ public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "/doc.html");
-        log.info("配置根路径重定向到/doc.html");
+        // 移除根路径重定向，让原始欢迎页生效
+        // registry.addRedirectViewController("/", "/doc.html");
+        log.info("保留原始欢迎页配置");
     }
 } 
