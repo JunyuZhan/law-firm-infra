@@ -2,7 +2,6 @@ package com.lawfirm.api.controller;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,49 +14,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 首页控制器
- * 提供欢迎页和错误处理
+ * 自定义错误控制器
+ * 提供友好的错误页面
  */
 @Controller
 @Slf4j
-public class HomeController implements ErrorController {
+public class CustomErrorController implements ErrorController {
 
     private static final String ERROR_PATH = "/error";
-
-    /**
-     * 首页欢迎页面
-     * 
-     * @return 欢迎信息
-     */
-    // 注释此方法，让Spring Boot原始欢迎页面生效
-    /*
-    @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    public ResponseEntity<String> home() {
-        String htmlContent = "<html><head>" 
-            + "<meta charset=\"UTF-8\">"
-            + "<title>律师事务所管理系统</title>"
-            + "<style>"
-            + "body { font-family: 'Microsoft YaHei', Arial, sans-serif; text-align: center; padding: 50px; background-color: #f5f5f5; }"
-            + "h1 { color: #333; }"
-            + "p { color: #666; }"
-            + ".button-container { margin: 20px; }"
-            + ".button { text-decoration: none; padding: 10px 20px; margin: 10px; border-radius: 4px; display: inline-block; }"
-            + ".green { background-color: #4CAF50; color: white; }"
-            + ".blue { background-color: #2196F3; color: white; }"
-            + "</style>"
-            + "</head><body>"
-            + "<h1>欢迎使用律师事务所管理系统</h1>"
-            + "<p>系统已成功启动</p>"
-            + "</body></html>";
-            
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE + ";charset=UTF-8");
-        
-        return ResponseEntity.ok()
-            .headers(headers)
-            .body(htmlContent);
-    }
-    */
     
     /**
      * 处理错误页面

@@ -2,7 +2,6 @@ package com.lawfirm.api.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +12,13 @@ import org.springframework.context.annotation.Primary;
  * 用于开发环境下修复迁移脚本校验和问题
  */
 @Slf4j
-@Configuration
+@Configuration("apiFlywayConfig")
 public class FlywayConfig {
 
     /**
      * 自定义Flyway迁移策略，先执行repair再执行migrate
      */
-    @Bean
+    @Bean("apiFlywayMigrationStrategy")
     @Primary
     public FlywayMigrationStrategy flywayMigrationStrategy() {
         return flyway -> {

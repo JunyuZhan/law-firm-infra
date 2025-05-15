@@ -1,5 +1,10 @@
 package com.lawfirm.api.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lawfirm.api.interceptor.RequestInterceptor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.boot.web.server.ErrorPageRegistry;
@@ -14,16 +19,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -32,13 +33,16 @@ import java.util.List;
 /**
  * Web MVC配置
  */
-@Configuration
+@Configuration("webMvcConfig")
 @Slf4j
 public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
 
     @Autowired
     @Qualifier("primaryObjectMapper")
     private ObjectMapper objectMapper;
+    
+    @Autowired
+    private RequestInterceptor requestInterceptor;
 
     /**
      * 注册错误页面
@@ -57,6 +61,17 @@ public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
     }
     
     /**
+     * 添加拦截器
+     */
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(requestInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/static/**", "/error", "/webjars/**");
+        log.info("已注册请求拦截器");
+    }
+    
+    /**
      * 配置消息转换器
      * 确保正确处理不同内容类型，特别是JSON和文本内容
      */
@@ -64,11 +79,10 @@ public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         // 添加JSON转换器，使用系统统一的ObjectMapper
         MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter(objectMapper);
-        // 添加API文档相关MediaType，明确指定UTF-8字符集
+        // 添加常用MediaType，明确指定UTF-8字符集
         jsonConverter.setSupportedMediaTypes(Arrays.asList(
             new MediaType("application", "json", StandardCharsets.UTF_8),
-            new MediaType("application", "*+json", StandardCharsets.UTF_8),
-            new MediaType("application", "vnd.api+json", StandardCharsets.UTF_8)
+            new MediaType("application", "*+json", StandardCharsets.UTF_8)
         ));
         // 将JSON转换器添加到最前面，确保它优先处理JSON内容
         converters.add(0, jsonConverter);
@@ -102,7 +116,6 @@ public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
     
     /**
      * 配置静态资源处理程序
-     * 包括API文档相关资源
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -110,14 +123,6 @@ public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/")
                 .resourceChain(false);
-                
-        // API文档相关资源
-        registry.addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/");
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("/doc.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
     }
     
     /**
@@ -167,8 +172,6 @@ public class WebMvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // 移除根路径重定向，让原始欢迎页生效
-        // registry.addRedirectViewController("/", "/doc.html");
         log.info("保留原始欢迎页配置");
     }
 } 

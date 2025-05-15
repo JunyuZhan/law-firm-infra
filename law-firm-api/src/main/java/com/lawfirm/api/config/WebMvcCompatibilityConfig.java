@@ -16,13 +16,13 @@ import lombok.extern.slf4j.Slf4j;
  * @author LawFirm Dev Team
  */
 @Slf4j
-@Configuration
+@Configuration("webMvcCompatibilityConfig")
 public class WebMvcCompatibilityConfig implements WebMvcConfigurer {
     
     /**
      * 禁用MVC路径匹配器缓存，解决版本兼容性问题
      */
-    @Bean
+    @Bean("mvcHandlerMappingIntrospector")
     public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
         log.info("配置HandlerMappingIntrospector，解决版本兼容性问题");
         // 仅创建HandlerMappingIntrospector实例，不调用不存在的方法
@@ -33,7 +33,7 @@ public class WebMvcCompatibilityConfig implements WebMvcConfigurer {
     /**
      * 降低Spring Security过滤器顺序，确保HandlerMappingIntrospector在它之后初始化
      */
-    @Bean
+    @Bean("securityFilterChainRegistration")
     public FilterRegistrationBean<org.springframework.web.filter.DelegatingFilterProxy> securityFilterChainRegistration() {
         log.info("调整Spring Security过滤器顺序，避免初始化问题");
         FilterRegistrationBean<org.springframework.web.filter.DelegatingFilterProxy> registration = new FilterRegistrationBean<>();

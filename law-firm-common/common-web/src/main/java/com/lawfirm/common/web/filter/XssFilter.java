@@ -14,7 +14,9 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,11 +26,35 @@ import java.util.Map;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class XssFilter implements Filter {
 
+    // 需要排除的路径列表
+    private static final List<String> EXCLUDE_PATHS = Arrays.asList(
+            "/swagger-ui.html", 
+            "/swagger-ui/", 
+            "/v3/api-docs", 
+            "/v3/api-docs/",
+            "/webjars/",
+            "/doc.html",
+            "/health"
+    );
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        XssHttpServletRequestWrapper xssRequest = new XssHttpServletRequestWrapper((HttpServletRequest) request);
-        chain.doFilter(xssRequest, response);
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        String path = httpRequest.getRequestURI();
+        
+        // 检查是否是需要排除的路径
+        boolean shouldExclude = EXCLUDE_PATHS.stream()
+                .anyMatch(path::startsWith);
+        
+        if (shouldExclude) {
+            // 对于Swagger相关的路径，不做XSS过滤
+            chain.doFilter(request, response);
+        } else {
+            // 对其他路径进行XSS过滤
+            XssHttpServletRequestWrapper xssRequest = new XssHttpServletRequestWrapper(httpRequest);
+            chain.doFilter(xssRequest, response);
+        }
     }
 
     private static class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {

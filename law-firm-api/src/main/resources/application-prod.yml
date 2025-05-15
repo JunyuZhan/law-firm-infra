@@ -86,15 +86,6 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
-# 生产环境SpringDoc配置
-springdoc:
-  swagger-ui:
-    # 生产环境默认禁用Swagger UI
-    enabled: ${ENABLE_SWAGGER:false}
-  api-docs:
-    # 生产环境默认禁用API文档
-    enabled: ${ENABLE_API_DOCS:false}
-
 # 生产环境安全配置
 law-firm:
   security:

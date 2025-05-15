@@ -63,6 +63,31 @@ spring:
       # 禁用Redis自动配置的存储库支持，使用自定义配置
       repositories:
         enabled: false
+  # 禁用LDAP功能
+  ldap:
+    embedded:
+      enabled: false
+    repositories:
+      enabled: false
+  security:
+    ldap:
+      enabled: false
+  # 禁用邮件服务功能
+  mail:
+    enabled: false
+    # 设置为空值防止尝试连接
+    host: ""
+    port: -1
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.ssl.enable: false
+      mail.smtp.starttls.enable: false
+  # 禁用RabbitMQ消息队列
+  rabbitmq:
+    enabled: false
+    # 设置为空值防止尝试连接
+    host: ""
+    port: -1
   # 线程池任务执行器配置
   task:
     execution:
@@ -140,18 +165,6 @@ mybatis-plus:
 cors:
   allowed-origins: "*"
 
-# SpringDoc配置 - 默认配置（由环境配置文件控制开启/禁用）
-springdoc:
-  api-docs:
-    enabled: ${SPRINGDOC_ENABLED:false} # 由环境变量或profile控制
-  swagger-ui:
-    enabled: ${SPRINGDOC_ENABLED:false} # 由环境变量或profile控制
-
-# Knife4j配置 - 默认配置（由环境配置文件控制开启/禁用）
-knife4j:
-  enable: ${KNIFE4J_ENABLED:false}
-  production: ${KNIFE4J_PRODUCTION:true}
-
 # 日志配置
 logging:
   level:
@@ -182,7 +195,7 @@ logging:
   # 核心模块配置
   core:
     audit:
-      enabled: false
+      enabled: true
   
   # 搜索服务配置
   search:
@@ -220,11 +233,90 @@ logging:
     security:
       enabled: true
     log:
-      enabled: false
+      enabled: true
+      method-log: true
+      log-request-params: true
+      log-response-body: false
+      enable-async-log: true
       executor:
         bean-name: taskExecutor
     message:
       enabled: true
+
+# Actuator配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState,ping,diskSpace
+        readiness:
+          include: readinessState,db
+      # 禁用组成员验证，避免冲突
+      validate-group-membership: false
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+    redis:
+      enabled: false
+    ldap:
+      enabled: false
+    mail:
+      enabled: false
+    rabbit:
+      enabled: false
+    # 禁用其他不需要的健康检查组件
+    mongo:
+      enabled: false
+    cassandra:
+      enabled: false
+    elasticsearch:
+      enabled: false
+    solr:
+      enabled: false
+    couchbase:
+      enabled: false
+    neo4j:
+      enabled: false
+
+# SpringDoc配置
+springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_ENABLED:true}
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: ${SPRINGDOC_ENABLED:true}
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+    config-url: /v3/api-docs/swagger-config
+  packages-to-scan: com.lawfirm
+  paths-to-match: /**
+  cache:
+    disabled: true
+  # 添加配置限制文档生成
+  default-flat-param-object: true
+  model-and-view-allowed: false
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+  # 排除监控相关API，减少生成负担
+  paths-to-exclude: /actuator/**, /monitor/**, /api/system/monitor/**
+  # 限制模型深度，避免循环依赖
+  use-fqn: false
+  writer-with-default-pretty-printer: true
+  # 添加限制，防止无限循环
+  override-with-generic-response: false
+  override-with-none-as-default-scheme: true
 
 # 其他配置保持不变
 # ... existing code ... 

@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSecurityConfig {
 
     /**
-     * 配置安全过滤器链 - 处理公共路径
+     * 配置安全过滤器链 - 处理静态资源路径
      */
     @Bean
     @Order(1)
@@ -31,21 +31,19 @@ public class WebSecurityConfig {
         log.info("配置公共路径安全访问策略");
         
         return http
-            // 匹配公共资源路径和API文档路径
+            // 匹配静态资源路径
             .securityMatcher(
-                "/doc.html", "/swagger-ui.html", "/swagger-ui/**", 
-                "/v3/api-docs/**", "/webjars/**", "/swagger-resources/**",
-                "/swagger-resources", "/swagger-config", "/v3/api-docs/swagger-config", 
-                "/swagger-resources/configuration/ui", "/swagger-resources/configuration/security"
+                "/static/**", "/resources/**", "/assets/**", "/css/**", "/js/**", "/images/**", "/webjars/**"
             )
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
-                    "/v3/api-docs/**",
-                    "/swagger-ui.html",
-                    "/doc.html",
-                    "/swagger-resources/**",
-                    "/webjars/**",
-                    "/swagger-ui/**"
+                    "/static/**", 
+                    "/resources/**", 
+                    "/assets/**", 
+                    "/css/**", 
+                    "/js/**", 
+                    "/images/**",
+                    "/webjars/**"
                 ).permitAll())
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.disable())
@@ -66,9 +64,13 @@ public class WebSecurityConfig {
         
         return http
             .authorizeHttpRequests(authorize -> authorize
+                // 首页和欢迎页面
+                .requestMatchers("/", "/index.html", "/favicon.ico", "/welcome.html").permitAll()
+                // 健康检查
+                .requestMatchers("/health/**", "/actuator/**").permitAll()
                 // 放行所有公共资源路径
                 .requestMatchers(SecurityConstants.PUBLIC_RESOURCE_PATHS).permitAll()
-                // 临时允许所有访问，解决400错误
+                // 临时允许所有访问，解决403错误
                 .requestMatchers("/**").permitAll())
             .csrf(AbstractHttpConfigurer::disable)
             .headers(headers -> headers

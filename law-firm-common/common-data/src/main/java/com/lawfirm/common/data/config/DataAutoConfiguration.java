@@ -1,6 +1,8 @@
 package com.lawfirm.common.data.config;
 
+import com.lawfirm.common.data.config.properties.DatabaseMonitorProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -14,6 +16,9 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration("commonDataAutoConfiguration")
 @ConditionalOnProperty(prefix = "law-firm.common.data", name = "enabled", matchIfMissing = true)
+@EnableConfigurationProperties({
+    DatabaseMonitorProperties.class
+})
 @Import({
     DataSourceConfig.class,
     MybatisPlusConfig.class,

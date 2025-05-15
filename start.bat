@@ -1,6 +1,11 @@
 @echo off
 rem 设置控制台代码页为UTF-8
 chcp 65001
+rem 设置控制台字体为支持中文的字体
+rem reg add "HKEY_CURRENT_USER\Console" /v FaceName /t REG_SZ /d "NSimSun" /f
+rem 设置控制台不自动关闭
+title Law Firm Management System Console
+color 0A
 echo ================================================
 echo         Law Firm Management System
 echo ================================================
@@ -68,10 +73,20 @@ if not exist law-firm-api-1.0.0.jar (
     exit /b 1
 )
 
-set JAVA_OPTS=-Xms512m -Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=zh -Duser.country=CN -Dsun.jnu.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8
+rem 强化编码相关设置 - 解决日志乱码问题
+set JAVA_OPTS=-Xms512m -Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=zh -Duser.country=CN -Dsun.jnu.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dspring.output.ansi.enabled=ALWAYS -Dlog4j.skipJansi=false -Dlogback.statusListenerClass=ch.qos.logback.core.status.OnConsoleStatusListener -Dconsole.encoding=UTF-8
+
+rem 创建日志目录
+if not exist "logs" mkdir "logs"
+set LOG_FILE="logs\startup-%date:~0,4%%date:~5,2%%date:~8,2%-%time:~0,2%%time:~3,2%%time:~6,2%.log"
+set LOG_FILE=%LOG_FILE: =0%
+
 set JDBC_URL=jdbc:mysql://%MYSQL_HOST%:%MYSQL_PORT%/%MYSQL_DATABASE%?useUnicode=true^&characterEncoding=utf8^&useSSL=false^&serverTimezone=Asia/Shanghai^&allowPublicKeyRetrieval=true
 
 echo Starting application...
+echo Log file: %LOG_FILE%
+echo Log location: %CD%\logs
+
 java %JAVA_OPTS% -jar law-firm-api-1.0.0.jar ^
   --spring.profiles.active=%SPRING_PROFILES_ACTIVE% ^
   --spring.datasource.url="%JDBC_URL%" ^
@@ -83,7 +98,14 @@ java %JAVA_OPTS% -jar law-firm-api-1.0.0.jar ^
   --mybatis-plus.configuration.map-underscore-to-camel-case=true ^
   --mybatis-plus.configuration.cache-enabled=false ^
   --law-firm.core.storage.enabled=%STORAGE_ENABLED% ^
-  --law-firm.core.audit.enabled=%AUDIT_ENABLED%
+  --law-firm.core.audit.enabled=%AUDIT_ENABLED% ^
+  --logging.charset.console=UTF-8 ^
+  --logging.charset.file=UTF-8 ^
+  --server.tomcat.uri-encoding=UTF-8 ^
+  --server.servlet.encoding.charset=UTF-8 ^
+  --server.servlet.encoding.force=true ^
+  --logging.file.name=logs/law-firm-api.log ^
+  --logging.file.path=logs
 
 cd ..\..
 pause 

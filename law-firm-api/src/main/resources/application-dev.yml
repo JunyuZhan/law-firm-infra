@@ -57,14 +57,36 @@ logging:
   level:
     root: DEBUG
     com.lawfirm: DEBUG
-    org.springframework: DEBUG
-    org.springframework.web: INFO
-    org.springframework.security: DEBUG
+    org.springframework: INFO
+    org.springframework.security: INFO
+    org.springframework.cache: INFO
     com.baomidou.mybatisplus: DEBUG
     org.flywaydb: DEBUG
-    org.springdoc: DEBUG
-    org.springdoc.api: DEBUG
-    org.springdoc.webmvc: DEBUG
+
+# 开发环境启用API文档
+# springdoc:
+#   api-docs:
+#     enabled: true
+#   swagger-ui:
+#     enabled: true
+#   show-actuator: false
+
+# 开发环境禁用Redis健康检查
+management:
+  endpoint:
+    health:
+      validate-group-membership: false
+  health:
+    redis:
+      enabled: false
+    ldap:
+      enabled: false
+    mail:
+      enabled: false
+    rabbit:
+      enabled: false
+    defaults:
+      enabled: true
 
 # MyBatis Plus开发环境配置 
 mybatis-plus:
@@ -91,32 +113,6 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-# 开发环境SpringDoc配置 - 启用API文档功能
-springdoc:
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-    url: /v3/api-docs
-    # config-url: /v3/api-docs/swagger-config （已注释）
-    tags-sorter: alpha
-    operations-sorter: alpha
-    disable-swagger-default-url: true
-    doc-expansion: none
-    urls-primary-name: default
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-    version: OPENAPI_3_0
-    resolve-schema-properties: true
-    writer-with-default-pretty-printer: true
-    groups:
-      enabled: true
-  cache:
-    disabled: true  # 开发环境禁用文档缓存
-  show-actuator: false
-  default-produces-media-type: application/json;charset=UTF-8
-  default-consumes-media-type: application/json;charset=UTF-8
-
 # 开发环境安全配置
 "law-firm":
   security:
@@ -133,12 +129,6 @@ springdoc:
     "db-password":
       enabled: false
       "secret-key": DevSecretKey
-  
-  # API文档安全配置
-  api-doc:
-    secure-access:
-      enabled: false  # 开发环境不启用API文档安全限制
-      key: devApiKey  # 开发环境API文档访问密钥
   
   # 开发环境核心模块配置
   core:
@@ -174,20 +164,3 @@ springdoc:
         enabled: true
         performance:
           enabled: true
-
-# Knife4j配置 - 确保与springdoc配置一致
-knife4j:
-  enable: true
-  production: false 
-  setting:
-    language: zh-CN
-    enable-swagger-models: true
-    swagger-model-name: "实体类列表"
-    enable-document-manage: true
-    enable-home: true
-    enable-footer: false
-    enable-footer-custom: true
-    footer-custom-content: "律师事务所管理系统 - 开发文档"
-    # 关闭首页自动重定向
-    enable-home-custom: true
-    home-custom-path: /api/welcome

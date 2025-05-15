@@ -51,13 +51,6 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# 测试环境SpringDoc配置
-springdoc:
-  swagger-ui:
-    enabled: true
-  api-docs:
-    enabled: true
-
 # 测试环境安全配置
 law-firm:
   security:

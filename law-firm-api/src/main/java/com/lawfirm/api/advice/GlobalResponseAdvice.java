@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -15,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
  * 全局响应处理器
- * 确保所有API响应使用统一的格式，特别兼容vue-vben-admin前端
+ * 确保所有API响应使用统一的格式
  */
 @Slf4j
 @RestControllerAdvice
@@ -31,27 +32,18 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
         String packageName = returnType.getContainingClass().getPackageName();
         
         // 排除已经是CommonResult类型的响应和特定控制器
-        boolean isCommonResult = returnType.getParameterType().isAssignableFrom(CommonResult.class);
-        boolean isErrorController = returnType.getDeclaringClass().getName().contains("ErrorController");
-        boolean isHealthController = returnType.getDeclaringClass().getName().contains("HealthCheckController");
-        boolean isHomeController = returnType.getDeclaringClass().getName().contains("HomeController");
+        boolean isCommonResult = CommonResult.class.isAssignableFrom(returnType.getParameterType());
+        boolean isResponseEntityType = ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
+        boolean isErrorController = className.contains("ErrorController");
+        boolean isHealthController = className.contains("HealthCheckController");
+        boolean isRestExceptionHandler = className.contains("RestExceptionHandler");
         
-        // 精确排除Springdoc/Knife4j相关Controller
-        boolean isSpringdocOrKnife4jController =
-                packageName.startsWith("org.springdoc") ||
-                packageName.startsWith("com.github.xiaoymin.knife4j") ||
-                className.contains("springdoc") ||
-                                 className.contains("swagger") ||
-                                 className.contains("openapi") ||
-                                 className.contains("knife4j") ||
-                                 className.contains("ApiDoc");
-        
-        // 也排除自定义ApiDocController
-        boolean isApiDocController = className.contains("ApiDocController");
-
-        // 不处理已经是标准格式或特定控制器的响应，或API文档相关响应
-        return !isCommonResult && !isErrorController && !isHealthController && 
-               !isHomeController && !isSpringdocOrKnife4jController && !isApiDocController;
+        // 不处理以下情况:
+        // 1. 已经是标准CommonResult格式的响应 
+        // 2. RestExceptionHandler处理的响应
+        // 3. 错误控制器和健康检查控制器的响应
+        return !isCommonResult && !isResponseEntityType && !isErrorController && 
+               !isHealthController && !isRestExceptionHandler;
     }
 
     @SneakyThrows
@@ -62,14 +54,11 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
         // 获取请求路径
         String path = request.getURI().getPath();
         
-        // 排除API文档相关路径
-        if (path.contains("/v3/api-docs") || 
-            path.contains("/swagger-ui") || 
-            path.contains("/doc.html") || 
-            path.contains("/api-docs") ||
-            path.contains("/webjars") ||
-            path.contains("/swagger-resources")) {
-            log.debug("API文档请求，不包装响应: {}", path);
+        // 静态资源和Actuator路径不包装
+        if (path.startsWith("/webjars") || 
+            path.startsWith("/static") || 
+            path.startsWith("/assets") ||
+            path.startsWith("/actuator")) {
             return body;
         }
         
@@ -77,6 +66,12 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
         if (MediaType.TEXT_HTML.equals(selectedContentType) ||
             (selectedContentType != null && selectedContentType.toString().contains("text/html"))) {
             log.debug("HTML类型请求，不包装响应: {}", request.getURI().getPath());
+            return body;
+        }
+        
+        // 如果已经是CommonResult或ResponseEntity<CommonResult>类型，则不再包装
+        if (body instanceof CommonResult || 
+            (body instanceof ResponseEntity && ((ResponseEntity<?>)body).getBody() instanceof CommonResult)) {
             return body;
         }
         

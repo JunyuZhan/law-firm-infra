@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
@@ -34,8 +36,9 @@ import java.util.stream.Collectors;
  * REST API全局异常处理
  * 处理所有API请求中的异常，并返回标准格式的错误响应
  */
-// @RestControllerAdvice
+@RestControllerAdvice
 @Slf4j
+@Order(1)  // 高优先级，确保先于其他异常处理器执行
 public class RestExceptionHandler {
 
     /**
@@ -190,4 +193,4 @@ public class RestExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(CommonResult.error(ResultCode.INTERNAL_ERROR.getCode(), "服务器内部错误"));
     }
-}
+} 
