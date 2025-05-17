@@ -12,7 +12,7 @@ spring:
   # Flyway数据库迁移配置
   flyway:
     enabled: true
-    locations: classpath:db/migration
+    locations: classpath:META-INF/db/migration
     baseline-on-migrate: true
     baseline-version: 6000
     validate-on-migrate: true
@@ -23,7 +23,7 @@ spring:
   sql:
     init:
       mode: ${SQL_INIT_MODE:always}
-      schema-locations: classpath:db/migration/V*.sql
+      schema-locations: classpath:META-INF/db/migration/V*.sql
       continue-on-error: true
 
   # 文件上传配置

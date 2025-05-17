@@ -46,11 +46,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- OpenAPI/Swagger 注解依赖，仅用于模型注解，无starter污染 -->
+        <!-- Swagger -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations-jakarta</artifactId>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

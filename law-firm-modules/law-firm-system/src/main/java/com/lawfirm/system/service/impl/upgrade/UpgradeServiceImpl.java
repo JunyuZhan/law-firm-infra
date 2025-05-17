@@ -25,6 +25,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import com.lawfirm.system.exception.SystemException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -95,7 +96,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
     public void updateUpgrade(UpgradeUpdateDTO updateDTO) {
         Upgrade upgrade = getById(updateDTO.getId());
         if (upgrade == null) {
-            throw new RuntimeException("升级记录不存在");
+            throw SystemException.notFound("升级记录");
         }
         BeanUtils.copyProperties(updateDTO, upgrade);
         update(upgrade);
@@ -107,12 +108,12 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
     public void executeUpgrade(Long id) {
         Upgrade upgrade = getById(id);
         if (upgrade == null) {
-            throw new RuntimeException("升级记录不存在");
+            throw SystemException.notFound("升级记录");
         }
         
         // 检查状态
         if (!"PENDING".equals(upgrade.getUpgradeStatus())) {
-            throw new RuntimeException("当前状态不允许执行升级");
+            throw SystemException.invalidState("执行升级");
         }
         
         try {
@@ -148,12 +149,12 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
     public void rollbackUpgrade(Long id) {
         Upgrade upgrade = getById(id);
         if (upgrade == null) {
-            throw new RuntimeException("升级记录不存在");
+            throw SystemException.notFound("升级记录");
         }
         
         // 检查状态
         if (!"SUCCESS".equals(upgrade.getUpgradeStatus()) && !"FAILED".equals(upgrade.getUpgradeStatus())) {
-            throw new RuntimeException("当前状态不允许回滚");
+            throw SystemException.invalidState("回滚");
         }
         
         try {
@@ -172,7 +173,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             upgrade.setRollbackTime(System.currentTimeMillis());
             update(upgrade);
         } catch (Exception e) {
-            throw new RuntimeException("回滚失败: " + e.getMessage());
+            throw new SystemException("回滚失败: " + e.getMessage(), e);
         }
     }
 
@@ -210,7 +211,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
         // 检查升级记录是否存在
         Upgrade upgrade = getById(upgradeId);
         if (upgrade == null) {
-            throw new RuntimeException("升级记录不存在");
+            throw SystemException.notFound("升级记录");
         }
 
         try {
@@ -228,7 +229,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             return fileVO.getStoragePath();
         } catch (IOException e) {
             log.error("补丁文件上传失败", e);
-            throw new RuntimeException("补丁文件上传失败: " + e.getMessage());
+            throw new SystemException("补丁文件上传失败: " + e.getMessage(), e);
         }
     }
 
@@ -239,7 +240,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
         // 检查升级记录是否存在
         Upgrade upgrade = getById(createDTO.getUpgradeId());
         if (upgrade == null) {
-            throw new RuntimeException("升级记录不存在");
+            throw SystemException.notFound("升级记录");
         }
         
         Patch patch = new Patch();
@@ -254,12 +255,12 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
     public void deletePatchById(Long patchId) {
         Patch patch = patchMapper.selectById(patchId);
         if (patch == null) {
-            throw new RuntimeException("补丁记录不存在");
+            throw SystemException.notFound("补丁记录");
         }
         
         // 检查状态
         if (!"PENDING".equals(patch.getPatchStatus())) {
-            throw new RuntimeException("只能删除待执行的补丁");
+            throw SystemException.invalidState("删除待执行的补丁");
         }
         
         patchMapper.deleteById(patchId);
@@ -271,12 +272,12 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
     public void executePatch(Long patchId) {
         Patch patch = patchMapper.selectById(patchId);
         if (patch == null) {
-            throw new RuntimeException("补丁记录不存在");
+            throw SystemException.notFound("补丁记录");
         }
         
         // 检查状态
         if (!"PENDING".equals(patch.getPatchStatus())) {
-            throw new RuntimeException("当前状态不允许执行补丁");
+            throw SystemException.invalidState("执行补丁");
         }
         
         try {
@@ -296,7 +297,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
                     executeFilePatch(patch);
                     break;
                 default:
-                    throw new RuntimeException("不支持的补丁类型");
+                    throw SystemException.invalidState("不支持的补丁类型");
             }
             
             // 更新状态为成功
@@ -307,7 +308,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             // 更新状态为失败
             patch.setPatchStatus("FAILED");
             patchMapper.updateById(patch);
-            throw new RuntimeException("执行补丁失败: " + e.getMessage());
+            throw new SystemException("执行补丁失败: " + e.getMessage(), e);
         }
     }
 
@@ -317,12 +318,12 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
     public void rollbackPatch(Long patchId) {
         Patch patch = patchMapper.selectById(patchId);
         if (patch == null) {
-            throw new RuntimeException("补丁记录不存在");
+            throw SystemException.notFound("补丁记录");
         }
         
         // 检查状态
         if (!"SUCCESS".equals(patch.getPatchStatus()) && !"FAILED".equals(patch.getPatchStatus())) {
-            throw new RuntimeException("当前状态不允许回滚");
+            throw SystemException.invalidState("回滚");
         }
         
         try {
@@ -338,7 +339,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
                     rollbackFilePatch(patch);
                     break;
                 default:
-                    throw new RuntimeException("不支持的补丁类型");
+                    throw SystemException.invalidState("不支持的补丁类型");
             }
             
             // 更新状态为已回滚
@@ -346,7 +347,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             patch.setRollbackTime(System.currentTimeMillis());
             patchMapper.updateById(patch);
         } catch (Exception e) {
-            throw new RuntimeException("回滚补丁失败: " + e.getMessage());
+            throw new SystemException("回滚补丁失败: " + e.getMessage(), e);
         }
     }
 
@@ -424,7 +425,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("执行SQL补丁失败: " + e.getMessage());
+            throw new SystemException("执行SQL补丁失败: " + e.getMessage(), e);
         }
     }
 
@@ -451,7 +452,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             // 等待脚本执行完成
             if (!process.waitFor(30, TimeUnit.MINUTES)) {
                 process.destroy();
-                throw new RuntimeException("脚本执行超时");
+                throw SystemException.invalidState("脚本执行超时");
             }
             
             // 检查执行结果
@@ -460,14 +461,14 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
                 try (BufferedReader reader = new BufferedReader(
                         new InputStreamReader(process.getInputStream()))) {
                     String error = reader.lines().reduce("", (a, b) -> a + "\n" + b);
-                    throw new RuntimeException("脚本执行失败: " + error);
+                    throw new SystemException("脚本执行失败: " + error);
                 }
             }
             
             // 清理临时文件
             Files.deleteIfExists(tempScript);
         } catch (Exception e) {
-            throw new RuntimeException("执行脚本补丁失败: " + e.getMessage());
+            throw new SystemException("执行脚本补丁失败: " + e.getMessage(), e);
         }
     }
 
@@ -479,7 +480,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             // 解析补丁文件路径
             String targetPath = patch.getDescription(); // 使用description字段存储目标路径
             if (!StringUtils.hasText(targetPath)) {
-                throw new RuntimeException("未指定目标文件路径");
+                throw SystemException.invalidState("未指定目标文件路径");
             }
             
             // 备份原文件
@@ -492,7 +493,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             // 应用补丁文件
             Files.write(target, fileContent, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (Exception e) {
-            throw new RuntimeException("执行文件补丁失败: " + e.getMessage());
+            throw new SystemException("执行文件补丁失败: " + e.getMessage(), e);
         }
     }
 
@@ -505,7 +506,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             // 解析回滚SQL
             String rollbackSql = extractRollbackSql(sqlScript);
             if (!StringUtils.hasText(rollbackSql)) {
-                throw new RuntimeException("未找到回滚SQL");
+                throw SystemException.invalidState("未找到回滚SQL");
             }
             
             // 执行回滚SQL
@@ -516,7 +517,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("回滚SQL补丁失败: " + e.getMessage());
+            throw new SystemException("回滚SQL补丁失败: " + e.getMessage(), e);
         }
     }
 
@@ -544,7 +545,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             // 等待脚本执行完成
             if (!process.waitFor(30, TimeUnit.MINUTES)) {
                 process.destroy();
-                throw new RuntimeException("回滚脚本执行超时");
+                throw SystemException.invalidState("回滚脚本执行超时");
             }
             
             // 检查执行结果
@@ -553,14 +554,14 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
                 try (BufferedReader reader = new BufferedReader(
                         new InputStreamReader(process.getInputStream()))) {
                     String error = reader.lines().reduce("", (a, b) -> a + "\n" + b);
-                    throw new RuntimeException("回滚脚本执行失败: " + error);
+                    throw new SystemException("回滚脚本执行失败: " + error);
                 }
             }
             
             // 清理临时文件
             Files.deleteIfExists(tempScript);
         } catch (Exception e) {
-            throw new RuntimeException("回滚脚本补丁失败: " + e.getMessage());
+            throw new SystemException("回滚脚本补丁失败: " + e.getMessage(), e);
         }
     }
 
@@ -569,14 +570,14 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             // 解析补丁文件路径
             String targetPath = patch.getDescription(); // 使用description字段存储目标路径
             if (!StringUtils.hasText(targetPath)) {
-                throw new RuntimeException("未指定目标文件路径");
+                throw SystemException.invalidState("未指定目标文件路径");
             }
             
             // 检查备份文件是否存在
             Path target = Paths.get(targetPath);
             Path backup = Paths.get(targetPath + ".backup");
             if (!Files.exists(backup)) {
-                throw new RuntimeException("未找到备份文件");
+                throw SystemException.notFound("未找到备份文件");
             }
             
             // 恢复备份文件
@@ -585,7 +586,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
             // 删除备份文件
             Files.deleteIfExists(backup);
         } catch (Exception e) {
-            throw new RuntimeException("回滚文件补丁失败: " + e.getMessage());
+            throw new SystemException("回滚文件补丁失败: " + e.getMessage(), e);
         }
     }
 
@@ -609,7 +610,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
                 command.add("node");
                 break;
             default:
-                throw new RuntimeException("不支持的脚本类型: " + extension);
+                throw SystemException.invalidState("不支持的脚本类型: " + extension);
         }
         
         command.add(scriptPath);

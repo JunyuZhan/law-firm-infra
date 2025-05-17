@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lawfirm.finance.exception.FinanceException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -72,7 +73,7 @@ public class ReceivableServiceImpl implements ReceivableService {
         log.info("更新应收账款状态: id={}, status={}, remark={}", id, status, remark);
         Receivable receivable = receivableMapper.selectById(id);
         if (receivable == null) {
-            throw new IllegalArgumentException("应收账款不存在");
+            throw FinanceException.notFound("应收账款不存在");
         }
         receivable.setStatusEnum(status);
         receivable.setRemark(remark);
@@ -88,7 +89,7 @@ public class ReceivableServiceImpl implements ReceivableService {
                 id, amount, accountId, receiveDate, remark);
         Receivable receivable = receivableMapper.selectById(id);
         if (receivable == null) {
-            throw new IllegalArgumentException("应收账款不存在");
+            throw FinanceException.notFound("应收账款不存在");
         }
         
         // 更新已收金额

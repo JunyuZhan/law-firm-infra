@@ -100,6 +100,7 @@ public final class CaseBusinessConstants {
         public static final String API_PROCESS_PREFIX = "/api/v1/cases/processes";
         public static final String API_TASK_PREFIX = "/api/v1/cases/tasks";
         public static final String API_EVENT_PREFIX = "/api/v1/cases/events";
+        public static final String API_APPROVAL_PREFIX = "/api/v1/cases/approvals";
         
         /**
          * 响应消息

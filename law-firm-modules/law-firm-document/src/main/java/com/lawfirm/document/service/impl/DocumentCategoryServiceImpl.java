@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lawfirm.document.exception.DocumentException;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategor
     public Long createCategory(CategoryCreateDTO createDTO) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限创建分类");
+            throw DocumentException.noPermission("创建分类");
         }
 
         // TODO: 创建分类记录
@@ -48,7 +49,7 @@ public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategor
     public void updateCategory(CategoryUpdateDTO updateDTO) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限更新分类");
+            throw DocumentException.noPermission("更新分类");
         }
 
         // TODO: 更新分类记录
@@ -59,7 +60,7 @@ public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategor
     public void deleteCategory(Long id) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限删除分类");
+            throw DocumentException.noPermission("删除分类");
         }
 
         // TODO: 删除分类记录
@@ -69,7 +70,7 @@ public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategor
     public CategoryVO getCategory(Long id) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限查看分类");
+            throw DocumentException.noPermission("查看分类");
         }
 
         // TODO: 获取分类详情
@@ -80,7 +81,7 @@ public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategor
     public List<CategoryVO> listCategories(CategoryQueryDTO queryDTO) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限查询分类列表");
+            throw DocumentException.noPermission("查询分类列表");
         }
 
         // TODO: 查询分类列表
@@ -91,7 +92,7 @@ public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategor
     public Page<CategoryVO> pageCategories(CategoryQueryDTO queryDTO) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限查询分类列表");
+            throw DocumentException.noPermission("查询分类列表");
         }
 
         // TODO: 分页查询分类

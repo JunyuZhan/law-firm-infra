@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.lawfirm.system.config.SystemModuleConfig.SecurityProperties;
 
@@ -31,11 +32,12 @@ public class SystemSecurityConfig {
         
         http
             .authorizeHttpRequests(authorize -> authorize
-                // 系统管理模块的所有请求都需要ADMIN角色
+                .requestMatchers("/").permitAll() // 允许根路径匿名访问
                 .requestMatchers("/system/**").hasRole(securityProperties.getAdminRole().replace("ROLE_", ""))
                 .anyRequest().authenticated()
             )
-            .csrf(csrf -> csrf.disable()); // 禁用CSRF，因为是API接口
+            .csrf(csrf -> csrf.disable()) // 禁用CSRF，因为是API接口
+        ;
         
         return http.build();
     }

@@ -1,4 +1,6 @@
 spring:
+  # 确保所有组件使用UTF-8编码
+  mandatory-file-encoding: UTF-8
   application:
     name: law-firm-api
   profiles:
@@ -32,13 +34,13 @@ spring:
   # 排除不需要的自动配置
   autoconfigure:
     exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useConfigs=maxPerformance
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
+    password: ${MYSQL_PASSWORD:}
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -46,6 +48,7 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 30000
       pool-name: LawFirmHikariCP
+      connection-init-sql: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
   # Redis配置
   data:
     redis:
@@ -62,7 +65,7 @@ spring:
           min-idle: 0
       # 禁用Redis自动配置的存储库支持，使用自定义配置
       repositories:
-        enabled: false
+        enabled: true
   # 禁用LDAP功能
   ldap:
     embedded:
@@ -97,10 +100,12 @@ spring:
         max-size: 10
         queue-capacity: 100
         thread-name-prefix: law-firm-task-
-  # 控制器Bean名称后缀，避免冲突
+  # MVC配置
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+    converters:
+      preferred-json-mapper: jackson
   # 文件上传配置
   servlet:
     multipart:
@@ -110,12 +115,14 @@ spring:
   # Flyway数据库迁移配置
   flyway:
     enabled: true
-    locations: classpath:db/migration
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useConfigs=maxPerformance
+    user: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:}
+    # 使用Java配置中的locations，这里不重复配置
     baseline-on-migrate: true
     out-of-order: true
-    validate-on-migrate: false
-    # 禁用自动迁移，由应用程序控制迁移流程
-    auto-migrate: false
+    validate-on-migrate: true
+    auto-migrate: true
   output:
     ansi:
       enabled: always
@@ -167,6 +174,9 @@ cors:
 
 # 日志配置
 logging:
+  charset:
+    console: UTF-8
+    file: UTF-8
   level:
     root: ${LOGGING_LEVEL_ROOT:INFO}
     com.lawfirm: ${LOGGING_LEVEL_APP:DEBUG}
@@ -182,15 +192,15 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 # 系统参数配置 - 这里只放顶层配置，模块内配置通过include引入
-"law-firm":
+law-firm:
   # 安全配置
   security:
     jwt:
       secret: ${JWT_SECRET:lawfirm123456}
       expiration: ${JWT_EXPIRATION:86400}
       header: ${JWT_HEADER:Authorization}
-      "token-start-with": ${JWT_TOKEN_START_WITH:Bearer }
-      "token-header": ${JWT_TOKEN_HEADER:Authorization}
+      token-start-with: ${JWT_TOKEN_START_WITH:Bearer }
+      token-header: ${JWT_TOKEN_HEADER:Authorization}
   
   # 核心模块配置
   core:
@@ -227,7 +237,7 @@ logging:
       enabled: true
     data:
       enabled: true
-      "module-init-enabled": true
+      module-init-enabled: true
     cache:
       enabled: true
     security:
@@ -289,34 +299,26 @@ management:
     neo4j:
       enabled: false
 
-# SpringDoc配置
-springdoc:
-  api-docs:
-    enabled: ${SPRINGDOC_ENABLED:true}
-    path: /v3/api-docs
-  swagger-ui:
-    enabled: ${SPRINGDOC_ENABLED:true}
-    path: /swagger-ui.html
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-    config-url: /v3/api-docs/swagger-config
-  packages-to-scan: com.lawfirm
-  paths-to-match: /**
-  cache:
-    disabled: true
-  # 添加配置限制文档生成
-  default-flat-param-object: true
-  model-and-view-allowed: false
-  default-produces-media-type: application/json
-  default-consumes-media-type: application/json
-  # 排除监控相关API，减少生成负担
-  paths-to-exclude: /actuator/**, /monitor/**, /api/system/monitor/**
-  # 限制模型深度，避免循环依赖
-  use-fqn: false
-  writer-with-default-pretty-printer: true
-  # 添加限制，防止无限循环
-  override-with-generic-response: false
-  override-with-none-as-default-scheme: true
+# 确保所有层面使用统一的UTF-8编码
+http:
+  encoding:
+    charset: UTF-8
+    enabled: true
+    force: true
 
-# 其他配置保持不变
-# ... existing code ... 
+jackson:
+  # Jackson JSON配置
+  default-property-inclusion: non_null
+  date-format: yyyy-MM-dd HH:mm:ss
+  time-zone: GMT+8
+  serialization:
+    WRITE_DATES_AS_TIMESTAMPS: false
+  deserialization:
+    FAIL_ON_UNKNOWN_PROPERTIES: false
+  property-naming-strategy: SNAKE_CASE
+  mapper:
+    PROPAGATE_TRANSIENT_MARKER: true
+  generator:
+    WRITE_BIGDECIMAL_AS_PLAIN: true
+  parser:
+    ALLOW_UNQUOTED_FIELD_NAMES: true

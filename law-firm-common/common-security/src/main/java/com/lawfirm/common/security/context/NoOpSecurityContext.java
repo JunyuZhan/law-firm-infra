@@ -32,4 +32,16 @@ public class NoOpSecurityContext implements SecurityContext {
         log.warn("存储功能已禁用，SecurityContext.getCurrentUserId()返回null");
         return null;
     }
+
+    @Override
+    public String getCurrentUsername() {
+        log.warn("存储功能已禁用，SecurityContext.getCurrentUsername()返回null");
+        return null;
+    }
+
+    @Override
+    public Long getCurrentTenantId() {
+        log.warn("存储功能已禁用，SecurityContext.getCurrentTenantId()返回null");
+        return null;
+    }
 } 

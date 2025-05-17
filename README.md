@@ -237,8 +237,6 @@
 - Lombok
 - MapStruct
 - Hutool
-- Knife4j
-- SpringDoc OpenAPI
 
 ## 开发环境
 
@@ -329,7 +327,6 @@ docker-compose up -d
 #### 访问地址
 
 - 律所管理系统: http://localhost:8080
-- Swagger API文档: http://localhost:8080/swagger-ui.html
 - MinIO控制台: http://localhost:9001 (默认用户名/密码: minioadmin/minioadmin)
 
 ### 服务启动

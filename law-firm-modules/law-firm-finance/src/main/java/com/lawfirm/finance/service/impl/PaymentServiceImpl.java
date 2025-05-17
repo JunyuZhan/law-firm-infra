@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.io.FileWriter;
+import java.io.File;
+import java.time.format.DateTimeFormatter;
+
+import com.lawfirm.finance.exception.FinanceException;
+import com.lawfirm.common.util.excel.ExcelWriter;
 
 /**
  * 付款服务实现类
@@ -267,8 +273,30 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
     @Override
     public String exportPayments(List<Long> paymentIds) {
         log.info("导出付款数据: {}", paymentIds);
-        // TODO: 实现导出功能
-        return "付款数据导出功能尚未实现";
+        if (paymentIds == null || paymentIds.isEmpty()) {
+            throw FinanceException.failed("付款数据导出", new IllegalArgumentException("付款ID列表不能为空"));
+        }
+        try {
+            List<Payment> payments = listByIds(paymentIds);
+            if (payments.isEmpty()) {
+                throw FinanceException.failed("付款数据导出", new IllegalArgumentException("未找到对应的付款记录"));
+            }
+            // 导出目录
+            String exportDir = "export/finance/payments";
+            File dir = new File(exportDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            String fileName = "payments_" + System.currentTimeMillis() + ".xlsx";
+            String filePath = exportDir + "/" + fileName;
+            // 使用通用ExcelWriter工具导出为Excel
+            ExcelWriter.writeToFile(filePath, payments);
+            log.info("付款数据导出成功，文件路径: {}", filePath);
+            return filePath;
+        } catch (Exception e) {
+            log.error("付款数据导出失败", e);
+            throw FinanceException.failed("付款数据导出", e);
+        }
     }
     
     /**

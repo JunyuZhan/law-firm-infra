@@ -23,7 +23,7 @@ public class RequestInterceptor implements HandlerInterceptor {
      */
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
         "/static", "/webjars", "/error", "/favicon.ico", 
-        "/actuator", "/v3/api-docs", "/swagger-ui"
+        "/actuator", "/api/test/hello"
     );
 
     @Override

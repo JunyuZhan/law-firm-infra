@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lawfirm.common.security.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -215,16 +216,16 @@ public class MeetingRoomServiceImpl extends ServiceImpl<MeetingRoomMapper, Meeti
 
     @Override
     public Long getCurrentTenantId() {
-        return null; // TODO: 实现获取当前租户ID的逻辑
+        return SecurityContextHolder.getContext().getCurrentTenantId();
     }
 
     @Override
     public Long getCurrentUserId() {
-        return null; // TODO: 实现获取当前用户ID的逻辑
+        return SecurityContextHolder.getCurrentUserId();
     }
 
     @Override
     public String getCurrentUsername() {
-        return null; // TODO: 实现获取当前用户名的逻辑
+        return SecurityContextHolder.getContext().getCurrentUsername();
     }
 }

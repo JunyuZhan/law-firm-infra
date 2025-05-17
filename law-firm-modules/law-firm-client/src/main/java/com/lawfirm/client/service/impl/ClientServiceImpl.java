@@ -17,6 +17,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lawfirm.client.exception.ClientException;
+import com.lawfirm.model.client.dto.contact.ContactCreateDTO;
+import com.lawfirm.model.client.service.ContactService;
+import com.lawfirm.model.client.service.TagService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +35,10 @@ import java.util.stream.Collectors;
 public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> implements ClientService {
     
     private final ClientMapper clientMapper;
+    @Autowired
+    private ContactService contactService;
+    @Autowired
+    private TagService tagService;
     
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -52,7 +61,7 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
         // 获取客户
         Client client = getById(dto.getId());
         if (client == null) {
-            throw new IllegalArgumentException("客户不存在");
+            throw ClientException.notFound(dto.getId());
         }
         
         // 更新客户信息
@@ -61,8 +70,8 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
         // 保存更新
         updateById(client);
         
-        // 处理关联数据
-        // TODO: 处理关联数据更新
+        // 处理关联数据更新
+        // 可扩展：如dto包含联系人/标签等信息，可调用contactService、tagService更新
     }
     
     @Override
@@ -77,7 +86,9 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
         // 删除客户
         removeById(id);
         
-        // TODO: 删除关联数据（联系人、地址、标签等）
+        // 删除关联数据（联系人、标签等）
+        contactService.listClientContacts(id).forEach(c -> contactService.deleteContact(c.getId()));
+        // tagService可根据实际需求实现客户标签的删除
     }
     
     @Override
@@ -132,7 +143,7 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
         // 检查客户是否存在
         Client client = getById(id);
         if (client == null) {
-            throw new IllegalArgumentException("客户不存在");
+            throw ClientException.notFound(id);
         }
         
         // 更新状态
@@ -146,7 +157,7 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
         // 检查客户是否存在
         Client client = getById(id);
         if (client == null) {
-            throw new IllegalArgumentException("客户不存在");
+            throw ClientException.notFound(id);
         }
         
         // 更新信用等级
@@ -160,7 +171,16 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
      * @param dto 创建DTO
      */
     private void handleRelatedData(Long clientId, ClientCreateDTO dto) {
-        // TODO: 实现关联数据处理
+        // 示例：如dto包含联系人信息，可批量创建联系人
+        // List<ContactCreateDTO> contacts = dto.getContacts();
+        // if (contacts != null) {
+        //     contacts.forEach(contact -> {
+        //         contact.setClientId(clientId);
+        //         contactService.createContact(contact);
+        //     });
+        // }
+        // 标签等其他关联数据同理
+        // 当前留作扩展点，便于后续业务完善
     }
 
     @Override
@@ -169,7 +189,7 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
         // 检查客户是否存在
         Client client = getById(clientId);
         if (client == null) {
-            throw new IllegalArgumentException("客户不存在");
+            throw ClientException.notFound(clientId);
         }
         
         // 更新案件统计信息
@@ -216,7 +236,7 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
         // 获取当前客户
         Client client = getById(clientId);
         if (client == null) {
-            throw new IllegalArgumentException("客户不存在");
+            throw ClientException.notFound(clientId);
         }
         
         // TODO: 实现利益冲突检查逻辑

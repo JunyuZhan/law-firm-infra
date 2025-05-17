@@ -9,7 +9,6 @@ import com.lawfirm.auth.security.provider.JwtTokenProvider;
 import com.lawfirm.common.security.config.BaseSecurityConfig;
 import com.lawfirm.common.security.constants.SecurityConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -52,7 +51,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Order(90)  // 确保此配置在通用安全配置之前加载
 @ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "true", matchIfMissing = true)
-@MapperScan(basePackages = {"com.lawfirm.model.auth.mapper"})
 public class SecurityConfig extends BaseSecurityConfig {
     
     @Autowired

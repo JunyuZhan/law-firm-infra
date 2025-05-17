@@ -5,7 +5,7 @@ spring:
   # Flyway数据库迁移配置
   flyway:
     enabled: ${SYSTEM_FLYWAY_ENABLED:true}
-    locations: classpath:db/migration
+    locations: classpath:META-INF/db/migration
     baseline-on-migrate: true
     baseline-version: 1000
     validate-on-migrate: true

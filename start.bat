@@ -1,15 +1,27 @@
 @echo off
-rem 设置控制台代码页为UTF-8
-chcp 65001
-rem 设置控制台字体为支持中文的字体
-rem reg add "HKEY_CURRENT_USER\Console" /v FaceName /t REG_SZ /d "NSimSun" /f
-rem 设置控制台不自动关闭
+rem Fix encoding issues
+chcp 65001 > nul 2>&1
+
+rem Force console code page to UTF-8
+reg add "HKCU\Console" /v CodePage /t REG_DWORD /d 65001 /f >nul 2>&1
+rem Set appropriate font for Chinese display
+reg add "HKCU\Console" /v FaceName /t REG_SZ /d "NSimSun" /f >nul 2>&1
+
+rem Set Java parameters to handle UTF-8 correctly
+set JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8
+set JAVA_HOME_OPTIONS=-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8
+
+rem Keep console open
 title Law Firm Management System Console
 color 0A
 echo ================================================
 echo         Law Firm Management System
 echo ================================================
 echo.
+
+rem Set system environment variables
+set LANG=zh_CN.UTF-8
+set LC_ALL=zh_CN.UTF-8
 
 rem Default database configuration
 set DEFAULT_MYSQL_HOST=localhost
@@ -58,54 +70,72 @@ if "%ENV_CHOICE%"=="2" (
 )
 echo.
 
-REM 存储服务和审计服务都设置为强制启用，这些是系统必需的核心服务
+REM These are required core services
 set STORAGE_ENABLED=true
 set AUDIT_ENABLED=true
 echo Storage Module: Enabled (Required Component)
 echo Audit Module: Enabled (Required Component)
 echo.
 
+rem Check if JAR file exists
+if not exist "law-firm-api\target" (
+    echo ERROR: Target directory not found. Please compile the project first:
+    echo mvn clean install
+    pause
+    exit /b 1
+)
+
 cd law-firm-api\target
-if not exist law-firm-api-1.0.0.jar (
-    echo ERROR: JAR file not found! Please build the project first.
+for %%f in (law-firm-api-*.jar) do (
+    set JAR_FILE=%%f
+)
+
+if not defined JAR_FILE (
+    echo ERROR: JAR file not found. Please compile the project first:
+    echo mvn clean install
     cd ..\..
     pause
     exit /b 1
 )
 
-rem 强化编码相关设置 - 解决日志乱码问题
-set JAVA_OPTS=-Xms512m -Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=zh -Duser.country=CN -Dsun.jnu.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dspring.output.ansi.enabled=ALWAYS -Dlog4j.skipJansi=false -Dlogback.statusListenerClass=ch.qos.logback.core.status.OnConsoleStatusListener -Dconsole.encoding=UTF-8
+echo Using JAR file: %JAR_FILE%
 
-rem 创建日志目录
-if not exist "logs" mkdir "logs"
-set LOG_FILE="logs\startup-%date:~0,4%%date:~5,2%%date:~8,2%-%time:~0,2%%time:~3,2%%time:~6,2%.log"
-set LOG_FILE=%LOG_FILE: =0%
+rem Ensure log directories exist
+if not exist "..\..\logs" (
+    mkdir "..\..\logs"
+    echo Created logs directory.
+)
 
-set JDBC_URL=jdbc:mysql://%MYSQL_HOST%:%MYSQL_PORT%/%MYSQL_DATABASE%?useUnicode=true^&characterEncoding=utf8^&useSSL=false^&serverTimezone=Asia/Shanghai^&allowPublicKeyRetrieval=true
+if not exist "..\..\logs\archive" (
+    mkdir "..\..\logs\archive"
+    echo Created logs archive directory.
+)
+
+rem Create date-formatted log directory
+set LOG_DATE=%date:~0,4%%date:~5,2%%date:~8,2%
+if not exist "..\..\logs\%LOG_DATE%" (
+    mkdir "..\..\logs\%LOG_DATE%"
+    echo Created date-specific logs directory.
+)
+
+rem Set log filename
+set "LOG_FILE=..\..\logs\startup-%LOG_DATE%.log"
+
+rem JVM parameters for UTF-8
+set JAVA_OPTS=-Xms512m -Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=zh -Duser.country=CN -Duser.region=CN -Dsun.jnu.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dlog4j.defaultInitOverride=true -Dlog4j2.formatMsgNoLookups=true
+rem Specify JVM default charset
+set JAVA_OPTS=%JAVA_OPTS% -Djava.nio.charset=UTF-8 -Dfile.encoding.pkg=sun.io -Dspring.mandatory-file-encoding=UTF-8
+rem Fix Windows console log issues
+set JAVA_OPTS=%JAVA_OPTS% -Djansi.passthrough=true -Djansi.windows=true -Djansi.force=true
+
+rem Set database URL
+set JDBC_URL=jdbc:mysql://%MYSQL_HOST%:%MYSQL_PORT%/%MYSQL_DATABASE%?useUnicode=true^&characterEncoding=utf8^&useSSL=false^&serverTimezone=Asia/Shanghai^&allowPublicKeyRetrieval=true^&rewriteBatchedStatements=true^&useConfigs=maxPerformance
 
 echo Starting application...
 echo Log file: %LOG_FILE%
-echo Log location: %CD%\logs
 
-java %JAVA_OPTS% -jar law-firm-api-1.0.0.jar ^
-  --spring.profiles.active=%SPRING_PROFILES_ACTIVE% ^
-  --spring.datasource.url="%JDBC_URL%" ^
-  --spring.datasource.username=%MYSQL_USERNAME% ^
-  --spring.datasource.password=%MYSQL_PASSWORD% ^
-  --mybatis-plus.mapper-locations=classpath*:/mapper/**/*.xml ^
-  --mybatis-plus.type-aliases-package=com.lawfirm.model ^
-  --mybatis-plus.mapper-package=com.lawfirm.model.**.mapper ^
-  --mybatis-plus.configuration.map-underscore-to-camel-case=true ^
-  --mybatis-plus.configuration.cache-enabled=false ^
-  --law-firm.core.storage.enabled=%STORAGE_ENABLED% ^
-  --law-firm.core.audit.enabled=%AUDIT_ENABLED% ^
-  --logging.charset.console=UTF-8 ^
-  --logging.charset.file=UTF-8 ^
-  --server.tomcat.uri-encoding=UTF-8 ^
-  --server.servlet.encoding.charset=UTF-8 ^
-  --server.servlet.encoding.force=true ^
-  --logging.file.name=logs/law-firm-api.log ^
-  --logging.file.path=logs
+rem Explicitly specify log file path and name
+java %JAVA_OPTS% -Dlogging.file.path=..\..\logs -Dlogging.file.name=..\..\logs\law-firm-api.log -Dspring.datasource.url="%JDBC_URL%" -Dspring.datasource.username=%MYSQL_USERNAME% -Dspring.datasource.password=%MYSQL_PASSWORD% -jar %JAR_FILE% --spring.profiles.active=%SPRING_PROFILES_ACTIVE% --logging.charset.console=UTF-8 --logging.charset.file=UTF-8 --logging.config=classpath:logback-spring.xml
 
 cd ..\..
 pause 

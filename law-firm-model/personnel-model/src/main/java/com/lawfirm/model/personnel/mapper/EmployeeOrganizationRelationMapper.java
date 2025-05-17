@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.personnel.entity.relation.EmployeeOrganizationRelation;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * 员工与组织关系数据访问接口
  */
+@Mapper
 public interface EmployeeOrganizationRelationMapper extends BaseMapper<EmployeeOrganizationRelation> {
 
     /**

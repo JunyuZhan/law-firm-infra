@@ -100,4 +100,9 @@ public interface ArchiveService extends BaseService<ArchiveMain> {
      * @return 档案文件列表
      */
     List<ArchiveFile> getArchiveFilesByCaseId(String caseId);
+    
+    /**
+     * 根据档案编号获取档案主表
+     */
+    ArchiveMain getArchiveByNo(String archiveNo);
 } 

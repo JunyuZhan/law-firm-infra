@@ -12,6 +12,9 @@ import org.flowable.engine.RepositoryService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.lawfirm.common.security.context.SecurityContextHolder;
+import java.io.IOException;
+import java.util.UUID;
 
 /**
  * 流程模板服务实现类
@@ -28,14 +31,34 @@ public class ProcessTemplateServiceImpl extends ServiceImpl<ProcessTemplateMappe
 
     @Override
     public String deployProcessTemplate(String name, String key, String category, MultipartFile file) {
-        // TODO: 实现流程模板部署逻辑
-        return null;
+        // 最小可用实现：保存模板元数据，模拟部署
+        ProcessTemplate template = new ProcessTemplate();
+        template.setName(name)
+                .setKey(key)
+                .setCategory(category)
+                .setCreatorName(SecurityContextHolder.getContext().getCurrentUsername())
+                .setTenantId(SecurityContextHolder.getContext().getCurrentTenantId());
+        // 生成唯一版本号和部署ID（实际可用BPMN解析/部署）
+        template.setTemplateVersion(UUID.randomUUID().toString());
+        template.setDeploymentId(UUID.randomUUID().toString());
+        // 可根据file内容进一步处理
+        this.save(template);
+        return template.getId() != null ? template.getId().toString() : null;
     }
 
     @Override
     public String updateProcessTemplate(String id, String name, String category, MultipartFile file) {
-        // TODO: 实现流程模板更新逻辑
-        return null;
+        // 最小可用实现：更新模板元数据
+        ProcessTemplate template = this.getById(id);
+        if (template == null) {
+            throw new RuntimeException("流程模板不存在");
+        }
+        template.setName(name)
+                .setCategory(category)
+                .setUpdaterName(SecurityContextHolder.getContext().getCurrentUsername());
+        // 可根据file内容进一步处理
+        this.updateById(template);
+        return template.getId() != null ? template.getId().toString() : null;
     }
 
     @Override
@@ -63,8 +86,8 @@ public class ProcessTemplateServiceImpl extends ServiceImpl<ProcessTemplateMappe
 
     @Override
     public void deleteProcessTemplate(String id) {
-        // TODO: 实现流程模板删除逻辑
-        removeById(id);
+        // 最小可用实现：直接删除
+        this.removeById(id);
     }
 
     public ProcessTemplate getByBusinessTypeAndVersion(String businessType, String version) {

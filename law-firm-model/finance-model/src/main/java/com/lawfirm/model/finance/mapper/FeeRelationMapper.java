@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.finance.entity.FeeRelation;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 费用关联Mapper接口
  */
+@Mapper
 public interface FeeRelationMapper extends BaseMapper<FeeRelation> {
 
     /**

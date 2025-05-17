@@ -1,49 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration debug="false" scan="true" scanPeriod="60 seconds">
     <!-- 引入Spring Boot默认配置 -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     
-    <!-- 控制台日志配置 -->
+    <!-- 通用属性配置 -->
+    <property name="LOG_FILE_NAME" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/logs/law-firm-api.log}"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"/>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%t] %-40.40logger{39} : %m%n%wEx"/>
+    
+    <!-- 强制配置文件编码为UTF-8 -->
+    <property name="CONSOLE_CHARSET" value="UTF-8"/>
+    <property name="FILE_CHARSET" value="UTF-8"/>
+    
+    <!-- 确保日志目录存在 -->
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+    
+    <!-- 设置JUL的日志处理 -->
+    <logger name="java.util.logging.ConsoleHandler" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- 控制台日志配置 - 强化编码设置 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <charset>UTF-8</charset>
+        <withJansi>true</withJansi>
+        <immediateFlush>true</immediateFlush>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CONSOLE_CHARSET}</charset>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <!-- 确保不出现编码问题 -->
+            <outputPatternAsHeader>false</outputPatternAsHeader>
         </encoder>
+        <!-- 解决Windows控制台的编码问题 -->
+        <target>System.out</target>
     </appender>
 
-    <!-- 文件日志配置 -->
+    <!-- 文件日志配置 - 强化编码设置 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_FILE}</file>
-        <encoder>
-            <charset>UTF-8</charset>
+        <!-- 移除prudent模式，它与压缩功能不兼容 -->
+        <file>${LOG_FILE_NAME}</file>
+        <immediateFlush>true</immediateFlush>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${FILE_CHARSET}</charset>
             <pattern>${FILE_LOG_PATTERN}</pattern>
+            <!-- 确保不出现编码问题 -->
+            <outputPatternAsHeader>false</outputPatternAsHeader>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <fileNamePattern>${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
             <maxFileSize>${LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
             <maxHistory>${LOG_FILE_MAX_HISTORY:-30}</maxHistory>
             <totalSizeCap>${LOG_FILE_TOTAL_SIZE_CAP:-3GB}</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
     </appender>
-
-    <!-- 设置日志级别 -->
-    <root level="INFO">
+    
+    <!-- 设置根日志级别和输出 -->
+    <root level="${LOG_LEVEL_ROOT:-INFO}">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
     
-    <!-- 应用日志 -->
-    <logger name="com.lawfirm" level="DEBUG" />
+    <!-- 应用特定日志配置 -->
+    <logger name="com.lawfirm" level="${LOG_LEVEL_APP:-DEBUG}" />
+    <logger name="org.springframework" level="${LOG_LEVEL_SPRING:-INFO}" />
+    <logger name="org.hibernate" level="${LOG_LEVEL_HIBERNATE:-INFO}" />
+    <logger name="com.baomidou.mybatisplus" level="${LOG_LEVEL_MYBATIS:-INFO}" />
     
-    <!-- 减少SpringDoc生成文档时的日志输出 -->
-    <logger name="org.springdoc" level="WARN" />
-    <logger name="io.swagger" level="WARN" />
-    
-    <!-- 减少一些不必要的日志 -->
+    <!-- 其他日志配置 -->
     <logger name="org.springframework.web" level="INFO" />
-    <logger name="org.hibernate" level="INFO" />
     <logger name="com.zaxxer.hikari" level="INFO" />
     <logger name="io.lettuce" level="INFO" />
+    <logger name="io.netty" level="INFO" />
     
     <!-- 禁用监控相关的详细日志 -->
     <logger name="com.lawfirm.system.service.impl.monitor" level="INFO" />

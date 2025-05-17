@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component("auditQueryServiceImpl")
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "law-firm.core.audit", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class AuditQueryServiceImpl implements AuditQueryService {
 
     private final AuditLogMapper auditLogMapper;

@@ -33,7 +33,6 @@ public class BaseWebSecurityConfig {
         // 提供默认的安全配置，通常用于开发环境或简单场景
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 .requestMatchers("/actuator/**", "/health/**", "/info/**").permitAll()
                 .anyRequest().authenticated());
                 

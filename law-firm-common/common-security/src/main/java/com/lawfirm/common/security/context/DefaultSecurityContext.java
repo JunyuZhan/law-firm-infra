@@ -42,12 +42,46 @@ public class DefaultSecurityContext implements SecurityContext {
         if (principal == null) {
             return null;
         }
-        // 假设principal可能是一个包含用户ID的对象，或者直接是用户ID
         if (principal instanceof Long) {
             return (Long) principal;
         }
-        // 如果是其他类型的用户对象，这里需要根据具体类型进行适配
-        // 为了简化，我们默认返回null
+        if (principal instanceof com.lawfirm.common.security.core.UserDetails) {
+            return ((com.lawfirm.common.security.core.UserDetails) principal).getUserId();
+        }
+        return null;
+    }
+
+    /**
+     * 获取当前用户名
+     */
+    public String getCurrentUsername() {
+        if (authentication == null) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof com.lawfirm.common.security.core.UserDetails) {
+            return ((com.lawfirm.common.security.core.UserDetails) principal).getUsername();
+        }
+        return null;
+    }
+
+    /**
+     * 获取当前租户ID（如有实现）
+     */
+    public Long getCurrentTenantId() {
+        if (authentication == null) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof com.lawfirm.common.security.core.UserDetails) {
+            try {
+                java.lang.reflect.Method m = principal.getClass().getMethod("getTenantId");
+                Object tid = m.invoke(principal);
+                if (tid instanceof Long) {
+                    return (Long) tid;
+                }
+            } catch (Exception ignored) {}
+        }
         return null;
     }
 } 

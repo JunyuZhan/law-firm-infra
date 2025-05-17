@@ -19,6 +19,7 @@ public class CaseApprovalDefinition {
     public static final String TYPE_DOCUMENT_CONFIDENTIAL = "doc_conf";    // 文档保密审批
     public static final String TYPE_EXPENSE = "expense";                   // 费用审批
     public static final String TYPE_TEAM_CHANGE = "team_change";           // 团队变更审批
+    public static final String TYPE_LETTER_ISSUE = "letter_issue";           // 出函审批
     
     // 审批状态定义
     public static final String STATUS_PENDING = "pending";             // 待审批
@@ -56,6 +57,10 @@ public class CaseApprovalDefinition {
         
         // 团队变更审批流程：部门经理 -> 高级合伙人
         APPROVAL_FLOW_MAP.put(TYPE_TEAM_CHANGE, 
+                Arrays.asList(ROLE_DEPARTMENT_MANAGER, ROLE_SENIOR_PARTNER));
+        
+        // 出函审批流程：部门经理 -> 高级合伙人
+        APPROVAL_FLOW_MAP.put(TYPE_LETTER_ISSUE, 
                 Arrays.asList(ROLE_DEPARTMENT_MANAGER, ROLE_SENIOR_PARTNER));
     }
     

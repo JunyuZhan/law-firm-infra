@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.archive.dto.CaseArchiveDTO;
 import com.lawfirm.model.archive.entity.CaseArchive;
+import com.lawfirm.model.archive.entity.ArchiveMain;
 import com.lawfirm.model.archive.vo.ArchiveListVO;
 import com.lawfirm.model.archive.vo.CaseArchiveDetailVO;
 import com.lawfirm.model.archive.service.ArchiveService;
@@ -66,9 +67,12 @@ public class ArchiveController {
      */
     @GetMapping("/no/{archiveNo}")
     @Operation(summary = "根据档案号获取详情", description = "根据档案编号获取详情")
-    public CommonResult<String> getArchiveByNo(@PathVariable String archiveNo) {
-        // ArchiveService没有getArchiveByNo方法
-        return CommonResult.success("未实现");
+    public CommonResult<ArchiveMain> getArchiveByNo(@PathVariable String archiveNo) {
+        ArchiveMain archive = archiveService.getArchiveByNo(archiveNo);
+        if (archive == null) {
+            return CommonResult.error("未找到该档案编号对应的档案");
+        }
+        return CommonResult.success(archive);
     }
     
     /**

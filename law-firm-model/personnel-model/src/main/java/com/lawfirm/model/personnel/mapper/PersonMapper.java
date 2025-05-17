@@ -2,10 +2,12 @@ package com.lawfirm.model.personnel.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.personnel.entity.Person;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 人员基础信息数据访问接口
  */
+@Mapper
 public interface PersonMapper extends BaseMapper<Person> {
 
     /**

@@ -35,6 +35,7 @@ public class CaseApprovalDTO extends BaseDTO {
 
     /**
      * 审批类型
+     * 1-案件创建 2-结案 3-文档保密 4-费用 5-团队变更 6-出函审批
      */
     private Integer approvalType;
 

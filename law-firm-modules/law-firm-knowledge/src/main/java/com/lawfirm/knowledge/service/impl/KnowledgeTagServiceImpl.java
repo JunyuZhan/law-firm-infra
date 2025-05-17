@@ -11,6 +11,7 @@ import com.lawfirm.model.knowledge.service.KnowledgeTagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import com.lawfirm.knowledge.exception.KnowledgeException;
 
 import java.util.Collections;
 import java.util.List;

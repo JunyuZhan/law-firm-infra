@@ -48,7 +48,7 @@ public class LogProperties {
     /**
      * 需要排除的路径
      */
-    private String[] excludePaths = {"/swagger-ui/**", "/v3/api-docs/**"};
+    private String[] excludePaths = {};
 
     /**
      * 需要排除的请求参数字段（敏感信息）

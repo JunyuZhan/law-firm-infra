@@ -4,6 +4,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
+    # 使用环境变量设置密码
+    password: ${MYSQL_PASSWORD:}
     hikari:
       # 开发环境连接池配置
       minimum-idle: 5
@@ -11,20 +13,35 @@ spring:
       connection-test-query: SELECT 1
       # 自动注册JMX监控
       register-mbeans: true
-  
-  # 开发环境禁用Redis，使用内存模拟
+
+  # 启用调试模式，查看自动配置报告
+  debug: true
+
+  # 开发环境Redis配置 - 保持与生产环境一致的功能
   data:
     redis:
       host: localhost
       port: 6379
+      # 如果没有Redis，可以使用embedded模式
+      # 注意：需要添加embedded-redis依赖
+      database: 0
+      # 禁用repositories但保留Redis功能
+      repositories:
+        enabled: true
   
   # 开发环境自动初始化数据库
   flyway:
     enabled: true
     clean-disabled: false
-    # 确保在开发环境中禁用自动迁移
-    validate-on-migrate: false
-    auto-migrate: false
+    # 开启验证和自动迁移，与生产环境保持一致
+    validate-on-migrate: true
+    auto-migrate: true
+    # 允许乱序执行，便于开发
+    out-of-order: true
+    # 基线版本
+    baseline-version: 1
+    # 错误时继续
+    ignore-migration-patterns: "*:missing"
 
   # 任务执行器配置
   task:
@@ -52,46 +69,41 @@ server:
 cors:
   allowed-origins: "*"
 
-# 开发环境日志级别
+# 日志级别配置
 logging:
   level:
-    root: DEBUG
+    root: INFO
     com.lawfirm: DEBUG
     org.springframework: INFO
     org.springframework.security: INFO
     org.springframework.cache: INFO
-    com.baomidou.mybatisplus: DEBUG
-    org.flywaydb: DEBUG
+    com.baomidou.mybatisplus: INFO
+    org.flywaydb: INFO
 
-# 开发环境启用API文档
-# springdoc:
-#   api-docs:
-#     enabled: true
-#   swagger-ui:
-#     enabled: true
-#   show-actuator: false
-
-# 开发环境禁用Redis健康检查
+# 健康检查配置 - 启用必要的检查
 management:
   endpoint:
     health:
-      validate-group-membership: false
+      show-details: always
+      show-components: always
+      validate-group-membership: true
   health:
+    # 启用主要服务的健康检查
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+    # 根据实际使用情况决定是否启用Redis
     redis:
-      enabled: false
-    ldap:
-      enabled: false
-    mail:
-      enabled: false
-    rabbit:
-      enabled: false
+      enabled: true
     defaults:
       enabled: true
 
 # MyBatis Plus开发环境配置 
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 生产日志级别使用Slf4j
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     # 开启注解扫描
     use-generated-keys: true
     default-statement-timeout: 60
@@ -116,27 +128,26 @@ mybatis-plus:
 # 开发环境安全配置
 "law-firm":
   security:
-    # 开发环境可以启用模拟用户
+    # 开发环境可以保留模拟用户，但在预发布环境禁用
     "mock-user":
       enabled: true
       username: admin
       role: ROLE_ADMIN
-    # 开发环境禁用某些安全限制
+    # 启用安全限制，与生产环境保持一致
     disable:
-      csrf: true
-      "xss-filter": false
+      csrf: false
+      "xss-filter": true
     # 开发环境启用密码解密（可选配置）
     "db-password":
       enabled: false
       "secret-key": DevSecretKey
   
-  # 开发环境核心模块配置
+  # 开发环境核心模块配置 - 确保所有模块都启用
   core:
     workflow:
       enabled: true
     storage:
-      enabled: true  # 启用存储模块
-      # 添加StorageManager实现类配置
+      enabled: true
       manager-class: com.lawfirm.core.storage.manager.DefaultStorageManager
       local:
         root-path: ./storage
@@ -145,12 +156,14 @@ mybatis-plus:
       searchEngineType: database
       "index-path": ./indices
     audit:
-      enabled: false
+      enabled: true
       
   # 开发环境日志模块配置
   common:
     log:
-      enabled: false
+      enabled: true
+      method-log: true
+      log-request-params: true
       executor:
         bean-name: taskExecutor
       

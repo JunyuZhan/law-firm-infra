@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.lawfirm.cases.exception.CaseException;
+
 /**
  * 案件文档服务实现类
  */
@@ -90,7 +92,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
                 documentMapper.updateById(document);
             } catch (Exception e) {
                 log.error("文档上传失败", e);
-                throw new RuntimeException("文档上传失败: " + e.getMessage());
+                throw CaseException.caseOperationInvalid(documentId, "上传文档");
             }
         }
         
@@ -143,7 +145,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取原文档数据
         CaseDocument oldDocument = documentMapper.selectById(documentDTO.getId());
         if (oldDocument == null) {
-            throw new RuntimeException("文档不存在: " + documentDTO.getId());
+            throw CaseException.caseDataInvalid("documentId", documentDTO.getId());
         }
         
         // 2. 更新文档信息
@@ -175,7 +177,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
                 documentService.updateDocumentContent(docId, inputStream);
             } catch (Exception e) {
                 log.error("文档内容更新失败", e);
-                throw new RuntimeException("文档内容更新失败: " + e.getMessage());
+                throw CaseException.caseOperationInvalid(documentDTO.getId(), "更新文档内容");
             }
         }
         
@@ -214,7 +216,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 软删除文档记录
@@ -267,7 +269,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         CaseDocumentVO vo = new CaseDocumentVO();
@@ -352,7 +354,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档元数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 从文档服务获取文档内容
@@ -368,12 +370,12 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
                 }
             } catch (Exception e) {
                 log.error("文档下载失败", e);
-                throw new RuntimeException("文档下载失败: " + e.getMessage());
+                throw CaseException.caseOperationInvalid(documentId, "下载文档");
             }
         }
         
         if (fileContent == null) {
-            throw new RuntimeException("文档内容为空");
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 3. 记录下载审计
@@ -398,7 +400,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档元数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 从文档服务获取预览URL
@@ -410,12 +412,12 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
                 previewUrl = documentService.previewDocument(docId);
             } catch (Exception e) {
                 log.error("生成预览链接失败", e);
-                throw new RuntimeException("生成预览链接失败: " + e.getMessage());
+                throw CaseException.caseOperationInvalid(documentId, "生成预览链接");
             }
         }
         
         if (previewUrl == null) {
-            throw new RuntimeException("无法生成预览链接");
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 3. 记录预览审计
@@ -440,7 +442,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档元数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 从文档服务获取分享链接
@@ -454,12 +456,12 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
                 shareUrl = documentService.getDocumentUrl(docId, expireSeconds);
             } catch (Exception e) {
                 log.error("生成分享链接失败", e);
-                throw new RuntimeException("生成分享链接失败: " + e.getMessage());
+                throw CaseException.caseOperationInvalid(documentId, "生成分享链接");
             }
         }
         
         if (shareUrl == null) {
-            throw new RuntimeException("无法生成分享链接");
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 3. 记录分享审计
@@ -485,7 +487,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 更新安全级别
@@ -531,7 +533,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 添加标签
@@ -571,7 +573,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 移除标签
@@ -620,7 +622,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 添加备注
@@ -657,7 +659,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 移动文档（简化实现，实际应检查目标文件夹的有效性）
@@ -689,7 +691,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文档数据
         CaseDocument document = documentMapper.selectById(documentId);
         if (document == null) {
-            throw new RuntimeException("文档不存在: " + documentId);
+            throw CaseException.caseDataInvalid("documentId", documentId);
         }
         
         // 2. 复制文档元数据
@@ -730,7 +732,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
                 }
             } catch (Exception e) {
                 log.error("复制文档失败", e);
-                throw new RuntimeException("复制文档失败: " + e.getMessage());
+                throw CaseException.caseOperationInvalid(documentId, "复制文档");
             }
         }
         
@@ -790,7 +792,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文件夹数据
         CaseDocument folder = documentMapper.selectById(folderId);
         if (folder == null) {
-            throw new RuntimeException("文件夹不存在: " + folderId);
+            throw CaseException.caseDataInvalid("folderId", folderId);
         }
         
         // 2. 执行重命名
@@ -822,7 +824,7 @@ public class CaseDocumentServiceImpl implements CaseDocumentService {
         // 1. 获取文件夹数据
         CaseDocument folder = documentMapper.selectById(folderId);
         if (folder == null) {
-            throw new RuntimeException("文件夹不存在: " + folderId);
+            throw CaseException.caseDataInvalid("folderId", folderId);
         }
         
         // 2. 检查文件夹是否为空（实际实现应查询子文件和子文件夹）

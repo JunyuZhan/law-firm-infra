@@ -233,7 +233,7 @@ system → auth → personnel → 其他业务模块
 spring:
   flyway:
     enabled: true
-    locations: classpath:db/migration
+    locations: classpath:META-INF/db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
     out-of-order: true

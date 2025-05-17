@@ -41,26 +41,25 @@ public class DataSourceConfig {
     public DataSource dataSource() throws SQLException {
         log.info("数据库服务已启用，创建数据源");
         
-        // 优先使用标准的spring.datasource配置
+        // 从环境变量获取数据库参数
+        String host = environment.getProperty("MYSQL_HOST",
+                environment.getProperty("spring.datasource.host", "localhost"));
+        String port = environment.getProperty("MYSQL_PORT",
+                environment.getProperty("spring.datasource.port", "3306"));
+        String database = environment.getProperty("MYSQL_DATABASE",
+                environment.getProperty("spring.datasource.database", "law_firm"));
+        String username = environment.getProperty("MYSQL_USERNAME",
+                environment.getProperty("spring.datasource.username", "root"));
+        String password = environment.getProperty("MYSQL_PASSWORD",
+                environment.getProperty("spring.datasource.password", ""));
+        
+        // 优先使用标准的spring.datasource.url配置
         String url = environment.getProperty("spring.datasource.url");
-        String username = environment.getProperty("spring.datasource.username");
-        String password = environment.getProperty("spring.datasource.password");
         
-        // 如果标准配置不存在，则使用自定义配置
-        if (url == null) {
-            url = environment.getProperty("SPRING_DATASOURCE_URL", 
-                    environment.getProperty("law-firm.common.data.url", 
-                    "jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"));
-        }
-        
-        if (username == null) {
-            username = environment.getProperty("SPRING_DATASOURCE_USERNAME", 
-                    environment.getProperty("law-firm.common.data.username", "root"));
-        }
-        
-        if (password == null) {
-            password = environment.getProperty("SPRING_DATASOURCE_PASSWORD", 
-                    environment.getProperty("law-firm.common.data.password", ""));
+        // 如果URL不存在，则构建一个
+        if (url == null || url.trim().isEmpty()) {
+            url = String.format("jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true", 
+                    host, port, database);
         }
         
         log.info("创建数据源：{}, username: {}", url, username);
@@ -68,7 +67,7 @@ public class DataSourceConfig {
         // 提取数据库名称
         String databaseName = extractDatabaseName(url);
         // 尝试创建数据库
-        createDatabaseIfNotExists(databaseName, username, password);
+        createDatabaseIfNotExists(databaseName, host, port, username, password);
         
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(url);
@@ -134,21 +133,32 @@ public class DataSourceConfig {
     /**
      * 尝试创建数据库（如果不存在）
      */
-    private void createDatabaseIfNotExists(String databaseName, String username, String password) {
+    private void createDatabaseIfNotExists(String databaseName, String host, String port, String username, String password) {
         // 构建不包含数据库名的连接URL
-        String baseUrl = "jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true";
+        String baseUrl = String.format("jdbc:mysql://%s:%s?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true", 
+                host, port);
         
-        try (Connection connection = java.sql.DriverManager.getConnection(baseUrl, username, password);
-             Statement statement = connection.createStatement()) {
+        try {
+            // 确保驱动已加载
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                log.warn("无法加载MySQL驱动", ex);
+            }
             
-            // 创建数据库（如果不存在）
-            String sql = "CREATE DATABASE IF NOT EXISTS `" + databaseName + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
-            statement.executeUpdate(sql);
-            log.info("已确认数据库 {} 存在或已创建", databaseName);
-            
+            // 建立连接并创建数据库
+            try (Connection connection = java.sql.DriverManager.getConnection(baseUrl, username, password);
+                 Statement statement = connection.createStatement()) {
+                
+                // 创建数据库（如果不存在）
+                String sql = "CREATE DATABASE IF NOT EXISTS `" + databaseName + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
+                statement.executeUpdate(sql);
+                log.info("已确认数据库 {} 存在或已创建", databaseName);
+                
+            }
         } catch (SQLException e) {
-            log.error("尝试创建数据库时发生错误", e);
-            // 不抛出异常，让后续步骤继续执行，可能会因为数据库不存在而失败
+            log.error("尝试创建数据库时发生错误: {}", e.getMessage(), e);
+            // 不抛出异常，让后续步骤继续执行
         }
     }
 } 

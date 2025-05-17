@@ -69,18 +69,10 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
 
-        <!-- Swagger依赖（仅保留注解和模型依赖） -->
+        <!-- Swagger -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations-jakarta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-models-jakarta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-core-jakarta</artifactId>
         </dependency>
     </dependencies>
 

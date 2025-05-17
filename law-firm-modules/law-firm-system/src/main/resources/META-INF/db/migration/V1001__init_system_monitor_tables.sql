@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS sys_db_monitor (
   tenant_id BIGINT COMMENT '租户ID',
   tenant_code VARCHAR(50) COMMENT '租户编码',
   db_name VARCHAR(100) NOT NULL COMMENT '数据库名称',
-  db_url VARCHAR(200) COMMENT '数据库连接',
+  db_url VARCHAR(1024) COMMENT '数据库连接',
   active_connections INTEGER COMMENT '活动连接数',
   max_connections INTEGER COMMENT '最大连接数',
   qps DECIMAL(10,2) COMMENT '每秒查询数',

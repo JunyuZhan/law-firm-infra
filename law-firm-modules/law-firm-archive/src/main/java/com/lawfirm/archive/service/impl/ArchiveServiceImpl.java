@@ -561,4 +561,12 @@ public class ArchiveServiceImpl extends ServiceImpl<ArchiveMainMapper, ArchiveMa
         
         return archiveFileMapper.selectList(queryWrapper);
     }
+
+    /**
+     * 根据档案编号获取档案主表
+     */
+    @Override
+    public ArchiveMain getArchiveByNo(String archiveNo) {
+        return baseMapper.selectByArchiveNo(archiveNo);
+    }
 } 

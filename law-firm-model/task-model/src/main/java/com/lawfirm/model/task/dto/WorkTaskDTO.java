@@ -11,6 +11,8 @@ import java.util.List;
 @Data
 public class WorkTaskDTO {
     
+    private static final long serialVersionUID = 1L;
+    
     /**
      * 任务ID
      */
@@ -190,4 +192,9 @@ public class WorkTaskDTO {
      * 所属部门名称（只读）
      */
     private String departmentName;
+    
+    /**
+     * 任务负责人头像
+     */
+    private String assigneeAvatar;
 }

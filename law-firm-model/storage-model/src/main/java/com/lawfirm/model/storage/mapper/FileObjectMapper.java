@@ -3,6 +3,7 @@ package com.lawfirm.model.storage.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.storage.entity.file.FileObject;
 import com.lawfirm.model.storage.constant.StorageSqlConstants;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * 文件对象数据访问接口
  */
+@Mapper
 public interface FileObjectMapper extends BaseMapper<FileObject> {
     
     /**

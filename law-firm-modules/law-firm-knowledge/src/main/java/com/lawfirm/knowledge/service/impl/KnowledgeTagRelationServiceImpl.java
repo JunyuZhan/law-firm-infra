@@ -10,6 +10,7 @@ import com.lawfirm.model.knowledge.service.KnowledgeTagRelationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lawfirm.knowledge.exception.KnowledgeException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +47,7 @@ public class KnowledgeTagRelationServiceImpl extends BaseServiceImpl<KnowledgeTa
             log.info("创建知识标签关联成功，知识ID: {}, 标签数量: {}", knowledgeId, tagIds.size());
         } catch (Exception e) {
             log.error("创建知识标签关联失败: {}", e.getMessage(), e);
-            throw e;
+            throw KnowledgeException.failed("创建知识标签关联失败", e);
         }
     }
 
@@ -62,7 +63,7 @@ public class KnowledgeTagRelationServiceImpl extends BaseServiceImpl<KnowledgeTa
             log.info("删除知识标签关联成功，知识ID: {}", knowledgeId);
         } catch (Exception e) {
             log.error("删除知识标签关联失败: {}", e.getMessage(), e);
-            throw e;
+            throw KnowledgeException.failed("删除知识标签关联失败", e);
         }
     }
 
@@ -78,7 +79,7 @@ public class KnowledgeTagRelationServiceImpl extends BaseServiceImpl<KnowledgeTa
             log.info("删除标签知识关联成功，标签ID: {}", tagId);
         } catch (Exception e) {
             log.error("删除标签知识关联失败: {}", e.getMessage(), e);
-            throw e;
+            throw KnowledgeException.failed("删除标签知识关联失败", e);
         }
     }
 

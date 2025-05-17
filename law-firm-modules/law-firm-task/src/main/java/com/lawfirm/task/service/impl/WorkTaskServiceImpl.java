@@ -22,6 +22,7 @@ import com.lawfirm.task.exception.TaskErrorCode;
 import com.lawfirm.task.exception.TaskException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +30,11 @@ import org.springframework.util.StringUtils;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.client.RestTemplate;
+import com.lawfirm.model.personnel.dto.employee.EmployeeDTO;
+import com.lawfirm.model.cases.dto.base.CaseBaseDTO;
+import com.lawfirm.model.client.dto.ClientDTO;
+import com.lawfirm.model.organization.dto.department.DepartmentDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,6 +59,10 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
     
     @Autowired
     private WorkTaskConverter taskConverter;
+
+    @Autowired
+    @Qualifier("commonRestTemplate")
+    private RestTemplate restTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -380,41 +390,69 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         if (dto == null) {
             return;
         }
-        
         // 填充任务负责人信息
         if (dto.getAssigneeId() != null) {
-            // TODO: 调用人事模块接口获取员工信息
-            // EmployeeDTO employee = employeeService.getEmployeeById(dto.getAssigneeId());
-            // dto.setAssigneeName(employee.getName());
-            // dto.setAssigneeAvatar(employee.getAvatar());
+            try {
+                String url = "http://law-firm-personnel/personnel/employee/" + dto.getAssigneeId();
+                EmployeeDTO employee = restTemplate.getForObject(url, EmployeeDTO.class);
+                if (employee != null) {
+                    dto.setAssigneeName(employee.getName());
+                    dto.setAssigneeAvatar(employee.getPhotoUrl());
+                }
+            } catch (Exception e) {
+                log.warn("获取员工信息失败", e);
+            }
         }
-        
         // 填充案例信息
         if (dto.getCaseId() != null) {
-            // TODO: 调用案例模块接口获取案例信息
-            // CaseDTO caseInfo = caseService.getCaseById(dto.getCaseId());
-            // dto.setCaseName(caseInfo.getName());
+            try {
+                String url = "http://law-firm-case/case/" + dto.getCaseId();
+                CaseBaseDTO caseInfo = restTemplate.getForObject(url, CaseBaseDTO.class);
+                if (caseInfo != null) {
+                    dto.setCaseName(caseInfo.getCaseName());
+                }
+            } catch (Exception e) {
+                log.warn("获取案例信息失败", e);
+            }
         }
-        
         // 填充客户信息
         if (dto.getClientId() != null) {
-            // TODO: 调用客户模块接口获取客户信息
-            // ClientDTO client = clientService.getClientById(dto.getClientId());
-            // dto.setClientName(client.getName());
+            try {
+                String url = "http://law-firm-client/client/" + dto.getClientId();
+                ClientDTO client = restTemplate.getForObject(url, ClientDTO.class);
+                if (client != null) {
+                    dto.setClientName(client.getClientName());
+                }
+            } catch (Exception e) {
+                log.warn("获取客户信息失败", e);
+            }
         }
-        
         // 填充部门信息
         if (dto.getDepartmentId() != null) {
-            // TODO: 调用人事模块接口获取部门信息
-            // DepartmentDTO dept = departmentService.getDepartmentById(dto.getDepartmentId());
-            // dto.setDepartmentName(dept.getName());
+            try {
+                String url = "http://law-firm-personnel/personnel/department/" + dto.getDepartmentId();
+                DepartmentDTO dept = restTemplate.getForObject(url, DepartmentDTO.class);
+                if (dept != null) {
+                    dto.setDepartmentName(dept.getName());
+                }
+            } catch (Exception e) {
+                log.warn("获取部门信息失败", e);
+            }
         }
-        
         // 填充标签信息
-        // TODO: 获取任务标签
-        
+        try {
+            dto.setTags(taskTagService.getTagsByTaskId(dto.getId()));
+        } catch (Exception e) {
+            log.warn("获取任务标签失败", e);
+        }
         // 填充子任务信息
-        // TODO: 获取子任务列表
+        try {
+            WorkTaskQuery subTaskQuery = new WorkTaskQuery();
+            subTaskQuery.setParentId(dto.getId());
+            dto.setSubTasks(this.queryTaskList(subTaskQuery));
+        } catch (Exception e) {
+            log.warn("获取子任务列表失败", e);
+        }
     }
     
     /**

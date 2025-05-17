@@ -475,7 +475,7 @@ Flyway配置示例：
 spring:
   flyway:
     enabled: true
-    locations: classpath:db/migration
+    locations: classpath:META-INF/db/migration
     baseline-on-migrate: true
     baseline-version: 0
     validate-on-migrate: true

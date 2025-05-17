@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lawfirm.common.security.utils.SecurityUtils;
+import com.lawfirm.common.security.context.SecurityContextHolder;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.base.service.BaseService;
 import lombok.extern.slf4j.Slf4j;
@@ -138,7 +139,6 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends ModelBa
 
     @Override
     public Long getCurrentTenantId() {
-        // TODO: 从SecurityContext中获取租户ID
-        return null;
+        return SecurityContextHolder.getContext().getCurrentTenantId();
     }
 } 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.schedule.entity.ScheduleEvent;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * 日程事件Mapper接口
  */
+@Mapper
 public interface ScheduleEventMapper extends BaseMapper<ScheduleEvent> {
     
     /**

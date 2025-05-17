@@ -38,6 +38,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.lawfirm.knowledge.exception.KnowledgeException;
+
 /**
  * 知识服务实现类
  */
@@ -94,7 +96,7 @@ public class KnowledgeServiceImpl extends BaseServiceImpl<KnowledgeMapper, Knowl
         boolean success = save(knowledge);
         if (!success) {
             log.error("保存知识文档失败: {}", dto.getTitle());
-            throw new RuntimeException("知识文档保存失败");
+            throw KnowledgeException.failed("知识文档保存", new RuntimeException("知识文档保存失败"));
         }
         
         // 处理标签关联
@@ -209,7 +211,7 @@ public class KnowledgeServiceImpl extends BaseServiceImpl<KnowledgeMapper, Knowl
         Knowledge original = getById(entity.getId());
         if (original == null) {
             log.error("更新知识文档失败，知识ID不存在: {}", entity.getId());
-            return false;
+            throw KnowledgeException.notFound("知识文档");
         }
         
         // 设置更新时间
@@ -236,7 +238,7 @@ public class KnowledgeServiceImpl extends BaseServiceImpl<KnowledgeMapper, Knowl
         Knowledge knowledge = getById(id);
         if (knowledge == null) {
             log.error("删除知识文档失败，知识ID不存在: {}", id);
-            return false;
+            throw KnowledgeException.notFound("知识文档");
         }
         
         // 删除标签关联
@@ -290,7 +292,7 @@ public class KnowledgeServiceImpl extends BaseServiceImpl<KnowledgeMapper, Knowl
         // 检查知识文档是否存在
         Knowledge knowledge = getById(knowledgeId);
         if (knowledge == null) {
-            throw new RuntimeException("知识文档不存在");
+            throw KnowledgeException.notFound("知识文档");
         }
         
         // 创建附件记录

@@ -42,6 +42,7 @@ import com.lawfirm.model.system.entity.dict.SysDict;
 import com.lawfirm.model.system.mapper.dict.SysDictMapper;
 import com.lawfirm.model.system.service.DictService;
 import com.lawfirm.model.system.vo.dict.DictVO;
+import com.lawfirm.system.exception.DictException;
 
 /**
  * 字典服务实现类
@@ -129,7 +130,7 @@ public class DictServiceImpl extends BaseServiceImpl<SysDictMapper, SysDict> imp
         // 检查是否存在
         SysDict dict = getById(id);
         if (dict == null) {
-            throw new RuntimeException("字典不存在");
+            throw DictException.notFound("字典");
         }
         
         // 如果字典类型变更，检查唯一性
@@ -156,7 +157,7 @@ public class DictServiceImpl extends BaseServiceImpl<SysDictMapper, SysDict> imp
         // 检查是否存在
         SysDict dict = getById(id);
         if (dict == null) {
-            throw new RuntimeException("字典不存在");
+            throw DictException.notFound("字典");
         }
         
         // 检查是否有字典项
@@ -165,7 +166,7 @@ public class DictServiceImpl extends BaseServiceImpl<SysDictMapper, SysDict> imp
         wrapper.eq(SysDictItem::getDeleted, 0);
         long count = dictItemMapper.selectCount(wrapper);
         if (count > 0) {
-            throw new RuntimeException("字典下存在字典项，不能删除");
+            throw DictException.invalidState("字典下存在字典项，不能删除");
         }
         
         // 逻辑删除
@@ -210,7 +211,7 @@ public class DictServiceImpl extends BaseServiceImpl<SysDictMapper, SysDict> imp
         wrapper.eq("deleted", 0);
         
         if (exists(wrapper)) {
-            throw new RuntimeException("字典类型已存在");
+            throw DictException.invalidState("字典类型已存在");
         }
     }
 

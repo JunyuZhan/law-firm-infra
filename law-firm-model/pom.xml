@@ -151,7 +151,8 @@
                 <artifactId>common-data</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!-- OpenAPI/Swagger 注解依赖版本统一管理 -->
+            
+            <!-- OpenAPI/Swagger 注解依赖 -->
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations-jakarta</artifactId>

@@ -26,4 +26,16 @@ public interface SecurityContext {
      * @return 当前用户ID，未认证时返回null
      */
     Long getCurrentUserId();
+
+    /**
+     * 获取当前用户名
+     * @return 当前用户名，未认证时返回null
+     */
+    String getCurrentUsername();
+
+    /**
+     * 获取当前租户ID
+     * @return 当前租户ID，未认证或无多租户时返回null
+     */
+    Long getCurrentTenantId();
 } 

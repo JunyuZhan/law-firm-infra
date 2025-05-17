@@ -3,6 +3,8 @@ package com.lawfirm.knowledge.service;
 import com.lawfirm.model.knowledge.dto.KnowledgeDTO;
 import com.lawfirm.model.knowledge.entity.Knowledge;
 import com.lawfirm.model.log.dto.AuditLogDTO;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.model.log.service.AuditQueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,11 +27,11 @@ public class AuditIntegrationService {
 
     @Autowired
     @Qualifier("coreAuditServiceImpl")
-    private Object auditService;
+    private AuditService auditService;
 
     @Autowired
     @Qualifier("auditQueryServiceImpl")
-    private Object auditQueryService;
+    private AuditQueryService auditQueryService;
 
     /**
      * 记录知识创建审计

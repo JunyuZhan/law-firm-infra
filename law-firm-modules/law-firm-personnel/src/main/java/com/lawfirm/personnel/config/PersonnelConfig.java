@@ -1,5 +1,6 @@
 package com.lawfirm.personnel.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import lombok.Data;
@@ -10,6 +11,7 @@ import lombok.Data;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "law-firm.personnel")
+@MapperScan(basePackages = "com.lawfirm.model.personnel.mapper")
 public class PersonnelConfig {
     
     /**

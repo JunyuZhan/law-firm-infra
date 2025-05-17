@@ -28,12 +28,6 @@ public class XssFilter implements Filter {
 
     // 需要排除的路径列表
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
-            "/swagger-ui.html", 
-            "/swagger-ui/", 
-            "/v3/api-docs", 
-            "/v3/api-docs/",
-            "/webjars/",
-            "/doc.html",
             "/health"
     );
 

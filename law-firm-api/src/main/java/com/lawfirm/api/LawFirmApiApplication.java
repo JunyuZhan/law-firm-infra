@@ -5,12 +5,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.core.env.Environment;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.mybatis.spring.annotation.MapperScan;
 
 /**
  * 律师事务所API应用入口类
@@ -26,6 +26,27 @@ import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
  * OSS支持截止日期：2024-12-31
  */
 @Slf4j
+@MapperScan({
+    "com.lawfirm.model.personnel.mapper",
+    "com.lawfirm.model.task.mapper",
+    "com.lawfirm.model.document.mapper",
+    "com.lawfirm.model.log.mapper",
+    "com.lawfirm.model.system.mapper",
+    "com.lawfirm.model.search.mapper",
+    "com.lawfirm.model.auth.mapper",
+    "com.lawfirm.model.client.mapper",
+    "com.lawfirm.model.contract.mapper",
+    "com.lawfirm.model.cases.mapper",
+    "com.lawfirm.model.finance.mapper",
+    "com.lawfirm.model.knowledge.mapper",
+    "com.lawfirm.model.schedule.mapper",
+    "com.lawfirm.model.organization.mapper",
+    "com.lawfirm.model.archive.mapper",
+    "com.lawfirm.model.storage.mapper",
+    "com.lawfirm.model.workflow.mapper",
+    "com.lawfirm.model.message.mapper",
+    "com.lawfirm.model.ai.mapper"
+})
 @SpringBootApplication(
     scanBasePackages = {
         // 1. Common模块（基础设施层）
@@ -62,8 +83,6 @@ import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
         "com.lawfirm.archive"
     },
     exclude = {
-        // 使用自定义数据源配置
-        DataSourceAutoConfiguration.class,
         // 不使用JPA
         JpaRepositoriesAutoConfiguration.class,
         HibernateJpaAutoConfiguration.class,
@@ -95,6 +114,9 @@ public class LawFirmApiApplication {
         
         // 配置Jansi以支持ANSI颜色输出
         System.setProperty("log4j.skipJansi", "false");
+        
+        // 确保使用Spring Boot内置的logback配置
+        System.clearProperty("logback.configurationFile");
         
         // 配置Spring MVC编码
         System.setProperty("spring.http.encoding.charset", "UTF-8");

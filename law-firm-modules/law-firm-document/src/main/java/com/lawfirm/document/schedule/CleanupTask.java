@@ -3,10 +3,12 @@ package com.lawfirm.document.schedule;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lawfirm.model.document.entity.base.BaseDocument;
 import com.lawfirm.model.document.service.DocumentService;
+import com.lawfirm.model.log.service.LogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +22,9 @@ import java.util.List;
 public class CleanupTask {
 
     private final DocumentService documentService;
+    private final LogService<?> logService;
+    @Value("${law-firm.log.retention-days:90}")
+    private int logRetentionDays;
 
     /**
      * 清理过期文档
@@ -54,20 +59,15 @@ public class CleanupTask {
     }
 
     /**
-     * 清理操作日志
-     * 每月1号凌晨6点执行
+     * 操作日志清理任务，调用日志服务清理过期操作日志
+     * 每月1日凌晨6点执行
      */
     @Scheduled(cron = "0 0 6 1 * ?")
-    public void cleanupOperationLogs() {
-        log.info("开始清理操作日志");
+    public void cleanOperationLogs() {
+        log.info("开始清理过期操作日志，保留天数:{}", logRetentionDays);
         try {
-            LocalDateTime retentionTime = LocalDateTime.now().minusMonths(6); // 保留6个月的日志
-            
-            // 由于OperationLog不存在，暂时只记录日志
-            log.info("操作日志清理功能尚未实现，需要先完成日志模块");
-            // 后续可以实现日志清理逻辑
-            
-            log.info("操作日志清理完成");
+            int count = logService.cleanExpiredLogs(logRetentionDays);
+            log.info("操作日志清理完成，共清理{}条日志", count);
         } catch (Exception e) {
             log.error("操作日志清理失败", e);
         }

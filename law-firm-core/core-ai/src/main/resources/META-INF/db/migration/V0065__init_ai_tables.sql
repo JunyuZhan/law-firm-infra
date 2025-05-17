@@ -130,5 +130,37 @@ CREATE TABLE IF NOT EXISTS ai_user_feedback (
   KEY idx_feedback_time (feedback_time)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='AI用户反馈表';
 
+-- 添加AI相关系统配置
+-- 使用统一的系统配置分组名称"SYS_AI_CONFIG"
+-- 配置按照功能分组批量插入
+
+-- 基础AI配置
+INSERT INTO sys_config (config_key, config_value, type, group_name, is_system, status, remark, create_by)
+VALUES 
+('AI_ENABLED', 'true', 'BOOLEAN', 'SYS_AI_CONFIG', 1, 0, 'AI功能启用状态', 'system'),
+('AI_DEFAULT_PROVIDER', 'OPENAI', 'STRING', 'SYS_AI_CONFIG', 1, 0, '默认AI服务提供商（OPENAI/BAIDU/LOCAL等）', 'system'),
+('AI_MAX_TOKENS', '2048', 'NUMBER', 'SYS_AI_CONFIG', 1, 0, 'AI最大Token数', 'system'),
+('AI_TEMPERATURE', '0.7', 'NUMBER', 'SYS_AI_CONFIG', 1, 0, 'AI温度参数(0-2)', 'system');
+
+-- OpenAI相关配置
+INSERT INTO sys_config (config_key, config_value, type, group_name, is_system, status, remark, create_by)
+VALUES 
+('OPENAI_API_KEY', '', 'STRING', 'SYS_AI_CONFIG', 1, 0, 'OpenAI API密钥', 'system'),
+('OPENAI_API_BASE_URL', 'https://api.openai.com/v1', 'STRING', 'SYS_AI_CONFIG', 1, 0, 'OpenAI API基础URL', 'system'),
+('OPENAI_MODEL', 'gpt-3.5-turbo', 'STRING', 'SYS_AI_CONFIG', 1, 0, 'OpenAI默认模型', 'system'),
+('OPENAI_TIMEOUT', '60000', 'NUMBER', 'SYS_AI_CONFIG', 1, 0, 'OpenAI请求超时时间(毫秒)', 'system');
+
+-- 百度AI相关配置
+INSERT INTO sys_config (config_key, config_value, type, group_name, is_system, status, remark, create_by)
+VALUES 
+('BAIDU_AI_API_KEY', '', 'STRING', 'SYS_AI_CONFIG', 1, 0, '百度AI API密钥', 'system'),
+('BAIDU_AI_SECRET_KEY', '', 'STRING', 'SYS_AI_CONFIG', 1, 0, '百度AI 密钥', 'system');
+
+-- 本地模型相关配置
+INSERT INTO sys_config (config_key, config_value, type, group_name, is_system, status, remark, create_by)
+VALUES 
+('AI_LOCAL_EMBEDDING_MODEL', '', 'STRING', 'SYS_AI_CONFIG', 1, 0, '本地嵌入模型路径', 'system'),
+('AI_LOCAL_LLM_MODEL', '', 'STRING', 'SYS_AI_CONFIG', 1, 0, '本地LLM模型路径', 'system');
+
 -- 恢复外键约束
 SET FOREIGN_KEY_CHECKS = 1; 

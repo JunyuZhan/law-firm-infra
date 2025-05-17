@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.schedule.entity.MeetingRoomBooking;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * 会议室预订Mapper接口
  */
+@Mapper
 public interface MeetingRoomBookingMapper extends BaseMapper<MeetingRoomBooking> {
     
     /**

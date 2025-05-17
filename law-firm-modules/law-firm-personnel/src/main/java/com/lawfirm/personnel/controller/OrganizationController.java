@@ -61,11 +61,18 @@ public class OrganizationController {
     public CommonResult<Boolean> assignEmployeesToOrganization(
             @Parameter(description = "组织ID") @PathVariable Long id,
             @Parameter(description = "员工ID列表") @RequestBody List<Long> employeeIds) {
-        // 调用服务层方法批量分配员工到组织
-        // 由于EmployeeOrganizationService可能尚未实现该方法，这里先注释掉
-        // boolean success = employeeOrganizationService.batchAssignEmployeesToOrganization(id, employeeIds);
-        // 临时返回成功，实际应该返回服务层方法的结果
-        return CommonResult.success(true);
+        if (employeeIds == null || employeeIds.isEmpty()) {
+            return CommonResult.error("员工ID列表不能为空");
+        }
+        boolean allSuccess = true;
+        for (Long employeeId : employeeIds) {
+            // 这里只做最基础分配，positionId/isPrimary等可后续扩展
+            boolean success = employeeOrganizationService.assignEmployeeToOrganization(employeeId, id, null, false, null, null);
+            if (!success) {
+                allSuccess = false;
+            }
+        }
+        return CommonResult.success(allSuccess);
     }
 
     /**
@@ -76,11 +83,8 @@ public class OrganizationController {
     public CommonResult<Boolean> removeEmployeeFromOrganization(
             @Parameter(description = "组织ID") @PathVariable Long id,
             @Parameter(description = "员工ID") @PathVariable Long employeeId) {
-        // 调用服务层方法从组织移除员工
-        // 由于EmployeeOrganizationService可能尚未实现该方法，这里先注释掉
-        // boolean success = employeeOrganizationService.removeEmployeeFromOrganization(id, employeeId);
-        // 临时返回成功，实际应该返回服务层方法的结果
-        return CommonResult.success(true);
+        boolean success = employeeOrganizationService.removeEmployeeFromOrganization(employeeId, id, null);
+        return CommonResult.success(success);
     }
 
     /**
@@ -91,11 +95,12 @@ public class OrganizationController {
     public CommonResult<Boolean> updateOrganizationEmployeeRelation(
             @Parameter(description = "组织ID") @PathVariable Long id,
             @Parameter(description = "员工ID") @PathVariable Long employeeId,
-            @Parameter(description = "生效日期") @RequestParam(required = false) LocalDate effectiveDate) {
-        // 调用服务层方法更新组织人员关系
-        // 由于EmployeeOrganizationService可能尚未实现该方法，这里先注释掉
-        // boolean success = employeeOrganizationService.updateEmployeeOrganizationRelation(id, employeeId, effectiveDate);
-        // 临时返回成功，实际应该返回服务层方法的结果
-        return CommonResult.success(true);
+            @Parameter(description = "职位ID") @RequestParam(required = false) Long positionId,
+            @Parameter(description = "变更原因") @RequestParam(required = false) String reason) {
+        if (positionId == null) {
+            return CommonResult.error("职位ID不能为空");
+        }
+        boolean success = employeeOrganizationService.updateEmployeePosition(employeeId, id, positionId, reason);
+        return CommonResult.success(success);
     }
 } 

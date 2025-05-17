@@ -6,6 +6,7 @@ import com.lawfirm.model.personnel.enums.EmployeeTypeEnum;
 import com.lawfirm.model.personnel.constant.EmployeeSqlConstants;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * 员工数据访问接口
  * 整合了律师和行政人员的数据访问功能
  */
+@Mapper
 public interface EmployeeMapper extends BaseMapper<Employee> {
 
     /**

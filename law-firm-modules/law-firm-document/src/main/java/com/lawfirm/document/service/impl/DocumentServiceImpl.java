@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import com.lawfirm.document.exception.DocumentException;
+
 /**
  * 文档服务实现类
  */
@@ -50,7 +52,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public Long createDocument(DocumentCreateDTO createDTO, InputStream inputStream) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限创建文档");
+            throw DocumentException.noPermission("创建文档");
         }
 
         try {
@@ -95,7 +97,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
             return document.getId();
         } catch (Exception e) {
             log.error("创建文档失败", e);
-            throw new RuntimeException("创建文档失败: " + e.getMessage());
+            throw DocumentException.failed("创建文档", e);
         }
     }
     
@@ -117,7 +119,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public void updateDocument(Long id, DocumentUpdateDTO updateDTO) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "edit")) {
-            throw new RuntimeException("无权限编辑文档");
+            throw DocumentException.noPermission("编辑文档");
         }
 
         // TODO: 更新文档记录
@@ -128,7 +130,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public void updateDocumentContent(Long id, InputStream inputStream) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "edit")) {
-            throw new RuntimeException("无权限编辑文档内容");
+            throw DocumentException.noPermission("编辑文档内容");
         }
 
         // TODO: 更新文档内容
@@ -139,7 +141,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public boolean deleteDocument(Long id) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "delete")) {
-            throw new RuntimeException("无权限删除文档");
+            throw DocumentException.noPermission("删除文档");
         }
 
         try {
@@ -156,7 +158,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public void deleteDocuments(List<Long> ids) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限批量删除文档");
+            throw DocumentException.noPermission("批量删除文档");
         }
 
         // TODO: 批量删除文档
@@ -166,7 +168,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public DocumentVO getDocumentById(Long id) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "view")) {
-            throw new RuntimeException("无权限查看文档");
+            throw DocumentException.noPermission("查看文档");
         }
 
         // TODO: 获取文档详情
@@ -177,7 +179,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public Page<DocumentVO> pageDocuments(Page<BaseDocument> page, DocumentQueryDTO queryDTO) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限查询文档列表");
+            throw DocumentException.noPermission("查询文档列表");
         }
 
         // TODO: 分页查询文档
@@ -188,7 +190,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public InputStream downloadDocument(Long id) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "download")) {
-            throw new RuntimeException("无权限下载文档");
+            throw DocumentException.noPermission("下载文档");
         }
 
         // TODO: 下载文档
@@ -199,7 +201,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public String previewDocument(Long id) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "view")) {
-            throw new RuntimeException("无权限预览文档");
+            throw DocumentException.noPermission("预览文档");
         }
 
         // TODO: 生成预览URL
@@ -210,7 +212,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public String getDocumentUrl(Long id) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "view")) {
-            throw new RuntimeException("无权限获取文档URL");
+            throw DocumentException.noPermission("获取文档URL");
         }
 
         // TODO: 生成文档访问URL
@@ -221,7 +223,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public String getDocumentUrl(Long id, Long expireTime) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "view")) {
-            throw new RuntimeException("无权限获取文档URL");
+            throw DocumentException.noPermission("获取文档URL");
         }
 
         // TODO: 生成带有效期的文档访问URL
@@ -233,7 +235,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public void updateStatus(Long id, String status) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(id.toString(), "edit")) {
-            throw new RuntimeException("无权限更新文档状态");
+            throw DocumentException.noPermission("更新文档状态");
         }
 
         // TODO: 更新文档状态
@@ -243,7 +245,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public List<DocumentVO> listDocumentsByBusiness(Long businessId, String businessType) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限查询业务相关文档");
+            throw DocumentException.noPermission("查询业务相关文档");
         }
 
         // TODO: 查询业务相关文档
@@ -254,7 +256,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public List<DocumentVO> listDocumentsByType(String docType) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限查询文档类型相关文档");
+            throw DocumentException.noPermission("查询文档类型相关文档");
         }
 
         // TODO: 查询文档类型相关文档
@@ -271,7 +273,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public boolean setDocumentTags(Long documentId, List<String> tags) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(documentId.toString(), "edit")) {
-            throw new RuntimeException("无权限设置文档标签");
+            throw DocumentException.noPermission("设置文档标签");
         }
 
         try {
@@ -288,7 +290,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public Long uploadDocument(MultipartFile file, DocumentUploadDTO uploadDTO) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限上传文档");
+            throw DocumentException.noPermission("上传文档");
         }
 
         try {
@@ -321,7 +323,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
             return document.getId();
         } catch (Exception e) {
             log.error("上传文档失败", e);
-            throw new RuntimeException("上传文档失败: " + e.getMessage());
+            throw DocumentException.failed("上传文档", e);
         }
     }
 
@@ -329,7 +331,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public List<DocumentDTO> getBusinessDocuments(String businessType, Long businessId) {
         // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
-            throw new RuntimeException("无权限查询业务相关文档");
+            throw DocumentException.noPermission("查询业务相关文档");
         }
 
         try {
@@ -337,7 +339,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
             return null;
         } catch (Exception e) {
             log.error("查询业务相关文档失败", e);
-            throw new RuntimeException("查询业务相关文档失败: " + e.getMessage());
+            throw DocumentException.failed("查询业务相关文档", e);
         }
     }
 
@@ -345,7 +347,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     public DocumentDTO getDocumentDetail(Long documentId) {
         // 检查权限
         if (!securityManager.checkDocumentPermission(documentId.toString(), "view")) {
-            throw new RuntimeException("无权限查看文档详情");
+            throw DocumentException.noPermission("查看文档详情");
         }
 
         try {
@@ -353,7 +355,7 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
             return null;
         } catch (Exception e) {
             log.error("获取文档详情失败", e);
-            throw new RuntimeException("获取文档详情失败: " + e.getMessage());
+            throw DocumentException.failed("获取文档详情", e);
         }
     }
 }

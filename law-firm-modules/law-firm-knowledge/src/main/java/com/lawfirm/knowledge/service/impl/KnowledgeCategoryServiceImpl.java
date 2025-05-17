@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.lawfirm.knowledge.exception.KnowledgeException;
+
 /**
  * 知识分类服务实现类
  */
@@ -149,13 +151,13 @@ public class KnowledgeCategoryServiceImpl extends BaseServiceImpl<KnowledgeCateg
         long childrenCount = count(childrenWrapper);
         
         if (childrenCount > 0) {
-            throw new RuntimeException("该分类下存在子分类，不能删除");
+            throw KnowledgeException.failed("该分类下存在子分类", new RuntimeException("该分类下存在子分类，不能删除"));
         }
         
         // 检查是否有关联的知识文档
         Integer knowledgeCount = knowledgeMapper.countByCategoryId(id);
         if (knowledgeCount > 0) {
-            throw new RuntimeException("该分类下存在知识文档，不能删除");
+            throw KnowledgeException.failed("该分类下存在知识文档", new RuntimeException("该分类下存在知识文档，不能删除"));
         }
         
         // 删除分类

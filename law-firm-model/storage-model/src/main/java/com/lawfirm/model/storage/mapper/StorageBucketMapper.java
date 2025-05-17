@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
 import com.lawfirm.model.storage.constant.StorageSqlConstants;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * 存储桶数据访问接口
  */
+@Mapper
 public interface StorageBucketMapper extends BaseMapper<StorageBucket> {
     
     /**

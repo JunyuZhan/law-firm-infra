@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lawfirm.document.exception.DocumentException;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public Long createTemplate(TemplateCreateDTO createDTO) {
         // 检查权限
         if (!securityManager.checkTemplatePermission("create", "create")) {
-            throw new RuntimeException("无权限创建模板");
+            throw DocumentException.noPermission("创建模板");
         }
 
         // TODO: 创建模板记录
@@ -52,7 +53,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public void updateTemplate(Long id, TemplateUpdateDTO updateDTO) {
         // 检查权限
         if (!securityManager.checkTemplatePermission(id.toString(), "edit")) {
-            throw new RuntimeException("无权限编辑模板");
+            throw DocumentException.noPermission("编辑模板");
         }
 
         // TODO: 更新模板记录
@@ -63,7 +64,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public void deleteTemplate(Long id) {
         // 检查权限
         if (!securityManager.checkTemplatePermission(id.toString(), "delete")) {
-            throw new RuntimeException("无权限删除模板");
+            throw DocumentException.noPermission("删除模板");
         }
 
         // TODO: 删除模板记录
@@ -74,7 +75,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public void deleteTemplates(List<Long> ids) {
         // 检查权限
         if (!securityManager.checkTemplatePermission("delete", "delete")) {
-            throw new RuntimeException("无权限批量删除模板");
+            throw DocumentException.noPermission("批量删除模板");
         }
 
         // TODO: 批量删除模板
@@ -84,7 +85,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public TemplateVO getTemplateById(Long id) {
         // 检查权限
         if (!securityManager.checkTemplatePermission(id.toString(), "view")) {
-            throw new RuntimeException("无权限查看模板");
+            throw DocumentException.noPermission("查看模板");
         }
 
         // TODO: 获取模板详情
@@ -95,7 +96,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public TemplateVO getTemplateByCode(String templateCode) {
         // 检查权限
         if (!securityManager.checkTemplatePermission("view", "view")) {
-            throw new RuntimeException("无权限查看模板");
+            throw DocumentException.noPermission("查看模板");
         }
 
         // TODO: 根据编码获取模板
@@ -106,7 +107,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public Page<TemplateVO> pageTemplates(Page<TemplateDocument> page, TemplateDocument template) {
         // 检查权限
         if (!securityManager.checkTemplatePermission("view", "view")) {
-            throw new RuntimeException("无权限查询模板列表");
+            throw DocumentException.noPermission("查询模板列表");
         }
 
         // TODO: 分页查询模板
@@ -117,7 +118,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public List<TemplateVO> listAllTemplates() {
         // 检查权限
         if (!securityManager.checkTemplatePermission("view", "view")) {
-            throw new RuntimeException("无权限查询模板列表");
+            throw DocumentException.noPermission("查询模板列表");
         }
 
         // TODO: 获取所有模板
@@ -128,7 +129,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public List<TemplateVO> listTemplatesByType(String templateType) {
         // 检查权限
         if (!securityManager.checkTemplatePermission("view", "view")) {
-            throw new RuntimeException("无权限查询模板列表");
+            throw DocumentException.noPermission("查询模板列表");
         }
 
         // TODO: 根据类型获取模板列表
@@ -139,7 +140,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public List<TemplateVO> listTemplatesByBusinessType(String businessType) {
         // 检查权限
         if (!securityManager.checkTemplatePermission("view", "view")) {
-            throw new RuntimeException("无权限查询模板列表");
+            throw DocumentException.noPermission("查询模板列表");
         }
 
         // TODO: 根据业务类型获取模板列表
@@ -151,7 +152,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public void updateStatus(Long id, Integer status) {
         // 检查权限
         if (!securityManager.checkTemplatePermission(id.toString(), "edit")) {
-            throw new RuntimeException("无权限更新模板状态");
+            throw DocumentException.noPermission("更新模板状态");
         }
 
         // TODO: 更新模板状态
@@ -162,7 +163,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public void setDefault(Long id, Boolean isDefault) {
         // 检查权限
         if (!securityManager.checkTemplatePermission(id.toString(), "edit")) {
-            throw new RuntimeException("无权限设置默认模板");
+            throw DocumentException.noPermission("设置默认模板");
         }
 
         // TODO: 设置默认模板
@@ -173,7 +174,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public Long generateDocument(Long templateId, Map<String, Object> parameters) {
         // 检查权限
         if (!securityManager.checkTemplatePermission(templateId.toString(), "use")) {
-            throw new RuntimeException("无权限使用模板生成文档");
+            throw DocumentException.noPermission("使用模板生成文档");
         }
 
         // TODO: 根据模板生成文档
@@ -184,7 +185,7 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
     public String previewTemplate(Long id, Map<String, Object> parameters) {
         // 检查权限
         if (!securityManager.checkTemplatePermission(id.toString(), "view")) {
-            throw new RuntimeException("无权限预览模板");
+            throw DocumentException.noPermission("预览模板");
         }
 
         // TODO: 预览模板

@@ -45,6 +45,24 @@ public class SecurityContextTest {
             }
             return null;
         }
+
+        @Override
+        public String getCurrentUsername() {
+            if (authentication == null) {
+                return null;
+            }
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof String) {
+                return (String) principal;
+            }
+            return null;
+        }
+
+        @Override
+        public Long getCurrentTenantId() {
+            // 测试用，直接返回null或可根据principal类型自定义
+            return null;
+        }
     }
 
     @Test

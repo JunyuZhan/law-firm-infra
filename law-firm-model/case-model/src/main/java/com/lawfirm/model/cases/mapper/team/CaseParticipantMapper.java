@@ -5,12 +5,14 @@ import com.lawfirm.model.cases.entity.team.CaseParticipant;
 import com.lawfirm.model.cases.constants.CaseSqlConstants;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 /**
  * 案件参与者Mapper接口
  */
+@Mapper
 public interface CaseParticipantMapper extends BaseMapper<CaseParticipant> {
     
     /**

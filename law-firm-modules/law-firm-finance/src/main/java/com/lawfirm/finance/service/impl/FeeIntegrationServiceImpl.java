@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
+import com.lawfirm.finance.exception.FinanceException;
 
 /**
  * 费用集成服务实现类
@@ -71,7 +72,7 @@ public class FeeIntegrationServiceImpl implements FeeIntegrationService {
             return financeFeeId;
         } catch (Exception e) {
             log.error("创建合同相关财务费用记录失败", e);
-            throw new RuntimeException("创建合同相关财务费用记录失败: " + e.getMessage(), e);
+            throw FinanceException.failed("创建合同相关财务费用记录", e);
         }
     }
     
@@ -107,7 +108,7 @@ public class FeeIntegrationServiceImpl implements FeeIntegrationService {
             return caseFeeId;
         } catch (Exception e) {
             log.error("从合同费用创建案件费用失败", e);
-            throw new RuntimeException("从合同费用创建案件费用失败: " + e.getMessage(), e);
+            throw FinanceException.failed("从合同费用创建案件费用", e);
         }
     }
     
@@ -141,7 +142,7 @@ public class FeeIntegrationServiceImpl implements FeeIntegrationService {
             return financeFeeId;
         } catch (Exception e) {
             log.error("从案件费用创建财务费用失败", e);
-            throw new RuntimeException("从案件费用创建财务费用失败: " + e.getMessage(), e);
+            throw FinanceException.failed("从案件费用创建财务费用", e);
         }
     }
     
@@ -182,7 +183,7 @@ public class FeeIntegrationServiceImpl implements FeeIntegrationService {
             return true;
         } catch (Exception e) {
             log.error("更新合同费用并同步失败", e);
-            throw new RuntimeException("更新合同费用并同步失败: " + e.getMessage(), e);
+            throw FinanceException.failed("更新合同费用并同步", e);
         }
     }
     

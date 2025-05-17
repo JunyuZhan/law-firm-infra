@@ -74,25 +74,36 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- Swagger依赖（仅保留注解和模型依赖） -->
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations-jakarta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-models-jakarta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-core-jakarta</artifactId>
-        </dependency>
-
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Personnel Model -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>personnel-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Case Model -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>case-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Client Model -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>client-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Organization Model -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>organization-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

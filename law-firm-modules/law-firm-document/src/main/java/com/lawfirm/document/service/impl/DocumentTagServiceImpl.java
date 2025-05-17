@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.lawfirm.common.security.context.SecurityContextHolder;
+import com.lawfirm.document.exception.DocumentException;
 
 /**
  * 文档标签服务实现类
@@ -29,17 +31,17 @@ public class DocumentTagServiceImpl extends BaseServiceImpl<DocumentTagMapper, D
 
     @Override
     public Long getCurrentTenantId() {
-        return null; // TODO: 实现获取当前租户ID的逻辑
+        return SecurityContextHolder.getContext().getCurrentTenantId();
     }
 
     @Override
     public Long getCurrentUserId() {
-        return null; // TODO: 实现获取当前用户ID的逻辑
+        return SecurityContextHolder.getCurrentUserId();
     }
 
     @Override
     public String getCurrentUsername() {
-        return null; // TODO: 实现获取当前用户名的逻辑
+        return SecurityContextHolder.getContext().getCurrentUsername();
     }
 
     @Override
@@ -119,7 +121,10 @@ public class DocumentTagServiceImpl extends BaseServiceImpl<DocumentTagMapper, D
         DocumentTag tag = new DocumentTag();
         BeanUtils.copyProperties(createDTO, tag);
         boolean success = save(tag);
-        return success ? tag.getId() : null;
+        if (!success) {
+            throw DocumentException.noPermission("创建标签");
+        }
+        return tag.getId();
     }
 
     @Override
@@ -129,7 +134,7 @@ public class DocumentTagServiceImpl extends BaseServiceImpl<DocumentTagMapper, D
         DocumentTag tag = getById(updateDTO.getId());
         if (tag == null) {
             log.error("标签不存在: {}", updateDTO.getId());
-            return;
+            throw DocumentException.noPermission("编辑标签");
         }
         BeanUtils.copyProperties(updateDTO, tag);
         updateById(tag);
@@ -140,6 +145,7 @@ public class DocumentTagServiceImpl extends BaseServiceImpl<DocumentTagMapper, D
     public void deleteTag(Long id) {
         log.info("删除标签: {}", id);
         removeById(id);
+        throw DocumentException.noPermission("删除标签");
     }
 
     @Override
