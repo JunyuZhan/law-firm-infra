@@ -5,8 +5,6 @@
 com.lawfirm.system.config.SystemAutoConfiguration
 com.lawfirm.system.config.MonitorCacheConfig
 
-
-
 # 常用自动配置
 org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
 org.springframework.boot.autoconfigure.aop.AopAutoConfiguration
@@ -23,14 +21,13 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
 org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
 org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 
-
-
 # 数据库相关配置（不包含DataSourceAutoConfiguration）
 org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration
 org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration
 org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration
 
-
-
 # 验证配置
 org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration
+
+# API模块自动配置
+com.lawfirm.api.config.ApiAutoConfiguration

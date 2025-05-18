@@ -6,11 +6,14 @@ import com.lawfirm.model.document.entity.base.DocumentCategory;
 import com.lawfirm.model.document.entity.base.DocumentTag;
 import com.lawfirm.model.document.entity.base.DocumentTagRel;
 import com.lawfirm.model.document.entity.base.DocumentPermission;
+import com.lawfirm.model.document.entity.template.TemplateDocument;
 import com.lawfirm.model.document.dto.document.DocumentCreateDTO;
 import com.lawfirm.model.document.dto.document.DocumentEditDTO;
 import com.lawfirm.model.document.dto.document.DocumentQueryDTO;
 import com.lawfirm.model.document.dto.document.DocumentUpdateDTO;
+import com.lawfirm.model.document.dto.template.TemplateCreateDTO;
 import com.lawfirm.model.document.vo.DocumentVO;
+import com.lawfirm.model.document.vo.TemplateVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -107,4 +110,35 @@ public interface DocumentConverter {
      * List<DocumentPermission> 转 List<DocumentVO>
      */
     List<DocumentVO> toVOListFromPermission(List<DocumentPermission> permissions);
+    
+    /**
+     * TemplateCreateDTO 转 TemplateDocument
+     */
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createTime", ignore = true)
+    @Mapping(target = "createBy", ignore = true)
+    @Mapping(target = "updateTime", ignore = true)
+    @Mapping(target = "updateBy", ignore = true)
+    @Mapping(target = "remark", ignore = true)
+    @Mapping(target = "title", source = "templateName")
+    @Mapping(target = "docStatus", constant = "VALID")
+    @Mapping(target = "useCount", constant = "0L")
+    @Mapping(target = "downloadCount", constant = "0L")
+    @Mapping(target = "viewCount", constant = "0L")
+    @Mapping(target = "applyScope", source = "scope")
+    @Mapping(target = "templateType", source = "templateType")
+    @Mapping(target = "businessType", source = "businessType")
+    @Mapping(target = "variableFields", source = "parameters")
+    @Mapping(target = "isPublic", expression = "java(true)")
+    TemplateDocument toTemplateDocument(TemplateCreateDTO dto);
+    
+    /**
+     * TemplateDocument 转 TemplateVO
+     */
+    TemplateVO toTemplateVO(TemplateDocument template);
+    
+    /**
+     * List<TemplateDocument> 转 List<TemplateVO>
+     */
+    List<TemplateVO> toTemplateVOList(List<TemplateDocument> templates);
 }

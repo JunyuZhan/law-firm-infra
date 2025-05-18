@@ -1,11 +1,16 @@
 spring:
+  # 全局属性 - 开发环境数据库名称覆盖
+  database:
+    name: law_firm
   # 开发环境数据源 - 可以使用H2内存数据库方便开发
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/law_firm?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/${spring.database.name}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     # 使用环境变量设置密码
     password: ${MYSQL_PASSWORD:}
+    # 数据库名称配置 - 使用全局变量
+    database-name: ${spring.database.name}
     hikari:
       # 开发环境连接池配置
       minimum-idle: 5
@@ -32,7 +37,7 @@ spring:
   # 开发环境自动初始化数据库
   flyway:
     enabled: true
-    clean-disabled: false
+    clean-disabled: true  # 防止意外清空数据库
     # 开启验证和自动迁移，与生产环境保持一致
     validate-on-migrate: true
     auto-migrate: true
@@ -65,9 +70,22 @@ server:
   tomcat:
     uri-encoding: UTF-8
 
-# 开发环境允许所有跨域
+# 开发环境允许本地开发域名跨域
 cors:
-  allowed-origins: "*"
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://localhost:5666,http://192.168.50.101:5666,https://localhost:8000,https://localhost:3000,https://127.0.0.1:5666,http://127.0.0.1:5666,https://127.0.0.1:8000,https://127.0.0.1:3000}
+
+# 开发环境API文档配置
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+  show-actuator: true
+
+# 开发环境Knife4j配置  
+knife4j:
+  enable: true
+  production: false
 
 # 日志级别配置
 logging:
@@ -75,10 +93,13 @@ logging:
     root: INFO
     com.lawfirm: DEBUG
     org.springframework: INFO
-    org.springframework.security: INFO
+    org.springframework.security: DEBUG
     org.springframework.cache: INFO
     com.baomidou.mybatisplus: INFO
     org.flywaydb: INFO
+    # API文档相关日志配置已移除
+    org.apache.ibatis: INFO
+    org.mybatis.spring: INFO
 
 # 健康检查配置 - 启用必要的检查
 management:
@@ -171,7 +192,7 @@ mybatis-plus:
     data:
       enabled: true
       "module-init-enabled": true
-      "system-database": law_firm
+      "system-database": ${spring.database.name}
       # 数据库监控
       monitoring:
         enabled: true

@@ -94,4 +94,14 @@ public interface StorageStrategy {
      * @return 访问URL
      */
     String generatePresignedUrl(StorageBucket bucket, String objectName, Integer expireSeconds);
+    
+    /**
+     * 上传文本内容
+     * 
+     * @param bucket 存储桶信息
+     * @param objectName 对象名称
+     * @param content 文本内容
+     * @return 是否上传成功
+     */
+    boolean uploadText(StorageBucket bucket, String objectName, String content);
 } 

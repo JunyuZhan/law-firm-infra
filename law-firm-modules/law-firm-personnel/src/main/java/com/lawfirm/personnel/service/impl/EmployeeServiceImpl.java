@@ -185,10 +185,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!StringUtils.hasText(workNumber)) {
             return null;
         }
-        
         LambdaQueryWrapper<Employee> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Employee::getWorkNumber, workNumber);
-        
         Employee employee = employeeMapper.selectOne(queryWrapper);
         return employee != null ? employeeConverter.toDTO(employee) : null;
     }
@@ -198,10 +196,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!StringUtils.hasText(email)) {
             return null;
         }
-        
         LambdaQueryWrapper<Employee> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Employee::getEmail, email);
-        
         Employee employee = employeeMapper.selectOne(queryWrapper);
         return employee != null ? employeeConverter.toDTO(employee) : null;
     }
@@ -211,10 +207,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!StringUtils.hasText(mobile)) {
             return null;
         }
-        
         LambdaQueryWrapper<Employee> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Employee::getMobile, mobile);
-        
         Employee employee = employeeMapper.selectOne(queryWrapper);
         return employee != null ? employeeConverter.toDTO(employee) : null;
     }
@@ -383,11 +377,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!StringUtils.hasText(licenseNumber)) {
             return null;
         }
-        
         LambdaQueryWrapper<Employee> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Employee::getEmployeeType, EmployeeTypeEnum.LAWYER)
                 .eq(Employee::getLicenseNumber, licenseNumber);
-        
         Employee lawyer = employeeMapper.selectOne(queryWrapper);
         return lawyer != null ? employeeConverter.toDTO(lawyer) : null;
     }
@@ -670,10 +662,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (userId == null) {
             return null;
         }
-        
         LambdaQueryWrapper<Employee> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Employee::getUserId, userId);
-        
         return employeeMapper.selectOne(queryWrapper);
     }
     

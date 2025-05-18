@@ -32,7 +32,6 @@ public class SearchServiceConfig {
      * 搜索服务实现
      */
     @Bean(name = "coreSearchServiceImpl")
-    @Primary
     public SearchService searchServiceImpl() {
         log.info("注册搜索服务实现: coreSearchServiceImpl");
         return new SearchServiceImpl();

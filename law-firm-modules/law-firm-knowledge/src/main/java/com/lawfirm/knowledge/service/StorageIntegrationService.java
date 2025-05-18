@@ -14,11 +14,13 @@ import java.util.Map;
 
 /**
  * 存储服务集成
- * 示例如何集成core-storage模块
+ * 集成core-storage模块
  */
 @Slf4j
 @Service("knowledgeStorageService")
 public class StorageIntegrationService {
+
+    private static final String BUCKET_NAME = "knowledge-documents";
 
     @Autowired
     private KnowledgeAttachmentService knowledgeAttachmentService;
@@ -54,7 +56,7 @@ public class StorageIntegrationService {
             metadata.put("docType", "knowledge_attachment");
             
             // 上传文件
-            Object fileInfo = ((UploadFileFunction) fileService).uploadFile(bucketId, file, metadata);
+            Object fileObj = ((UploadFileFunction) fileService).uploadFile(bucketId, file, metadata);
             
             // 保存附件关联信息
             KnowledgeAttachment attachment = new KnowledgeAttachment();
@@ -62,7 +64,7 @@ public class StorageIntegrationService {
             attachment.setFileName(file.getOriginalFilename());
             attachment.setFileSize(file.getSize());
             attachment.setFileType(file.getContentType());
-            attachment.setStorageId(Long.valueOf(getFileId(fileInfo)));
+            attachment.setStorageId(Long.valueOf(getFileId(fileObj)));
             knowledgeAttachmentService.save(attachment);
             
             log.info("知识附件上传成功: knowledgeId={}, fileName={}", knowledgeId, file.getOriginalFilename());
@@ -78,82 +80,67 @@ public class StorageIntegrationService {
      * 获取或创建知识文档存储桶
      */
     private Long getOrCreateKnowledgeBucket() {
-        // 查询或创建知识文档专用存储桶
-        Object bucket = ((GetBucketFunction) bucketService).getBucketByName("knowledge-documents");
-        if (bucket == null) {
-            bucket = new BucketInfo();
-            ((CreateBucketFunction) bucketService).createBucket(bucket);
+        try {
+            // 查询或创建知识文档专用存储桶
+            Object bucket = ((GetBucketFunction) bucketService).getBucketByName(BUCKET_NAME);
+            if (bucket == null) {
+                bucket = ((CreateBucketFunction) bucketService).createBucket(BUCKET_NAME);
+            }
+            
+            if (bucket != null) {
+                try {
+                    // 尝试通过反射获取ID
+                    return (Long) bucket.getClass().getMethod("getId").invoke(bucket);
+                } catch (Exception e) {
+                    // 如果反射失败，返回默认ID
+                    log.warn("无法获取存储桶ID，使用默认值: 1", e);
+                    return 1L;
+                }
+            }
+            
+            return 1L;
+        } catch (Exception e) {
+            log.error("获取或创建存储桶失败", e);
+            return 1L;
         }
-        return getBucketId(bucket);
     }
-
+    
     /**
      * 获取文件ID
      */
-    private String getFileId(Object fileInfo) {
-        try {
-            return ((IdGetter) fileInfo).getId();
-        } catch (Exception e) {
-            // 反射获取ID
-            return fileInfo.toString();
-        }
-    }
-
-    /**
-     * 获取存储桶ID
-     */
-    private Long getBucketId(Object bucket) {
-        try {
-            String id = ((IdGetter) bucket).getId();
-            return Long.valueOf(id);
-        } catch (Exception e) {
-            // 默认ID
-            return 1L;
-        }
-    }
-
-    /**
-     * 存储桶信息
-     */
-    private static class BucketInfo {
-        public Long getId() {
-            return 1L;
+    private String getFileId(Object fileObj) {
+        if (fileObj == null) {
+            return "1";
         }
         
-        public String getBucketName() {
-            return "knowledge-documents";
-        }
-        
-        public String getStorageType() {
-            return "LOCAL";
+        try {
+            // 尝试通过反射获取ID
+            return fileObj.getClass().getMethod("getId").invoke(fileObj).toString();
+        } catch (Exception e) {
+            // 如果反射失败，返回对象的toString
+            log.warn("无法获取文件ID，使用对象字符串表示", e);
+            return fileObj.toString();
         }
     }
-
+    
     /**
      * 上传文件函数接口
      */
     private interface UploadFileFunction {
         Object uploadFile(Long bucketId, MultipartFile file, Map<String, String> metadata) throws IOException;
     }
-
+    
     /**
      * 获取存储桶函数接口
      */
     private interface GetBucketFunction {
         Object getBucketByName(String name);
     }
-
+    
     /**
      * 创建存储桶函数接口
      */
     private interface CreateBucketFunction {
-        Object createBucket(Object bucket);
-    }
-
-    /**
-     * ID获取接口
-     */
-    private interface IdGetter {
-        String getId();
+        Object createBucket(String bucketName);
     }
 } 

@@ -2,6 +2,7 @@ package com.lawfirm.contract.service.strategy.template;
 
 import com.lawfirm.model.contract.entity.Contract;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,6 +14,9 @@ public class StandardContractTemplateStrategy implements ContractTemplateStrateg
 
     private static final String STRATEGY_TYPE = "STANDARD";
 
+    @Autowired(required = false)
+    private com.lawfirm.model.contract.mapper.ContractTemplateMapper contractTemplateMapper;
+
     @Override
     public String getType() {
         return STRATEGY_TYPE;
@@ -22,7 +26,7 @@ public class StandardContractTemplateStrategy implements ContractTemplateStrateg
     public String generateContractContent(Contract contract, Long templateId) {
         log.info("使用标准模板策略生成合同内容, 合同ID: {}, 模板ID: {}", contract.getId(), templateId);
         
-        // TODO: 从模板库获取模板内容
+        // 从模板库获取模板内容
         String templateContent = getTemplateContent(templateId);
         
         // 解析模板中的变量并替换
@@ -36,8 +40,14 @@ public class StandardContractTemplateStrategy implements ContractTemplateStrateg
             return false;
         }
         
-        // TODO: 实现更复杂的合同内容验证逻辑
-        // 例如：检查必要条款是否存在，合同格式是否正确等
+        // 检查必要条款
+        String[] mustContain = {"甲方", "乙方", "合同金额", "签字"};
+        for (String key : mustContain) {
+            if (!contractContent.contains(key)) {
+                log.warn("合同内容缺少必要条款: {}", key);
+                return false;
+            }
+        }
         
         return true;
     }
@@ -60,7 +70,12 @@ public class StandardContractTemplateStrategy implements ContractTemplateStrateg
                 .replace("${expiryDate}", formatDate(contract.getExpiryDate()))
                 .replace("${amount}", formatAmount(contract.getAmount()));
         
-        // TODO: 替换更多变量，如客户信息、律师信息等
+        // 替换客户信息（仅用ID占位，实际应由业务层查好客户名/联系人）
+        result = result.replace("${clientName}", contract.getClientId() != null ? String.valueOf(contract.getClientId()) : "")
+                       .replace("${clientContact}", "");
+        // 替换律师信息（仅用ID占位，实际应由业务层查好律师名/电话）
+        result = result.replace("${lawyerName}", contract.getLeadAttorneyId() != null ? String.valueOf(contract.getLeadAttorneyId()) : "")
+                       .replace("${lawyerPhone}", "");
         
         return result;
     }
@@ -69,8 +84,14 @@ public class StandardContractTemplateStrategy implements ContractTemplateStrateg
      * 获取模板内容
      */
     private String getTemplateContent(Long templateId) {
-        // TODO: 从模板库获取模板内容
-        // 这里简化处理，返回一个基础模板
+        // 从模板库获取模板内容
+        if (contractTemplateMapper != null && templateId != null) {
+            com.lawfirm.model.contract.entity.ContractTemplate template = contractTemplateMapper.selectById(templateId);
+            if (template != null && template.getContent() != null) {
+                return template.getContent();
+            }
+        }
+        // 兜底返回默认模板
         return "合同编号: ${contractNo}\n"
                 + "合同名称: ${contractName}\n"
                 + "合同类型: ${contractType}\n"
@@ -79,7 +100,10 @@ public class StandardContractTemplateStrategy implements ContractTemplateStrateg
                 + "到期日期: ${expiryDate}\n"
                 + "合同金额: ${amount}\n\n"
                 + "甲方: ${clientName}\n"
-                + "乙方: 律师事务所\n\n"
+                + "联系人: ${clientContact}\n"
+                + "乙方: 律师事务所\n"
+                + "经办律师: ${lawyerName}\n"
+                + "律师电话: ${lawyerPhone}\n\n"
                 + "合同正文...\n\n"
                 + "甲方签字: ____________       乙方签字: ____________\n";
     }

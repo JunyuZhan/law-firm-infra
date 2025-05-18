@@ -3,6 +3,7 @@ package com.lawfirm.finance.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.common.security.context.SecurityContext;
+import com.lawfirm.common.util.excel.ExcelWriter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.finance.entity.Fee;
 import com.lawfirm.model.finance.enums.FeeStatusEnum;
@@ -17,8 +18,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +36,8 @@ import java.util.List;
 public class FeeServiceImpl extends BaseServiceImpl<FeeMapper, Fee> implements FeeService {
 
     private final SecurityContext securityContext;
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     @PreAuthorize("hasPermission('fee', 'create')")
@@ -269,7 +277,77 @@ public class FeeServiceImpl extends BaseServiceImpl<FeeMapper, Fee> implements F
     @PreAuthorize("hasPermission('fee', 'export')")
     public String exportFees(List<Long> feeIds) {
         log.info("导出费用数据: feeIds={}", feeIds);
-        // TODO: 实现导出功能
-        return null;
+        
+        // 查询费用记录
+        List<Fee> fees;
+        if (feeIds != null && !feeIds.isEmpty()) {
+            fees = listByIds(feeIds);
+        } else {
+            // 如果没有指定ID，则获取所有记录
+            fees = list();
+        }
+        
+        if (fees.isEmpty()) {
+            log.warn("没有找到要导出的费用记录");
+            return null;
+        }
+        
+        // 准备Excel数据
+        List<List<String>> excelData = new ArrayList<>();
+        
+        // 添加表头
+        List<String> header = new ArrayList<>();
+        header.add("费用ID");
+        header.add("费用编号");
+        header.add("费用类型");
+        header.add("费用名称");
+        header.add("费用金额");
+        header.add("币种");
+        header.add("费用发生时间");
+        header.add("案件ID");
+        header.add("客户ID");
+        header.add("律师ID");
+        header.add("费用说明");
+        header.add("部门ID");
+        header.add("创建时间");
+        header.add("更新时间");
+        excelData.add(header);
+        
+        // 添加数据行
+        for (Fee fee : fees) {
+            List<String> row = new ArrayList<>();
+            row.add(String.valueOf(fee.getId()));
+            row.add(fee.getFeeNumber());
+            row.add(fee.getFeeType() != null ? fee.getFeeType().toString() : "");
+            row.add(fee.getFeeName());
+            row.add(fee.getAmount() != null ? fee.getAmount().toString() : "0");
+            row.add(fee.getCurrency() != null ? fee.getCurrency().toString() : "");
+            row.add(fee.getFeeTime() != null ? fee.getFeeTime().format(DATE_FORMATTER) : "");
+            row.add(fee.getCaseId() != null ? String.valueOf(fee.getCaseId()) : "");
+            row.add(fee.getClientId() != null ? String.valueOf(fee.getClientId()) : "");
+            row.add(fee.getLawyerId() != null ? String.valueOf(fee.getLawyerId()) : "");
+            row.add(fee.getDescription() != null ? fee.getDescription() : "");
+            row.add(fee.getDepartmentId() != null ? String.valueOf(fee.getDepartmentId()) : "");
+            row.add(fee.getCreateTime() != null ? fee.getCreateTime().format(DATE_FORMATTER) : "");
+            row.add(fee.getUpdateTime() != null ? fee.getUpdateTime().format(DATE_FORMATTER) : "");
+            excelData.add(row);
+        }
+        
+        // 生成临时文件名
+        String fileName = "fees_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".xlsx";
+        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
+        
+        try {
+            // 将数据写入文件
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            ExcelWriter.write(excelData, outputStream);
+            outputStream.close();
+            
+            // 返回文件路径
+            return filePath;
+        } catch (IOException e) {
+            log.error("导出费用记录失败", e);
+            return null;
+        }
     }
 }

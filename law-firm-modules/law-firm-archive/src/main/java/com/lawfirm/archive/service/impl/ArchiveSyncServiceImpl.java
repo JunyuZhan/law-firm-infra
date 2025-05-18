@@ -13,6 +13,8 @@ import com.lawfirm.model.archive.entity.ArchiveSyncRecord;
 import com.lawfirm.model.archive.entity.SyncConfig;
 import com.lawfirm.model.archive.mapper.ArchiveSyncRecordMapper;
 import com.lawfirm.model.archive.mapper.SyncConfigMapper;
+import com.lawfirm.model.archive.mapper.ArchiveMainMapper;
+import com.lawfirm.model.archive.entity.ArchiveMain;
 import com.lawfirm.model.archive.service.ArchiveSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class ArchiveSyncServiceImpl extends ServiceImpl<ArchiveSyncRecordMapper,
     
     @Autowired
     private ArchiveSyncRecordConverter archiveSyncRecordConverter;
+    
+    @Autowired
+    private ArchiveMainMapper archiveMainMapper;
     
     /**
      * 同步单个档案到外部系统
@@ -129,10 +134,13 @@ public class ArchiveSyncServiceImpl extends ServiceImpl<ArchiveSyncRecordMapper,
         }
         
         // 获取未同步的档案列表
-        // TODO: 实现查询未同步档案的逻辑
-        
-        // 模拟一些档案ID
-        List<String> pendingArchiveIds = List.of("mock-archive-1", "mock-archive-2");
+        QueryWrapper<ArchiveMain> wrapper = new QueryWrapper<>();
+        wrapper.eq("is_synced", 0).eq("deleted", 0);
+        List<ArchiveMain> pendingArchives = archiveMainMapper.selectList(wrapper);
+        List<String> pendingArchiveIds = new ArrayList<>();
+        for (ArchiveMain archive : pendingArchives) {
+            pendingArchiveIds.add(String.valueOf(archive.getId()));
+        }
         
         return batchSyncArchives(pendingArchiveIds, systemCode);
     }

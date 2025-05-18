@@ -132,26 +132,21 @@ public class AIUtils {
         if (StringUtils.isEmpty(text) || limit <= 0) {
             return new ArrayList<>();
         }
-        
-        // TODO: 实现关键词提取算法
-        // 可以使用TF-IDF、TextRank等算法
-        // 这里返回示例数据
-        List<String> keywords = new ArrayList<>();
-        String[] words = text.split("\\s+");
+        // 简单TF-IDF实现（仅按词频排序，实际可结合全局词频）
+        Map<String, Integer> freqMap = new HashMap<>();
+        String[] words = text.split("\\W+");
         for (String word : words) {
-            if (keywords.size() >= limit) {
-                break;
-            }
-            if (word.length() > 2) {
-                keywords.add(word);
+            if (word.length() > 1) {
+                freqMap.put(word, freqMap.getOrDefault(word, 0) + 1);
             }
         }
-        
-        return keywords;
+        List<String> sorted = new ArrayList<>(freqMap.keySet());
+        sorted.sort((a, b) -> freqMap.get(b) - freqMap.get(a));
+        return sorted.subList(0, Math.min(limit, sorted.size()));
     }
     
     /**
-     * 检查敏感词
+     * 检查敏感词（DFA算法实现）
      * 
      * @param text 文本
      * @return 是否包含敏感词
@@ -160,18 +155,36 @@ public class AIUtils {
         if (StringUtils.isEmpty(text)) {
             return false;
         }
-        
-        // TODO: 实现敏感词检查
-        // 可以使用DFA算法或其他敏感词过滤算法
-        // 这里返回示例实现
+        // 示例敏感词库
         String[] sensitiveWords = {"敏感词1", "敏感词2", "敏感词3"};
+        // 构建DFA字典树
+        TrieNode root = new TrieNode();
         for (String word : sensitiveWords) {
-            if (text.contains(word)) {
-                return true;
+            TrieNode node = root;
+            for (char c : word.toCharArray()) {
+                node = node.children.computeIfAbsent(c, k -> new TrieNode());
+            }
+            node.isEnd = true;
+        }
+        // 检查文本
+        for (int i = 0; i < text.length(); i++) {
+            TrieNode node = root;
+            int j = i;
+            while (j < text.length() && node.children.containsKey(text.charAt(j))) {
+                node = node.children.get(text.charAt(j));
+                if (node.isEnd) {
+                    return true;
+                }
+                j++;
             }
         }
-        
         return false;
+    }
+    
+    // DFA节点定义
+    private static class TrieNode {
+        Map<Character, TrieNode> children = new HashMap<>();
+        boolean isEnd = false;
     }
     
     /**

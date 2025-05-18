@@ -133,9 +133,20 @@ set JDBC_URL=jdbc:mysql://%MYSQL_HOST%:%MYSQL_PORT%/%MYSQL_DATABASE%?useUnicode=
 
 echo Starting application...
 echo Log file: %LOG_FILE%
+echo.
+echo 按 Ctrl+C 可以停止应用程序
+echo.
+
+rem Ask if user wants to run as windows service
+set /p INSTALL_AS_SERVICE=是否安装为Windows服务? (y/n) [default: n]: 
+if /i "%INSTALL_AS_SERVICE%"=="y" (
+    echo 此功能正在开发中，将在下一版本提供...
+    echo 暂时以控制台模式启动应用程序
+    echo.
+)
 
 rem Explicitly specify log file path and name
-java %JAVA_OPTS% -Dlogging.file.path=..\..\logs -Dlogging.file.name=..\..\logs\law-firm-api.log -Dspring.datasource.url="%JDBC_URL%" -Dspring.datasource.username=%MYSQL_USERNAME% -Dspring.datasource.password=%MYSQL_PASSWORD% -jar %JAR_FILE% --spring.profiles.active=%SPRING_PROFILES_ACTIVE% --logging.charset.console=UTF-8 --logging.charset.file=UTF-8 --logging.config=classpath:logback-spring.xml
+java %JAVA_OPTS% -Dlogging.file.path=..\..\logs -Dlogging.file.name=..\..\logs\law-firm-api.log -Dspring.database.name=%MYSQL_DATABASE% -Dspring.datasource.url="%JDBC_URL%" -Dspring.datasource.username=%MYSQL_USERNAME% -Dspring.datasource.password=%MYSQL_PASSWORD% -jar %JAR_FILE% --spring.profiles.active=%SPRING_PROFILES_ACTIVE% --logging.charset.console=UTF-8 --logging.charset.file=UTF-8 --logging.config=classpath:logback-spring.xml
 
 cd ..\..
 pause 

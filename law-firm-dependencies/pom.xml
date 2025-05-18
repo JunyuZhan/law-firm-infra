@@ -29,6 +29,10 @@
         <jasypt.version>3.0.5</jasypt.version>
         <jansi.version>2.4.1</jansi.version>
         
+        <!-- API文档相关 -->
+        <knife4j.version>4.5.0</knife4j.version>
+        <springdoc.version>2.3.0</springdoc.version>
+        
         <!-- 新增版本变量 -->
         <easy-captcha.version>1.6.2</easy-captcha.version>
         
@@ -881,6 +885,23 @@
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations-jakarta</artifactId>
                 <version>2.2.20</version>
+            </dependency>
+            
+            <!-- API文档相关依赖 -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

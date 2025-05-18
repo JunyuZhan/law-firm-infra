@@ -88,7 +88,13 @@ public class StorageTask {
      * TODO: 后续需对接存储模块，统计文档存储空间等信息
      */
     public void statStorage() {
-        log.info("存储统计功能尚未实现，需要先完成存储模块");
-        // 目前仅打印日志，后续补全存储统计逻辑
+        log.info("开始统计存储空间和文件数");
+        try {
+            long totalSize = storageManager.getTotalStorageSize();
+            long fileCount = storageManager.getTotalFileCount();
+            log.info("存储统计：文件数：{}，总空间：{} MB", fileCount, totalSize / 1024 / 1024);
+        } catch (Exception e) {
+            log.error("存储统计失败", e);
+        }
     }
 }

@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import com.lawfirm.common.security.utils.SecurityUtils;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,6 +23,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.lawfirm.client.constant.ClientConstants;
+import com.lawfirm.client.service.impl.ClientServiceImpl;
+import com.lawfirm.client.util.ClientConverter;
 
 /**
  * 客户导入导出控制器
@@ -32,6 +37,7 @@ import com.lawfirm.client.constant.ClientConstants;
 public class ImportExportController extends BaseController {
 
     private final List<ImportStrategy> importStrategies;
+    private final ClientServiceImpl clientService;
 
     /**
      * 导入客户数据
@@ -89,10 +95,8 @@ public class ImportExportController extends BaseController {
             // 根据类型生成不同的模板
             if ("excel".equals(type)) {
                 // 生成Excel模板
-                // TODO: 实现Excel模板生成
             } else if ("csv".equals(type)) {
                 // 生成CSV模板
-                // TODO: 实现CSV模板生成
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("不支持的模板类型");
@@ -113,7 +117,40 @@ public class ImportExportController extends BaseController {
      */
     @GetMapping("/export")
     public void exportClients(@RequestParam("ids") List<Long> ids, HttpServletResponse response) {
-        // TODO: 实现客户数据导出
+        try {
+            // 查询客户数据
+            List<ClientVO> clients = clientService.listByIds(ids).stream()
+                .map(ClientConverter::toVO)
+                .collect(Collectors.toList());
+            // 创建Excel
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("客户数据");
+            // 表头
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("客户ID");
+            header.createCell(1).setCellValue("客户名称");
+            header.createCell(2).setCellValue("客户编号");
+            header.createCell(3).setCellValue("客户类型");
+            // ...可扩展更多字段
+            // 填充数据
+            int rowIdx = 1;
+            for (ClientVO client : clients) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(client.getId());
+                row.createCell(1).setCellValue(client.getClientName());
+                row.createCell(2).setCellValue(client.getClientNo());
+                row.createCell(3).setCellValue(client.getClientType() != null ? client.getClientType().toString() : "");
+            }
+            // 设置响应头
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=clients_export.xlsx");
+            workbook.write(response.getOutputStream());
+            workbook.close();
+            response.flushBuffer();
+        } catch (Exception e) {
+            log.error("导出客户数据失败", e);
+            try { response.getWriter().write("导出失败: " + e.getMessage()); } catch (IOException ignored) {}
+        }
     }
 
     /**
@@ -150,7 +187,7 @@ public class ImportExportController extends BaseController {
      * 获取当前用户ID
      */
     private Long getCurrentUserId() {
-        // TODO: 实现从安全上下文获取用户ID
-        return 1L; // 默认管理员ID
+        // 从安全上下文获取用户ID
+        return SecurityUtils.getUserId();
     }
 }

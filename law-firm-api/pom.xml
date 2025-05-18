@@ -249,6 +249,16 @@
             <artifactId>jansi</artifactId>
             <version>2.4.1</version>
         </dependency>
+        
+        <!-- API文档相关依赖 -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

@@ -2,6 +2,7 @@ package com.lawfirm.finance.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lawfirm.common.util.excel.ExcelWriter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.finance.entity.Transaction;
 import com.lawfirm.model.finance.enums.TransactionTypeEnum;
@@ -13,8 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +31,8 @@ import java.util.List;
 @ConditionalOnProperty(name = "law-firm.storage.enabled", havingValue = "true", matchIfMissing = true)
 public class TransactionServiceImpl extends BaseServiceImpl<TransactionMapper, Transaction>
         implements TransactionService {
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -130,12 +138,80 @@ public class TransactionServiceImpl extends BaseServiceImpl<TransactionMapper, T
     @Override
     public String exportTransactions(List<Long> transactionIds) {
         log.info("导出交易记录: transactionIds={}", transactionIds);
-        if (CollectionUtils.isEmpty(transactionIds)) {
-            log.warn("交易记录ID列表为空");
+        
+        // 查询交易记录
+        List<Transaction> transactions;
+        if (!CollectionUtils.isEmpty(transactionIds)) {
+            transactions = listByIds(transactionIds);
+        } else {
+            // 如果没有指定ID，则获取所有记录
+            transactions = list();
+        }
+        
+        if (transactions.isEmpty()) {
+            log.warn("没有找到要导出的交易记录");
             return null;
         }
-        // TODO: 实现交易数据导出功能
-        return null;
+        
+        // 准备Excel数据
+        List<List<String>> excelData = new ArrayList<>();
+        
+        // 添加表头
+        List<String> header = new ArrayList<>();
+        header.add("交易ID");
+        header.add("交易编号");
+        header.add("交易类型");
+        header.add("交易金额");
+        header.add("币种");
+        header.add("交易时间");
+        header.add("付款账户ID");
+        header.add("收款账户ID");
+        header.add("业务ID");
+        header.add("业务类型");
+        header.add("交易摘要");
+        header.add("交易备注");
+        header.add("部门ID");
+        header.add("创建时间");
+        header.add("更新时间");
+        excelData.add(header);
+        
+        // 添加数据行
+        for (Transaction transaction : transactions) {
+            List<String> row = new ArrayList<>();
+            row.add(String.valueOf(transaction.getId()));
+            row.add(transaction.getTransactionNumber());
+            row.add(transaction.getTransactionType() != null ? transaction.getTransactionType().toString() : "");
+            row.add(transaction.getAmount() != null ? transaction.getAmount().toString() : "0");
+            row.add(transaction.getCurrency() != null ? transaction.getCurrency().toString() : "");
+            row.add(transaction.getTransactionTime() != null ? transaction.getTransactionTime().format(DATE_FORMATTER) : "");
+            row.add(transaction.getFromAccountId() != null ? String.valueOf(transaction.getFromAccountId()) : "");
+            row.add(transaction.getToAccountId() != null ? String.valueOf(transaction.getToAccountId()) : "");
+            row.add(transaction.getBusinessId() != null ? String.valueOf(transaction.getBusinessId()) : "");
+            row.add(transaction.getBusinessType());
+            row.add(transaction.getSummary());
+            row.add(transaction.getRemark());
+            row.add(transaction.getDepartmentId() != null ? String.valueOf(transaction.getDepartmentId()) : "");
+            row.add(transaction.getCreateTime() != null ? transaction.getCreateTime().format(DATE_FORMATTER) : "");
+            row.add(transaction.getUpdateTime() != null ? transaction.getUpdateTime().format(DATE_FORMATTER) : "");
+            excelData.add(row);
+        }
+        
+        // 生成临时文件名
+        String fileName = "transactions_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".xlsx";
+        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
+        
+        try {
+            // 将数据写入文件
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            ExcelWriter.write(excelData, outputStream);
+            outputStream.close();
+            
+            // 返回文件路径
+            return filePath;
+        } catch (IOException e) {
+            log.error("导出交易记录失败", e);
+            return null;
+        }
     }
 
     /**

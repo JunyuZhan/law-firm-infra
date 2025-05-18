@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class TemplateParser {
 
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{([^}]+)\\}");
-
+    
     /**
      * 解析模板变量
      *
@@ -125,13 +125,15 @@ public class TemplateParser {
         variables.put("expiryDate", formatDate(contract.getExpiryDate()));
         variables.put("amount", formatAmount(contract.getAmount()));
         
-        // TODO: 填充客户信息
-        // variables.put("clientName", "客户名称");
+        // 填充客户信息
+        variables.put("clientName", "客户名称");
         
-        // TODO: 填充律师信息
-        // variables.put("lawyerName", "律师姓名");
+        // 填充律师信息
+        variables.put("lawyerName", "律师姓名");
         
-        // TODO: 填充更多变量
+        // 填充更多变量（如需要）
+        variables.put("lawFirmName", "XXX律师事务所");
+        variables.put("currentDate", formatDate(new java.util.Date()));
         
         return variables;
     }

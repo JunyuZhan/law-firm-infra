@@ -3,6 +3,11 @@ package com.lawfirm.cases.core.audit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.model.log.dto.AuditLogDTO;
+import com.lawfirm.model.log.enums.BusinessTypeEnum;
+import com.lawfirm.model.log.enums.OperateTypeEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
@@ -20,8 +25,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CaseAuditProvider {
     
-    // TODO: 注入审计服务
-    // private final AuditService auditService;
+    // 注入审计服务
+    @Autowired
+    private AuditService auditService;
     
     /**
      * 记录案件创建审计
@@ -32,15 +38,16 @@ public class CaseAuditProvider {
      */
     public void auditCaseCreation(Long caseId, Long userId, Object caseData) {
         log.info("记录案件创建审计, 案件ID: {}, 用户: {}", caseId, userId);
-        // TODO: 调用core-audit记录审计
-        // 示例代码:
-        // Map<String, Object> auditData = Map.of(
-        //     "caseId", caseId,
-        //     "action", "CREATE",
-        //     "userId", userId,
-        //     "caseData", caseData
-        // );
-        // auditService.recordAudit("CASE", caseId.toString(), "CREATE", auditData);
+        AuditLogDTO auditLog = AuditLogDTO.builder()
+                .operatorId(userId)
+                .businessType(BusinessTypeEnum.CASE)
+                .operateType(OperateTypeEnum.CREATE)
+                .module("CASE")
+                .description("案件创建")
+                .beforeData(null)
+                .afterData(caseData != null ? caseData.toString() : null)
+                .build();
+        auditService.log(auditLog);
     }
     
     /**
@@ -55,17 +62,17 @@ public class CaseAuditProvider {
     public void auditCaseUpdate(Long caseId, Long userId, Object oldData, Object newData, Map<String, Object> changedFields) {
         log.info("记录案件更新审计, 案件ID: {}, 用户: {}, 变更字段数: {}", 
                 caseId, userId, changedFields.size());
-        // TODO: 调用core-audit记录审计
-        // 示例代码:
-        // Map<String, Object> auditData = Map.of(
-        //     "caseId", caseId,
-        //     "action", "UPDATE",
-        //     "userId", userId,
-        //     "oldData", oldData,
-        //     "newData", newData,
-        //     "changedFields", changedFields
-        // );
-        // auditService.recordAudit("CASE", caseId.toString(), "UPDATE", auditData);
+        AuditLogDTO auditLog = AuditLogDTO.builder()
+                .operatorId(userId)
+                .businessType(BusinessTypeEnum.CASE)
+                .operateType(OperateTypeEnum.UPDATE)
+                .module("CASE")
+                .description("案件更新")
+                .beforeData(oldData != null ? oldData.toString() : null)
+                .afterData(newData != null ? newData.toString() : null)
+                .changedFields(changedFields != null ? changedFields.toString() : null)
+                .build();
+        auditService.log(auditLog);
     }
     
     /**
@@ -80,17 +87,16 @@ public class CaseAuditProvider {
     public void auditCaseStatusChange(Long caseId, Long userId, String oldStatus, String newStatus, String reason) {
         log.info("记录案件状态变更审计, 案件ID: {}, 用户: {}, 状态从 {} 变更到 {}", 
                 caseId, userId, oldStatus, newStatus);
-        // TODO: 调用core-audit记录审计
-        // 示例代码:
-        // Map<String, Object> auditData = Map.of(
-        //     "caseId", caseId,
-        //     "action", "STATUS_CHANGE",
-        //     "userId", userId,
-        //     "oldStatus", oldStatus,
-        //     "newStatus", newStatus,
-        //     "reason", reason
-        // );
-        // auditService.recordAudit("CASE", caseId.toString(), "STATUS_CHANGE", auditData);
+        AuditLogDTO auditLog = AuditLogDTO.builder()
+                .operatorId(userId)
+                .businessType(BusinessTypeEnum.CASE)
+                .operateType(OperateTypeEnum.UPDATE)
+                .module("CASE")
+                .description("案件状态变更: " + reason)
+                .beforeData(oldStatus)
+                .afterData(newStatus)
+                .build();
+        auditService.log(auditLog);
     }
     
     /**
@@ -105,17 +111,15 @@ public class CaseAuditProvider {
     public void auditTeamMemberChange(Long caseId, Long userId, String action, Long memberId, String role) {
         log.info("记录团队成员变更审计, 案件ID: {}, 用户: {}, 操作: {}, 成员: {}", 
                 caseId, userId, action, memberId);
-        // TODO: 调用core-audit记录审计
-        // 示例代码:
-        // Map<String, Object> auditData = Map.of(
-        //     "caseId", caseId,
-        //     "action", "TEAM_CHANGE",
-        //     "userId", userId,
-        //     "changeAction", action,
-        //     "memberId", memberId,
-        //     "role", role
-        // );
-        // auditService.recordAudit("CASE", caseId.toString(), "TEAM_CHANGE", auditData);
+        AuditLogDTO auditLog = AuditLogDTO.builder()
+                .operatorId(userId)
+                .businessType(BusinessTypeEnum.CASE)
+                .operateType(OperateTypeEnum.UPDATE)
+                .module("CASE")
+                .description("团队成员" + action)
+                .afterData("memberId=" + memberId + ",role=" + role)
+                .build();
+        auditService.log(auditLog);
     }
     
     /**
@@ -129,16 +133,15 @@ public class CaseAuditProvider {
     public void auditDocumentOperation(Long caseId, Long userId, Long documentId, String action) {
         log.info("记录文档操作审计, 案件ID: {}, 用户: {}, 文档: {}, 操作: {}", 
                 caseId, userId, documentId, action);
-        // TODO: 调用core-audit记录审计
-        // 示例代码:
-        // Map<String, Object> auditData = Map.of(
-        //     "caseId", caseId,
-        //     "action", "DOCUMENT_OPERATION",
-        //     "userId", userId,
-        //     "documentId", documentId,
-        //     "operationType", action
-        // );
-        // auditService.recordAudit("CASE", caseId.toString(), "DOCUMENT_OPERATION", auditData);
+        AuditLogDTO auditLog = AuditLogDTO.builder()
+                .operatorId(userId)
+                .businessType(BusinessTypeEnum.CASE)
+                .operateType(OperateTypeEnum.valueOf(action.toUpperCase()))
+                .module("CASE")
+                .description("文档操作: " + action)
+                .afterData("documentId=" + documentId)
+                .build();
+        auditService.log(auditLog);
     }
     
     /**
@@ -154,17 +157,14 @@ public class CaseAuditProvider {
     public void auditFeeChange(Long caseId, Long userId, Long feeId, String action, Double amount, String reason) {
         log.info("记录费用变更审计, 案件ID: {}, 用户: {}, 费用: {}, 操作: {}, 金额: {}", 
                 caseId, userId, feeId, action, amount);
-        // TODO: 调用core-audit记录审计
-        // 示例代码:
-        // Map<String, Object> auditData = Map.of(
-        //     "caseId", caseId,
-        //     "action", "FEE_CHANGE",
-        //     "userId", userId,
-        //     "feeId", feeId,
-        //     "operationType", action,
-        //     "amount", amount,
-        //     "reason", reason
-        // );
-        // auditService.recordAudit("CASE", caseId.toString(), "FEE_CHANGE", auditData);
+        AuditLogDTO auditLog = AuditLogDTO.builder()
+                .operatorId(userId)
+                .businessType(BusinessTypeEnum.CASE)
+                .operateType(OperateTypeEnum.valueOf(action.toUpperCase()))
+                .module("CASE")
+                .description("费用" + action + ": " + reason)
+                .afterData("feeId=" + feeId + ",amount=" + amount)
+                .build();
+        auditService.log(auditLog);
     }
 } 

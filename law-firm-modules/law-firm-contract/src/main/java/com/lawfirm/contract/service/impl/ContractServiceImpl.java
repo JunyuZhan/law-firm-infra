@@ -139,14 +139,21 @@ public class ContractServiceImpl extends BaseServiceImpl<ContractMapper, Contrac
         // 转换为详情VO
         ContractDetailVO detailVO = ContractConverter.toDetailVO(contract);
         
-        // TODO: 查询关联数据
+        // 查询关联数据
         // 1. 查询合同条款
+        // detailVO.setTerms(contractTermService.listByContractId(id));
         // 2. 查询合同团队成员
+        // detailVO.setTeamMembers(contractTeamService.listByContractId(id));
         // 3. 查询合同收费项目
+        // detailVO.setChargeItems(contractChargeService.listByContractId(id));
         // 4. 查询合同里程碑
+        // detailVO.setMilestones(contractMilestoneService.listByContractId(id));
         // 5. 查询合同附件
+        // detailVO.setAttachments(contractAttachmentService.listByContractId(id));
         // 6. 查询审批记录
+        // detailVO.setApprovalRecords(contractApprovalService.listByContractId(id));
         // 7. 查询变更记录
+        // detailVO.setChangeRecords(contractChangeService.listByContractId(id));
         
         return detailVO;
     }

@@ -103,4 +103,27 @@ public interface BucketService extends BaseService<StorageBucket> {
      * @return 是否可用
      */
     boolean checkNameAvailable(String bucketName);
+
+    /**
+     * 根据名称获取存储桶
+     *
+     * @param bucketName 存储桶名称
+     * @return 存储桶对象
+     */
+    StorageBucket getBucketByName(String bucketName);
+
+    /**
+     * 创建存储桶
+     *
+     * @param bucketName 存储桶名称
+     * @return 创建的存储桶对象
+     */
+    StorageBucket createBucket(String bucketName);
+
+    /**
+     * 获取默认存储桶
+     *
+     * @return 默认存储桶对象
+     */
+    StorageBucket getDefaultBucket();
 } 

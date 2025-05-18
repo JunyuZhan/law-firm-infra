@@ -3,6 +3,7 @@ package com.lawfirm.finance.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.common.security.context.SecurityContext;
+import com.lawfirm.common.util.excel.ExcelWriter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.finance.entity.CostCenter;
 import com.lawfirm.model.finance.mapper.CostCenterMapper;
@@ -15,7 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +33,8 @@ import java.util.List;
 public class CostCenterServiceImpl extends BaseServiceImpl<CostCenterMapper, CostCenter> implements CostCenterService {
 
     private final SecurityContext securityContext;
+    
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     @PreAuthorize("hasPermission('cost_center', 'create')")
@@ -110,7 +118,71 @@ public class CostCenterServiceImpl extends BaseServiceImpl<CostCenterMapper, Cos
     @PreAuthorize("hasPermission('cost_center', 'export')")
     public String exportCostCenters(List<Long> costCenterIds) {
         log.info("导出成本中心数据: costCenterIds={}", costCenterIds);
-        // TODO: 实现导出功能
-        return null;
+        
+        // 查询成本中心记录
+        List<CostCenter> costCenters;
+        if (costCenterIds != null && !costCenterIds.isEmpty()) {
+            costCenters = listByIds(costCenterIds);
+        } else {
+            // 如果没有指定ID，则获取所有记录
+            costCenters = list();
+        }
+        
+        if (costCenters.isEmpty()) {
+            log.warn("没有找到要导出的成本中心");
+            return null;
+        }
+        
+        // 准备Excel数据
+        List<List<String>> excelData = new ArrayList<>();
+        
+        // 添加表头
+        List<String> header = new ArrayList<>();
+        header.add("成本中心ID");
+        header.add("成本中心编号");
+        header.add("成本中心名称");
+        header.add("上级成本中心ID");
+        header.add("成本中心层级");
+        header.add("成本中心路径");
+        header.add("负责人ID");
+        header.add("部门ID");
+        header.add("说明");
+        header.add("创建时间");
+        header.add("更新时间");
+        excelData.add(header);
+        
+        // 添加数据行
+        for (CostCenter costCenter : costCenters) {
+            List<String> row = new ArrayList<>();
+            row.add(String.valueOf(costCenter.getId()));
+            row.add(costCenter.getCostCenterNumber());
+            row.add(costCenter.getCostCenterName());
+            row.add(costCenter.getParentId() != null ? String.valueOf(costCenter.getParentId()) : "");
+            row.add(costCenter.getLevel() != null ? String.valueOf(costCenter.getLevel()) : "1");
+            row.add(costCenter.getPath() != null ? costCenter.getPath() : "");
+            row.add(costCenter.getManagerId() != null ? String.valueOf(costCenter.getManagerId()) : "");
+            row.add(costCenter.getDepartmentId() != null ? String.valueOf(costCenter.getDepartmentId()) : "");
+            row.add(costCenter.getDescription() != null ? costCenter.getDescription() : "");
+            row.add(costCenter.getCreateTime() != null ? costCenter.getCreateTime().format(DATE_FORMATTER) : "");
+            row.add(costCenter.getUpdateTime() != null ? costCenter.getUpdateTime().format(DATE_FORMATTER) : "");
+            excelData.add(row);
+        }
+        
+        // 生成临时文件名
+        String fileName = "cost_centers_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".xlsx";
+        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
+        
+        try {
+            // 将数据写入文件
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            ExcelWriter.write(excelData, outputStream);
+            outputStream.close();
+            
+            // 返回文件路径
+            return filePath;
+        } catch (IOException e) {
+            log.error("导出成本中心失败", e);
+            return null;
+        }
     }
 }

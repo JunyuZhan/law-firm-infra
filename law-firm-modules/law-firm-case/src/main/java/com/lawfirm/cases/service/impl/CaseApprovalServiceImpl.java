@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.model.cases.dto.business.CaseApprovalDTO;
 import com.lawfirm.model.cases.service.business.CaseApprovalService;
+import com.lawfirm.model.cases.service.base.CaseService;
 import com.lawfirm.model.cases.vo.business.CaseApprovalVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class CaseApprovalServiceImpl implements CaseApprovalService {
 
     @Autowired
     private CaseApprovalDataService caseApprovalDataService;
+
+    @Autowired(required = false)
+    private CaseService caseService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -78,7 +82,16 @@ public class CaseApprovalServiceImpl implements CaseApprovalService {
     @Transactional(rollbackFor = Exception.class)
     public boolean updateApproval(CaseApprovalDTO approvalDTO) {
         log.info("更新审批: {}", approvalDTO);
-        // TODO: 实现审批更新逻辑
+        if (approvalDTO.getId() == null) throw new IllegalArgumentException("审批ID不能为空");
+        CaseApproval approval = caseApprovalDataService.getApprovalById(approvalDTO.getId());
+        if (approval == null) throw new IllegalArgumentException("审批记录不存在");
+        // 只允许更新部分字段
+        approval.setApprovalTitle(approvalDTO.getApprovalTitle());
+        approval.setApprovalType(approvalDTO.getApprovalType() != null ? approvalDTO.getApprovalType().toString() : null);
+        approval.setDeadline(approvalDTO.getDeadline());
+        approval.setRemarks(approvalDTO.getRemarks());
+        approval.setUpdateTime(java.time.LocalDateTime.now());
+        caseApprovalDataService.updateApproval(approval);
         return true;
     }
 
@@ -86,7 +99,23 @@ public class CaseApprovalServiceImpl implements CaseApprovalService {
     @Transactional(rollbackFor = Exception.class)
     public boolean cancelApproval(Long approvalId, String reason) {
         log.info("取消审批: approvalId={}, reason={}", approvalId, reason);
-        // TODO: 实现取消审批逻辑，更新状态为已取消
+        CaseApproval approval = caseApprovalDataService.getApprovalById(approvalId);
+        if (approval == null) throw new IllegalArgumentException("审批记录不存在");
+        approval.setApprovalStatus(4); // 4-已取消
+        approval.setUpdateTime(java.time.LocalDateTime.now());
+        approval.setCompletionTime(java.time.LocalDateTime.now());
+        caseApprovalDataService.updateApproval(approval);
+        // 写入流转记录
+        CaseApprovalFlow flow = new CaseApprovalFlow();
+        flow.setApprovalId(approvalId);
+        flow.setApproverId(approval.getCurrentApproverId());
+        flow.setApproverName(approval.getCurrentApproverName());
+        flow.setApprovalStatus(4);
+        flow.setApprovalOpinion(reason != null ? reason : "主动取消");
+        flow.setApprovalTime(java.time.LocalDateTime.now());
+        flow.setNodeOrder(0);
+        flow.setCreateTime(java.time.LocalDateTime.now());
+        caseApprovalDataService.createApprovalFlow(flow);
         return true;
     }
 
@@ -119,15 +148,31 @@ public class CaseApprovalServiceImpl implements CaseApprovalService {
     @Override
     public List<CaseApprovalVO> listCaseApprovals(Long caseId) {
         log.info("获取案件所有审批: caseId={}", caseId);
-        // TODO: 查询案件所有审批
-        return new ArrayList<>();
+        List<CaseApproval> approvals = caseApprovalDataService.listApprovalsByCaseId(caseId);
+        List<CaseApprovalVO> voList = new ArrayList<>();
+        for (CaseApproval approval : approvals) {
+            CaseApprovalVO vo = getApprovalDetail(approval.getId());
+            if (vo != null) voList.add(vo);
+        }
+        return voList;
     }
 
     @Override
     public IPage<CaseApprovalVO> pageApprovals(Long caseId, Integer approvalType, Integer approvalStatus, Integer pageNum, Integer pageSize) {
         log.info("分页查询审批: caseId={}, approvalType={}, approvalStatus={}, pageNum={}, pageSize={}", caseId, approvalType, approvalStatus, pageNum, pageSize);
-        // TODO: 分页查询审批
-        return new Page<>();
+        Page<CaseApproval> page = new Page<>(pageNum, pageSize);
+        IPage<CaseApproval> approvalPage = caseApprovalDataService.pageApprovals(page, caseId, approvalType, approvalStatus);
+        Page<CaseApprovalVO> voPage = new Page<>();
+        voPage.setCurrent(pageNum);
+        voPage.setSize(pageSize);
+        voPage.setTotal(approvalPage.getTotal());
+        List<CaseApprovalVO> voList = new ArrayList<>();
+        for (CaseApproval approval : approvalPage.getRecords()) {
+            CaseApprovalVO vo = getApprovalDetail(approval.getId());
+            if (vo != null) voList.add(vo);
+        }
+        voPage.setRecords(voList);
+        return voPage;
     }
 
     @Override
@@ -171,58 +216,138 @@ public class CaseApprovalServiceImpl implements CaseApprovalService {
             approval.setUpdateTime(LocalDateTime.now());
             caseApprovalDataService.updateApproval(approval);
             log.info("审批流程结束，状态: {}", approved ? "通过" : "拒绝");
-            // TODO: 可在此处联动案件主表状态变更
+            // 联动案件主表状态变更
+            if (caseService != null) {
+                Integer targetStatus = approved ? 2 : 3; // 假设2代表已通过，3代表已拒绝
+                String reason = approved ? "审批通过" : "审批拒绝";
+                caseService.changeStatus(approval.getCaseId(), targetStatus, reason);
+            }
         }
         return true;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean transferApproval(Long approvalId, Long targetUserId, String reason) {
         log.info("转交审批: approvalId={}, targetUserId={}, reason={}", approvalId, targetUserId, reason);
-        // TODO: 实现转交审批逻辑
+        CaseApproval approval = caseApprovalDataService.getApprovalById(approvalId);
+        if (approval == null) throw new IllegalArgumentException("审批记录不存在");
+        // 假设可通过targetUserId查到用户名
+        String targetUserName = "用户" + targetUserId; // 实际应查用户表
+        approval.setCurrentApproverId(targetUserId);
+        approval.setCurrentApproverName(targetUserName);
+        approval.setUpdateTime(LocalDateTime.now());
+        caseApprovalDataService.updateApproval(approval);
+        // 写入流转记录
+        CaseApprovalFlow flow = new CaseApprovalFlow();
+        flow.setApprovalId(approvalId);
+        flow.setApproverId(targetUserId);
+        flow.setApproverName(targetUserName);
+        flow.setApprovalStatus(1); // 1-待审批
+        flow.setApprovalOpinion(reason != null ? reason : "转交审批");
+        flow.setApprovalTime(LocalDateTime.now());
+        flow.setNodeOrder(0);
+        flow.setCreateTime(LocalDateTime.now());
+        caseApprovalDataService.createApprovalFlow(flow);
         return true;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean addApprover(Long approvalId, Long addedUserId, Integer type) {
         log.info("加签: approvalId={}, addedUserId={}, type={}", approvalId, addedUserId, type);
-        // TODO: 实现加签逻辑
+        // 这里只做流转记录，实际可扩展审批链
+        String addedUserName = "用户" + addedUserId;
+        CaseApprovalFlow flow = new CaseApprovalFlow();
+        flow.setApprovalId(approvalId);
+        flow.setApproverId(addedUserId);
+        flow.setApproverName(addedUserName);
+        flow.setApprovalStatus(0); // 0-加签
+        flow.setApprovalOpinion("加签");
+        flow.setApprovalTime(LocalDateTime.now());
+        flow.setNodeOrder(type != null ? type : 0);
+        flow.setCreateTime(LocalDateTime.now());
+        caseApprovalDataService.createApprovalFlow(flow);
         return true;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean removeApprover(Long approvalId, Long removedUserId, String reason) {
         log.info("减签: approvalId={}, removedUserId={}, reason={}", approvalId, removedUserId, reason);
-        // TODO: 实现减签逻辑
+        // 这里只做流转记录，实际可扩展审批链
+        String removedUserName = "用户" + removedUserId;
+        CaseApprovalFlow flow = new CaseApprovalFlow();
+        flow.setApprovalId(approvalId);
+        flow.setApproverId(removedUserId);
+        flow.setApproverName(removedUserName);
+        flow.setApprovalStatus(0); // 0-减签
+        flow.setApprovalOpinion(reason != null ? reason : "减签");
+        flow.setApprovalTime(LocalDateTime.now());
+        flow.setNodeOrder(0);
+        flow.setCreateTime(LocalDateTime.now());
+        caseApprovalDataService.createApprovalFlow(flow);
         return true;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean urgeApproval(Long approvalId) {
         log.info("催办审批: approvalId={}", approvalId);
-        // TODO: 实现催办逻辑
+        CaseApproval approval = caseApprovalDataService.getApprovalById(approvalId);
+        if (approval == null) throw new IllegalArgumentException("审批记录不存在");
+        // 写入催办流转记录
+        CaseApprovalFlow flow = new CaseApprovalFlow();
+        flow.setApprovalId(approvalId);
+        flow.setApproverId(approval.getCurrentApproverId());
+        flow.setApproverName(approval.getCurrentApproverName());
+        flow.setApprovalStatus(5); // 5-催办
+        flow.setApprovalOpinion("催办");
+        flow.setApprovalTime(LocalDateTime.now());
+        flow.setNodeOrder(0);
+        flow.setCreateTime(LocalDateTime.now());
+        caseApprovalDataService.createApprovalFlow(flow);
+        // 可扩展：调用消息服务通知当前审批人
         return true;
     }
 
     @Override
     public List<CaseApprovalVO> listPendingApprovals(Long userId) {
         log.info("获取待办审批: userId={}", userId);
-        // TODO: 查询当前用户待办审批
-        return new ArrayList<>();
+        // 查询当前用户为当前审批人的审批，且状态为待审批
+        List<CaseApproval> approvals = caseApprovalDataService.listApprovalsByCurrentApprover(userId, 1); // 1-待审批
+        List<CaseApprovalVO> voList = new ArrayList<>();
+        for (CaseApproval approval : approvals) {
+            CaseApprovalVO vo = getApprovalDetail(approval.getId());
+            if (vo != null) voList.add(vo);
+        }
+        return voList;
     }
 
     @Override
     public List<CaseApprovalVO> listHandledApprovals(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         log.info("获取已办审批: userId={}, startTime={}, endTime={}", userId, startTime, endTime);
-        // TODO: 查询当前用户已办审批
-        return new ArrayList<>();
+        // 查询当前用户已处理过的审批
+        List<CaseApproval> approvals = caseApprovalDataService.listHandledApprovals(userId, startTime, endTime);
+        List<CaseApprovalVO> voList = new ArrayList<>();
+        for (CaseApproval approval : approvals) {
+            CaseApprovalVO vo = getApprovalDetail(approval.getId());
+            if (vo != null) voList.add(vo);
+        }
+        return voList;
     }
 
     @Override
     public List<CaseApprovalVO> listInitiatedApprovals(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         log.info("获取我发起的审批: userId={}, startTime={}, endTime={}", userId, startTime, endTime);
-        // TODO: 查询当前用户发起的审批
-        return new ArrayList<>();
+        // 查询当前用户发起的审批
+        List<CaseApproval> approvals = caseApprovalDataService.listInitiatedApprovals(userId, startTime, endTime);
+        List<CaseApprovalVO> voList = new ArrayList<>();
+        for (CaseApproval approval : approvals) {
+            CaseApprovalVO vo = getApprovalDetail(approval.getId());
+            if (vo != null) voList.add(vo);
+        }
+        return voList;
     }
 
     @Override
@@ -247,14 +372,13 @@ public class CaseApprovalServiceImpl implements CaseApprovalService {
     @Override
     public boolean checkApprovalExists(Long approvalId) {
         log.info("检查审批是否存在: approvalId={}", approvalId);
-        // TODO: 检查审批是否存在
-        return true;
+        CaseApproval approval = caseApprovalDataService.getApprovalById(approvalId);
+        return approval != null;
     }
 
     @Override
     public int countApprovals(Long caseId, Integer approvalType, Integer approvalStatus) {
         log.info("统计案件审批数量: caseId={}, approvalType={}, approvalStatus={}", caseId, approvalType, approvalStatus);
-        // TODO: 统计审批数量
-        return 0;
+        return caseApprovalDataService.countApprovals(caseId, approvalType, approvalStatus);
     }
 } 

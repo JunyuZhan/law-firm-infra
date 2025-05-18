@@ -18,7 +18,6 @@ public class ContractConverter {
      * @return 合同实体
      */
     public static Contract toEntity(ContractCreateDTO createDTO) {
-        // TODO: 实现DTO到实体的转换
         Contract contract = new Contract();
         contract.setContractNo(createDTO.getContractNo());
         contract.setContractName(createDTO.getContractName());
@@ -37,7 +36,6 @@ public class ContractConverter {
      * @param updateDTO 更新DTO
      */
     public static void updateEntity(Contract entity, ContractUpdateDTO updateDTO) {
-        // TODO: 实现更新DTO到实体的转换
         if (updateDTO.getContractName() != null) {
             entity.setContractName(updateDTO.getContractName());
         }
@@ -65,7 +63,6 @@ public class ContractConverter {
      * @return 合同VO
      */
     public static ContractVO toVO(Contract entity) {
-        // TODO: 实现实体到VO的转换
         if (entity == null) {
             return null;
         }

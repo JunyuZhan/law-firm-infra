@@ -59,4 +59,23 @@ public class DocumentCategory extends ModelBaseEntity {
      */
     @TableField("is_enabled")
     private Boolean isEnabled;
+    
+    /**
+     * 获取分类名称（兼容旧代码）
+     * 
+     * @return 分类名称
+     */
+    public String getName() {
+        return this.categoryName;
+    }
+    
+    /**
+     * 设置分类名称（兼容旧代码）
+     * 
+     * @param name 分类名称
+     */
+    public DocumentCategory setName(String name) {
+        this.categoryName = name;
+        return this;
+    }
 } 

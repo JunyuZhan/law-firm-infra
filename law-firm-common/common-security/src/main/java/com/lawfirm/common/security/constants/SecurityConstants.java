@@ -46,8 +46,23 @@ public class SecurityConstants {
     public static final String[] PUBLIC_RESOURCE_PATHS = {
             // 静态资源
             "/favicon.ico",
+            "/static/**",
+            // 公共API
+            "/api/public/**",
             // 基础路径
-            "/", "/error/**", "/api/**"
+            "/", "/error/**",
+            // API文档相关路径 - 确保所有环境都可以访问
+            "/doc.html",
+            "/v3/api-docs/**", 
+            "/swagger-ui/**", 
+            "/swagger-ui.html", 
+            "/webjars/**", 
+            "/swagger-resources/**", 
+            "/knife4j/**", 
+            "/v3/api-docs.yaml",
+            // 健康检查
+            "/actuator/**",
+            "/health/**"
     };
 
     private SecurityConstants() {

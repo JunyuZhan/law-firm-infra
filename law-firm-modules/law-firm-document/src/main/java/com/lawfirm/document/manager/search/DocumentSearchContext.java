@@ -2,6 +2,7 @@ package com.lawfirm.document.manager.search;
 
 import com.lawfirm.model.search.service.SearchService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class DocumentSearchContext {
      * 
      * @param searchService 搜索服务（可能为null）
      */
-    public DocumentSearchContext(SearchService searchService) {
+    public DocumentSearchContext(@Qualifier("coreSearchServiceImpl") SearchService searchService) {
         this.searchService = searchService;
         log.info("文档搜索上下文初始化完成，搜索服务状态: {}", searchService != null ? "可用" : "不可用");
     }

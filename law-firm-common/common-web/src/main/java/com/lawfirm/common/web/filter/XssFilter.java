@@ -2,6 +2,8 @@ package com.lawfirm.common.web.filter;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HtmlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -25,15 +27,35 @@ import java.util.Map;
 @Component("commonXssFilter")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class XssFilter implements Filter {
+    private static final Logger log = LoggerFactory.getLogger(XssFilter.class);
 
     // 需要排除的路径列表
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
-            "/health"
+            "/health",
+            "/doc.html",          // Knife4j UI and SpringDoc
+            "/swagger-ui",        // Swagger UI resources
+            "/swagger-resources", // Swagger resources
+            "/v3/api-docs",       // OpenAPI v3 definitions
+            "/webjars",           // Webjar resources
+            "/knife4j"            // Knife4j specific resources
     );
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        
+        if (request == null) {
+            log.error("XssFilter received a null ServletRequest object. This should not happen. Skipping XSS filtering and passing to next filter.");
+            chain.doFilter(request, response); // 仍然尝试传递，但后续过滤器也可能失败
+            return;
+        }
+
+        if (!(request instanceof HttpServletRequest)) {
+            log.warn("XssFilter received a non-HttpServletRequest: {}. Skipping XSS filtering.", request.getClass().getName());
+            chain.doFilter(request, response);
+            return;
+        }
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI();
         
@@ -42,7 +64,7 @@ public class XssFilter implements Filter {
                 .anyMatch(path::startsWith);
         
         if (shouldExclude) {
-            // 对于Swagger相关的路径，不做XSS过滤
+            // 对于排除的路径，不做XSS过滤
             chain.doFilter(request, response);
         } else {
             // 对其他路径进行XSS过滤
@@ -87,7 +109,8 @@ public class XssFilter implements Filter {
             if (StrUtil.isEmpty(value)) {
                 return value;
             }
-            return HtmlUtil.filter(value);
+            // 使用更通用的HtmlUtil.escape替换HtmlUtil.filter，后者可能过于激进
+            return HtmlUtil.escape(value); 
         }
     }
 } 

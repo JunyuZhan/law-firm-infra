@@ -3,6 +3,7 @@ package com.lawfirm.finance.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.common.security.context.SecurityContext;
+import com.lawfirm.common.util.excel.ExcelWriter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.finance.entity.PaymentPlan;
 import com.lawfirm.model.finance.enums.PaymentPlanStatusEnum;
@@ -16,8 +17,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +35,8 @@ import java.util.List;
 public class PaymentPlanServiceImpl extends BaseServiceImpl<PaymentPlanMapper, PaymentPlan> implements PaymentPlanService {
 
     private final SecurityContext securityContext;
+    
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     @PreAuthorize("hasPermission('payment_plan', 'create')")
@@ -226,7 +234,100 @@ public class PaymentPlanServiceImpl extends BaseServiceImpl<PaymentPlanMapper, P
     @PreAuthorize("hasPermission('payment_plan', 'export')")
     public String exportPaymentPlans(List<Long> paymentPlanIds) {
         log.info("导出付款计划数据: paymentPlanIds={}", paymentPlanIds);
-        // TODO: 实现导出功能
-        return null;
+        
+        // 查询付款计划记录
+        List<PaymentPlan> plans;
+        if (paymentPlanIds != null && !paymentPlanIds.isEmpty()) {
+            plans = listByIds(paymentPlanIds);
+        } else {
+            // 如果没有指定ID，则获取所有记录
+            plans = list();
+        }
+        
+        if (plans.isEmpty()) {
+            log.warn("没有找到要导出的付款计划");
+            return null;
+        }
+        
+        // 准备Excel数据
+        List<List<String>> excelData = new ArrayList<>();
+        
+        // 添加表头
+        List<String> header = new ArrayList<>();
+        header.add("计划ID");
+        header.add("计划编号");
+        header.add("计划名称");
+        header.add("总金额");
+        header.add("币种");
+        header.add("已付金额");
+        header.add("未付金额");
+        header.add("状态");
+        header.add("付款期数");
+        header.add("已付期数");
+        header.add("开始日期");
+        header.add("结束日期");
+        header.add("付款周期");
+        header.add("付款日");
+        header.add("客户ID");
+        header.add("案件ID");
+        header.add("创建时间");
+        header.add("更新时间");
+        header.add("说明");
+        excelData.add(header);
+        
+        // 添加数据行
+        for (PaymentPlan plan : plans) {
+            List<String> row = new ArrayList<>();
+            row.add(String.valueOf(plan.getId()));
+            row.add(plan.getPlanNumber());
+            row.add(plan.getPlanName());
+            row.add(plan.getTotalAmount() != null ? plan.getTotalAmount().toString() : "0");
+            row.add(plan.getCurrency() != null ? plan.getCurrency().toString() : "");
+            row.add(plan.getPaidAmount() != null ? plan.getPaidAmount().toString() : "0");
+            row.add(plan.getUnpaidAmount() != null ? plan.getUnpaidAmount().toString() : "0");
+            row.add(PaymentPlanStatusEnum.getByCode(plan.getStatus()).getDesc());
+            row.add(String.valueOf(plan.getInstallments()));
+            row.add(String.valueOf(plan.getPaidInstallments()));
+            row.add(plan.getStartDate() != null ? plan.getStartDate().format(DATE_FORMATTER) : "");
+            row.add(plan.getEndDate() != null ? plan.getEndDate().format(DATE_FORMATTER) : "");
+            
+            // 付款周期格式化
+            String paymentCycle = "";
+            if (plan.getPaymentCycle() != null) {
+                switch (plan.getPaymentCycle()) {
+                    case 1: paymentCycle = "按月"; break;
+                    case 2: paymentCycle = "按季度"; break;
+                    case 3: paymentCycle = "按年"; break;
+                    case 4: paymentCycle = "自定义"; break;
+                    default: paymentCycle = String.valueOf(plan.getPaymentCycle());
+                }
+            }
+            row.add(paymentCycle);
+            
+            row.add(plan.getPaymentDay() != null ? String.valueOf(plan.getPaymentDay()) : "");
+            row.add(String.valueOf(plan.getClientId()));
+            row.add(plan.getCaseId() != null ? String.valueOf(plan.getCaseId()) : "");
+            row.add(plan.getCreateTime() != null ? plan.getCreateTime().format(DATE_FORMATTER) : "");
+            row.add(plan.getUpdateTime() != null ? plan.getUpdateTime().format(DATE_FORMATTER) : "");
+            row.add(plan.getDescription() != null ? plan.getDescription() : "");
+            excelData.add(row);
+        }
+        
+        // 生成临时文件名
+        String fileName = "payment_plans_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".xlsx";
+        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
+        
+        try {
+            // 将数据写入文件
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            ExcelWriter.write(excelData, outputStream);
+            outputStream.close();
+            
+            // 返回文件路径
+            return filePath;
+        } catch (IOException e) {
+            log.error("导出付款计划失败", e);
+            return null;
+        }
     }
 }

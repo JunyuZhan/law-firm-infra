@@ -34,7 +34,6 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@Primary
 @Transactional(rollbackFor = Exception.class)
 public class SearchServiceImpl extends BaseServiceImpl<SearchDocMapper, SearchDoc> implements SearchService {
 

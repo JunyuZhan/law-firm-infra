@@ -169,7 +169,7 @@ public class WorkTaskController {
             @Parameter(description = "取消原因") 
             @RequestParam(required = false) String reason) {
         log.info("取消工作任务: id={}, reason={}", taskId, reason);
-        workTaskService.cancelTask(taskId);
+        workTaskService.cancelTask(taskId, reason);
         return CommonResult.success();
     }
     

@@ -96,11 +96,18 @@ import org.mybatis.spring.annotation.MapperScan;
 )
 public class LawFirmApiApplication {
 
+    /**
+     * 系统属性常量
+     */
+    private static final String ENCODING_UTF8 = "UTF-8";
+    private static final String PROPERTY_TRUE = "true";
+
     static {
         // 在静态块中设置系统属性，确保尽早生效
+        
         // 设置文件编码
-        System.setProperty("file.encoding", "UTF-8");
-        System.setProperty("sun.jnu.encoding", "UTF-8");
+        System.setProperty("file.encoding", ENCODING_UTF8);
+        System.setProperty("sun.jnu.encoding", ENCODING_UTF8);
         
         // 设置语言和区域
         System.setProperty("user.language", "zh");
@@ -108,8 +115,8 @@ public class LawFirmApiApplication {
         System.setProperty("user.timezone", "Asia/Shanghai");
         
         // 设置日志编码
-        System.setProperty("logging.charset.console", "UTF-8");
-        System.setProperty("logging.charset.file", "UTF-8");
+        System.setProperty("logging.charset.console", ENCODING_UTF8);
+        System.setProperty("logging.charset.file", ENCODING_UTF8);
         System.setProperty("spring.output.ansi.enabled", "always");
         
         // 配置Jansi以支持ANSI颜色输出
@@ -118,25 +125,11 @@ public class LawFirmApiApplication {
         // 确保使用Spring Boot内置的logback配置
         System.clearProperty("logback.configurationFile");
         
-        // 配置Spring MVC编码
-        System.setProperty("spring.http.encoding.charset", "UTF-8");
-        System.setProperty("spring.http.encoding.enabled", "true");
-        System.setProperty("spring.http.encoding.force", "true");
-        System.setProperty("spring.mvc.charset", "UTF-8");
-        
         // 配置服务器编码
-        System.setProperty("server.servlet.encoding.charset", "UTF-8");
-        System.setProperty("server.servlet.encoding.enabled", "true");
-        System.setProperty("server.servlet.encoding.force", "true");
+        configureServerEncoding();
         
-        // 确保Tomcat使用UTF-8
-        System.setProperty("server.tomcat.uri-encoding", "UTF-8");
-        
-        // 禁用HandlerMappingIntrospector缓存，解决Spring Framework兼容性问题
-        System.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER");
-        System.setProperty("spring.mvc.problemdetails.enabled", "false");
-        System.setProperty("spring.mvc.servlet.path", "/");
-        System.setProperty("spring.security.filter.order", "15");
+        // 配置Spring MVC相关设置
+        configureSpringMvc();
         
         // 检测环境变量判断是否为开发环境
         String activeProfile = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"));
@@ -151,6 +144,66 @@ public class LawFirmApiApplication {
         Environment env = app.run(args).getEnvironment();
         
         // 输出应用程序信息
+        printApplicationInfo(env);
+    }
+    
+    /**
+     * 配置服务器编码相关属性
+     */
+    private static void configureServerEncoding() {
+        // 配置服务器编码
+        System.setProperty("server.servlet.encoding.charset", ENCODING_UTF8);
+        System.setProperty("server.servlet.encoding.enabled", PROPERTY_TRUE);
+        System.setProperty("server.servlet.encoding.force", PROPERTY_TRUE);
+        
+        // 确保Tomcat使用UTF-8
+        System.setProperty("server.tomcat.uri-encoding", ENCODING_UTF8);
+    }
+    
+    /**
+     * 配置Spring MVC相关属性
+     */
+    private static void configureSpringMvc() {
+        // 配置Spring MVC编码
+        System.setProperty("spring.http.encoding.charset", ENCODING_UTF8);
+        System.setProperty("spring.http.encoding.enabled", PROPERTY_TRUE);
+        System.setProperty("spring.http.encoding.force", PROPERTY_TRUE);
+        System.setProperty("spring.mvc.charset", ENCODING_UTF8);
+        
+        // 禁用HandlerMappingIntrospector缓存，解决Spring Framework兼容性问题
+        System.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER");
+        System.setProperty("spring.mvc.problemdetails.enabled", "false");
+        System.setProperty("spring.mvc.servlet.path", "/");
+        System.setProperty("spring.security.filter.order", "15");
+    }
+    
+    /**
+     * 设置必要的系统属性
+     */
+    private static void setSystemProperties() {
+        // 允许覆盖Bean定义
+        System.setProperty("spring.main.allow-bean-definition-overriding", PROPERTY_TRUE);
+        
+        // 启用延迟初始化以提高启动性能
+        System.setProperty("spring.main.lazy-initialization", "false");
+        
+        // 允许循环引用（开发阶段）
+        System.setProperty("spring.main.allow-circular-references", PROPERTY_TRUE);
+        
+        // 设置日志级别
+        System.setProperty("org.springframework.boot.logging.LoggingSystem", "org.springframework.boot.logging.logback.LogbackLoggingSystem");
+        
+        // 清理可能导致排除错误的属性
+        System.clearProperty("spring.autoconfigure.exclude");
+        
+        // 允许静态资源
+        System.setProperty("spring.web.resources.add-mappings", PROPERTY_TRUE);
+    }
+    
+    /**
+     * 打印应用程序信息
+     */
+    private static void printApplicationInfo(Environment env) {
         String protocol = "http";
         if (env.getProperty("server.ssl.key-store") != null) {
             protocol = "https";
@@ -190,28 +243,5 @@ public class LawFirmApiApplication {
                 System.getProperty("java.version"),
                 System.getProperty("os.name"),
                 System.getProperty("os.arch"));
-    }
-    
-    /**
-     * 设置必要的系统属性
-     */
-    private static void setSystemProperties() {
-        // 允许覆盖Bean定义
-        System.setProperty("spring.main.allow-bean-definition-overriding", "true");
-        
-        // 启用延迟初始化以提高启动性能
-        System.setProperty("spring.main.lazy-initialization", "false");
-        
-        // 允许循环引用（开发阶段）
-        System.setProperty("spring.main.allow-circular-references", "true");
-        
-        // 设置日志级别
-        System.setProperty("org.springframework.boot.logging.LoggingSystem", "org.springframework.boot.logging.logback.LogbackLoggingSystem");
-        
-        // 清理可能导致排除错误的属性
-        System.clearProperty("spring.autoconfigure.exclude");
-        
-        // 允许静态资源
-        System.setProperty("spring.web.resources.add-mappings", "true");
     }
 }

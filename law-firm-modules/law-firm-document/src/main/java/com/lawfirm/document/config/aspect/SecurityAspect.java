@@ -67,18 +67,36 @@ public class SecurityAspect {
      * 检查权限
      */
     private void checkPermissions(String[] permissions, Logical logical) {
-        // TODO: 实现权限检查逻辑
-        log.debug("检查权限 - Permissions: {}, Logical: {}", 
-                Arrays.toString(permissions), logical);
+        boolean hasPermission = false;
+        if (permissions != null && permissions.length > 0 && securityContext.getAuthorization() != null) {
+            if (logical == Logical.AND) {
+                hasPermission = Arrays.stream(permissions).allMatch(p -> securityContext.getAuthorization().hasPermission(p));
+            } else {
+                hasPermission = Arrays.stream(permissions).anyMatch(p -> securityContext.getAuthorization().hasPermission(p));
+            }
+        }
+        if (!hasPermission) {
+            throw new SecurityException("无权限: " + Arrays.toString(permissions));
+        }
+        log.debug("检查权限 - Permissions: {}, Logical: {}", Arrays.toString(permissions), logical);
     }
 
     /**
      * 检查角色
      */
     private void checkRoles(String[] roles, Logical logical) {
-        // TODO: 实现角色检查逻辑
-        log.debug("检查角色 - Roles: {}, Logical: {}", 
-                Arrays.toString(roles), logical);
+        boolean hasRole = false;
+        if (roles != null && roles.length > 0 && securityContext.getAuthorization() != null) {
+            if (logical == Logical.AND) {
+                hasRole = Arrays.stream(roles).allMatch(r -> securityContext.getAuthorization().hasRole(r));
+            } else {
+                hasRole = Arrays.stream(roles).anyMatch(r -> securityContext.getAuthorization().hasRole(r));
+            }
+        }
+        if (!hasRole) {
+            throw new SecurityException("无角色: " + Arrays.toString(roles));
+        }
+        log.debug("检查角色 - Roles: {}, Logical: {}", Arrays.toString(roles), logical);
     }
 
     /**

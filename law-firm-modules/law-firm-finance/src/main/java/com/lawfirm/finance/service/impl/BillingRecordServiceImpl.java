@@ -3,6 +3,7 @@ package com.lawfirm.finance.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.common.security.context.SecurityContext;
+import com.lawfirm.common.util.excel.ExcelWriter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.finance.entity.BillingRecord;
 import com.lawfirm.model.finance.enums.BillingStatusEnum;
@@ -17,9 +18,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 财务账单记录服务实现类
@@ -30,6 +38,8 @@ import java.util.List;
 public class BillingRecordServiceImpl extends BaseServiceImpl<BillingRecordMapper, BillingRecord> implements BillingRecordService {
 
     private final SecurityContext securityContext;
+    
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     @PreAuthorize("hasPermission('billing_record', 'create')")
@@ -241,7 +251,79 @@ public class BillingRecordServiceImpl extends BaseServiceImpl<BillingRecordMappe
     @PreAuthorize("hasPermission('billing_record', 'export')")
     public String exportBillingRecords(List<Long> billingRecordIds) {
         log.info("导出账单记录数据: billingRecordIds={}", billingRecordIds);
-        // TODO: 实现导出功能
-        return null;
+        
+        // 查询账单记录
+        List<BillingRecord> records;
+        if (billingRecordIds != null && !billingRecordIds.isEmpty()) {
+            records = listByIds(billingRecordIds);
+        } else {
+            // 如果没有指定ID，则获取所有记录
+            records = list();
+        }
+        
+        if (records.isEmpty()) {
+            log.warn("没有找到要导出的账单记录");
+            return null;
+        }
+        
+        // 准备Excel数据
+        List<List<String>> excelData = new ArrayList<>();
+        
+        // 添加表头
+        List<String> header = new ArrayList<>();
+        header.add("账单ID");
+        header.add("客户ID");
+        header.add("案件ID");
+        header.add("账单编号");
+        header.add("账单说明");
+        header.add("账单金额");
+        header.add("币种");
+        header.add("账单状态");
+        header.add("账单日期");
+        header.add("付款截止日期");
+        header.add("已付金额");
+        header.add("未付金额");
+        header.add("创建时间");
+        header.add("更新时间");
+        header.add("备注");
+        excelData.add(header);
+        
+        // 添加数据行
+        for (BillingRecord record : records) {
+            List<String> row = new ArrayList<>();
+            row.add(String.valueOf(record.getId()));
+            row.add(String.valueOf(record.getClientId()));
+            row.add(record.getCaseId() != null ? String.valueOf(record.getCaseId()) : "");
+            row.add(record.getBillingNumber());
+            row.add(record.getDescription() != null ? record.getDescription() : "");
+            row.add(record.getAmount().toString());
+            row.add(record.getCurrency());
+            row.add(BillingStatusEnum.getByCode(record.getBillingStatus()).getDesc());
+            row.add(record.getBillingDate() != null ? record.getBillingDate().format(DATE_FORMATTER) : "");
+            row.add(record.getDueDate() != null ? record.getDueDate().format(DATE_FORMATTER) : "");
+            row.add(record.getPaidAmount() != null ? record.getPaidAmount().toString() : "0");
+            row.add(record.getUnpaidAmount() != null ? record.getUnpaidAmount().toString() : "0");
+            row.add(record.getCreateTime() != null ? record.getCreateTime().format(DATE_FORMATTER) : "");
+            row.add(record.getUpdateTime() != null ? record.getUpdateTime().format(DATE_FORMATTER) : "");
+            row.add(record.getRemark());
+            excelData.add(row);
+        }
+        
+        // 生成临时文件名
+        String fileName = "billing_records_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".xlsx";
+        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
+        
+        try {
+            // 将数据写入文件
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            ExcelWriter.write(excelData, outputStream);
+            outputStream.close();
+            
+            // 返回文件路径
+            return filePath;
+        } catch (IOException e) {
+            log.error("导出账单记录失败", e);
+            return null;
+        }
     }
 } 

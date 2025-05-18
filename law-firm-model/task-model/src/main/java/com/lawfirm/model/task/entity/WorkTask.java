@@ -2,12 +2,15 @@ package com.lawfirm.model.task.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.lawfirm.common.util.json.JsonUtils;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 工作任务实体类
@@ -121,6 +124,13 @@ public class WorkTask extends ModelBaseEntity {
     @TableField("department_id")
     private Long departmentId;
 
+    /**
+     * 取消原因
+     */
+    @Schema(description = "取消原因")
+    @TableField("cancel_reason")
+    private String cancelReason;
+
     public WorkTask setTitle(String title) {
         this.title = title;
         return this;
@@ -128,6 +138,17 @@ public class WorkTask extends ModelBaseEntity {
 
     public WorkTask setDescription(String description) {
         this.description = description;
+        return this;
+    }
+    
+    /**
+     * 设置任务状态
+     * 
+     * @param status 任务状态值
+     * @return 当前任务对象
+     */
+    public WorkTask setStatus(Integer status) {
+        this.status = status;
         return this;
     }
 
@@ -185,9 +206,81 @@ public class WorkTask extends ModelBaseEntity {
         this.documentIds = documentIds;
         return this;
     }
+    
+    /**
+     * 设置文档ID列表
+     * 
+     * @param documentIdList 文档ID列表
+     * @return 当前任务对象
+     */
+    public WorkTask setDocumentIdList(List<Long> documentIdList) {
+        if (documentIdList == null || documentIdList.isEmpty()) {
+            this.documentIds = "[]";
+        } else {
+            this.documentIds = JsonUtils.toJsonString(documentIdList);
+        }
+        return this;
+    }
+    
+    /**
+     * 获取文档ID列表
+     * 
+     * @return 文档ID列表
+     */
+    public List<Long> getDocumentIdList() {
+        if (documentIds == null || documentIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        try {
+            return JsonUtils.parseArray(documentIds, Long.class);
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * 添加关联文档ID
+     * 
+     * @param documentId 文档ID
+     * @return 当前任务对象
+     */
+    public WorkTask addDocumentId(Long documentId) {
+        if (documentId == null) {
+            return this;
+        }
+        
+        List<Long> documentIdList = getDocumentIdList();
+        if (!documentIdList.contains(documentId)) {
+            documentIdList.add(documentId);
+            setDocumentIdList(documentIdList);
+        }
+        return this;
+    }
+    
+    /**
+     * 移除关联文档ID
+     * 
+     * @param documentId 文档ID
+     * @return 当前任务对象
+     */
+    public WorkTask removeDocumentId(Long documentId) {
+        if (documentId == null) {
+            return this;
+        }
+        
+        List<Long> documentIdList = getDocumentIdList();
+        documentIdList.remove(documentId);
+        setDocumentIdList(documentIdList);
+        return this;
+    }
 
     public WorkTask setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
+        return this;
+    }
+
+    public WorkTask setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
         return this;
     }
 } 

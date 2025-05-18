@@ -68,6 +68,13 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     @Transactional
+    public String sendServerAlert(String serverName, String level, String message) {
+        String formattedMessage = String.format("服务器[%s]告警: %s", serverName, message);
+        return sendAlert("SERVER", level, formattedMessage);
+    }
+
+    @Override
+    @Transactional
     @AuditLog(description = "关闭系统告警", operateType = "UPDATE", businessType = "MONITOR")
     public boolean closeAlert(String alertId) {
         try {

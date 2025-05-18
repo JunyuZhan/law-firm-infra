@@ -90,6 +90,14 @@ public interface WorkTaskService extends BaseService<WorkTask> {
     void cancelTask(Long taskId);
     
     /**
+     * 取消工作任务（带原因）
+     *
+     * @param taskId 工作任务ID
+     * @param reason 取消原因
+     */
+    void cancelTask(Long taskId, String reason);
+    
+    /**
      * 获取任务统计信息
      *
      * @param query 查询条件

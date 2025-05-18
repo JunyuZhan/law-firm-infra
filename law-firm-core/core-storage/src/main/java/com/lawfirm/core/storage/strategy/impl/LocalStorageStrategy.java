@@ -235,6 +235,36 @@ public class LocalStorageStrategy extends AbstractStorageStrategy {
     }
     
     /**
+     * 上传文本内容
+     * 
+     * @param bucket 存储桶
+     * @param objectName 对象名称
+     * @param content 文本内容
+     * @return 是否上传成功
+     */
+    @Override
+    public boolean uploadText(StorageBucket bucket, String objectName, String content) {
+        ensureInitialized();
+        
+        try {
+            objectName = formatObjectName(objectName);
+            Path targetPath = getFullPath(bucket.getBucketName(), objectName);
+            
+            // 确保目标目录存在
+            Files.createDirectories(targetPath.getParent());
+            
+            // 写入文本内容
+            Files.write(targetPath, content.getBytes(StandardCharsets.UTF_8));
+            
+            log.info("文本内容上传成功: {}", objectName);
+            return true;
+        } catch (IOException e) {
+            log.error("文本内容上传失败: {}", objectName, e);
+            return false;
+        }
+    }
+    
+    /**
      * 根据文件对象构建对象名称
      */
     private String buildObjectName(FileObject fileObject) {

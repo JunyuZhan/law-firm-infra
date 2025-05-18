@@ -7,8 +7,8 @@ import com.lawfirm.model.document.entity.base.BaseDocument;
 import com.lawfirm.model.document.service.DocumentService;
 import com.lawfirm.model.document.vo.DocumentVO;
 import com.lawfirm.model.search.service.SearchService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,6 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "search", name = "enabled", havingValue = "true", matchIfMissing = false)
 public class SearchTask {
 
@@ -32,6 +31,18 @@ public class SearchTask {
     private final DocumentService documentService;
     
     private static final String INDEX_NAME = "documents";
+
+    /**
+     * 构造函数
+     */
+    public SearchTask(
+            SearchManager searchManager,
+            @Qualifier("coreSearchServiceImpl") SearchService searchService,
+            DocumentService documentService) {
+        this.searchManager = searchManager;
+        this.searchService = searchService;
+        this.documentService = documentService;
+    }
 
     /**
      * 重建文档索引

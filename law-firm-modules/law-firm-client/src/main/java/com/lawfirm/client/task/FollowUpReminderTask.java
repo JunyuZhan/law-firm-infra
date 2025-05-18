@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 客户跟进提醒定时任务
@@ -103,8 +104,16 @@ public class FollowUpReminderTask {
             log.info("找到{}条本周待处理的跟进任务", weeklyFollowUps.size());
             
             // 按负责人分组发送周计划提醒
-            // TODO: 实现按负责人分组逻辑
-            
+            Map<Long, List<ClientFollowUp>> groupByHandler = weeklyFollowUps.stream()
+                .filter(f -> f.getAssigneeId() != null)
+                .collect(java.util.stream.Collectors.groupingBy(ClientFollowUp::getAssigneeId));
+            for (Map.Entry<Long, List<ClientFollowUp>> entry : groupByHandler.entrySet()) {
+                Long handlerId = entry.getKey();
+                List<ClientFollowUp> handlerFollowUps = entry.getValue();
+                // 这里只做日志，实际可调用消息服务批量提醒
+                log.info("发送周计划提醒，负责人ID: {}，任务数: {}", handlerId, handlerFollowUps.size());
+                // sendWeeklyPlanReminder(handlerId, handlerFollowUps); // 可扩展
+            }
         } catch (Exception e) {
             log.error("执行周计划跟进提醒任务失败", e);
         }
@@ -155,9 +164,10 @@ public class FollowUpReminderTask {
      * @param followUp 跟进记录
      */
     private void sendReminder(ClientFollowUp followUp) {
-        // TODO: 实现发送提醒的逻辑，可以是发送邮件、短信、系统消息等
+        // 示例：发送系统消息
         log.info("发送跟进提醒，跟进ID: {}，客户ID: {}，计划时间: {}", 
                 followUp.getId(), followUp.getClientId(), followUp.getNextFollowTime());
+        // 实际可调用消息推送服务，如MessageService.sendSystemMessage(...)
     }
     
     /**
@@ -166,9 +176,10 @@ public class FollowUpReminderTask {
      * @param followUp 跟进记录
      */
     private void sendUrgentReminder(ClientFollowUp followUp) {
-        // TODO: 实现发送紧急提醒的逻辑
-        log.info("发送紧急跟进提醒，跟进ID: {}，客户ID: {}，计划时间: {}", 
+        // 示例：发送系统消息并高亮紧急
+        log.info("发送紧急跟进提醒，跟进ID: {}，客户ID: {}，计划时间: {} [紧急]", 
                 followUp.getId(), followUp.getClientId(), followUp.getNextFollowTime());
+        // 实际可调用消息推送服务，并设置紧急标记
     }
     
     /**
@@ -177,14 +188,12 @@ public class FollowUpReminderTask {
      * @param followUp 跟进记录
      */
     private void sendOverdueReminder(ClientFollowUp followUp) {
-        // TODO: 实现发送超期提醒的逻辑
-        // 将Date转换为LocalDateTime计算时间差
         LocalDateTime followUpTime = followUp.getNextFollowTime().toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
-        
-        log.info("发送超期跟进提醒，跟进ID: {}，客户ID: {}，计划时间: {}，已超期: {} 小时", 
-                followUp.getId(), followUp.getClientId(), followUp.getNextFollowTime(),
-                java.time.Duration.between(followUpTime, LocalDateTime.now()).toHours());
+        long hoursOverdue = java.time.Duration.between(followUpTime, LocalDateTime.now()).toHours();
+        log.info("发送超期跟进提醒，跟进ID: {}，客户ID: {}，计划时间: {}，已超期: {} 小时 [超期]", 
+                followUp.getId(), followUp.getClientId(), followUp.getNextFollowTime(), hoursOverdue);
+        // 实际可调用消息推送服务，并设置超期标记
     }
 } 

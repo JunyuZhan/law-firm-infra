@@ -2,12 +2,13 @@ package com.lawfirm.personnel.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.lawfirm.common.core.exception.ValidationException;
+import com.lawfirm.model.organization.service.OrganizationTreeService;
 import com.lawfirm.model.personnel.entity.relation.EmployeeOrganizationRelation;
 import com.lawfirm.model.personnel.entity.history.EmployeePositionHistory;
 import com.lawfirm.model.personnel.mapper.EmployeeOrganizationRelationMapper;
 import com.lawfirm.model.personnel.mapper.EmployeePositionHistoryMapper;
 import com.lawfirm.model.personnel.service.EmployeeOrganizationService;
-import com.lawfirm.common.core.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +36,8 @@ public class EmployeeOrganizationServiceImpl implements EmployeeOrganizationServ
     private final EmployeeOrganizationRelationMapper relationMapper;
     
     private final EmployeePositionHistoryMapper positionHistoryMapper;
+    
+    private final OrganizationTreeService organizationTreeService;
     
     private final ApplicationEventPublisher eventPublisher;
 
@@ -98,11 +103,16 @@ public class EmployeeOrganizationServiceImpl implements EmployeeOrganizationServ
             return List.of();
         }
         
-        // TODO: 如果includeSubOrgs为true，需要先获取所有子组织ID
-        List<Long> orgIds = List.of(organizationId);
+        // 如果includeSubOrgs为true，需要先获取所有子组织ID
+        List<Long> orgIds;
         if (includeSubOrgs) {
-            // 获取子组织ID的逻辑，需要调用organization-model中的服务
-            // 此处暂时只处理当前组织
+            // 获取子组织ID
+            List<Long> subOrgIds = organizationTreeService.getAllChildIds(organizationId);
+            orgIds = new ArrayList<>(subOrgIds.size() + 1);
+            orgIds.add(organizationId);
+            orgIds.addAll(subOrgIds);
+        } else {
+            orgIds = List.of(organizationId);
         }
         
         LambdaQueryWrapper<EmployeeOrganizationRelation> queryWrapper = Wrappers.lambdaQuery();
@@ -331,7 +341,7 @@ public class EmployeeOrganizationServiceImpl implements EmployeeOrganizationServ
         
         // 如果需要检查子组织，则获取所有子组织ID后再查询
         if (checkSubOrgs) {
-            // TODO: 获取子组织ID的逻辑，需要调用organization-model中的服务
+            // 获取子组织ID
             List<Long> subOrgIds = getSubOrganizationIds(organizationId);
             
             if (!subOrgIds.isEmpty()) {
@@ -450,11 +460,19 @@ public class EmployeeOrganizationServiceImpl implements EmployeeOrganizationServ
     }
     
     /**
-     * 获取组织的所有子组织ID（暂时实现为空）
-     * 实际实现需要调用组织模块的服务
+     * 获取组织的所有子组织ID
+     * 调用组织模块的服务获取子组织ID
      */
     private List<Long> getSubOrganizationIds(Long organizationId) {
-        // TODO: 调用organization-model中的服务获取子组织ID
-        return new ArrayList<>();
+        if (organizationId == null) {
+            return Collections.emptyList();
+        }
+
+        try {
+            return organizationTreeService.getAllChildIds(organizationId);
+        } catch (Exception e) {
+            log.error("获取子组织ID失败，组织ID：{}", organizationId, e);
+            return Collections.emptyList();
+        }
     }
 }

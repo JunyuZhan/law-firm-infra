@@ -159,10 +159,21 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
      */
     private BigDecimal getQps() {
         try {
-            // 在实际项目中，应该通过MySQL性能监控获取
-            // 例如通过查询MySQL performance_schema
-            // 这里返回模拟数据
-            return BigDecimal.valueOf(Math.random() * 100).setScale(2, RoundingMode.HALF_UP);
+            // 查询MySQL全局状态中的查询数和运行时间
+            Map<String, Object> queriesResult = jdbcTemplate.queryForMap("SHOW GLOBAL STATUS LIKE 'Questions'");
+            Map<String, Object> uptimeResult = jdbcTemplate.queryForMap("SHOW GLOBAL STATUS LIKE 'Uptime'");
+            
+            if (queriesResult != null && uptimeResult != null) {
+                Long queries = Long.parseLong(queriesResult.get("Value").toString());
+                Long uptime = Long.parseLong(uptimeResult.get("Value").toString());
+                
+                // 计算QPS
+                if (uptime > 0) {
+                    return BigDecimal.valueOf((double) queries / uptime)
+                            .setScale(2, RoundingMode.HALF_UP);
+                }
+            }
+            return BigDecimal.ZERO;
         } catch (Exception e) {
             log.error("获取QPS异常", e);
             return BigDecimal.ZERO;
@@ -174,10 +185,21 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
      */
     private BigDecimal getTps() {
         try {
-            // 在实际项目中，应该通过MySQL性能监控获取
-            // 例如通过查询MySQL performance_schema
-            // 这里返回模拟数据
-            return BigDecimal.valueOf(Math.random() * 50).setScale(2, RoundingMode.HALF_UP);
+            // 查询MySQL全局状态中的提交数和运行时间
+            Map<String, Object> commitsResult = jdbcTemplate.queryForMap("SHOW GLOBAL STATUS LIKE 'Com_commit'");
+            Map<String, Object> uptimeResult = jdbcTemplate.queryForMap("SHOW GLOBAL STATUS LIKE 'Uptime'");
+            
+            if (commitsResult != null && uptimeResult != null) {
+                Long commits = Long.parseLong(commitsResult.get("Value").toString());
+                Long uptime = Long.parseLong(uptimeResult.get("Value").toString());
+                
+                // 计算TPS
+                if (uptime > 0) {
+                    return BigDecimal.valueOf((double) commits / uptime)
+                            .setScale(2, RoundingMode.HALF_UP);
+                }
+            }
+            return BigDecimal.ZERO;
         } catch (Exception e) {
             log.error("获取TPS异常", e);
             return BigDecimal.ZERO;
@@ -189,9 +211,13 @@ public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbM
      */
     private Integer getSlowQueries() {
         try {
-            // 在实际项目中，应该查询slow_query_log表
-            // 这里返回模拟数据
-            return (int) (Math.random() * 10);
+            // 查询MySQL全局状态中的慢查询数
+            Map<String, Object> result = jdbcTemplate.queryForMap("SHOW GLOBAL STATUS LIKE 'Slow_queries'");
+            if (result != null && result.containsKey("Value")) {
+                String value = result.get("Value").toString();
+                return Integer.parseInt(value);
+            }
+            return 0;
         } catch (Exception e) {
             log.error("获取慢查询数异常", e);
             return 0;

@@ -309,6 +309,54 @@ public class MinIOStorageStrategy extends AbstractStorageStrategy {
     }
     
     /**
+     * 上传文本内容到MinIO
+     * 
+     * @param bucket 存储桶
+     * @param objectName 对象名称
+     * @param content 文本内容
+     * @return 是否上传成功
+     */
+    @Override
+    public boolean uploadText(StorageBucket bucket, String objectName, String content) {
+        ensureInitialized();
+        
+        if (bucket == null || !StringUtils.hasText(objectName) || content == null) {
+            log.error("上传MinIO文本内容参数无效");
+            return false;
+        }
+        
+        try {
+            String bucketName = bucket.getBucketName();
+            objectName = formatObjectName(objectName);
+            
+            // 设置文件元数据
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Type", "text/plain; charset=utf-8");
+            
+            // 将文本内容转换为InputStream
+            byte[] contentBytes = content.getBytes("UTF-8");
+            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes)) {
+                // 上传文件
+                minioClient.putObject(
+                    PutObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(objectName)
+                        .stream(inputStream, contentBytes.length, -1)
+                        .contentType("text/plain; charset=utf-8")
+                        .headers(headers)
+                        .build()
+                );
+            }
+            
+            log.info("成功上传文本内容到MinIO: bucket={}, object={}", bucketName, objectName);
+            return true;
+        } catch (Exception e) {
+            log.error("上传文本内容到MinIO失败: {} - {}", objectName, e.getMessage(), e);
+            return false;
+        }
+    }
+    
+    /**
      * 根据文件扩展名获取内容类型
      */
     private String getContentType(String extension) {

@@ -163,7 +163,8 @@ public class ContractConflictServiceImpl extends ServiceImpl<ContractConflictMap
 
     @Override
     public Long getCurrentTenantId() {
-        return 1L; // TODO: 从租户上下文获取
+        // 返回默认租户ID
+        return 1L;
     }
     
     @Override

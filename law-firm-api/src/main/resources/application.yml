@@ -1,3 +1,15 @@
+# 律师事务所管理系统配置文件
+# 配置优先级说明：
+#  1. 命令行参数 (--param=value)
+#  2. 环境变量 (MYSQL_DATABASE, MYSQL_HOST 等)
+#  3. 配置文件 (application.yml)
+#  4. 代码中的默认值
+#
+# 多环境配置说明：
+# - dev: 开发环境 (application-dev.yml)
+# - test: 测试环境 (application-test.yml)
+# - prod: 生产环境 (application-prod.yml)
+
 spring:
   # 确保所有组件使用UTF-8编码
   mandatory-file-encoding: UTF-8
@@ -21,14 +33,11 @@ spring:
       - personnel # 人员管理
       - analysis  # 分析功能
       - archive   # 档案管理
-  # 允许Bean定义覆盖 - 重要，解决Bean冲突问题
+  # 主要配置保留在这里，让应用启动时便于查看
   main:
     allow-bean-definition-overriding: true
-    # 禁用懒加载，确保所有Bean在启动时完全初始化
     lazy-initialization: false
-    # 允许循环引用
     allow-circular-references: true
-    # 主应用类
     sources:
       - com.lawfirm.api.LawFirmApiApplication
   # 排除不需要的自动配置
@@ -38,9 +47,11 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useConfigs=maxPerformance
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${spring.database.name}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useConfigs=maxPerformance
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:}
+    # 数据库名称配置 - 便于其他组件引用
+    database-name: ${spring.database.name}
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -63,10 +74,9 @@ spring:
           max-wait: -1
           max-idle: 10
           min-idle: 0
-      # 禁用Redis自动配置的存储库支持，使用自定义配置
       repositories:
         enabled: true
-  # 禁用LDAP功能
+  # 禁用不需要的组件
   ldap:
     embedded:
       enabled: false
@@ -75,20 +85,12 @@ spring:
   security:
     ldap:
       enabled: false
-  # 禁用邮件服务功能
   mail:
     enabled: false
-    # 设置为空值防止尝试连接
     host: ""
     port: -1
-    properties:
-      mail.smtp.auth: false
-      mail.smtp.ssl.enable: false
-      mail.smtp.starttls.enable: false
-  # 禁用RabbitMQ消息队列
   rabbitmq:
     enabled: false
-    # 设置为空值防止尝试连接
     host: ""
     port: -1
   # 线程池任务执行器配置
@@ -100,12 +102,6 @@ spring:
         max-size: 10
         queue-capacity: 100
         thread-name-prefix: law-firm-task-
-  # MVC配置
-  mvc:
-    pathmatch:
-      matching-strategy: ANT_PATH_MATCHER
-    converters:
-      preferred-json-mapper: jackson
   # 文件上传配置
   servlet:
     multipart:
@@ -115,10 +111,9 @@ spring:
   # Flyway数据库迁移配置
   flyway:
     enabled: true
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:law_firm}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useConfigs=maxPerformance
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${spring.database.name}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useConfigs=maxPerformance
     user: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:}
-    # 使用Java配置中的locations，这里不重复配置
     baseline-on-migrate: true
     out-of-order: true
     validate-on-migrate: true
@@ -126,35 +121,32 @@ spring:
   output:
     ansi:
       enabled: always
-  # 确保消息转换器使用UTF-8
-  messages:
-    encoding: UTF-8
+  # Jackson JSON配置
+  jackson:
+    default-property-inclusion: non-null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+    property-naming-strategy: SNAKE_CASE
+  # 全局属性 - 数据库名称
+  database:
+    name: ${MYSQL_DATABASE:law_firm}
 
 # 服务器配置
 server:
   port: ${SERVER_PORT:8080}
   servlet:
     context-path: ${CONTEXT_PATH:/}
-    # 确保Servlet使用UTF-8编码
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-      force-request: true
-      force-response: true
   tomcat:
-    uri-encoding: UTF-8
     max-threads: 200
     max-connections: 8192
-    # 确保响应正确使用UTF-8
-    relaxed-query-chars: [ ]
-    relaxed-path-chars: [ ]
 
 # MyBatis Plus配置
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
-  # 不设置typeEnumsPackage以避免枚举扫描导致的类型推断问题
-  # type-aliases-package: com.lawfirm.*.entity
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     map-underscore-to-camel-case: true
@@ -168,15 +160,12 @@ mybatis-plus:
       logic-not-delete-value: 0
       id-type: AUTO
 
-# 跨域配置 - 整合common-web的跨域配置
+# 跨域配置
 cors:
-  allowed-origins: "*"
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://localhost:5666,http://localhost:5666,https://localhost:8000,https://localhost:3000}
 
 # 日志配置
 logging:
-  charset:
-    console: UTF-8
-    file: UTF-8
   level:
     root: ${LOGGING_LEVEL_ROOT:INFO}
     com.lawfirm: ${LOGGING_LEVEL_APP:DEBUG}
@@ -187,20 +176,81 @@ logging:
     max-size: ${LOG_FILE_MAX_SIZE:100MB}
     max-history: ${LOG_FILE_MAX_HISTORY:30}
     total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:3GB}
+    # 清理策略：保留30天日志，总容量限制3GB，自动删除旧日志
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
-# 系统参数配置 - 这里只放顶层配置，模块内配置通过include引入
+# API文档配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+
+# Knife4j增强配置
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
+    enable-swagger-models: true
+    enable-document-manage: true
+    enable-search: true
+    enable-group: true
+    enable-footer: false
+
+# 系统参数配置
 law-firm:
   # 安全配置
   security:
     jwt:
       secret: ${JWT_SECRET:lawfirm123456}
       expiration: ${JWT_EXPIRATION:86400}
-      header: ${JWT_HEADER:Authorization}
-      token-start-with: ${JWT_TOKEN_START_WITH:Bearer }
-      token-header: ${JWT_TOKEN_HEADER:Authorization}
+  
+  # API相关配置
+  api:
+    # API基础路径前缀
+    base-path: /api
+    # API版本控制
+    version:
+      enabled: true
+      current: v1
+    # 缓存配置
+    cache:
+      enabled: ${API_CACHE_ENABLED:true}
+      default-ttl: ${API_CACHE_DEFAULT_TTL:3600}
+    # 访问审计日志配置
+    audit:
+      enabled: ${API_AUDIT_ENABLED:true}
+      exclude-paths: ${API_AUDIT_EXCLUDE_PATHS:/static/**,/webjars/**,/error/**,/favicon.ico,/actuator/**}
+      sensitive-fields: ${API_AUDIT_SENSITIVE_FIELDS:password,secret,token,creditCard,idCard}
+    # 限流配置
+    rate-limit:
+      enabled: ${RATE_LIMIT_ENABLED:true}
+      ip-limit-enabled: ${IP_LIMIT_ENABLED:true}
+      ip-limit-rate: ${IP_LIMIT_RATE:50}
+      ip-limit-interval: ${IP_LIMIT_INTERVAL:1}
+      ip-limit-paths:
+        - /api/auth/login
+    # 幂等性配置
+    idempotent:
+      enabled: ${IDEMPOTENT_ENABLED:true}
+      default-expire-time: ${IDEMPOTENT_EXPIRE_TIME:60}
+      auto-generate: ${IDEMPOTENT_AUTO_GENERATE:false}
+    # 防重复提交配置
+    repeat-submit:
+      enabled: ${REPEAT_SUBMIT_ENABLED:true}
+      default-interval: ${REPEAT_SUBMIT_INTERVAL:5000}
+      user-based: ${REPEAT_SUBMIT_USER_BASED:true}
+    # 分布式锁配置
+    distributed-lock:
+      enabled: ${DISTRIBUTED_LOCK_ENABLED:true}
+      default-wait-time: ${DISTRIBUTED_LOCK_WAIT_TIME:5}
+      default-lease-time: ${DISTRIBUTED_LOCK_LEASE_TIME:30}
   
   # 核心模块配置
   core:
@@ -210,23 +260,14 @@ law-firm:
   # 搜索服务配置
   search:
     enabled: true
-    # 设置为lucene
     searchEngineType: lucene
-    # Lucene配置
     lucene:
-      # 索引存储目录
       indexDir: ${user.home}/.law-firm/lucene-index
-      # 内存缓冲区大小(MB)
       ramBufferSizeMb: 32
-      # 最大搜索结果数
       maxResults: 1000
-      # 是否启用高亮
       highlightEnabled: true
-      # 高亮前置标签
       highlightPreTag: <em>
-      # 高亮后置标签
       highlightPostTag: </em>
-      # 分析器类型: standard, chinese, ik
       analyzer: ik
   
   # 通用配置
@@ -253,7 +294,7 @@ law-firm:
     message:
       enabled: true
 
-# Actuator配置
+# Actuator配置 - 简化
 management:
   endpoints:
     web:
@@ -262,16 +303,8 @@ management:
   endpoint:
     health:
       show-details: always
-      show-components: always
       probes:
         enabled: true
-      group:
-        liveness:
-          include: livenessState,ping,diskSpace
-        readiness:
-          include: readinessState,db
-      # 禁用组成员验证，避免冲突
-      validate-group-membership: false
   health:
     db:
       enabled: true
@@ -279,46 +312,3 @@ management:
       enabled: true
     redis:
       enabled: false
-    ldap:
-      enabled: false
-    mail:
-      enabled: false
-    rabbit:
-      enabled: false
-    # 禁用其他不需要的健康检查组件
-    mongo:
-      enabled: false
-    cassandra:
-      enabled: false
-    elasticsearch:
-      enabled: false
-    solr:
-      enabled: false
-    couchbase:
-      enabled: false
-    neo4j:
-      enabled: false
-
-# 确保所有层面使用统一的UTF-8编码
-http:
-  encoding:
-    charset: UTF-8
-    enabled: true
-    force: true
-
-jackson:
-  # Jackson JSON配置
-  default-property-inclusion: non_null
-  date-format: yyyy-MM-dd HH:mm:ss
-  time-zone: GMT+8
-  serialization:
-    WRITE_DATES_AS_TIMESTAMPS: false
-  deserialization:
-    FAIL_ON_UNKNOWN_PROPERTIES: false
-  property-naming-strategy: SNAKE_CASE
-  mapper:
-    PROPAGATE_TRANSIENT_MARKER: true
-  generator:
-    WRITE_BIGDECIMAL_AS_PLAIN: true
-  parser:
-    ALLOW_UNQUOTED_FIELD_NAMES: true

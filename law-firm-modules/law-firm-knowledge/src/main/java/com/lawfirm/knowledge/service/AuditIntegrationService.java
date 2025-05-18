@@ -1,25 +1,26 @@
 package com.lawfirm.knowledge.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.model.knowledge.dto.KnowledgeDTO;
 import com.lawfirm.model.knowledge.entity.Knowledge;
 import com.lawfirm.model.log.dto.AuditLogDTO;
+import com.lawfirm.model.log.dto.AuditLogQuery;
 import com.lawfirm.model.log.service.AuditService;
 import com.lawfirm.model.log.service.AuditQueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * 审计服务集成
- * 示例如何集成core-audit模块
+ * 集成core-audit模块
  */
 @Slf4j
 @Service("knowledgeAuditService")
@@ -54,7 +55,7 @@ public class AuditIntegrationService {
                 knowledge.getTitle(), knowledge.getCategoryId()));
             
             // 记录审计日志
-            ((LogFunction) auditService).log(auditLog);
+            auditService.log(auditLog);
             
             log.info("知识创建审计记录成功: id={}, title={}", knowledge.getId(), knowledge.getTitle());
         } catch (Exception e) {
@@ -84,7 +85,7 @@ public class AuditIntegrationService {
             auditLog.setAfterData(null);
             
             // 异步记录审计日志
-            ((LogAsyncFunction) auditService).logAsync(auditLog);
+            auditService.logAsync(auditLog);
             
             log.info("知识删除审计记录成功: id={}, title={}", knowledge.getId(), knowledge.getTitle());
         } catch (Exception e) {
@@ -99,30 +100,31 @@ public class AuditIntegrationService {
      * @param knowledgeId 知识文档ID
      * @param page 页码
      * @param size 每页大小
-     * @return 分页结果
+     * @return 日志列表
      */
-    public Page<Object> queryKnowledgeAuditLogs(Long knowledgeId, Integer page, Integer size) {
+    public List<AuditLogDTO> queryKnowledgeAuditLogs(Long knowledgeId, Integer page, Integer size) {
         if (knowledgeId == null) {
             log.error("知识文档ID为空，无法查询审计日志");
-            return new PageImpl<>(new ArrayList<>(), PageRequest.of(page - 1, size), 0);
+            return Collections.emptyList();
         }
 
         try {
             // 构建查询条件
-            Map<String, Object> queryDTO = new HashMap<>();
-            queryDTO.put("module", "知识管理");
-            queryDTO.put("businessId", knowledgeId.toString());
-            queryDTO.put("pageNum", page);
-            queryDTO.put("pageSize", size);
+            AuditLogQuery query = new AuditLogQuery();
+            query.setModule("知识管理");
+            // 设置业务ID需要根据实际审计日志存储方式调整
+            query.setPageNum(page);
+            query.setPageSize(size);
             
             // 查询审计日志
-            Page<Object> result = ((QueryFunction) auditQueryService).queryAuditLogs(queryDTO);
+            Page<AuditLogDTO> result = auditQueryService.queryAuditLogs(query);
             
-            log.info("知识审计日志查询成功: knowledgeId={}, resultCount={}", knowledgeId, result.getContent().size());
-            return result;
+            List<AuditLogDTO> logs = result != null ? result.getRecords() : Collections.emptyList();
+            log.info("知识审计日志查询成功: knowledgeId={}, resultCount={}", knowledgeId, logs.size());
+            return logs;
         } catch (Exception e) {
             log.error("知识审计日志查询失败: knowledgeId={}, error={}", knowledgeId, e.getMessage(), e);
-            return new PageImpl<>(new ArrayList<>(), PageRequest.of(page - 1, size), 0);
+            return Collections.emptyList();
         }
     }
 
@@ -150,7 +152,7 @@ public class AuditIntegrationService {
             auditLog.setId(categoryId); // 使用ID字段保存业务ID
             
             // 记录审计日志
-            ((LogFunction) auditService).log(auditLog);
+            auditService.log(auditLog);
             
             log.info("分类创建审计记录成功: categoryId={}, message={}", categoryId, message);
         } catch (Exception e) {
@@ -182,32 +184,11 @@ public class AuditIntegrationService {
             auditLog.setId(categoryId); // 使用ID字段保存业务ID
             
             // 异步记录审计日志
-            ((LogAsyncFunction) auditService).logAsync(auditLog);
+            auditService.logAsync(auditLog);
             
             log.info("分类删除审计记录成功: categoryId={}", categoryId);
         } catch (Exception e) {
             log.error("分类删除审计记录失败: categoryId={}, error={}", categoryId, e.getMessage(), e);
         }
-    }
-
-    /**
-     * 审计日志记录函数接口
-     */
-    private interface LogFunction {
-        void log(AuditLogDTO auditLog);
-    }
-
-    /**
-     * 异步审计日志记录函数接口
-     */
-    private interface LogAsyncFunction {
-        void logAsync(AuditLogDTO auditLog);
-    }
-
-    /**
-     * 审计日志查询函数接口
-     */
-    private interface QueryFunction {
-        Page<Object> queryAuditLogs(Map<String, Object> queryDTO);
     }
 } 

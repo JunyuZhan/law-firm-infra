@@ -35,6 +35,7 @@ import com.lawfirm.model.personnel.dto.employee.EmployeeDTO;
 import com.lawfirm.model.cases.dto.base.CaseBaseDTO;
 import com.lawfirm.model.client.dto.ClientDTO;
 import com.lawfirm.model.organization.dto.department.DepartmentDTO;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -64,6 +65,35 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
     @Qualifier("commonRestTemplate")
     private RestTemplate restTemplate;
 
+    /**
+     * 通知服务（如无外部实现，这里简单定义内部类模拟）
+     */
+    @Autowired(required = false)
+    private NotificationService notificationService;
+
+    /**
+     * 通知服务接口
+     */
+    public interface NotificationService {
+        void send(String type, Long userId, String title, String content, Map<String, Object> variables);
+        void sendBatch(String type, List<Long> userIds, String title, String content, Map<String, Object> variables);
+    }
+
+    /**
+     * 默认通知服务实现（仅日志模拟）
+     */
+    @Service("defaultTaskNotificationService")
+    public static class DefaultNotificationService implements NotificationService {
+        @Override
+        public void send(String type, Long userId, String title, String content, Map<String, Object> variables) {
+            log.info("[通知][{}] userId={}, title={}, content={}, vars={}", type, userId, title, content, variables);
+        }
+        @Override
+        public void sendBatch(String type, List<Long> userIds, String title, String content, Map<String, Object> variables) {
+            log.info("[批量通知][{}] userIds={}, title={}, content={}, vars={}", type, userIds, title, content, variables);
+        }
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createTask(WorkTaskDTO dto) {
@@ -75,7 +105,7 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         
         // 3. 设置默认值
         if (task.getStatus() == null) {
-            task.setStatus(WorkTaskStatusEnum.TODO.getCode());
+            task.setStatus(WorkTaskStatusEnum.TO_DO.getCode());
         }
         
         // 4. 保存任务
@@ -88,6 +118,9 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
                 .collect(Collectors.toList());
             saveTaskTags(task.getId(), tagIds);
         }
+        
+        // 6. 发送任务创建通知
+        sendTaskCreatedNotification(task.getId(), task.getTitle(), task.getAssigneeId(), null);
         
         return task.getId();
     }
@@ -206,21 +239,53 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         }
         
         // 2. 检查状态是否有效
-        if (WorkTaskStatusEnum.getByCode(status) == null) {
+        WorkTaskStatusEnum statusEnum = WorkTaskStatusEnum.getByCode(status);
+        if (statusEnum == null) {
             throw new TaskException(TaskErrorCode.TASK_STATUS_ERROR);
         }
         
+        // 2.1 避免重复更新相同状态
+        if (Objects.equals(task.getStatus(), status)) {
+            log.info("任务状态未变化，跳过更新，taskId={}, status={}", taskId, status);
+            return;
+        }
+        
         // 3. 更新状态
+        LocalDateTime now = LocalDateTime.now();
         task.setStatus(status);
         
         // 4. 根据状态设置相关时间
-        if (Objects.equals(status, WorkTaskStatusEnum.COMPLETED.getCode())) {
-            task.setStatus(WorkTaskStatusEnum.COMPLETED.getCode());
-        } else if (Objects.equals(status, WorkTaskStatusEnum.CANCELLED.getCode())) {
-            task.setStatus(WorkTaskStatusEnum.CANCELLED.getCode());
+        try {
+            switch (statusEnum) {
+                case COMPLETED:
+                    // 记录任务的完成时间
+                    task.setEndTime(now);
+                    break;
+                case CANCELLED:
+                    // 记录任务的取消时间（如果有需要，可以添加cancelTime字段）
+                    break;
+                case IN_PROGRESS:
+                    // 如果任务开始时间未设置，设置为当前时间
+                    if (task.getStartTime() == null) {
+                        task.setStartTime(now);
+                    }
+                    break;
+                default:
+                    // 其他状态无需特殊处理
+                    break;
+            }
+            
+            // 5. 保存更新
+            updateById(task);
+            
+            // 6. 记录状态变更日志
+            log.info("任务状态已更新，taskId={}, oldStatus={}, newStatus={}", 
+                    taskId, task.getStatus(), status);
+                    
+        } catch (Exception e) {
+            log.error("更新任务状态失败，taskId={}，status={}, error={}", taskId, status, e.getMessage());
+            throw new TaskException("更新任务状态失败: " + e.getMessage(), e);
         }
-        
-        updateById(task);
     }
 
     @Override
@@ -247,20 +312,51 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         }
         
         // 2. 分配任务
+        Long oldAssigneeId = task.getAssigneeId();
         task.setAssigneeId(assigneeId);
         updateById(task);
+        
+        // 3. 发送任务分配通知
+        sendTaskAssignedNotification(taskId, task.getTitle(), assigneeId, oldAssigneeId, null);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void completeTask(Long taskId) {
         updateTaskStatus(taskId, WorkTaskStatusEnum.COMPLETED.getCode());
+        
+        // 发送任务完成通知
+        WorkTask task = getById(taskId);
+        sendTaskCompletedNotification(taskId, task.getTitle(), task.getAssigneeId(), null);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void cancelTask(Long taskId) {
         updateTaskStatus(taskId, WorkTaskStatusEnum.CANCELLED.getCode());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void cancelTask(Long taskId, String reason) {
+        // 1. 检查任务是否存在
+        WorkTask task = getById(taskId);
+        if (task == null) {
+            throw new TaskException(TaskErrorCode.TASK_NOT_FOUND);
+        }
+        
+        // 2. 设置取消原因
+        if (StringUtils.hasText(reason)) {
+            task.setCancelReason(reason);
+        }
+        
+        // 3. 更新状态
+        task.setStatus(WorkTaskStatusEnum.CANCELLED.getCode());
+        
+        // 4. 保存更新
+        updateById(task);
+        
+        log.info("已取消任务: taskId={}, reason={}", taskId, reason);
     }
 
     /**
@@ -460,6 +556,14 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      */
     @Override
     public Long getCurrentUserId() {
+        // 优先使用SecurityUtils，兼容多端
+        try {
+            Long userId = com.lawfirm.common.security.utils.SecurityUtils.getUserId();
+            if (userId != null) {
+                return userId;
+            }
+        } catch (Exception ignore) {}
+        // 兜底Spring Security
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null && authentication.getPrincipal() != null) {
@@ -468,7 +572,8 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         } catch (Exception e) {
             log.warn("获取当前用户ID失败", e);
         }
-        return null;
+        // 兜底返回-1
+        return -1L;
     }
     
     /**
@@ -476,6 +581,14 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      */
     @Override
     public String getCurrentUsername() {
+        // 优先使用SecurityUtils
+        try {
+            String username = com.lawfirm.common.security.utils.SecurityUtils.getUsername();
+            if (username != null) {
+                return username;
+            }
+        } catch (Exception ignore) {}
+        // 兜底Spring Security
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
@@ -484,7 +597,7 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         } catch (Exception e) {
             log.warn("获取当前用户名失败", e);
         }
-        return null;
+        return "anonymous";
     }
     
     /**
@@ -509,7 +622,7 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         Map<String, Object> statistics = new HashMap<>();
         statistics.put("total", tasks.size());
         statistics.put("todo", tasks.stream()
-            .filter(task -> Objects.equals(task.getStatus(), WorkTaskStatusEnum.TODO.getCode()))
+            .filter(task -> Objects.equals(task.getStatus(), WorkTaskStatusEnum.TO_DO.getCode()))
             .count());
         statistics.put("inProgress", tasks.stream()
             .filter(task -> Objects.equals(task.getStatus(), WorkTaskStatusEnum.IN_PROGRESS.getCode()))
@@ -537,5 +650,199 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
         statistics.put("dailyTaskCount", dailyTaskCount);
         
         return statistics;
+    }
+
+    // =============== 任务分配 ===============
+
+    /**
+     * 根据角色获取候选用户
+     */
+    public List<Long> getCandidateUsersByRole(Long roleId) {
+        // 假设调用人事模块接口获取角色下所有在岗用户
+        try {
+            String url = "http://law-firm-personnel/personnel/employee/role/" + roleId;
+            EmployeeDTO[] employees = restTemplate.getForObject(url, EmployeeDTO[].class);
+            List<Long> userIds = new ArrayList<>();
+            if (employees != null) {
+                for (EmployeeDTO emp : employees) {
+                    if (emp.getStatus() == null || emp.getStatus() == 1) { // 1=在岗
+                        userIds.add(emp.getId());
+                    }
+                }
+            }
+            return userIds;
+        } catch (Exception e) {
+            log.warn("获取角色候选用户失败", e);
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * 根据部门获取候选用户
+     */
+    public List<Long> getCandidateUsersByDept(Long deptId) {
+        // 假设调用组织模块接口获取部门下所有在岗用户
+        try {
+            String url = "http://law-firm-personnel/personnel/employee/department/" + deptId;
+            EmployeeDTO[] employees = restTemplate.getForObject(url, EmployeeDTO[].class);
+            List<Long> userIds = new ArrayList<>();
+            if (employees != null) {
+                for (EmployeeDTO emp : employees) {
+                    if (emp.getStatus() == null || emp.getStatus() == 1) {
+                        userIds.add(emp.getId());
+                    }
+                }
+            }
+            return userIds;
+        } catch (Exception e) {
+            log.warn("获取部门候选用户失败", e);
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * 自动分配任务给最合适的处理人（优先分配任务数最少、负载分最低的用户）
+     */
+    public Long autoAssignTask(String taskId, List<Long> candidateUserIds) {
+        if (candidateUserIds == null || candidateUserIds.isEmpty()) {
+            return null;
+        }
+        Long bestUser = null;
+        double minScore = Double.MAX_VALUE;
+        for (Long userId : candidateUserIds) {
+            double score = calculateUserTaskLoadScore(userId);
+            if (score < minScore) {
+                minScore = score;
+                bestUser = userId;
+            }
+        }
+        return bestUser;
+    }
+
+    /**
+     * 轮询分配任务（简单实现：按用户ID排序后取下一个）
+     */
+    private static final Map<String, Integer> roundRobinIndexMap = new HashMap<>();
+    public Long roundRobinAssignTask(String taskId, List<Long> candidateUserIds) {
+        if (candidateUserIds == null || candidateUserIds.isEmpty()) {
+            return null;
+        }
+        candidateUserIds.sort(Long::compareTo);
+        int idx = roundRobinIndexMap.getOrDefault(taskId, -1);
+        idx = (idx + 1) % candidateUserIds.size();
+        roundRobinIndexMap.put(taskId, idx);
+        return candidateUserIds.get(idx);
+    }
+
+    /**
+     * 负载均衡分配任务（分配给当前任务数最少的用户）
+     */
+    public Long loadBalanceAssignTask(String taskId, List<Long> candidateUserIds) {
+        if (candidateUserIds == null || candidateUserIds.isEmpty()) {
+            return null;
+        }
+        Long bestUser = null;
+        int minCount = Integer.MAX_VALUE;
+        for (Long userId : candidateUserIds) {
+            int count = getUserTaskCount(userId);
+            if (count < minCount) {
+                minCount = count;
+                bestUser = userId;
+            }
+        }
+        return bestUser;
+    }
+
+    /**
+     * 获取用户当前任务数量（未完成任务数）
+     */
+    public int getUserTaskCount(Long userId) {
+        LambdaQueryWrapper<WorkTask> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(WorkTask::getAssigneeId, userId)
+                .in(WorkTask::getStatus, WorkTaskStatusEnum.TO_DO.getCode(), WorkTaskStatusEnum.IN_PROGRESS.getCode());
+        return (int) count(wrapper);
+    }
+
+    /**
+     * 计算用户的任务负载分数（任务数+优先级加权+工时加权）
+     */
+    public double calculateUserTaskLoadScore(Long userId) {
+        LambdaQueryWrapper<WorkTask> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(WorkTask::getAssigneeId, userId)
+                .in(WorkTask::getStatus, WorkTaskStatusEnum.TO_DO.getCode(), WorkTaskStatusEnum.IN_PROGRESS.getCode());
+        List<WorkTask> tasks = list(wrapper);
+        if (tasks.isEmpty()) return 0.0;
+        double score = 0.0;
+        for (WorkTask t : tasks) {
+            int priority = t.getPriority() == null ? 1 : t.getPriority();
+            // WorkTask没有estimatedHours字段，负载分数仅用优先级和任务数
+            score += priority * 2;
+        }
+        return score;
+    }
+
+    // =============== 任务通知 ===============
+
+    /**
+     * 发送任务创建通知
+     */
+    public void sendTaskCreatedNotification(Long taskId, String taskName, Long assigneeId, Map<String, Object> variables) {
+        if (notificationService != null && assigneeId != null) {
+            notificationService.send("task_created", assigneeId, "新任务分配：" + taskName, "您有新任务，请及时处理。", variables);
+        }
+        log.info("[通知] 任务创建: taskId={}, taskName={}, assigneeId={}", taskId, taskName, assigneeId);
+    }
+
+    /**
+     * 发送任务分配通知
+     */
+    public void sendTaskAssignedNotification(Long taskId, String taskName, Long assigneeId, Long oldAssigneeId, Map<String, Object> variables) {
+        if (notificationService != null && assigneeId != null) {
+            notificationService.send("task_assigned", assigneeId, "任务分配：" + taskName, "您被分配了新任务。", variables);
+        }
+        if (notificationService != null && oldAssigneeId != null && !Objects.equals(assigneeId, oldAssigneeId)) {
+            notificationService.send("task_unassigned", oldAssigneeId, "任务变更：" + taskName, "您已被移出该任务。", variables);
+        }
+        log.info("[通知] 任务分配: taskId={}, taskName={}, assigneeId={}, oldAssigneeId={}", taskId, taskName, assigneeId, oldAssigneeId);
+    }
+
+    /**
+     * 发送任务完成通知
+     */
+    public void sendTaskCompletedNotification(Long taskId, String taskName, Long assigneeId, Map<String, Object> variables) {
+        if (notificationService != null && assigneeId != null) {
+            notificationService.send("task_completed", assigneeId, "任务完成：" + taskName, "您的任务已完成。", variables);
+        }
+        log.info("[通知] 任务完成: taskId={}, taskName={}, assigneeId={}", taskId, taskName, assigneeId);
+    }
+
+    /**
+     * 发送任务截止提醒
+     */
+    public void sendTaskDueReminder(Long taskId, String taskName, Long assigneeId, LocalDateTime dueDate) {
+        if (notificationService != null && assigneeId != null) {
+            notificationService.send("task_due_reminder", assigneeId, "任务截止提醒：" + taskName, "您的任务即将截止，截止时间：" + dueDate, null);
+        }
+        log.info("[通知] 任务截止提醒: taskId={}, taskName={}, assigneeId={}, dueDate={}", taskId, taskName, assigneeId, dueDate);
+    }
+
+    /**
+     * 发送任务超时提醒
+     */
+    public void sendTaskOverdueNotification(Long taskId, String taskName, Long assigneeId, LocalDateTime dueDate) {
+        if (notificationService != null && assigneeId != null) {
+            notificationService.send("task_overdue", assigneeId, "任务超时提醒：" + taskName, "您的任务已超时，截止时间：" + dueDate, null);
+        }
+        log.info("[通知] 任务超时提醒: taskId={}, taskName={}, assigneeId={}, dueDate={}", taskId, taskName, assigneeId, dueDate);
+    }
+
+    /**
+     * 批量发送任务通知
+     */
+    public void sendBatchTaskNotification(List<Long> recipientIds, String subject, String content, Map<String, Object> variables) {
+        if (notificationService != null && recipientIds != null && !recipientIds.isEmpty()) {
+            notificationService.sendBatch("task_batch", recipientIds, subject, content, variables);
+        }
+        log.info("[通知] 批量任务通知: subject={}, recipients={}", subject, recipientIds);
     }
 } 

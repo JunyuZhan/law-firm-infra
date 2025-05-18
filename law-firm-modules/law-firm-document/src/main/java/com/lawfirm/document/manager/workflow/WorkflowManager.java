@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import com.lawfirm.common.security.utils.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,8 @@ import java.util.Map;
 public class WorkflowManager {
 
     private final ProcessService processService;
-    private final TaskService taskService;
+    @Autowired
+    private TaskService taskService;
     private final WorkflowContext workflowContext;
 
     /**
@@ -63,12 +66,10 @@ public class WorkflowManager {
     }
 
     /**
-     * 获取用户的待办任务
-     *
-     * @param userId 用户ID
-     * @return 任务列表
+     * 获取当前用户的待办任务列表
      */
-    public List<TaskVO> getUserTasks(Long userId) {
+    public java.util.List<TaskVO> listMyTodoTasks() {
+        Long userId = SecurityUtils.getUserId();
         return taskService.listMyTodoTasks(userId);
     }
 

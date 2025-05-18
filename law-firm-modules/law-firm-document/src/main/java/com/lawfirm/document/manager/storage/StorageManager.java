@@ -16,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 /**
@@ -121,5 +124,119 @@ public class StorageManager {
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String uuid = UUID.randomUUID().toString().replace("-", "");
         return storageProperties.getPath().getBaseDir() + "/" + uuid + extension;
+    }
+
+    /**
+     * 存储模板内容
+     *
+     * @param templateCode 模板编码
+     * @param content 模板内容
+     * @param templateType 模板类型
+     * @return 存储路径
+     */
+    public String storeTemplateContent(String templateCode, String content, String templateType) throws IOException {
+        // 获取默认存储桶
+        StorageBucket bucket = getDefaultBucket();
+        
+        // 获取存储策略
+        StorageStrategy strategy = storageContext.getStrategy(bucket);
+        if (strategy == null) {
+            throw new IllegalArgumentException("不支持的存储类型: " + bucket.getStorageType());
+        }
+        
+        // 生成存储路径
+        String extension = getExtensionByTemplateType(templateType);
+        String storagePath = storageProperties.getPath().getBaseDir() + "/templates/" + templateCode + extension;
+        
+        // 存储内容
+        boolean success = strategy.uploadText(bucket, storagePath, content);
+        if (!success) {
+            throw new IOException("模板内容存储失败");
+        }
+        
+        return storagePath;
+    }
+    
+    /**
+     * 获取存储类型
+     * 
+     * @return 存储类型字符串
+     */
+    public String getStorageType() {
+        return storageProperties.getType().name();
+    }
+    
+    /**
+     * 获取默认存储桶
+     * 
+     * @return 默认存储桶
+     */
+    private StorageBucket getDefaultBucket() {
+        return bucketService.getDefaultBucket();
+    }
+    
+    /**
+     * 根据模板类型获取文件扩展名
+     * 
+     * @param templateType 模板类型
+     * @return 文件扩展名
+     */
+    private String getExtensionByTemplateType(String templateType) {
+        switch (templateType.toUpperCase()) {
+            case "WORD":
+                return ".docx";
+            case "PDF":
+                return ".pdf";
+            case "HTML":
+                return ".html";
+            case "TEXT":
+                return ".txt";
+            default:
+                return ".template";
+        }
+    }
+    
+    /**
+     * 获取存储总大小
+     * 
+     * @return 存储总大小（字节）
+     */
+    public long getTotalStorageSize() {
+        try {
+            // 获取本地存储路径
+            String basePath = storageProperties.getLocal().getBasePath();
+            Path storagePath = Paths.get(basePath);
+            if (Files.exists(storagePath)) {
+                return Files.walk(storagePath)
+                        .filter(Files::isRegularFile)
+                        .mapToLong(p -> {
+                            try { return Files.size(p); } catch (Exception e) { return 0L; }
+                        }).sum();
+            }
+        } catch (Exception e) {
+            log.error("获取存储总大小失败", e);
+        }
+        return 0L;
+    }
+    
+    /**
+     * 获取存储文件总数
+     * 
+     * @return 存储文件总数
+     */
+    public long getTotalFileCount() {
+        try {
+            // 获取本地存储路径
+            String basePath = storageProperties.getLocal().getBasePath();
+            Path storagePath = Paths.get(basePath);
+            if (Files.exists(storagePath)) {
+                return Files.walk(storagePath)
+                        .filter(Files::isRegularFile)
+                        .count();
+            }
+        } catch (Exception e) {
+            log.error("获取存储文件总数失败", e);
+        }
+        return 0L;
     }
 }

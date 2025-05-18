@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * AI事件监听器
@@ -55,11 +57,19 @@ public class AIEventListener {
                 event.getOperationId(),
                 event.getOperationType(),
                 event.getDuration());
-                
-        // TODO: 可以添加更多成功事件的处理逻辑
-        // 例如：
         // 1. 更新操作统计
+        if (aiEventStatService != null) {
+            aiEventStatService.updateStatus(event.getOperationId(), "SUCCESS");
+        }
         // 2. 发送成功通知
+        if (alertService != null) {
+            alertService.sendAlert("AI操作成功", "操作已成功完成", event.getOperationId());
+        }
+        // 3. 触发后续流程（如有需要）
+        // 例如：调用后续业务服务、发布事件等
+        // if (nextProcessService != null) {
+        //     nextProcessService.handleAfterSuccess(event);
+        // }
         // 3. 触发后续流程
     }
     
@@ -71,13 +81,19 @@ public class AIEventListener {
                 event.getOperationId(),
                 event.getOperationType(),
                 event.getErrorMessage());
-                
-        // TODO: 可以添加更多失败事件的处理逻辑
-        // 例如：
-        // 1. 记录错误日志
-        // 2. 发送失败告警
-        // 3. 触发重试机制
-        // 4. 更新失败统计
+        // 1. 记录错误日志（已实现）
+        // 2. 发送失败告警（可对接消息/告警服务）
+        if (alertService != null) {
+            alertService.sendAlert("AI操作失败", event.getErrorMessage(), event.getOperationId());
+        }
+        // 3. 触发重试机制（可选，预留重试服务接口）
+        if (retryService != null) {
+            retryService.retry(event);
+        }
+        // 4. 更新失败统计（如写入数据库/缓存）
+        if (aiEventStatService != null) {
+            aiEventStatService.recordFailure(String.valueOf(event.getOperationType()), event.getOperationId());
+        }
     }
     
     /**
@@ -87,11 +103,43 @@ public class AIEventListener {
         logger.info("处理进行中事件: operationId={}, type={}",
                 event.getOperationId(),
                 event.getOperationType());
-                
-        // TODO: 可以添加更多处理中事件的处理逻辑
-        // 例如：
-        // 1. 更新操作状态
+        // 1. 更新操作状态（如写入数据库/缓存）
+        if (aiEventStatService != null) {
+            aiEventStatService.updateStatus(event.getOperationId(), "PROCESSING");
+        }
         // 2. 记录处理进度
-        // 3. 设置超时监控
+        logger.info("AI操作处理中: operationId={}, type={}", event.getOperationId(), event.getOperationType());
+        // 3. 设置超时监控（可预留钩子）
+        if (timeoutMonitorService != null) {
+            timeoutMonitorService.monitor(event.getOperationId(), String.valueOf(event.getOperationType()));
+        }
+    }
+
+    // ========== 依赖服务接口预留 ==========
+    @Autowired(required = false)
+    @Qualifier("aiAlertService")
+    private AlertService alertService;
+    @Autowired(required = false)
+    @Qualifier("aiRetryService")
+    private RetryService retryService;
+    @Autowired(required = false)
+    @Qualifier("aiEventStatService")
+    private AIEventStatService aiEventStatService;
+    @Autowired(required = false)
+    @Qualifier("aiTimeoutMonitorService")
+    private TimeoutMonitorService timeoutMonitorService;
+
+    public interface AlertService {
+        void sendAlert(String title, String content, String operationId);
+    }
+    public interface RetryService {
+        void retry(AIEvent event);
+    }
+    public interface AIEventStatService {
+        void recordFailure(String operationType, String operationId);
+        void updateStatus(String operationId, String status);
+    }
+    public interface TimeoutMonitorService {
+        void monitor(String operationId, String operationType);
     }
 } 

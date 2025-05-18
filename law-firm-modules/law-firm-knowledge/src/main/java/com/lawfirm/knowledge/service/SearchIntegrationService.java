@@ -2,6 +2,10 @@ package com.lawfirm.knowledge.service;
 
 import com.lawfirm.model.knowledge.entity.Knowledge;
 import com.lawfirm.model.knowledge.enums.KnowledgeTypeEnum;
+import com.lawfirm.model.search.dto.search.SearchRequestDTO;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.search.vo.SearchVO;
+import com.lawfirm.core.search.handler.IndexHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,22 +15,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 搜索服务集成
- * 示例如何集成core-search模块
+ * 集成core-search模块
  */
 @Slf4j
 @Service("knowledgeSearchService")
 public class SearchIntegrationService {
 
-    @Autowired
-    @Qualifier("coreSearchServiceImpl")
-    private Object searchService;
+    private static final String INDEX_NAME = "knowledge";
 
     @Autowired
-    @Qualifier("coreIndexServiceImpl")
-    private Object indexService;
+    @Qualifier("coreSearchServiceImpl")
+    private SearchService searchService;
+
+    @Autowired
+    @Qualifier("luceneIndexHandler")
+    private IndexHandler indexHandler;
 
     /**
      * 索引知识文档
@@ -36,7 +43,7 @@ public class SearchIntegrationService {
      */
     public boolean indexKnowledgeDocument(Knowledge knowledge) {
         if (knowledge == null || knowledge.getId() == null) {
-            log.error("知识文档为空，无法索引");
+            log.error("知识文档为空或ID为空，无法创建索引");
             return false;
         }
 
@@ -48,18 +55,17 @@ public class SearchIntegrationService {
             document.put("content", knowledge.getContent());
             document.put("summary", knowledge.getSummary());
             document.put("keywords", knowledge.getKeywords());
-            document.put("categoryId", knowledge.getCategoryId());
-            document.put("knowledgeType", knowledge.getKnowledgeType() != null ? knowledge.getKnowledgeType().getCode() : null);
-            document.put("authorName", knowledge.getAuthorName());
-            document.put("createTime", knowledge.getCreateTime());
-            document.put("updateTime", knowledge.getUpdateTime());
+            document.put("categoryId", knowledge.getCategoryId() != null ? knowledge.getCategoryId().toString() : "");
+            document.put("type", knowledge.getKnowledgeType() != null ? knowledge.getKnowledgeType().name() : "");
+            document.put("status", knowledge.getStatus() != null ? knowledge.getStatus().toString() : "0");
+            document.put("createTime", knowledge.getCreateTime() != null ? knowledge.getCreateTime().toString() : "");
 
-            // 索引文档
-            ((IndexDocumentFunction) indexService).indexDocument("knowledge", knowledge.getId().toString(), document);
-            log.info("知识文档索引成功: id={}, title={}", knowledge.getId(), knowledge.getTitle());
+            // 添加到索引
+            searchService.indexDoc(INDEX_NAME, knowledge.getId().toString(), document);
+            log.info("知识文档索引创建成功: id={}, title={}", knowledge.getId(), knowledge.getTitle());
             return true;
         } catch (Exception e) {
-            log.error("知识文档索引失败: id={}, title={}, error={}", 
+            log.error("知识文档索引创建失败: id={}, title={}, error={}", 
                     knowledge.getId(), knowledge.getTitle(), e.getMessage(), e);
             return false;
         }
@@ -79,7 +85,7 @@ public class SearchIntegrationService {
 
         try {
             // 删除索引
-            ((DeleteDocumentFunction) indexService).deleteDocument("knowledge", knowledgeId.toString());
+            searchService.deleteDoc(INDEX_NAME, knowledgeId.toString());
             log.info("知识文档索引删除成功: id={}", knowledgeId);
             return true;
         } catch (Exception e) {
@@ -102,22 +108,24 @@ public class SearchIntegrationService {
         }
 
         try {
-            // 构建搜索条件
-            Map<String, Object> searchParams = new HashMap<>();
-            searchParams.put("keyword", keyword);
-            searchParams.put("fields", new String[]{"title", "content", "summary", "keywords"});
-            searchParams.put("limit", limit);
-
+            // 创建搜索请求
+            SearchRequestDTO request = new SearchRequestDTO();
+            request.setIndexName(INDEX_NAME);
+            request.setKeyword(keyword);
+            request.setFields(List.of("title", "content", "summary", "keywords"));
+            request.setPageNum(1);
+            request.setPageSize(limit > 0 ? limit : 50);
+            
             // 执行搜索
-            List<Map<String, Object>> results = ((SearchDocumentsFunction) searchService)
-                    .searchDocuments("knowledge", searchParams);
-
+            SearchVO result = searchService.search(request);
+            
             // 提取知识ID
             List<Long> knowledgeIds = new ArrayList<>();
-            for (Map<String, Object> result : results) {
-                if (result.containsKey("id")) {
-                    knowledgeIds.add(Long.valueOf(result.get("id").toString()));
-                }
+            if (result != null && result.getHits() != null) {
+                knowledgeIds = result.getHits().stream()
+                    .filter(hit -> hit.getSource() != null && hit.getSource().containsKey("id"))
+                    .map(hit -> Long.valueOf(hit.getSource().get("id").toString()))
+                    .collect(Collectors.toList());
             }
 
             log.info("知识文档搜索完成: keyword={}, resultCount={}", keyword, knowledgeIds.size());
@@ -126,26 +134,5 @@ public class SearchIntegrationService {
             log.error("知识文档搜索失败: keyword={}, error={}", keyword, e.getMessage(), e);
             return new ArrayList<>();
         }
-    }
-
-    /**
-     * 索引文档函数接口
-     */
-    private interface IndexDocumentFunction {
-        void indexDocument(String indexName, String id, Map<String, Object> document);
-    }
-
-    /**
-     * 删除文档函数接口
-     */
-    private interface DeleteDocumentFunction {
-        void deleteDocument(String indexName, String id);
-    }
-
-    /**
-     * 搜索文档函数接口
-     */
-    private interface SearchDocumentsFunction {
-        List<Map<String, Object>> searchDocuments(String indexName, Map<String, Object> searchParams);
     }
 } 

@@ -6,6 +6,7 @@ import com.lawfirm.common.log.annotation.AuditLog;
 import com.lawfirm.model.system.entity.monitor.SysAppMonitor;
 import com.lawfirm.model.system.mapper.monitor.SysAppMonitorMapper;
 import com.lawfirm.system.config.SystemModuleConfig.MonitorProperties;
+import com.lawfirm.model.system.service.AlertService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -33,6 +34,7 @@ public class AppMonitorServiceImpl extends ServiceImpl<SysAppMonitorMapper, SysA
 
     private final SysAppMonitorMapper appMonitorMapper;
     private final MonitorProperties monitorProperties;
+    private final AlertService alertService;
     
     /**
      * 应用名称
@@ -137,7 +139,10 @@ public class AppMonitorServiceImpl extends ServiceImpl<SysAppMonitorMapper, SysA
                 if (memoryUsage > monitorProperties.getAlertThreshold().getMemory()) {
                     log.warn("JVM内存使用率超过阈值: {}%, 应用: {}, 实例: {}", 
                         String.format("%.2f", memoryUsage), monitor.getAppName(), monitor.getInstanceId());
-                    // TODO: 调用告警服务发送告警
+                    
+                    // 发送告警
+                    String message = String.format("JVM内存使用率超过阈值: %.2f%%", memoryUsage);
+                    alertService.sendAlert("APPLICATION", "WARNING", message);
                 }
             }
             
@@ -145,7 +150,10 @@ public class AppMonitorServiceImpl extends ServiceImpl<SysAppMonitorMapper, SysA
             if (monitor.getThreadActiveCount() > 200) {
                 log.warn("线程数超过阈值: {}, 应用: {}, 实例: {}", 
                     monitor.getThreadActiveCount(), monitor.getAppName(), monitor.getInstanceId());
-                // TODO: 调用告警服务发送告警
+                
+                // 发送告警
+                String message = String.format("线程数超过阈值: %d", monitor.getThreadActiveCount());
+                alertService.sendAlert("APPLICATION", "WARNING", message);
             }
         } catch (Exception e) {
             log.error("检查告警异常", e);

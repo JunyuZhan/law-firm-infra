@@ -44,5 +44,6 @@
     "cSpell.words": [
         "ALIYUN"
     ],
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": true,
+    "todo-tree.tree.scanMode": "workspace"
 }

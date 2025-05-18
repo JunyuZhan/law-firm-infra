@@ -16,8 +16,10 @@ import com.lawfirm.model.system.vo.monitor.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -46,10 +48,15 @@ public class MonitorServiceImpl extends BaseServiceImpl<SysMonitorDataMapper, Sy
     private static final Instant startTime = Instant.now();
     private static final Map<String, String> healthStatus = new ConcurrentHashMap<>();
     private static final String CACHE_NAME = "monitorCache";
+    private static final String ONLINE_USER_PREFIX = "online_user:";
+    
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public MonitorServiceImpl(SysMonitorDataMapper dataMapper, SysMonitorAlertMapper alertMapper) {
+    public MonitorServiceImpl(SysMonitorDataMapper dataMapper, SysMonitorAlertMapper alertMapper, 
+                             @Qualifier("commonCacheRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
         this.dataMapper = dataMapper;
         this.alertMapper = alertMapper;
+        this.redisTemplate = redisTemplate;
     }
 
     @Cacheable(value = CACHE_NAME, key = "'monitorData'")
@@ -101,9 +108,27 @@ public class MonitorServiceImpl extends BaseServiceImpl<SysMonitorDataMapper, Sy
     public boolean closeAlert(String alertId) {
         log.info("关闭告警，告警ID：{}", alertId);
         try {
-            // 关闭告警
-            // TODO: 实现告警关闭逻辑，包括更新数据库和发送通知
-            return true;
+            SysMonitorAlert alert = alertMapper.selectById(alertId);
+            if (alert == null) {
+                log.error("告警不存在，告警ID：{}", alertId);
+                return false;
+            }
+            
+            // 更新告警状态为关闭
+            alert.setAlertStatus("CLOSED");
+            alert.setUpdateTime(LocalDateTime.now());
+            
+            // 更新数据库
+            int result = alertMapper.updateById(alert);
+            
+            // 发送通知（可以通过消息队列异步处理）
+            if (result > 0) {
+                log.info("告警已关闭，告警ID：{}", alertId);
+                // 发布告警关闭事件，由事件监听器处理消息发送
+                // eventPublisher.publishEvent(new AlertClosedEvent(alert));
+            }
+            
+            return result > 0;
         } catch (Exception e) {
             log.error("关闭告警失败", e);
             return false;
@@ -142,8 +167,13 @@ public class MonitorServiceImpl extends BaseServiceImpl<SysMonitorDataMapper, Sy
 
     @Override
     public int getOnlineUserCount() {
-        // TODO: 实现在线用户统计逻辑
-        return 0;
+        try {
+            Set<String> keys = redisTemplate.keys(ONLINE_USER_PREFIX + "*");
+            return keys != null ? keys.size() : 0;
+        } catch (Exception e) {
+            log.error("获取在线用户数量失败", e);
+            return 0;
+        }
     }
 
     @Override

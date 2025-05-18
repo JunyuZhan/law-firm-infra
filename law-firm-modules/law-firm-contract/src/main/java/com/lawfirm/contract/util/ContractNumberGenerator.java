@@ -62,8 +62,7 @@ public class ContractNumberGenerator {
      * @return 序列号
      */
     private static String getNextSequence(String prefix, String dateStr) {
-        // TODO: 从数据库或缓存中获取当前序列号并加1
-        // 这里使用简单实现，实际应用中应该使用数据库或分布式缓存确保唯一性
+        // 在实际应用中，应该使用数据库或分布式缓存确保唯一性
         String key = prefix + "-" + dateStr;
         Integer currentSequence = sequenceMap.getOrDefault(key, 0);
         currentSequence++;

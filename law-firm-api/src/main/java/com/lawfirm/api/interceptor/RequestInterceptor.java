@@ -3,10 +3,13 @@ package com.lawfirm.api.interceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,12 +21,23 @@ import java.util.List;
 @Component("apiRequestInterceptor")
 public class RequestInterceptor implements HandlerInterceptor {
 
+    @Autowired
+    private Environment environment;
+
     /**
-     * 无需拦截的请求路径
+     * 基础无需拦截的请求路径
      */
-    private static final List<String> EXCLUDE_PATHS = Arrays.asList(
-        "/static", "/webjars", "/error", "/favicon.ico", 
+    private static final List<String> BASE_EXCLUDE_PATHS = Arrays.asList(
+        "/static", "/error", "/favicon.ico", 
         "/actuator", "/api/test/hello"
+    );
+    
+    /**
+     * API文档相关路径，仅在开发和测试环境中排除
+     */
+    private static final List<String> API_DOC_PATHS = Arrays.asList(
+        "/doc.html", "/v3/api-docs",
+        "/swagger-ui", "/swagger-resources", "/knife4j", "/webjars"
     );
 
     @Override
@@ -62,7 +76,21 @@ public class RequestInterceptor implements HandlerInterceptor {
      * 检查是否为排除路径
      */
     private boolean isExcludePath(String uri) {
-        return EXCLUDE_PATHS.stream().anyMatch(uri::startsWith);
+        // 基础排除路径检查
+        if (BASE_EXCLUDE_PATHS.stream().anyMatch(uri::startsWith)) {
+            return true;
+        }
+        
+        // 检查当前环境
+        boolean isDevelopmentOrTest = Arrays.asList(environment.getActiveProfiles()).stream()
+                .anyMatch(profile -> profile.equals("dev") || profile.equals("test"));
+        
+        // 仅在开发和测试环境中排除API文档相关路径
+        if (isDevelopmentOrTest && API_DOC_PATHS.stream().anyMatch(uri::startsWith)) {
+            return true;
+        }
+        
+        return false;
     }
     
     /**

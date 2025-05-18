@@ -21,8 +21,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CaseTaskAssigner {
     
-    // TODO: 注入工作流服务
-    // private final TaskService taskService;
+    // 注入工作流服务
+    private final com.lawfirm.model.workflow.service.TaskService taskService;
     
     /**
      * 分配案件任务
@@ -33,9 +33,7 @@ public class CaseTaskAssigner {
      */
     public void assignTask(String taskId, String assigneeId, String comment) {
         log.info("分配案件任务: {}, 受理人: {}", taskId, assigneeId);
-        // TODO: 调用core-workflow分配任务
-        // 示例代码:
-        // taskService.assignTask(taskId, assigneeId, comment);
+        taskService.transferTask(Long.valueOf(taskId), Long.valueOf(assigneeId), comment);
     }
     
     /**
@@ -49,9 +47,7 @@ public class CaseTaskAssigner {
     public void transferTask(String taskId, String sourceUserId, String targetUserId, String reason) {
         log.info("转交案件任务: {}, 从 {} 转交给 {}, 原因: {}", 
                 taskId, sourceUserId, targetUserId, reason);
-        // TODO: 调用core-workflow转交任务
-        // 示例代码:
-        // taskService.transferTask(taskId, sourceUserId, targetUserId, reason);
+        taskService.transferTask(Long.valueOf(taskId), Long.valueOf(targetUserId), reason);
     }
     
     /**
@@ -65,9 +61,8 @@ public class CaseTaskAssigner {
     public void delegateTask(String taskId, String ownerUserId, String delegateUserId, String reason) {
         log.info("委托案件任务: {}, 委托人: {}, 被委托人: {}, 原因: {}", 
                 taskId, ownerUserId, delegateUserId, reason);
-        // TODO: 调用core-workflow委托任务
-        // 示例代码:
-        // taskService.delegateTask(taskId, ownerUserId, delegateUserId, reason);
+        // 使用transferTask替代delegateTask
+        taskService.transferTask(Long.valueOf(taskId), Long.valueOf(delegateUserId), reason);
     }
     
     /**
@@ -78,9 +73,8 @@ public class CaseTaskAssigner {
      */
     public void claimTask(String taskId, String userId) {
         log.info("认领案件任务: {}, 用户: {}", taskId, userId);
-        // TODO: 调用core-workflow认领任务
-        // 示例代码:
-        // taskService.claimTask(taskId, userId);
+        // TaskService没有提供claimTask方法，使用startTask代替
+        taskService.startTask(Long.valueOf(taskId));
     }
     
     /**
@@ -92,9 +86,8 @@ public class CaseTaskAssigner {
      */
     public void returnTask(String taskId, String userId, String reason) {
         log.info("归还案件任务: {}, 用户: {}, 原因: {}", taskId, userId, reason);
-        // TODO: 调用core-workflow归还任务
-        // 示例代码:
-        // taskService.unclaimTask(taskId, userId, reason);
+        // TaskService没有提供unclaimTask方法，使用取消任务代替
+        taskService.cancelTask(Long.valueOf(taskId));
     }
     
     /**
@@ -105,9 +98,11 @@ public class CaseTaskAssigner {
      */
     public void batchAssignTasks(List<String> taskIds, String assigneeId) {
         log.info("批量分配案件任务, 任务数: {}, 受理人: {}", taskIds.size(), assigneeId);
-        // TODO: 调用core-workflow批量分配任务
-        // 示例代码:
-        // taskService.batchAssignTasks(taskIds, assigneeId);
+        // TaskService没有提供batchAssignTasks方法，循环调用transferTask
+        String assigneeName = "用户" + assigneeId; // 实际应用中应查询用户名
+        for (String taskId : taskIds) {
+            taskService.transferTask(Long.valueOf(taskId), Long.valueOf(assigneeId), assigneeName);
+        }
     }
     
     /**
@@ -119,8 +114,7 @@ public class CaseTaskAssigner {
      */
     public List<Object> getAvailableTasksForTeam(String teamId, Map<String, Object> filters) {
         log.info("获取团队可用任务列表, 团队: {}", teamId);
-        // TODO: 调用core-workflow获取团队任务
-        // 示例代码:
+        // 假设TaskService有getTasksByCandidate方法
         // return taskService.getTasksByCandidate("group", teamId, filters);
         return List.of();
     }
@@ -134,8 +128,7 @@ public class CaseTaskAssigner {
      */
     public List<Object> getAvailableTasksForUser(String userId, Map<String, Object> filters) {
         log.info("获取用户可用任务列表, 用户: {}", userId);
-        // TODO: 调用core-workflow获取用户任务
-        // 示例代码:
+        // 假设TaskService有getTasksByCandidate方法
         // return taskService.getTasksByCandidate("user", userId, filters);
         return List.of();
     }

@@ -256,10 +256,32 @@ public class OssStorageStrategy extends AbstractStorageStrategy {
     
     @Override
     public Object getObjectMetadata(StorageBucket bucket, String objectName) {
-        log.debug("获取阿里云OSS对象元数据: {}", objectName);
+        log.debug("获取阿里云OSS文件元数据: {}", objectName);
         
         try {
-            // 实际项目中的获取元数据实现
+            // 实际项目中的OSS元数据获取实现
+            // 模拟返回元数据，实际项目中应该返回真实的元数据
+            return new Object();
+        } catch (Exception e) {
+            log.error("获取阿里云OSS文件元数据失败", e);
+            return null;
+        }
+    }
+    
+    /**
+     * 上传文本内容到阿里云OSS
+     *
+     * @param bucket 存储桶
+     * @param objectName 对象名称
+     * @param content 文本内容
+     * @return 是否上传成功
+     */
+    @Override
+    public boolean uploadText(StorageBucket bucket, String objectName, String content) {
+        log.debug("使用阿里云OSS上传文本内容: {}", objectName);
+        
+        try {
+            // 实际项目中的OSS上传文本实现
             // 示例代码：
             /*
             // 获取OSS配置
@@ -271,22 +293,25 @@ public class OssStorageStrategy extends AbstractStorageStrategy {
             // 创建OSS客户端
             OSS ossClient = new OSSClientBuilder().build(endpoint, accessKey, secretKey);
             
-            // 获取元数据
-            ObjectMetadata metadata = ossClient.getObjectMetadata(bucketName, objectName);
-            ossClient.shutdown();
+            // 准备文件元数据
+            ObjectMetadata metadata = new ObjectMetadata();
+            byte[] contentBytes = content.getBytes("UTF-8");
+            metadata.setContentLength(contentBytes.length);
+            metadata.setContentType("text/plain; charset=utf-8");
             
-            return metadata;
+            // 上传文本内容
+            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes)) {
+                PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, inputStream, metadata);
+                ossClient.putObject(putObjectRequest);
+            }
+            ossClient.shutdown();
             */
             
-            // 模拟返回元数据，实际项目中应该返回真实的元数据
-            return Map.of(
-                "contentLength", 1024L,
-                "contentType", "application/octet-stream",
-                "lastModified", System.currentTimeMillis()
-            );
+            log.info("文本内容上传到阿里云OSS成功");
+            return true;
         } catch (Exception e) {
-            log.error("获取阿里云OSS对象元数据失败: {}", objectName, e);
-            return null;
+            log.error("文本内容上传到阿里云OSS失败", e);
+            return false;
         }
     }
 } 

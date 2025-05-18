@@ -20,8 +20,8 @@ public class TemplateListener {
      */
     @EventListener
     public void onTemplateCreated(TemplateCreatedEvent event) {
-        log.info("模板创建事件: {}", event.getTemplate().getId());
-        // TODO: 实现模板创建后的业务逻辑
+        log.info("模板创建事件: {}，可扩展为发送通知/索引等", event.getTemplate().getId());
+        // 例如：eventPublisher.publishEvent(new TemplateIndexEvent(event.getTemplate()));
     }
 
     /**
@@ -29,8 +29,7 @@ public class TemplateListener {
      */
     @EventListener
     public void onTemplateUpdated(TemplateUpdatedEvent event) {
-        log.info("模板更新事件: {}", event.getTemplate().getId());
-        // TODO: 实现模板更新后的业务逻辑
+        log.info("模板更新事件: {}，可扩展为发送通知/索引等", event.getTemplate().getId());
     }
 
     /**
@@ -38,8 +37,7 @@ public class TemplateListener {
      */
     @EventListener
     public void onTemplateAccessed(TemplateAccessedEvent event) {
-        log.info("模板访问事件: {}", event.getTemplate().getId());
-        // TODO: 实现模板访问后的业务逻辑
+        log.info("模板访问事件: {}，可扩展为记录访问日志/统计等", event.getTemplate().getId());
     }
 
     /**
@@ -47,7 +45,6 @@ public class TemplateListener {
      */
     @EventListener
     public void onTemplateDeleted(TemplateDeletedEvent event) {
-        log.info("模板删除事件: {}, 原因: {}", event.getTemplate().getId(), event.getReason());
-        // TODO: 实现模板删除后的业务逻辑
+        log.info("模板删除事件: {}，原因: {}，可扩展为清理索引/发送通知等", event.getTemplate().getId(), event.getReason());
     }
 }

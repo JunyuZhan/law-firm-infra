@@ -3,6 +3,7 @@ package com.lawfirm.finance.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.common.security.context.SecurityContext;
+import com.lawfirm.common.util.excel.ExcelWriter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.finance.entity.Budget;
 import com.lawfirm.model.finance.enums.BudgetStatusEnum;
@@ -16,8 +17,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +35,8 @@ import java.util.List;
 public class BudgetServiceImpl extends BaseServiceImpl<BudgetMapper, Budget> implements BudgetService {
 
     private final SecurityContext securityContext;
+    
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     @PreAuthorize("hasPermission('budget', 'create')")
@@ -230,7 +238,81 @@ public class BudgetServiceImpl extends BaseServiceImpl<BudgetMapper, Budget> imp
     @PreAuthorize("hasPermission('budget', 'export')")
     public String exportBudgets(List<Long> budgetIds) {
         log.info("导出预算数据: budgetIds={}", budgetIds);
-        // TODO: 实现导出功能
-        return null;
+        
+        // 查询预算记录
+        List<Budget> budgets;
+        if (budgetIds != null && !budgetIds.isEmpty()) {
+            budgets = listByIds(budgetIds);
+        } else {
+            // 如果没有指定ID，则获取所有记录
+            budgets = list();
+        }
+        
+        if (budgets.isEmpty()) {
+            log.warn("没有找到要导出的预算记录");
+            return null;
+        }
+        
+        // 准备Excel数据
+        List<List<String>> excelData = new ArrayList<>();
+        
+        // 添加表头
+        List<String> header = new ArrayList<>();
+        header.add("预算ID");
+        header.add("预算编号");
+        header.add("预算名称");
+        header.add("预算类型");
+        header.add("预算状态");
+        header.add("预算金额");
+        header.add("已使用金额");
+        header.add("剩余金额");
+        header.add("币种");
+        header.add("开始时间");
+        header.add("结束时间");
+        header.add("部门ID");
+        header.add("成本中心ID");
+        header.add("预算说明");
+        header.add("创建时间");
+        header.add("更新时间");
+        excelData.add(header);
+        
+        // 添加数据行
+        for (Budget budget : budgets) {
+            List<String> row = new ArrayList<>();
+            row.add(String.valueOf(budget.getId()));
+            row.add(budget.getBudgetNumber());
+            row.add(budget.getBudgetName());
+            row.add(budget.getBudgetType() != null ? budget.getBudgetType().toString() : "");
+            row.add(budget.getBudgetStatus() != null ? budget.getBudgetStatus().toString() : "");
+            row.add(budget.getAmount() != null ? budget.getAmount().toString() : "0");
+            row.add(budget.getUsedAmount() != null ? budget.getUsedAmount().toString() : "0");
+            row.add(budget.getRemainingAmount() != null ? budget.getRemainingAmount().toString() : "0");
+            row.add(budget.getCurrency() != null ? budget.getCurrency().toString() : "");
+            row.add(budget.getStartTime() != null ? budget.getStartTime().format(DATE_FORMATTER) : "");
+            row.add(budget.getEndTime() != null ? budget.getEndTime().format(DATE_FORMATTER) : "");
+            row.add(budget.getDepartmentId() != null ? String.valueOf(budget.getDepartmentId()) : "");
+            row.add(budget.getCostCenterId() != null ? String.valueOf(budget.getCostCenterId()) : "");
+            row.add(budget.getDescription() != null ? budget.getDescription() : "");
+            row.add(budget.getCreateTime() != null ? budget.getCreateTime().format(DATE_FORMATTER) : "");
+            row.add(budget.getUpdateTime() != null ? budget.getUpdateTime().format(DATE_FORMATTER) : "");
+            excelData.add(row);
+        }
+        
+        // 生成临时文件名
+        String fileName = "budgets_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".xlsx";
+        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
+        
+        try {
+            // 将数据写入文件
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            ExcelWriter.write(excelData, outputStream);
+            outputStream.close();
+            
+            // 返回文件路径
+            return filePath;
+        } catch (IOException e) {
+            log.error("导出预算记录失败", e);
+            return null;
+        }
     }
 } 

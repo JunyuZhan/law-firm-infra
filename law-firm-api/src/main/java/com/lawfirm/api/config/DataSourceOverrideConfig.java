@@ -42,29 +42,46 @@ public class DataSourceOverrideConfig {
         HikariDataSource dataSource = new HikariDataSource();
         
         try {
-            // 从环境变量优先获取数据库参数
-            String host = environment.getProperty("MYSQL_HOST",
-                    environment.getProperty("spring.datasource.host", "localhost"));
-            String port = environment.getProperty("MYSQL_PORT",
-                    environment.getProperty("spring.datasource.port", "3306"));
-            String database = environment.getProperty("MYSQL_DATABASE",
-                    environment.getProperty("spring.datasource.database", "law_firm"));
-            String username = environment.getProperty("MYSQL_USERNAME",
-                    environment.getProperty("spring.datasource.username", "root"));
-            String password = environment.getProperty("MYSQL_PASSWORD",
-                    environment.getProperty("spring.datasource.password", ""));
-                    
+            // 优先使用spring.datasource标准配置
+            String jdbcUrl = environment.getProperty("spring.datasource.url");
+            String username = environment.getProperty("spring.datasource.username");
+            String password = environment.getProperty("spring.datasource.password");
+            String driverClassName = environment.getProperty("spring.datasource.driver-class-name");
+            
+            // 如果标准配置中没有值，再尝试从环境变量获取
+            if (username == null) {
+                username = environment.getProperty("MYSQL_USERNAME", "root");
+            }
+            
+            if (password == null) {
+                password = environment.getProperty("MYSQL_PASSWORD", "");
+            }
+            
+            if (driverClassName == null) {
+                driverClassName = "com.mysql.cj.jdbc.Driver";
+            }
+            
             // 设置数据库驱动 - 必须在jdbcUrl之前设置
-            dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            dataSource.setDriverClassName(driverClassName);
             
             // 设置连接信息
             dataSource.setUsername(username);
             dataSource.setPassword(password);
             
-            // 优先使用spring.datasource.url配置
-            String jdbcUrl = environment.getProperty("spring.datasource.url");
+            // 如果jdbcUrl未配置，则从其他配置构建
             if (jdbcUrl == null || jdbcUrl.trim().isEmpty()) {
-                // 如果未配置，构建jdbcUrl
+                String host = environment.getProperty("MYSQL_HOST", "localhost");
+                String port = environment.getProperty("MYSQL_PORT", "3306");
+                String database = environment.getProperty("spring.database.name");
+                if (database == null) {
+                    // 尝试从数据源配置获取
+                    database = environment.getProperty("spring.datasource.database-name");
+                    // 如果还是为空，再使用环境变量或默认值
+                    if (database == null) {
+                        database = environment.getProperty("MYSQL_DATABASE", "law_firm");
+                    }
+                }
+                
                 jdbcUrl = String.format("jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai", 
                         host, port, database);
                 log.info("未指定JDBC URL，使用构建的URL: {}", jdbcUrl);

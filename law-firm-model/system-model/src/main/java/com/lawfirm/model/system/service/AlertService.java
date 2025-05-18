@@ -26,6 +26,16 @@ public interface AlertService {
     String sendDbAlert(String dbName, String level, String message);
 
     /**
+     * 发送服务器告警
+     *
+     * @param serverName 服务器名称
+     * @param level      告警级别
+     * @param message    告警信息
+     * @return 告警ID
+     */
+    String sendServerAlert(String serverName, String level, String message);
+
+    /**
      * 关闭告警
      *
      * @param alertId 告警ID

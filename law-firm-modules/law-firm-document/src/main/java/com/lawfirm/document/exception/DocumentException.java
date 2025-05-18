@@ -21,4 +21,8 @@ public class DocumentException extends RuntimeException {
     public static DocumentException notFound(String entity) {
         return new DocumentException(entity + "不存在");
     }
+    
+    public static DocumentException businessError(String message) {
+        return new DocumentException(message);
+    }
 } 

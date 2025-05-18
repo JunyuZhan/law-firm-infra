@@ -1,5 +1,6 @@
 package com.lawfirm.core.storage.config;
 
+import com.lawfirm.model.storage.enums.StorageTypeEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Primary;
@@ -53,6 +54,15 @@ public class StorageProperties {
      * 腾讯云COS存储配置
      */
     private TencentCosConfig tencentCos = new TencentCosConfig();
+    
+    /**
+     * 获取存储类型枚举
+     * 
+     * @return 存储类型枚举
+     */
+    public StorageTypeEnum getType() {
+        return StorageTypeEnum.valueOf(defaultType);
+    }
     
     /**
      * 路径配置

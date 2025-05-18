@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -345,6 +346,141 @@ public class BucketServiceImpl extends BaseServiceImpl<StorageBucketMapper, Stor
 
     @Override
     public Long getCurrentTenantId() {
-        return 1L; // TODO: 从租户上下文获取
+        return 1L; // 使用默认租户ID
+    }
+    
+    /**
+     * 根据名称获取存储桶
+     *
+     * @param bucketName 存储桶名称
+     * @return 存储桶对象
+     */
+    @Override
+    public StorageBucket getBucketByName(String bucketName) {
+        if (!StringUtils.hasText(bucketName)) {
+            return null;
+        }
+        
+        QueryWrapper<StorageBucket> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("bucket_name", bucketName);
+        return getOne(queryWrapper);
+    }
+    
+    /**
+     * 创建存储桶
+     *
+     * @param bucketName 存储桶名称
+     * @return 创建的存储桶对象
+     */
+    @Override
+    public StorageBucket createBucket(String bucketName) {
+        if (!StringUtils.hasText(bucketName)) {
+            throw new IllegalArgumentException("存储桶名称不能为空");
+        }
+        
+        // 检查是否已存在同名存储桶
+        StorageBucket existingBucket = getBucketByName(bucketName);
+        if (existingBucket != null) {
+            return existingBucket;
+        }
+        
+        // 创建一个新的存储桶实体
+        StorageBucket bucket = new StorageBucket();
+        bucket.setBucketName(bucketName);
+        bucket.setStorageType(StorageTypeEnum.LOCAL); // 默认使用本地存储
+        bucket.setRemark("通过API创建的存储桶");
+        bucket.setMaxSize(0L); // 不限制大小
+        bucket.setUsedSize(0L);
+        bucket.setFileCount(0L);
+        bucket.setStatus(1); // 正常状态
+        bucket.setDomain(storageProperties.getLocal().getUrlPrefix());
+        
+        // 保存到数据库
+        save(bucket);
+        
+        // 在存储服务中创建实际的存储桶
+        StorageStrategy strategy = storageContext.getStrategy(StorageTypeEnum.LOCAL);
+        boolean created = strategy.createBucket(bucket.getBucketName(), false);
+        
+        if (!created) {
+            // 创建失败，删除数据库记录
+            removeById(bucket.getId());
+            throw new RuntimeException("创建存储桶失败");
+        }
+        
+        log.info("成功创建存储桶: {}", bucket.getBucketName());
+        return bucket;
+    }
+    
+    /**
+     * 获取默认存储桶
+     *
+     * @return 默认存储桶对象
+     */
+    @Override
+    public StorageBucket getDefaultBucket() {
+        Long defaultBucketId = storageProperties.getDefaultBucketId();
+        StorageBucket bucket = getById(defaultBucketId);
+        
+        if (bucket == null) {
+            log.warn("未找到默认存储桶 (ID:{}), 尝试查找第一个可用的存储桶", defaultBucketId);
+            
+            // 查找第一个可用的存储桶作为备选
+            List<StorageBucket> buckets = list();
+            if (buckets != null && !buckets.isEmpty()) {
+                bucket = buckets.get(0);
+                log.info("使用备选存储桶 (ID:{}, Name:{})", bucket.getId(), bucket.getBucketName());
+            } else {
+                // 如果没有任何存储桶，创建一个默认的本地存储桶
+                log.warn("系统中没有可用存储桶，创建默认本地存储桶");
+                bucket = createDefaultBucket();
+            }
+        }
+        
+        return bucket;
+    }
+    
+    /**
+     * 创建默认本地存储桶
+     *
+     * @return 创建的存储桶对象
+     */
+    private StorageBucket createDefaultBucket() {
+        String defaultBucketName = "default-bucket";
+        
+        // 检查是否已存在同名存储桶
+        QueryWrapper<StorageBucket> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("bucket_name", defaultBucketName);
+        StorageBucket existingBucket = getOne(queryWrapper);
+        
+        if (existingBucket != null) {
+            return existingBucket;
+        }
+        
+        // 创建一个新的存储桶实体
+        StorageBucket bucket = new StorageBucket();
+        bucket.setBucketName(defaultBucketName);
+        bucket.setStorageType(StorageTypeEnum.LOCAL);
+        bucket.setRemark("系统自动创建的默认存储桶");
+        bucket.setMaxSize(0L); // 不限制大小
+        bucket.setUsedSize(0L);
+        bucket.setFileCount(0L);
+        bucket.setStatus(1); // 正常状态
+        bucket.setDomain(storageProperties.getLocal().getUrlPrefix());
+        
+        // 保存到数据库
+        save(bucket);
+        
+        // 在存储服务中创建实际的存储桶
+        StorageStrategy strategy = storageContext.getStrategy(StorageTypeEnum.LOCAL);
+        boolean created = strategy.createBucket(bucket.getBucketName(), false);
+        
+        if (!created) {
+            log.error("创建默认存储桶失败");
+            throw new RuntimeException("创建默认存储桶失败");
+        }
+        
+        log.info("成功创建默认存储桶: {}", bucket.getBucketName());
+        return bucket;
     }
 } 

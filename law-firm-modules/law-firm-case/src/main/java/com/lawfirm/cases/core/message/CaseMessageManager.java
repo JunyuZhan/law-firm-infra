@@ -1,9 +1,16 @@
 package com.lawfirm.cases.core.message;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.core.message.service.MessageManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import com.lawfirm.model.message.entity.business.CaseMessage;
+import com.lawfirm.model.message.enums.MessageTypeEnum;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,15 +25,26 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class CaseMessageManager {
     
-    // TODO: 注入消息服务
-    // private final MessageSender messageSender;
-    // private final MessageManager messageManager;
+    private final MessageSender messageSender;
+    private MessageManager messageManager;
     
     private static final String CASE_TOPIC = "case-events";
     private static final String CASE_NOTIFICATION_TOPIC = "case-notifications";
+    
+    /**
+     * 构造函数
+     * 通过构造函数注入必需的MessageSender和可选的MessageManager
+     */
+    @Autowired
+    public CaseMessageManager(
+            @Qualifier("messageSender") MessageSender messageSender,
+            @Autowired(required = false) @Qualifier("messageManagerImpl") MessageManager messageManager) {
+        this.messageSender = messageSender;
+        this.messageManager = messageManager;
+        log.info("初始化案件消息管理器, MessageManager状态: {}", messageManager != null ? "可用" : "不可用");
+    }
     
     /**
      * 发送案件状态变更消息
@@ -41,20 +59,14 @@ public class CaseMessageManager {
         log.info("发送案件状态变更消息, 案件ID: {}, 状态从 {} 变更到 {}", caseId, oldStatus, newStatus);
         
         try {
-            // 构建消息内容
-            Map<String, Object> messageData = Map.of(
-                "caseId", caseId,
-                "eventType", "STATUS_CHANGE",
-                "oldStatus", oldStatus,
-                "newStatus", newStatus,
-                "operatorId", operatorId,
-                "reason", reason,
-                "timestamp", System.currentTimeMillis()
-            );
-            
-            // TODO: 调用core-message发送消息
-            // 示例代码:
-            // messageSender.send(CASE_TOPIC, "case.status.change", messageData);
+            CaseMessage message = new CaseMessage();
+            message.setCaseId(caseId)
+                   .setOperationType("STATUS_CHANGE")
+                   .setOperationDesc(reason)
+                   .setSenderId(operatorId)
+                   .setMessageType(MessageTypeEnum.CASE)
+                   .setContent(String.format("案件状态从%s变更为%s", oldStatus, newStatus));
+            messageSender.send(message);
             
             log.info("案件状态变更消息发送成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -75,19 +87,15 @@ public class CaseMessageManager {
         log.info("发送案件分配消息, 案件ID: {}, 受理人: {}, 分配类型: {}", caseId, assigneeId, assignmentType);
         
         try {
-            // 构建消息内容
-            Map<String, Object> messageData = Map.of(
-                "caseId", caseId,
-                "eventType", "ASSIGNMENT",
-                "assigneeId", assigneeId,
-                "assignerId", assignerId,
-                "assignmentType", assignmentType,
-                "timestamp", System.currentTimeMillis()
-            );
-            
-            // TODO: 调用core-message发送消息
-            // 示例代码:
-            // messageSender.send(CASE_TOPIC, "case.assignment", messageData);
+            CaseMessage message = new CaseMessage();
+            message.setCaseId(caseId)
+                   .setOperationType("ASSIGNMENT")
+                   .setOperationDesc(assignmentType)
+                   .setSenderId(assignerId)
+                   .setReceiverId(assigneeId)
+                   .setMessageType(MessageTypeEnum.CASE)
+                   .setContent(String.format("案件分配给用户%s，类型：%s", assigneeId, assignmentType));
+            messageSender.send(message);
             
             log.info("案件分配消息发送成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -108,19 +116,14 @@ public class CaseMessageManager {
         log.info("发送案件截止日期提醒消息, 案件ID: {}, 截止日期类型: {}", caseId, deadlineType);
         
         try {
-            // 构建消息内容
-            Map<String, Object> messageData = Map.of(
-                "caseId", caseId,
-                "eventType", "DEADLINE_REMINDER",
-                "deadlineType", deadlineType,
-                "deadlineDate", deadlineDate,
-                "recipientIds", recipientIds,
-                "timestamp", System.currentTimeMillis()
-            );
-            
-            // TODO: 调用core-message发送消息
-            // 示例代码:
-            // messageSender.send(CASE_NOTIFICATION_TOPIC, "case.deadline.reminder", messageData);
+            CaseMessage message = new CaseMessage();
+            message.setCaseId(caseId)
+                   .setOperationType("DEADLINE_REMINDER")
+                   .setOperationDesc(deadlineType)
+                   .setMessageType(MessageTypeEnum.CASE)
+                   .setContent(String.format("案件截止日期提醒：%s，时间：%d", deadlineType, deadlineDate));
+            // 可扩展：设置receivers
+            messageSender.send(message);
             
             log.info("案件截止日期提醒消息发送成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -142,20 +145,14 @@ public class CaseMessageManager {
         log.info("发送案件文档更新消息, 案件ID: {}, 文档ID: {}, 操作类型: {}", caseId, documentId, operationType);
         
         try {
-            // 构建消息内容
-            Map<String, Object> messageData = Map.of(
-                "caseId", caseId,
-                "eventType", "DOCUMENT_UPDATE",
-                "documentId", documentId,
-                "documentName", documentName,
-                "operationType", operationType,
-                "operatorId", operatorId,
-                "timestamp", System.currentTimeMillis()
-            );
-            
-            // TODO: 调用core-message发送消息
-            // 示例代码:
-            // messageSender.send(CASE_TOPIC, "case.document.update", messageData);
+            CaseMessage message = new CaseMessage();
+            message.setCaseId(caseId)
+                   .setOperationType("DOCUMENT_UPDATE")
+                   .setOperationDesc(operationType)
+                   .setSenderId(operatorId)
+                   .setMessageType(MessageTypeEnum.CASE)
+                   .setContent(String.format("文档[%s]（ID:%s）%s", documentName, documentId, operationType));
+            messageSender.send(message);
             
             log.info("案件文档更新消息发送成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -177,20 +174,15 @@ public class CaseMessageManager {
         log.info("发送案件评论消息, 案件ID: {}, 评论ID: {}", caseId, commentId);
         
         try {
-            // 构建消息内容
-            Map<String, Object> messageData = Map.of(
-                "caseId", caseId,
-                "eventType", "COMMENT",
-                "commentId", commentId,
-                "commentContent", commentContent,
-                "commenterId", commenterId,
-                "mentionedUserIds", mentionedUserIds,
-                "timestamp", System.currentTimeMillis()
-            );
-            
-            // TODO: 调用core-message发送消息
-            // 示例代码:
-            // messageSender.send(CASE_NOTIFICATION_TOPIC, "case.comment", messageData);
+            CaseMessage message = new CaseMessage();
+            message.setCaseId(caseId)
+                   .setOperationType("COMMENT")
+                   .setOperationDesc(commentContent)
+                   .setSenderId(commenterId)
+                   .setMessageType(MessageTypeEnum.CASE)
+                   .setContent(commentContent);
+            // 可扩展：设置receivers为mentionedUserIds
+            messageSender.send(message);
             
             log.info("案件评论消息发送成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -219,9 +211,14 @@ public class CaseMessageManager {
                 "timestamp", System.currentTimeMillis()
             );
             
-            // TODO: 调用core-message发送消息
-            // 示例代码:
-            // messageSender.send(CASE_TOPIC, "case.team.change", messageData);
+            // 正确做法：将 messageData 封装为 CaseMessage 或 BaseMessage
+            CaseMessage message = new CaseMessage();
+            message.setCaseId(caseId)
+                   .setOperationType("TEAM_CHANGE")
+                   .setSenderId(operatorId)
+                   .setMessageType(MessageTypeEnum.CASE)
+                   .setContent("团队变更: " + teamChanges.toString());
+            messageSender.send(message);
             
             log.info("案件团队变更消息发送成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -238,18 +235,12 @@ public class CaseMessageManager {
      * @return 未读消息数量
      */
     public int getUnreadCaseMessageCount(Long userId, Long caseId) {
-        log.info("获取案件未读消息数量, 用户ID: {}, 案件ID: {}", userId, caseId);
-        
-        try {
-            // TODO: 调用core-message获取未读消息数量
-            // 示例代码:
-            // return messageManager.getUnreadMessageCount(userId, "CASE", caseId.toString());
-            
-            return 0; // 实际实现中返回未读消息数量
-        } catch (Exception e) {
-            log.error("获取案件未读消息数量失败", e);
-            throw new RuntimeException("获取案件未读消息数量失败: " + e.getMessage());
+        if (messageManager == null) {
+            log.warn("MessageManager未配置，无法获取未读消息数量");
+            return 0;
         }
+        
+        return messageManager.getUnreadMessageCount(userId, "CASE", caseId.toString());
     }
     
     /**
@@ -261,18 +252,12 @@ public class CaseMessageManager {
      * @return 消息列表
      */
     public List<Object> getCaseMessages(Long caseId, int page, int size) {
-        log.info("获取案件消息列表, 案件ID: {}, 页码: {}, 每页大小: {}", caseId, page, size);
-        
-        try {
-            // TODO: 调用core-message获取消息列表
-            // 示例代码:
-            // return messageManager.getMessages("CASE", caseId.toString(), page, size);
-            
-            return List.of(); // 实际实现中返回消息列表
-        } catch (Exception e) {
-            log.error("获取案件消息列表失败", e);
-            throw new RuntimeException("获取案件消息列表失败: " + e.getMessage());
+        if (messageManager == null) {
+            log.warn("MessageManager未配置，无法获取案件消息列表");
+            return new ArrayList<>();
         }
+        
+        return messageManager.getMessages("CASE", caseId.toString(), page, size);
     }
     
     /**
@@ -282,17 +267,11 @@ public class CaseMessageManager {
      * @param messageIds 消息ID列表
      */
     public void markCaseMessagesAsRead(Long userId, List<String> messageIds) {
-        log.info("标记案件消息为已读, 用户ID: {}, 消息数量: {}", userId, messageIds.size());
-        
-        try {
-            // TODO: 调用core-message标记消息为已读
-            // 示例代码:
-            // messageManager.markMessagesAsRead(userId, messageIds);
-            
-            log.info("案件消息标记为已读成功, 用户ID: {}", userId);
-        } catch (Exception e) {
-            log.error("标记案件消息为已读失败", e);
-            throw new RuntimeException("标记案件消息为已读失败: " + e.getMessage());
+        if (messageManager == null) {
+            log.warn("MessageManager未配置，无法标记消息为已读");
+            return;
         }
+        
+        messageManager.markMessagesAsRead(userId, messageIds);
     }
 } 

@@ -11,7 +11,7 @@ public enum WorkTaskStatusEnum {
     /**
      * 待办
      */
-    TODO(0, "待办"),
+    TO_DO(0, "待办"),
     
     /**
      * 进行中

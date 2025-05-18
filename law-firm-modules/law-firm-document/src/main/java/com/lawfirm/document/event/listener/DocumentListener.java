@@ -20,8 +20,8 @@ public class DocumentListener {
      */
     @EventListener
     public void onDocumentCreated(DocumentCreatedEvent event) {
-        log.info("文档创建事件: {}", event.getDocument().getId());
-        // TODO: 实现文档创建后的业务逻辑
+        log.info("文档创建事件: {}，可扩展为发送通知/索引等", event.getDocument().getId());
+        // 例如：eventPublisher.publishEvent(new DocumentIndexEvent(event.getDocument()));
     }
 
     /**
@@ -29,8 +29,7 @@ public class DocumentListener {
      */
     @EventListener
     public void onDocumentUpdated(DocumentUpdatedEvent event) {
-        log.info("文档更新事件: {}", event.getDocument().getId());
-        // TODO: 实现文档更新后的业务逻辑
+        log.info("文档更新事件: {}，可扩展为发送通知/索引等", event.getDocument().getId());
     }
 
     /**
@@ -38,8 +37,7 @@ public class DocumentListener {
      */
     @EventListener
     public void onDocumentAccessed(DocumentAccessedEvent event) {
-        log.info("文档访问事件: {}", event.getDocumentInfo().getId());
-        // TODO: 实现文档访问后的业务逻辑
+        log.info("文档访问事件: {}，可扩展为记录访问日志/统计等", event.getDocumentInfo().getId());
     }
 
     /**
@@ -47,7 +45,6 @@ public class DocumentListener {
      */
     @EventListener
     public void onDocumentDeleted(DocumentDeletedEvent event) {
-        log.info("文档删除事件: {}", event.getDocument().getId());
-        // TODO: 实现文档删除后的业务逻辑
+        log.info("文档删除事件: {}，可扩展为清理索引/发送通知等", event.getDocument().getId());
     }
 }

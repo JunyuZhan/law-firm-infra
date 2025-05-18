@@ -79,7 +79,11 @@ public class ClientCategoryServiceImpl extends ServiceImpl<CategoryMapper, Clien
         }
         
         // 查询是否有关联的客户
-        // TODO: 检查是否有客户关联此分类
+        Long clientCount = baseMapper.countClientsByCategoryId(id);
+        if (clientCount != null && clientCount > 0) {
+            // 存在客户关联此分类，不允许删除
+            return false;
+        }
         
         // 删除分类
         removeById(id);

@@ -35,67 +35,95 @@ public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategor
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createCategory(CategoryCreateDTO createDTO) {
-        // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
             throw DocumentException.noPermission("创建分类");
         }
-
-        // TODO: 创建分类记录
-        return null;
+        DocumentCategory category = new DocumentCategory();
+        category.setName(createDTO.getName());
+        category.setDescription(createDTO.getDescription());
+        category.setParentId(createDTO.getParentId());
+        baseMapper.insert(category);
+        return category.getId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateCategory(CategoryUpdateDTO updateDTO) {
-        // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
             throw DocumentException.noPermission("更新分类");
         }
-
-        // TODO: 更新分类记录
+        DocumentCategory category = getById(updateDTO.getId());
+        if (category == null) {
+            throw DocumentException.notFound("分类(ID:" + updateDTO.getId() + ")");
+        }
+        category.setName(updateDTO.getName());
+        category.setDescription(updateDTO.getDescription());
+        category.setParentId(updateDTO.getParentId());
+        updateById(category);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteCategory(Long id) {
-        // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
             throw DocumentException.noPermission("删除分类");
         }
-
-        // TODO: 删除分类记录
+        removeById(id);
     }
 
     @Override
     public CategoryVO getCategory(Long id) {
-        // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
             throw DocumentException.noPermission("查看分类");
         }
-
-        // TODO: 获取分类详情
-        return null;
+        DocumentCategory category = getById(id);
+        if (category == null) {
+            throw DocumentException.notFound("分类(ID:" + id + ")");
+        }
+        CategoryVO vo = new CategoryVO();
+        vo.setId(category.getId());
+        vo.setName(category.getName());
+        vo.setDescription(category.getDescription());
+        vo.setParentId(category.getParentId());
+        return vo;
     }
 
     @Override
     public List<CategoryVO> listCategories(CategoryQueryDTO queryDTO) {
-        // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
             throw DocumentException.noPermission("查询分类列表");
         }
-
-        // TODO: 查询分类列表
-        return null;
+        List<DocumentCategory> categories = baseMapper.selectList(null);
+        List<CategoryVO> voList = new java.util.ArrayList<>();
+        for (DocumentCategory category : categories) {
+            CategoryVO vo = new CategoryVO();
+            vo.setId(category.getId());
+            vo.setName(category.getName());
+            vo.setDescription(category.getDescription());
+            vo.setParentId(category.getParentId());
+            voList.add(vo);
+        }
+        return voList;
     }
 
     @Override
     public Page<CategoryVO> pageCategories(CategoryQueryDTO queryDTO) {
-        // 检查权限
         if (!securityManager.checkDocumentManagementPermission()) {
             throw DocumentException.noPermission("查询分类列表");
         }
-
-        // TODO: 分页查询分类
-        return null;
+        Page<DocumentCategory> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
+        Page<DocumentCategory> categoryPage = baseMapper.selectPage(page, null);
+        Page<CategoryVO> voPage = new Page<>(categoryPage.getCurrent(), categoryPage.getSize(), categoryPage.getTotal());
+        List<CategoryVO> voList = new java.util.ArrayList<>();
+        for (DocumentCategory category : categoryPage.getRecords()) {
+            CategoryVO vo = new CategoryVO();
+            vo.setId(category.getId());
+            vo.setName(category.getName());
+            vo.setDescription(category.getDescription());
+            vo.setParentId(category.getParentId());
+            voList.add(vo);
+        }
+        voPage.setRecords(voList);
+        return voPage;
     }
 }

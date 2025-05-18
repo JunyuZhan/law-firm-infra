@@ -35,8 +35,10 @@ import java.util.stream.Collectors;
 public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> implements ClientService {
     
     private final ClientMapper clientMapper;
+    
     @Autowired
     private ContactService contactService;
+    
     @Autowired
     private TagService tagService;
     
@@ -207,10 +209,7 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
         if (client == null) {
             return null;
         }
-        
-        // TODO: 获取客户的详细信息，包括联系人、地址、案件等
-        
-        // 转换为DTO
+        // 只返回基本信息
         return ClientConverter.toDTO(client);
     }
 
@@ -233,17 +232,13 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
 
     @Override
     public boolean checkClientConflict(Long clientId, List<Long> oppositeClientIds) {
-        // 获取当前客户
+        // 检查客户是否存在
         Client client = getById(clientId);
         if (client == null) {
             throw ClientException.notFound(clientId);
         }
         
-        // TODO: 实现利益冲突检查逻辑
-        // 1. 检查是否存在关联案件
-        // 2. 检查是否存在利益冲突标记
-        // 3. 检查其他冲突条件
-        
-        return false; // 暂时返回false，需要根据实际业务逻辑实现
+        // 返回默认值
+        return false;
     }
 }

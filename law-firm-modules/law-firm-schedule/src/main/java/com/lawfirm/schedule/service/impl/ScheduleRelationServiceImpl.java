@@ -18,6 +18,7 @@ import com.lawfirm.model.schedule.vo.ScheduleTaskRelationVO;
 import com.lawfirm.schedule.converter.ScheduleCaseRelationConvert;
 import com.lawfirm.schedule.converter.ScheduleTaskRelationConvert;
 import com.lawfirm.schedule.integration.CaseIntegration;
+import com.lawfirm.schedule.integration.TaskIntegration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class ScheduleRelationServiceImpl extends BaseServiceImpl<ScheduleCaseRel
     private final ScheduleCaseRelationConvert caseRelationConvert;
     private final ScheduleTaskRelationConvert taskRelationConvert;
     private final CaseIntegration caseIntegration;
+    private final TaskIntegration taskIntegration;
     
     @Autowired
     private ScheduleService scheduleService;
@@ -54,13 +56,15 @@ public class ScheduleRelationServiceImpl extends BaseServiceImpl<ScheduleCaseRel
             ScheduleEventService eventService,
             ScheduleCaseRelationConvert caseRelationConvert,
             ScheduleTaskRelationConvert taskRelationConvert,
-            CaseIntegration caseIntegration) {
+            CaseIntegration caseIntegration,
+            TaskIntegration taskIntegration) {
         this.caseRelationMapper = caseRelationMapper;
         this.taskRelationMapper = taskRelationMapper;
         this.eventService = eventService;
         this.caseRelationConvert = caseRelationConvert;
         this.taskRelationConvert = taskRelationConvert;
         this.caseIntegration = caseIntegration;
+        this.taskIntegration = taskIntegration;
     }
     
     @Override
@@ -96,7 +100,11 @@ public class ScheduleRelationServiceImpl extends BaseServiceImpl<ScheduleCaseRel
     public boolean linkTask(Long scheduleId, Long taskId, String description) {
         log.info("关联日程与任务，日程ID：{}，任务ID：{}", scheduleId, taskId);
         
-        // TODO: 验证任务是否存在
+        // 验证任务是否存在
+        if (!taskIntegration.taskExists(taskId)) {
+            log.error("关联日程与任务失败，任务不存在，任务ID：{}", taskId);
+            throw new IllegalArgumentException("任务不存在");
+        }
         
         LambdaQueryWrapper<ScheduleTaskRelation> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ScheduleTaskRelation::getScheduleId, scheduleId)
@@ -248,7 +256,17 @@ public class ScheduleRelationServiceImpl extends BaseServiceImpl<ScheduleCaseRel
     public boolean batchLinkTasks(List<ScheduleTaskRelationDTO> relationDTOs) {
         log.info("批量关联日程与任务，关联数量：{}", relationDTOs.size());
         
-        // TODO: 验证任务是否存在
+        // 验证任务是否存在
+        Set<Long> taskIds = relationDTOs.stream()
+                .map(ScheduleTaskRelationDTO::getTaskId)
+                .collect(Collectors.toSet());
+        
+        for (Long taskId : taskIds) {
+            if (!taskIntegration.taskExists(taskId)) {
+                log.error("批量关联日程与任务失败，任务不存在，任务ID：{}", taskId);
+                throw new IllegalArgumentException("任务不存在：" + taskId);
+            }
+        }
         
         List<ScheduleTaskRelation> relations = relationDTOs.stream()
                 .map(taskRelationConvert::toEntity)

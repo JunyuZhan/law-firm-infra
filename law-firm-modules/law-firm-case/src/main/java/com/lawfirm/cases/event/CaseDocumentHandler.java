@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import com.lawfirm.common.security.utils.SecurityUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,9 +63,16 @@ public class CaseDocumentHandler {
             event.setConfidential(confidential);
             
             // 设置触发人信息
-            // TODO: 从当前上下文或安全上下文获取
-            event.setTriggerId("0");
-            event.setTriggerName("系统");
+            String triggerId = "0";
+            String triggerName = "系统";
+            try {
+                Long uid = SecurityUtils.getUserId();
+                if (uid != null) triggerId = uid.toString();
+                String uname = SecurityUtils.getUsername();
+                if (uname != null) triggerName = uname;
+            } catch (Exception ignore) {}
+            event.setTriggerId(triggerId);
+            event.setTriggerName(triggerName);
             event.setSource("DOCUMENT_UPLOAD");
             event.setMessage("添加了文档: " + documentName);
             

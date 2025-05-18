@@ -1,8 +1,12 @@
 package com.lawfirm.cases.core.search;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.search.service.IndexService;
+import com.lawfirm.model.search.dto.search.SearchRequestDTO;
+import com.lawfirm.model.search.vo.SearchVO;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 import java.util.Map;
@@ -18,15 +22,23 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class CaseSearchManager {
     
-    // TODO: 注入搜索服务
-    // private final SearchService searchService;
-    // private final IndexService indexService;
+    private final SearchService searchService;
+    private final IndexService indexService;
     
     private static final String CASE_INDEX = "cases";
     private static final String CASE_DOCUMENT_INDEX = "case_documents";
+    
+    /**
+     * 构造函数，使用@Qualifier显式指定要注入的服务实现
+     */
+    public CaseSearchManager(
+            @Qualifier("coreSearchServiceImpl") SearchService searchService,
+            @Qualifier("coreIndexServiceImpl") IndexService indexService) {
+        this.searchService = searchService;
+        this.indexService = indexService;
+    }
     
     /**
      * 索引案件数据
@@ -38,10 +50,8 @@ public class CaseSearchManager {
         log.info("索引案件数据, 案件ID: {}", caseId);
         
         try {
-            // TODO: 调用core-search索引数据
-            // 示例代码:
-            // caseData.put("id", caseId.toString());
-            // indexService.indexDocument(CASE_INDEX, caseId.toString(), caseData);
+            caseData.put("id", caseId.toString());
+            searchService.indexDoc(CASE_INDEX, caseId.toString(), caseData);
             
             log.info("案件数据索引成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -61,11 +71,9 @@ public class CaseSearchManager {
         log.info("索引案件文档, 文档ID: {}, 案件ID: {}", documentId, caseId);
         
         try {
-            // TODO: 调用core-search索引文档
-            // 示例代码:
-            // documentData.put("id", documentId);
-            // documentData.put("case_id", caseId.toString());
-            // indexService.indexDocument(CASE_DOCUMENT_INDEX, documentId, documentData);
+            documentData.put("id", documentId);
+            documentData.put("case_id", caseId.toString());
+            searchService.indexDoc(CASE_DOCUMENT_INDEX, documentId, documentData);
             
             log.info("案件文档索引成功, 文档ID: {}", documentId);
         } catch (Exception e) {
@@ -84,9 +92,7 @@ public class CaseSearchManager {
         log.info("更新案件索引, 案件ID: {}", caseId);
         
         try {
-            // TODO: 调用core-search更新索引
-            // 示例代码:
-            // indexService.updateDocument(CASE_INDEX, caseId.toString(), updateData);
+            searchService.updateDoc(CASE_INDEX, caseId.toString(), updateData);
             
             log.info("案件索引更新成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -104,9 +110,7 @@ public class CaseSearchManager {
         log.info("删除案件索引, 案件ID: {}", caseId);
         
         try {
-            // TODO: 调用core-search删除索引
-            // 示例代码:
-            // indexService.deleteDocument(CASE_INDEX, caseId.toString());
+            searchService.deleteDoc(CASE_INDEX, caseId.toString());
             
             log.info("案件索引删除成功, 案件ID: {}", caseId);
         } catch (Exception e) {
@@ -128,19 +132,17 @@ public class CaseSearchManager {
         log.info("搜索案件, 关键词: {}, 过滤条件: {}, 页码: {}, 每页大小: {}", keywords, filters, page, size);
         
         try {
-            // TODO: 调用core-search执行搜索
-            // 示例代码:
-            // Map<String, Object> searchParams = new HashMap<>();
-            // searchParams.put("keywords", keywords);
-            // searchParams.put("filters", filters);
-            // searchParams.put("page", page);
-            // searchParams.put("size", size);
-            // return searchService.search(CASE_INDEX, searchParams);
-            
+            SearchRequestDTO request = new SearchRequestDTO();
+            request.setIndexName(CASE_INDEX);
+            request.setKeyword(keywords);
+            request.setFilters(filters);
+            request.setPageNum(page);
+            request.setPageSize(size);
+            SearchVO vo = searchService.search(request);
             return Map.of(
-                "total", 0,
-                "data", List.of()
-            ); // 实际实现中返回搜索结果
+                "total", vo.getTotal(),
+                "data", vo.getHits()
+            );
         } catch (Exception e) {
             log.error("案件搜索失败", e);
             throw new RuntimeException("搜索案件失败: " + e.getMessage());
@@ -161,24 +163,21 @@ public class CaseSearchManager {
         log.info("搜索案件文档, 案件ID: {}, 关键词: {}, 页码: {}, 每页大小: {}", caseId, keywords, page, size);
         
         try {
-            // 添加案件ID过滤
             if (filters == null) {
-                filters = Map.of();
+                filters = new java.util.HashMap<>();
             }
-            
-            // TODO: 调用core-search执行搜索
-            // 示例代码:
-            // Map<String, Object> searchParams = new HashMap<>();
-            // searchParams.put("keywords", keywords);
-            // searchParams.put("filters", filters);
-            // searchParams.put("page", page);
-            // searchParams.put("size", size);
-            // return searchService.search(CASE_DOCUMENT_INDEX, searchParams);
-            
+            filters.put("case_id", caseId.toString());
+            SearchRequestDTO request = new SearchRequestDTO();
+            request.setIndexName(CASE_DOCUMENT_INDEX);
+            request.setKeyword(keywords);
+            request.setFilters(filters);
+            request.setPageNum(page);
+            request.setPageSize(size);
+            SearchVO vo = searchService.search(request);
             return Map.of(
-                "total", 0,
-                "data", List.of()
-            ); // 实际实现中返回搜索结果
+                "total", vo.getTotal(),
+                "data", vo.getHits()
+            );
         } catch (Exception e) {
             log.error("案件文档搜索失败", e);
             throw new RuntimeException("搜索案件文档失败: " + e.getMessage());
@@ -195,14 +194,41 @@ public class CaseSearchManager {
         log.info("高级搜索案件, 查询参数: {}", queryParams);
         
         try {
-            // TODO: 调用core-search执行高级搜索
-            // 示例代码:
-            // return searchService.advancedSearch(CASE_INDEX, queryParams);
-            
+            SearchRequestDTO request = new SearchRequestDTO();
+            request.setIndexName(CASE_INDEX);
+            if (queryParams != null) {
+                if (queryParams.containsKey("keyword")) {
+                    request.setKeyword((String) queryParams.get("keyword"));
+                }
+                if (queryParams.containsKey("filters")) {
+                    Object filtersObj = queryParams.get("filters");
+                    if (filtersObj instanceof Map) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> filtersMap = (Map<String, Object>) filtersObj;
+                        request.setFilters(new java.util.HashMap<>(filtersMap));
+                    }
+                }
+                if (queryParams.containsKey("aggregations")) {
+                    Object aggrObj = queryParams.get("aggregations");
+                    if (aggrObj instanceof Map) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> aggrMap = (Map<String, Object>) aggrObj;
+                        request.setAggregations(new java.util.HashMap<>(aggrMap));
+                    }
+                }
+                if (queryParams.containsKey("pageNum")) {
+                    request.setPageNum((Integer) queryParams.get("pageNum"));
+                }
+                if (queryParams.containsKey("pageSize")) {
+                    request.setPageSize((Integer) queryParams.get("pageSize"));
+                }
+            }
+            SearchVO vo = searchService.search(request);
             return Map.of(
-                "total", 0,
-                "data", List.of()
-            ); // 实际实现中返回搜索结果
+                "total", vo.getTotal(),
+                "data", vo.getHits(),
+                "aggregations", vo.getAggregations()
+            );
         } catch (Exception e) {
             log.error("案件高级搜索失败", e);
             throw new RuntimeException("高级搜索案件失败: " + e.getMessage());
@@ -219,11 +245,11 @@ public class CaseSearchManager {
         log.info("获取案件统计聚合, 聚合参数: {}", aggregationParams);
         
         try {
-            // TODO: 调用core-search执行聚合
-            // 示例代码:
-            // return searchService.aggregate(CASE_INDEX, aggregationParams);
-            
-            return Map.of(); // 实际实现中返回聚合结果
+            SearchRequestDTO request = new SearchRequestDTO();
+            request.setIndexName(CASE_INDEX);
+            request.setAggregations(aggregationParams);
+            SearchVO vo = searchService.search(request);
+            return vo.getAggregations() != null ? vo.getAggregations() : Map.of();
         } catch (Exception e) {
             log.error("案件统计聚合失败", e);
             throw new RuntimeException("获取案件统计聚合失败: " + e.getMessage());

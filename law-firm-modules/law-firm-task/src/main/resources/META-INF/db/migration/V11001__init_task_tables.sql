@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS work_task (
   schedule_id BIGINT COMMENT '日程ID',
   is_legal_task BOOLEAN DEFAULT FALSE COMMENT '是否法律专业任务',
   document_ids TEXT COMMENT '关联文档ID列表（JSON数组）',
+  cancel_reason VARCHAR(500) COMMENT '取消原因',
   department_id BIGINT COMMENT '所属部门ID',
   version INTEGER DEFAULT 0 COMMENT '版本号',
   status_column INTEGER DEFAULT 0 COMMENT '状态（0-正常，1-禁用）',

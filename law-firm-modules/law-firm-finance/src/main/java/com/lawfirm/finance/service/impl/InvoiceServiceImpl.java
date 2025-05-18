@@ -3,6 +3,7 @@ package com.lawfirm.finance.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.common.security.context.SecurityContext;
+import com.lawfirm.common.util.excel.ExcelWriter;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.finance.entity.Invoice;
 import com.lawfirm.model.finance.enums.InvoiceStatusEnum;
@@ -18,8 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lawfirm.finance.exception.FinanceException;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +37,8 @@ import java.util.List;
 public class InvoiceServiceImpl extends BaseServiceImpl<InvoiceMapper, Invoice> implements InvoiceService {
 
     private final SecurityContext securityContext;
+    
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     @PreAuthorize("hasPermission('invoice', 'create')")
@@ -240,7 +248,89 @@ public class InvoiceServiceImpl extends BaseServiceImpl<InvoiceMapper, Invoice> 
     @PreAuthorize("hasPermission('invoice', 'export')")
     public String exportInvoices(List<Long> invoiceIds) {
         log.info("导出发票数据: invoiceIds={}", invoiceIds);
-        // TODO: 实现导出功能
-        return null;
+        
+        // 查询发票记录
+        List<Invoice> invoices;
+        if (invoiceIds != null && !invoiceIds.isEmpty()) {
+            invoices = listByIds(invoiceIds);
+        } else {
+            // 如果没有指定ID，则获取所有记录
+            invoices = list();
+        }
+        
+        if (invoices.isEmpty()) {
+            log.warn("没有找到要导出的发票记录");
+            return null;
+        }
+        
+        // 准备Excel数据
+        List<List<String>> excelData = new ArrayList<>();
+        
+        // 添加表头
+        List<String> header = new ArrayList<>();
+        header.add("发票ID");
+        header.add("发票编号");
+        header.add("发票类型");
+        header.add("发票状态");
+        header.add("发票金额");
+        header.add("律所ID");
+        header.add("案件ID");
+        header.add("客户ID");
+        header.add("发票抬头");
+        header.add("发票内容");
+        header.add("开票时间");
+        header.add("开票人");
+        header.add("纳税人识别号");
+        header.add("注册地址");
+        header.add("注册电话");
+        header.add("开户银行");
+        header.add("银行账号");
+        header.add("创建时间");
+        header.add("更新时间");
+        header.add("备注");
+        excelData.add(header);
+        
+        // 添加数据行
+        for (Invoice invoice : invoices) {
+            List<String> row = new ArrayList<>();
+            row.add(String.valueOf(invoice.getId()));
+            row.add(invoice.getInvoiceNumber());
+            row.add(invoice.getInvoiceType() != null ? invoice.getInvoiceType().getDescription() : "");
+            row.add(invoice.getInvoiceStatus() != null ? invoice.getInvoiceStatus().getDescription() : "");
+            row.add(invoice.getAmount() != null ? invoice.getAmount().toString() : "0");
+            row.add(invoice.getLawFirmId() != null ? String.valueOf(invoice.getLawFirmId()) : "");
+            row.add(invoice.getCaseId() != null ? String.valueOf(invoice.getCaseId()) : "");
+            row.add(invoice.getClientId() != null ? String.valueOf(invoice.getClientId()) : "");
+            row.add(invoice.getTitle());
+            row.add(invoice.getContent());
+            row.add(invoice.getIssueTime() != null ? invoice.getIssueTime().format(DATE_FORMATTER) : "");
+            row.add(invoice.getIssuedBy());
+            row.add(invoice.getTaxpayerNumber());
+            row.add(invoice.getRegisteredAddress());
+            row.add(invoice.getRegisteredPhone());
+            row.add(invoice.getBankName());
+            row.add(invoice.getBankAccount());
+            row.add(invoice.getCreateTime() != null ? invoice.getCreateTime().format(DATE_FORMATTER) : "");
+            row.add(invoice.getUpdateTime() != null ? invoice.getUpdateTime().format(DATE_FORMATTER) : "");
+            row.add(invoice.getRemark());
+            excelData.add(row);
+        }
+        
+        // 生成临时文件名
+        String fileName = "invoices_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".xlsx";
+        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
+        
+        try {
+            // 将数据写入文件
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            ExcelWriter.write(excelData, outputStream);
+            outputStream.close();
+            
+            // 返回文件路径
+            return filePath;
+        } catch (IOException e) {
+            log.error("导出发票记录失败", e);
+            return null;
+        }
     }
 } 

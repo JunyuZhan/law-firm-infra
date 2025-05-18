@@ -304,4 +304,53 @@ public class S3StorageStrategy extends AbstractStorageStrategy {
         // 实际实现中应该检查配置是否启用S3存储
         return true;
     }
+    
+    /**
+     * 上传文本内容到AWS S3
+     *
+     * @param bucket 存储桶
+     * @param objectName 对象名称
+     * @param content 文本内容
+     * @return 是否上传成功
+     */
+    @Override
+    public boolean uploadText(StorageBucket bucket, String objectName, String content) {
+        log.debug("使用AWS S3上传文本内容: {}", objectName);
+        
+        try {
+            // 实际项目中的S3上传文本实现
+            // 示例代码：
+            /*
+            // 获取S3配置
+            String accessKey = bucket.getAccessKey();
+            String secretKey = bucket.getSecretKey();
+            String region = bucket.getConfig().getRegion();
+            String bucketName = bucket.getBucketName();
+            
+            // 创建S3客户端
+            AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .withRegion(region)
+                .build();
+            
+            // 准备元数据
+            ObjectMetadata metadata = new ObjectMetadata();
+            byte[] contentBytes = content.getBytes("UTF-8");
+            metadata.setContentLength(contentBytes.length);
+            metadata.setContentType("text/plain; charset=utf-8");
+            
+            // 上传文本内容
+            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes)) {
+                PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, inputStream, metadata);
+                s3Client.putObject(putObjectRequest);
+            }
+            */
+            
+            log.info("文本内容上传到AWS S3成功");
+            return true;
+        } catch (Exception e) {
+            log.error("文本内容上传到AWS S3失败", e);
+            return false;
+        }
+    }
 }

@@ -225,6 +225,44 @@ public class AliyunOssStorageStrategy extends AbstractStorageStrategy {
     }
     
     /**
+     * 上传文本内容到阿里云OSS
+     *
+     * @param bucket 存储桶
+     * @param objectName 对象名称
+     * @param content 文本内容
+     * @return 是否上传成功
+     */
+    @Override
+    public boolean uploadText(StorageBucket bucket, String objectName, String content) {
+        ensureInitialized();
+        
+        try {
+            String bucketName = bucket.getBucketName();
+            objectName = formatObjectName(objectName);
+            
+            // 准备文件元数据
+            ObjectMetadata metadata = new ObjectMetadata();
+            byte[] contentBytes = content.getBytes("UTF-8");
+            metadata.setContentLength(contentBytes.length);
+            metadata.setContentType("text/plain; charset=utf-8");
+            
+            // 上传文本内容
+            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes)) {
+                PutObjectRequest putObjectRequest = new PutObjectRequest(
+                    bucketName, objectName, inputStream, metadata);
+                
+                ossClient.putObject(putObjectRequest);
+            }
+            
+            log.info("成功上传文本内容到阿里云OSS: bucket={}, object={}", bucketName, objectName);
+            return true;
+        } catch (Exception e) {
+            log.error("上传文本内容到阿里云OSS失败: {}", objectName, e);
+            return false;
+        }
+    }
+    
+    /**
      * 根据文件扩展名获取内容类型
      */
     private String getContentType(String extension) {

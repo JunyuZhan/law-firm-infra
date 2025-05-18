@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ public class AILogAspect {
     private final ObjectMapper objectMapper;
     private final LogProperties logProperties;
     private final ThreadPoolTaskExecutor asyncLogExecutor;
+    private final ApplicationEventPublisher eventPublisher;
     
     /**
      * AI服务切入点
@@ -144,9 +146,24 @@ public class AILogAspect {
             errorInfo.put("stackTrace", logProperties.isLogStackTrace() ? LogUtils.formatException(e) : null);
             
             // 发布错误事件（如果需要）
-            // TODO: 可以在这里发布错误事件，触发告警等机制
+            eventPublisher.publishEvent(new AILogErrorEvent(this, errorInfo));
+            // 集成告警逻辑，如钉钉/邮件/短信等
+            if (alertService != null) {
+                String alertMsg = String.format("AI日志异常告警\n操作类型: %s\n类: %s\n方法: %s\n异常: %s", operationType, className, methodName, e.getMessage());
+                alertService.sendAlert("AI日志异常", alertMsg, operationId);
+            }
             
             throw e;
         }
     }
-} 
+
+    // ========== 事件定义 ==========
+
+    // 告警服务接口预留
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    @org.springframework.beans.factory.annotation.Qualifier("aiLogAlertService")
+    private com.lawfirm.core.ai.event.AIEventListener.AlertService alertService;
+}
+
+// AI日志错误事件定义
+// 请在com.lawfirm.core.ai.aop包下新建AILogErrorEvent.java定义事件类 

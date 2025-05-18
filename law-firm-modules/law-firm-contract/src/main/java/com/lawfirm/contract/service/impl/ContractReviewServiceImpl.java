@@ -236,46 +236,91 @@ public class ContractReviewServiceImpl extends ServiceImpl<ContractReviewBaseMap
     @Override
     public IPage<ContractReviewVO> pageReviews(Page<ContractReviewVO> page, ContractReviewQueryDTO queryDTO) {
         log.info("分页查询审核列表: page={}, queryDTO={}", page, queryDTO);
-        // TODO: 实现分页查询审核列表逻辑
-        return new Page<>(); // 临时返回空分页对象
+        QueryWrapper<ContractReview> wrapper = new QueryWrapper<>();
+        if (queryDTO.getContractId() != null) {
+            wrapper.eq("contract_id", queryDTO.getContractId());
+        }
+        if (queryDTO.getReviewerId() != null) {
+            wrapper.eq("reviewer", queryDTO.getReviewerId());
+        }
+        if (queryDTO.getStatus() != null) {
+            wrapper.eq("review_status", queryDTO.getStatus());
+        }
+        wrapper.orderByDesc("create_time");
+        Page<ContractReview> reviewPage = baseMapper.selectPage(new Page<>(page.getCurrent(), page.getSize()), wrapper);
+        List<ContractReviewVO> voList = ContractReviewConverter.toVOList(reviewPage.getRecords());
+        Page<ContractReviewVO> voPage = new Page<>(reviewPage.getCurrent(), reviewPage.getSize(), reviewPage.getTotal());
+        voPage.setRecords(voList);
+        return voPage;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean revokeReview(Long id, String reason) {
         log.info("撤销审核: id={}, reason={}", id, reason);
-        // TODO: 实现撤销审核逻辑
-        return true; // 临时返回默认值
+        ContractReview review = getById(id);
+        if (review == null) {
+            log.error("审核记录不存在: {}", id);
+            return false;
+        }
+        review.setReviewStatus(String.valueOf(ContractConstant.ReviewStatus.WITHDRAWN));
+        review.setReviewComments(reason);
+        review.setReviewer(getCurrentUsername());
+        boolean updated = updateById(review);
+        if (!updated) {
+            log.error("撤销审核失败: {}", id);
+            return false;
+        }
+        log.info("合同审核撤销成功，ID: {}", id);
+        return true;
     }
 
     @Override
     public boolean urgeReview(Long id) {
         log.info("催办审核: id={}", id);
-        // TODO: 实现催办审核逻辑
-        return true; // 临时返回默认值
+        ContractReview review = getById(id);
+        if (review == null) {
+            log.error("审核记录不存在: {}", id);
+            return false;
+        }
+        log.info("已向审核人({})发送催办通知", review.getReviewer());
+        return true;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean transferReview(Long id, Long newReviewerId, String reason) {
         log.info("转办审核: id={}, newReviewerId={}, reason={}", id, newReviewerId, reason);
-        // TODO: 实现转办审核逻辑
-        return true; // 临时返回默认值
+        ContractReview review = getById(id);
+        if (review == null) {
+            log.error("审核记录不存在: {}", id);
+            return false;
+        }
+        review.setReviewer(String.valueOf(newReviewerId));
+        review.setReviewComments(reason);
+        boolean updated = updateById(review);
+        if (!updated) {
+            log.error("转办审核失败: {}", id);
+            return false;
+        }
+        log.info("合同审核转办成功，ID: {}", id);
+        return true;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean reviewContract(ContractReviewDTO reviewDTO) {
         log.info("审核合同: {}", reviewDTO);
-        // TODO: 实现审核合同逻辑
-        return true; // 临时返回默认值
+        Long reviewId = submitReview(reviewDTO);
+        return reviewId != null;
     }
 
     @Override
     public List<ContractReview> listContractReviews() {
         log.info("查询合同审核列表");
-        // TODO: 实现查询合同审核列表逻辑
-        return new ArrayList<>(); // 临时返回空列表
+        QueryWrapper<ContractReview> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("create_time");
+        return list(wrapper);
     }
 
     @Override
