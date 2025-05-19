@@ -32,12 +32,16 @@ public class XssFilter implements Filter {
     // 需要排除的路径列表
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
             "/health",
-            "/doc.html",          // Knife4j UI and SpringDoc
-            "/swagger-ui",        // Swagger UI resources
-            "/swagger-resources", // Swagger resources
-            "/v3/api-docs",       // OpenAPI v3 definitions
-            "/webjars",           // Webjar resources
-            "/knife4j"            // Knife4j specific resources
+            "/doc.html",          // Knife4j UI主路径
+            "/swagger-ui",        // Swagger UI资源
+            "/swagger-resources",  // Swagger资源
+            "/v3/api-docs",       // OpenAPI v3定义
+            "/webjars",           // Webjar资源
+            "/knife4j",           // Knife4j特定资源
+            "/api-docs",          // 兼容路径
+            "/*.html",            // HTML静态资源
+            "/favicon.ico",       // 网站图标
+            "/error"              // 错误页面
     );
 
     @Override

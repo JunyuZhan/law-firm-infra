@@ -127,6 +127,8 @@ rem Specify JVM default charset
 set JAVA_OPTS=%JAVA_OPTS% -Djava.nio.charset=UTF-8 -Dfile.encoding.pkg=sun.io -Dspring.mandatory-file-encoding=UTF-8
 rem Fix Windows console log issues
 set JAVA_OPTS=%JAVA_OPTS% -Djansi.passthrough=true -Djansi.windows=true -Djansi.force=true
+rem API文档调试参数
+set JAVA_OPTS=%JAVA_OPTS% -Dspringdoc.api-docs.enabled=true -Dknife4j.enable=true -Dspringdoc.api-docs.json-base64-encoded=false -Dspring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER
 
 rem Set database URL
 set JDBC_URL=jdbc:mysql://%MYSQL_HOST%:%MYSQL_PORT%/%MYSQL_DATABASE%?useUnicode=true^&characterEncoding=utf8^&useSSL=false^&serverTimezone=Asia/Shanghai^&allowPublicKeyRetrieval=true^&rewriteBatchedStatements=true^&useConfigs=maxPerformance

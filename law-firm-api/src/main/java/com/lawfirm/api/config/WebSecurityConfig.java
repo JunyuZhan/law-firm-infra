@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 @EnableWebSecurity
 @EnableMethodSecurity // 启用方法级别的安全注解
 @RequiredArgsConstructor
+@Order(90) // 确保高于common-security的优先级(默认100)
 @ConditionalOnProperty(name = "law-firm.common.security.enabled", havingValue = "true", matchIfMissing = true)
 public class WebSecurityConfig {
 
@@ -67,13 +68,22 @@ public class WebSecurityConfig {
             "/error"
     };
 
+    /**
+     * 公开API路径 - 注意：生产环境应该严格限制
+     * 任何添加到此处的路径将允许未认证访问，需要进行安全评估
+     */
     private static final String[] PUBLIC_API_PATHS = {
+            // 认证相关API
             "/api/auth/login",
             "/api/auth/register",
             "/api/auth/captcha",
+            // 健康检查和基本信息API
             "/api/health",
-            "/api/version"
-            // 可以将 SecurityConstants.PUBLIC_RESOURCE_PATHS 的内容也合并到这里，如果它们是API路径
+            "/api/version",
+            // API文档配置调试端点
+            "/api/doc-config"
+            // 注意：其他API路径应以类似"/api/auth/**"方式添加
+            // SecurityConstants.PUBLIC_RESOURCE_PATHS 是全局设置，应谨慎合并
     };
 
     /**

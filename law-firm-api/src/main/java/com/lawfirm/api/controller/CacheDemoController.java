@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -17,11 +18,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * 缓存演示控制器
  * 用于演示和测试缓存功能
+ * 仅在开发和测试环境可用
  */
-@Tag(name = "缓存演示", description = "缓存功能演示接口")
+@Tag(name = "缓存演示", description = "缓存功能演示接口(仅开发环境)")
 @RestController
 @RequestMapping(ApiConstants.API_BASE + "/demo/cache")
 @Slf4j
+@Profile({"dev", "test"})
 public class CacheDemoController extends BaseApiController {
 
     @Autowired

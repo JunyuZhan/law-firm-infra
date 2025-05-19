@@ -13,6 +13,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 
 /**
  * API自动配置类
@@ -23,18 +24,43 @@ import org.springframework.context.annotation.Import;
 @Slf4j
 @Import({
     RateLimitConfig.class,
-    ApiVersionConfig.class
+    ApiVersionConfig.class,
+    ApiWebMvcConfig.class, // API层的MVC配置
+    OpenApiConfig.class // API文档配置
 })
 public class ApiAutoConfiguration {
 
     private final RedissonClient redissonClient;
+    private final Environment environment;
 
     /**
      * 初始化方法，打印配置信息
      */
-    public ApiAutoConfiguration(RedissonClient redissonClient) {
+    public ApiAutoConfiguration(RedissonClient redissonClient, Environment environment) {
         this.redissonClient = redissonClient;
+        this.environment = environment;
+        
         log.info("初始化API自动配置");
+        log.info("API版本: {}", ApiVersionConfig.CURRENT_API_VERSION);
+        log.info("API路径前缀: {}", ApiVersionConfig.API_PREFIX);
+        log.info("版本化API路径前缀: {}", ApiVersionConfig.API_VERSION_PREFIX);
+        
+        // 记录API文档配置状态
+        boolean apiDocsEnabled = Boolean.parseBoolean(
+            environment.getProperty("springdoc.api-docs.enabled", "true"));
+        boolean swaggerUiEnabled = Boolean.parseBoolean(
+            environment.getProperty("springdoc.swagger-ui.enabled", "true"));
+        boolean knife4jEnabled = Boolean.parseBoolean(
+            environment.getProperty("knife4j.enable", "true"));
+            
+        log.info("API文档配置状态: OpenAPI [{}] | Swagger UI [{}] | Knife4j [{}]",
+            apiDocsEnabled ? "启用" : "禁用",
+            swaggerUiEnabled ? "启用" : "禁用",
+            knife4jEnabled ? "启用" : "禁用");
+        
+        // 记录MVC配置信息
+        String patternParser = environment.getProperty("spring.mvc.pathmatch.matching-strategy");
+        log.info("MVC路径匹配策略: {}", patternParser);
     }
     
     /**

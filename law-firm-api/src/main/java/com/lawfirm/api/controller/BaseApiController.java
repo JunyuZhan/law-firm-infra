@@ -1,6 +1,6 @@
 package com.lawfirm.api.controller;
 
-import com.lawfirm.api.constant.ApiConstants;
+import com.lawfirm.api.config.ApiVersionConfig;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.model.base.controller.BaseController;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,13 +16,15 @@ public abstract class BaseApiController extends BaseController {
 
     /**
      * 当前API版本
+     * 直接使用ApiVersionConfig中的定义
      */
-    protected static final String API_VERSION = ApiConstants.API_VERSION;
+    protected static final String API_VERSION = ApiVersionConfig.CURRENT_API_VERSION;
     
     /**
      * API版本前缀
+     * 直接使用ApiVersionConfig中的定义
      */
-    protected static final String API_VERSION_PREFIX = ApiConstants.API_VERSION_PREFIX;
+    protected static final String API_VERSION_PREFIX = ApiVersionConfig.API_VERSION_PREFIX;
     
     /**
      * 初始化请求和响应

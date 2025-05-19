@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.core.env.Environment;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
+import java.util.Arrays;
 
 /**
  * 律师事务所API应用入口类
@@ -140,6 +141,9 @@ public class LawFirmApiApplication {
         // 设置系统属性
         setSystemProperties();
         
+        // 设置API文档特定配置属性
+        setApiDocumentationProperties();
+        
         SpringApplication app = new SpringApplication(LawFirmApiApplication.class);
         Environment env = app.run(args).getEnvironment();
         
@@ -170,11 +174,35 @@ public class LawFirmApiApplication {
         System.setProperty("spring.http.encoding.force", PROPERTY_TRUE);
         System.setProperty("spring.mvc.charset", ENCODING_UTF8);
         
-        // 禁用HandlerMappingIntrospector缓存，解决Spring Framework兼容性问题
+        // 配置MVC路径匹配策略
         System.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER");
+        
+        // 禁用问题详情，避免将异常详情暴露给客户端
         System.setProperty("spring.mvc.problemdetails.enabled", "false");
+        
+        // 设置Servlet路径
         System.setProperty("spring.mvc.servlet.path", "/");
+        
+        // 设置安全过滤器顺序
         System.setProperty("spring.security.filter.order", "15");
+        
+        // API文档配置已移至setApiDocumentationProperties方法
+    }
+    
+    /**
+     * 设置API文档特定配置属性
+     */
+    private static void setApiDocumentationProperties() {
+        // 设置关键系统属性，其他配置通过application.yml管理
+        System.setProperty("springdoc.swagger-ui.disable-swagger-default-url", PROPERTY_TRUE);
+        
+        // 确保分组API正确加载
+        System.setProperty("springdoc.group-configs.enabled", PROPERTY_TRUE);
+        
+        // 确保文档返回明文JSON，不使用base64编码
+        System.setProperty("springdoc.api-docs.json-base64-encoded", "false");
+        
+        log.info("API文档关键系统属性初始化完成");
     }
     
     /**
@@ -201,47 +229,56 @@ public class LawFirmApiApplication {
     }
     
     /**
-     * 打印应用程序信息
+     * 获取主机地址
+     */
+    private static String getHostAddress() {
+        try {
+            return java.net.InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            return "localhost";
+        }
+    }
+    
+    /**
+     * 输出应用程序信息
      */
     private static void printApplicationInfo(Environment env) {
         String protocol = "http";
-        if (env.getProperty("server.ssl.key-store") != null) {
+        if (Boolean.parseBoolean(env.getProperty("server.ssl.enabled", "false"))) {
             protocol = "https";
         }
+        
         String serverPort = env.getProperty("server.port", "8080");
         String contextPath = env.getProperty("server.servlet.context-path", "/");
         if (!contextPath.startsWith("/")) {
             contextPath = "/" + contextPath;
         }
+        if (contextPath.equals("/")) {
+            contextPath = "";
+        }
         
         log.info("\n----------------------------------------------------------\n\t" +
-                 "应用程序 '{}' 已启动! 访问地址:\n\t" +
+                "应用 '{}' 启动成功! 访问地址:\n\t" +
                 "本地: \t\t{}://localhost:{}{}\n\t" +
                 "外部: \t\t{}://{}:{}{}\n\t" +
                 "环境: \t\t{}\n\t" +
-                "编码: \t\t{}\n\t" +
-                "区域: \t\t{}\n" +
+                "API文档: \t{}://localhost:{}{}/doc.html\n\t" +
+                "健康检查: \t{}://localhost:{}{}/actuator/health\n" +
                 "----------------------------------------------------------",
-                "律师事务所管理系统",
+                env.getProperty("spring.application.name"),
                 protocol,
                 serverPort,
                 contextPath,
                 protocol,
-                "localhost",
+                getHostAddress(),
                 serverPort,
                 contextPath,
-                env.getActiveProfiles().length == 0 ? "默认配置" : env.getActiveProfiles()[0],
-                System.getProperty("file.encoding"),
-                System.getProperty("user.language") + "_" + System.getProperty("user.country"));
-                
-        // 输出系统版本信息
-        log.info("系统版本信息: \n\t" +
-                "Spring版本: {}\n\t" +
-                "Java版本: {}\n\t" +
-                "操作系统: {} ({})",
-                org.springframework.core.SpringVersion.getVersion(),
-                System.getProperty("java.version"),
-                System.getProperty("os.name"),
-                System.getProperty("os.arch"));
+                env.getProperty("spring.profiles.active"),
+                protocol,
+                serverPort,
+                contextPath,
+                protocol,
+                serverPort,
+                contextPath);
     }
 }

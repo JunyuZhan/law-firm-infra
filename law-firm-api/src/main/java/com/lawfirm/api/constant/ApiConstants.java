@@ -11,7 +11,7 @@ public class ApiConstants {
     /**
      * API基础路径
      */
-    public static final String API_BASE = "/api";
+    public static final String API_BASE = ApiVersionConfig.API_PREFIX;
     
     /**
      * 当前API版本
@@ -26,46 +26,53 @@ public class ApiConstants {
     /**
      * API模块常量
      * 映射到各业务模块定义的API前缀
+     * 采用统一的命名规则：
+     * 1. 非业务模块（系统功能）使用 /api/{module} 格式
+     * 2. 业务模块统一使用版本化路径 /api/v1/{module} 格式
      */
     public static class Module {
-        // 用户认证模块 - 对应AuthConstants.Api.AUTH
+        // 非版本化模块 - 系统功能
+        
+        // 用户认证模块
         public static final String AUTH = API_BASE + "/auth";
         
         // 系统管理模块
         public static final String SYSTEM = API_BASE + "/system";
         
-        // 客户管理模块 - 对应ClientConstants.API_PREFIX /api/v1/clients
-        public static final String CLIENT = API_BASE + "/" + API_VERSION + "/clients";
+        // 版本化模块 - 业务功能
         
-        // 案件管理模块 - 对应CaseBusinessConstants.Controller.API_PREFIX /api/v1/cases
-        public static final String CASE = API_BASE + "/" + API_VERSION + "/cases";
+        // 客户管理模块
+        public static final String CLIENT = API_VERSION_PREFIX + "/clients";
         
-        // 合同管理模块 - 对应ContractConstants.API_PREFIX
-        public static final String CONTRACT = API_BASE + "/" + API_VERSION + "/contracts";
+        // 案件管理模块
+        public static final String CASE = API_VERSION_PREFIX + "/cases";
+        
+        // 合同管理模块
+        public static final String CONTRACT = API_VERSION_PREFIX + "/contracts";
         
         // 文档管理模块
-        public static final String DOCUMENT = API_BASE + "/" + API_VERSION + "/documents";
+        public static final String DOCUMENT = API_VERSION_PREFIX + "/documents";
         
-        // 任务管理模块 - 对应TaskBusinessConstants.Controller.API_PREFIX /api/v1/tasks
-        public static final String TASK = API_BASE + "/" + API_VERSION + "/tasks";
+        // 任务管理模块
+        public static final String TASK = API_VERSION_PREFIX + "/tasks";
         
         // 日程管理模块
-        public static final String SCHEDULE = API_BASE + "/" + API_VERSION + "/schedules";
+        public static final String SCHEDULE = API_VERSION_PREFIX + "/schedules";
         
         // 财务管理模块
-        public static final String FINANCE = API_BASE + "/" + API_VERSION + "/finance";
+        public static final String FINANCE = API_VERSION_PREFIX + "/finance";
         
-        // 知识库管理模块 - 对应KnowledgeConstants.API_PREFIX
-        public static final String KNOWLEDGE = API_BASE + "/" + API_VERSION + "/knowledge";
+        // 知识库管理模块
+        public static final String KNOWLEDGE = API_VERSION_PREFIX + "/knowledge";
         
-        // 归档管理模块
-        public static final String ARCHIVE = API_BASE + "/archive";
+        // 归档管理模块 - 修改为版本化路径
+        public static final String ARCHIVE = API_VERSION_PREFIX + "/archive";
         
         // 人事管理模块
-        public static final String PERSONNEL = API_BASE + "/" + API_VERSION + "/personnel";
+        public static final String PERSONNEL = API_VERSION_PREFIX + "/personnel";
         
-        // 统计分析模块
-        public static final String ANALYSIS = API_BASE + "/analysis";
+        // 统计分析模块 - 修改为版本化路径
+        public static final String ANALYSIS = API_VERSION_PREFIX + "/analysis";
     }
     
     /**

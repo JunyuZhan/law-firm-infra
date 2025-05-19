@@ -134,6 +134,22 @@ spring:
   # 全局属性 - 数据库名称
   database:
     name: ${MYSQL_DATABASE:law_firm}
+  # Spring MVC静态资源配置
+  mvc:
+    # 添加静态资源配置
+    static-path-pattern: /static/**
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  web:
+    resources:
+      # 静态资源处理
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+      chain:
+        strategy:
+          content:
+            enabled: true
+      # 明确添加API文档资源映射
+      add-mappings: true
 
 # 服务器配置
 server:
@@ -185,23 +201,42 @@ logging:
 springdoc:
   api-docs:
     path: /v3/api-docs
-    enabled: true
+    enabled: ${SPRINGDOC_API_DOCS_ENABLED:true}
+    # 禁用base64编码，确保返回明文JSON
+    json-base64-encoded: false
   swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
-    display-request-duration: true
+    enabled: false
+  # 内容类型配置
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+  packages-to-scan: com.lawfirm
+  show-actuator: false
+  writer-with-default-pretty-printer: true
+  api-docs.resolve-schema-properties: true
+  default-support-form-data: true
+  api-docs.version: OPENAPI_3_0
 
 # Knife4j增强配置
 knife4j:
-  enable: true
+  enable: ${KNIFE4J_ENABLE:true}
+  production: false
   setting:
     language: zh-CN
     enable-swagger-models: true
     enable-document-manage: true
-    enable-search: true
-    enable-group: true
+    swagger-model-name: 数据模型
+    enable-version: true
     enable-footer: false
+    enable-footer-custom: true
+    footer-custom-content: Copyright © 2023-2025 XYZ Law Firm
+    enable-host-submission: false
+    enable-request-cache: true
+    enable-home-custom: true
+    home-custom-path: classpath:markdown/home.md
+  documents:
+    - group: 默认分组
+      name: 接口文档
+      locations: classpath:markdown/接口说明.md
 
 # 系统参数配置
 law-firm:

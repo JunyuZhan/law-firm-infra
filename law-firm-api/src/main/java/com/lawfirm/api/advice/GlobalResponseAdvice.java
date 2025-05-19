@@ -13,7 +13,10 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 全局响应处理器
@@ -32,82 +35,39 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * 判断是否需要包装响应
+     * 以下情况不包装：
+     * 1. 返回值已经是CommonResult
+     * 2. 返回值是字符串且以<开头（HTML内容）
+     * 3. 请求路径以/v3/api-docs开头（API文档）
+     * 4. 请求路径以/doc.html开头（Knife4j文档）
+     * 5. 请求路径以/swagger-resources开头（Swagger资源）
+     * 6. 请求路径以/webjars开头（Swagger UI资源）
+     */
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        // 获取类名和包名进行检查
-        String className = returnType.getContainingClass().getName();
-        String packageName = returnType.getContainingClass().getPackageName();
-        
-        log.debug("检查类是否需要响应包装: {} (package: {})", className, packageName);
-        
-        // API文档请求强制返回false(不进行任何包装)
-        // 检查当前上下文中的请求对象
-        try {
-            Object requestObj = org.springframework.web.context.request.RequestContextHolder
-                .getRequestAttributes()
-                .getAttribute("org.springframework.web.util.ServletRequestAttributes.REQUEST", 0);
-            
-            if (requestObj instanceof jakarta.servlet.http.HttpServletRequest) {
-                jakarta.servlet.http.HttpServletRequest request = (jakarta.servlet.http.HttpServletRequest) requestObj;
-                String path = request.getRequestURI();
-                String apiDocHeader = request.getHeader("X-API-DOC-REQUEST");
-                
-                // 通过路径或特殊标记识别API文档请求
-                if ("true".equals(apiDocHeader) || isApiDocPath(path)) {
-                    log.info("API文档请求，不进行响应包装: {}", path);
-                    return false;
-                }
-            }
-        } catch (Exception e) {
-            log.warn("检查请求对象异常，可能在无请求上下文环境中调用", e);
+        // 获取当前请求
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return false;
         }
         
-        // 明确排除API文档相关的转换器
-        boolean isApiDocConverter = false;
-        if (converterType != null) {
-            String converterName = converterType.getName();
-            isApiDocConverter = converterName.contains("OpenAPI") || 
-                               converterName.contains("Swagger") || 
-                               converterName.contains("ApiDoc") ||
-                               converterName.contains("springdoc") ||
-                               converterName.contains("SpringDoc") ||
-                               (converterName.contains("Application") && converterName.contains("Json"));
-            
-            if (isApiDocConverter) {
-                log.debug("API文档转换器，不进行响应包装: {}", converterName);
-                return false;
-            }
+        HttpServletRequest request = attributes.getRequest();
+        String path = request.getRequestURI();
+        
+        // 排除API文档相关路径
+        if (path.startsWith("/v3/api-docs") || 
+            path.startsWith("/doc.html") || 
+            path.contains("/doc.html") ||
+            path.contains("knife4j") ||
+            path.contains("webjars") ||
+            path.contains("api-docs")) {
+            return false;
         }
         
-        // 排除已经是CommonResult类型的响应和特定控制器
-        boolean isCommonResult = CommonResult.class.isAssignableFrom(returnType.getParameterType());
-        boolean isResponseEntityType = ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
-        boolean isErrorController = className.contains("ErrorController");
-        boolean isHealthController = className.contains("HealthCheckController");
-        boolean isRestExceptionHandler = className.contains("RestExceptionHandler");
-        boolean isOpenApiClass = className.contains("OpenAPI") || 
-                                className.contains("ApiDoc") || 
-                                className.contains("Swagger") ||
-                                className.contains("springdoc") ||
-                                className.contains("SpringDoc");
-        
-        // API文档相关包排除 - 增强包名判断逻辑
-        boolean isApiDocPackage = packageName.startsWith("org.springdoc") || 
-                                 packageName.startsWith("io.swagger") || 
-                                 packageName.startsWith("springfox") ||
-                                 packageName.startsWith("com.github.xiaoymin.knife4j") ||
-                                 packageName.contains("swagger") ||
-                                 packageName.contains("openapi") ||
-                                 packageName.contains("springdoc") ||
-                                 packageName.contains("knife4j");
-        
-        // 不处理以下情况:
-        // 1. 已经是标准CommonResult格式的响应 
-        // 2. RestExceptionHandler处理的响应
-        // 3. 错误控制器和健康检查控制器的响应
-        // 4. API文档相关的响应或类
-        return !isCommonResult && !isResponseEntityType && !isErrorController && 
-               !isHealthController && !isRestExceptionHandler && !isApiDocPackage && !isOpenApiClass;
+        // 排除已经是CommonResult的返回值
+        return !returnType.getParameterType().isAssignableFrom(CommonResult.class);
     }
 
     @SneakyThrows

@@ -2,8 +2,11 @@ package com.lawfirm.api.controller;
 
 import com.lawfirm.api.annotation.RepeatSubmitPrevention;
 import com.lawfirm.api.constant.ApiConstants;
+import com.lawfirm.api.config.ApiVersionConfig;
 import com.lawfirm.common.core.api.CommonResult;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +33,7 @@ import java.util.Optional;
  * API网关控制器
  * 作为各业务模块API的统一入口
  */
-@Tag(name = "API网关", description = "API网关接口")
+@Tag(name = "API网关", description = "API网关统一入口接口，提供系统基础信息和健康检查")
 @RestController
 @RequestMapping(ApiConstants.API_BASE)
 @RequiredArgsConstructor
@@ -77,7 +80,11 @@ public class ApiGatewayController extends BaseApiController {
      * API健康检查
      */
     @GetMapping("/health")
-    @Operation(summary = "健康检查", description = "API服务健康检查")
+    @Operation(summary = "健康检查", description = "API服务健康检查，提供系统各组件运行状态")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "服务健康"),
+            @ApiResponse(responseCode = "500", description = "服务不健康")
+    })
     public CommonResult<Map<String, Object>> health() {
         Map<String, Object> health = new HashMap<>();
         
@@ -233,5 +240,72 @@ public class ApiGatewayController extends BaseApiController {
         result.put("message", "防重复提交测试成功");
         
         return success(result);
+    }
+
+    /**
+     * API文档配置诊断
+     */
+    @GetMapping("/api/doc-config")
+    @Operation(summary = "API文档配置诊断", description = "检查API文档配置状态并提供访问地址")
+    public CommonResult<Map<String, Object>> apiDocConfig() {
+        Map<String, Object> config = new HashMap<>();
+        
+        // API文档配置状态
+        boolean apiDocsEnabled = Boolean.parseBoolean(
+            environment.getProperty("springdoc.api-docs.enabled", "true"));
+        boolean swaggerUiEnabled = Boolean.parseBoolean(
+            environment.getProperty("springdoc.swagger-ui.enabled", "true"));
+        boolean knife4jEnabled = Boolean.parseBoolean(
+            environment.getProperty("knife4j.enable", "true"));
+            
+        // API文档路径
+        String apiDocsPath = environment.getProperty("springdoc.api-docs.path", "/v3/api-docs");
+        String swaggerUiPath = environment.getProperty("springdoc.swagger-ui.path", "/swagger-ui.html");
+        String serverUrl = environment.getProperty("server.servlet.context-path", "");
+        String serverPort = environment.getProperty("server.port", "8080");
+        
+        // 当前环境
+        String[] activeProfiles = environment.getActiveProfiles();
+        String profile = activeProfiles.length > 0 ? activeProfiles[0] : "default";
+        
+        // 拼接完整URL
+        String baseUrl = "http://localhost:" + serverPort + serverUrl;
+        
+        // 收集配置信息
+        config.put("apiDocsEnabled", apiDocsEnabled);
+        config.put("swaggerUiEnabled", swaggerUiEnabled);
+        config.put("knife4jEnabled", knife4jEnabled);
+        config.put("apiDocsUrl", baseUrl + apiDocsPath);
+        config.put("swaggerUiUrl", baseUrl + swaggerUiPath);
+        if (knife4jEnabled) {
+            config.put("knife4jUrl", baseUrl + "/doc.html");
+        }
+        config.put("activeProfile", profile);
+        
+        // 添加字符编码检测
+        String encoding = environment.getProperty("spring.mandatory-file-encoding", 
+                          System.getProperty("file.encoding", "UTF-8"));
+        config.put("encoding", encoding);
+        
+        // 添加内容类型检测
+        String defaultContentType = environment.getProperty("springdoc.default-produces-media-type", 
+                                    "application/json");
+        config.put("defaultContentType", defaultContentType);
+        
+        // 添加base64编码检测
+        boolean jsonBase64Encoded = Boolean.parseBoolean(
+            environment.getProperty("springdoc.api-docs.json-base64-encoded", "false"));
+        config.put("jsonBase64Encoded", jsonBase64Encoded);
+        
+        // 添加请求拦截配置信息
+        String securityFilterOrder = environment.getProperty("spring.security.filter.order", "15");
+        config.put("securityFilterOrder", securityFilterOrder);
+        
+        // 添加路径匹配策略检测
+        String pathMatchStrategy = environment.getProperty("spring.mvc.pathmatch.matching-strategy", 
+                                  "ANT_PATH_MATCHER");
+        config.put("pathMatchStrategy", pathMatchStrategy);
+        
+        return CommonResult.success(config, "API文档配置状态");
     }
 } 

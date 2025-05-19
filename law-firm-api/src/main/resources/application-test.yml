@@ -35,18 +35,6 @@ server:
 cors:
   allowed-origins: "*"
 
-# 测试环境API文档配置
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
-
-# 测试环境Knife4j配置
-knife4j:
-  enable: true
-  production: false
-
 # 测试环境日志级别
 logging:
   level:
@@ -89,3 +77,15 @@ law-firm:
       index-path: ./indices-test
     audit:
       enabled: true 
+
+# 测试环境API文档配置
+springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_API_DOCS_ENABLED:true}
+  swagger-ui:
+    enabled: ${SPRINGDOC_SWAGGER_UI_ENABLED:true}
+
+# 测试环境Knife4j配置
+knife4j:
+  enable: ${KNIFE4J_ENABLE:true}
+  production: false
