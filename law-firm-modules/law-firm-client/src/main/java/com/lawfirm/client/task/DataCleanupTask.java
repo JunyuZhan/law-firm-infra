@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 客户数据清理定时任务
@@ -29,6 +30,9 @@ public class DataCleanupTask {
     private final ClientServiceImpl clientService;
     private final ContactServiceImpl contactService;
     private final FollowUpServiceImpl followUpService;
+    
+    // 记录最后一次清理时间
+    private final AtomicReference<LocalDateTime> lastCleanupTime = new AtomicReference<>(null);
 
     /**
      * 每周日凌晨2点执行清理任务
@@ -69,6 +73,9 @@ public class DataCleanupTask {
                     log.error("清理临时客户数据失败，客户ID: {}", client.getId(), e);
                 }
             }
+            
+            // 更新最后清理时间
+            lastCleanupTime.set(LocalDateTime.now());
         } catch (Exception e) {
             log.error("执行临时客户清理任务失败", e);
         }
@@ -107,6 +114,9 @@ public class DataCleanupTask {
                     log.error("归档不活跃客户失败，客户ID: {}", client.getId(), e);
                 }
             }
+            
+            // 更新最后清理时间
+            lastCleanupTime.set(LocalDateTime.now());
         } catch (Exception e) {
             log.error("执行不活跃客户归档任务失败", e);
         }
@@ -138,10 +148,67 @@ public class DataCleanupTask {
                 boolean result = followUpService.remove(queryWrapper);
                 log.info("已完成跟进记录清理结果: {}", result);
             }
+            
+            // 更新最后清理时间
+            lastCleanupTime.set(LocalDateTime.now());
         } catch (Exception e) {
             log.error("执行已完成跟进记录清理任务失败", e);
         }
         
         log.info("已完成跟进记录清理任务执行完成");
+    }
+    
+    /**
+     * 获取待清理的临时客户数量
+     * 
+     * @return 临时客户数量
+     */
+    public long getTemporaryClientCount() {
+        LocalDateTime threshold = LocalDateTime.now().minusDays(30);
+        
+        LambdaQueryWrapper<Client> queryWrapper = new LambdaQueryWrapper<Client>()
+                .eq(Client::getStatus, ClientConstant.Status.DISABLED)
+                .lt(Client::getCreateTime, threshold);
+        
+        return clientService.count(queryWrapper);
+    }
+    
+    /**
+     * 获取待归档的不活跃客户数量
+     * 
+     * @return 不活跃客户数量
+     */
+    public long getInactiveClientCount() {
+        LocalDateTime threshold = LocalDateTime.now().minusYears(1);
+        
+        LambdaQueryWrapper<Client> queryWrapper = new LambdaQueryWrapper<Client>()
+                .eq(Client::getStatus, ClientConstant.Status.NORMAL)
+                .lt(Client::getUpdateTime, threshold);
+        
+        return clientService.count(queryWrapper);
+    }
+    
+    /**
+     * 获取待清理的已完成跟进记录数量
+     * 
+     * @return 已完成跟进记录数量
+     */
+    public long getCompletedFollowUpCount() {
+        LocalDateTime threshold = LocalDateTime.now().minusDays(90);
+        
+        LambdaQueryWrapper<ClientFollowUp> queryWrapper = new LambdaQueryWrapper<ClientFollowUp>()
+                .eq(ClientFollowUp::getStatus, ClientConstant.FollowUp.STATUS_COMPLETED)
+                .lt(ClientFollowUp::getUpdateTime, threshold);
+        
+        return followUpService.count(queryWrapper);
+    }
+    
+    /**
+     * 获取最后一次清理时间
+     * 
+     * @return 最后一次清理时间
+     */
+    public LocalDateTime getLastCleanupTime() {
+        return lastCleanupTime.get();
     }
 }

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.archive.constant.ArchiveBusinessConstants;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
  * 档案管理控制器
  */
 @RestController
-@RequestMapping("/api/archive")
+@RequestMapping(ArchiveBusinessConstants.Controller.API_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "档案管理", description = "档案管理相关接口")
 @Slf4j

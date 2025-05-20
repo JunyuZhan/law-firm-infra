@@ -38,4 +38,9 @@ public final class DocumentConstants {
      * 文档预览API路径前缀
      */
     public static final String API_PREVIEW_PREFIX = "/api/v1/document-previews";
+    
+    /**
+     * 文档标签API路径前缀
+     */
+    public static final String API_TAG_PREFIX = "/api/v1/document-tags";
 } 

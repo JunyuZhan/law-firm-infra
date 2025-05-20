@@ -46,8 +46,29 @@ fi
 # MySQL connection URL
 JDBC_URL="jdbc:mysql://$MYSQL_HOST:$MYSQL_PORT/$MYSQL_DATABASE?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
 
+# 日志目录自动创建，保证与Windows一致
+LOG_DIR="logs"
+ARCHIVE_DIR="$LOG_DIR/archive"
+DATE_DIR="$LOG_DIR/$(date +%Y%m%d)"
+if [ ! -d "$LOG_DIR" ]; then
+  mkdir -p "$LOG_DIR"
+  echo "Created logs directory."
+fi
+if [ ! -d "$ARCHIVE_DIR" ]; then
+  mkdir -p "$ARCHIVE_DIR"
+  echo "Created logs archive directory."
+fi
+if [ ! -d "$DATE_DIR" ]; then
+  mkdir -p "$DATE_DIR"
+  echo "Created date-specific logs directory."
+fi
+LOG_FILE="$LOG_DIR/startup-$(date +%Y%m%d).log"
+
 echo "Starting application..."
-java $JAVA_OPTS -jar $JAR_PATH \
+java $JAVA_OPTS \
+  -Dlogging.file.path=$LOG_DIR \
+  -Dlogging.file.name=$LOG_DIR/law-firm-api.log \
+  -jar $JAR_PATH \
   --spring.profiles.active=$SPRING_PROFILES_ACTIVE \
   --spring.datasource.url="$JDBC_URL" \
   --spring.datasource.username=$MYSQL_USERNAME \
@@ -58,4 +79,5 @@ java $JAVA_OPTS -jar $JAR_PATH \
   --mybatis-plus.configuration.map-underscore-to-camel-case=true \
   --mybatis-plus.configuration.cache-enabled=false \
   --law-firm.core.storage.enabled=$STORAGE_ENABLED \
-  --law-firm.core.audit.enabled=$AUDIT_ENABLED 
+  --law-firm.core.audit.enabled=$AUDIT_ENABLED \
+  > "$LOG_FILE" 2>&1 

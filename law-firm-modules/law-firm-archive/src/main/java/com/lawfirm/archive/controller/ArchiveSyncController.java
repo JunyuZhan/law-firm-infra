@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import com.lawfirm.archive.constant.ArchiveBusinessConstants;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.Map;
  * 档案同步控制器
  */
 @RestController
-@RequestMapping("/api/archive/sync")
+@RequestMapping(ArchiveBusinessConstants.Controller.API_SYNC_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "档案同步", description = "档案同步相关接口")
 @Slf4j

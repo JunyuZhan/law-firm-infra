@@ -202,13 +202,11 @@ springdoc:
   api-docs:
     path: /v3/api-docs
     enabled: ${SPRINGDOC_API_DOCS_ENABLED:true}
-    # 禁用base64编码，确保返回明文JSON
     json-base64-encoded: false
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
     disable-swagger-default-url: true
-  # 内容类型配置
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
   packages-to-scan: com.lawfirm
@@ -218,18 +216,6 @@ springdoc:
   default-support-form-data: true
   api-docs.version: OPENAPI_3_0
   paths-to-match: /api/**
-  # SpringDoc 3.x 分组配置
-  group-configs:
-    - group: "系统管理"
-      paths-to-match: "/api/system/**,/api/auth/**"
-      packages-to-scan: "com.lawfirm.system,com.lawfirm.auth"
-    - group: "业务管理"
-      paths-to-match: "/api/v1/**"
-      packages-to-scan: "com.lawfirm.client,com.lawfirm.cases,com.lawfirm.contract,com.lawfirm.document,com.lawfirm.task,com.lawfirm.schedule,com.lawfirm.finance,com.lawfirm.knowledge,com.lawfirm.archive,com.lawfirm.personnel"
-    - group: "公共接口"
-      paths-to-match: "/api/health,/api/version"
-    - group: "所有接口"
-      paths-to-match: "/api/**"
 
 # Knife4j增强配置
 knife4j:
@@ -247,12 +233,14 @@ knife4j:
     enable-host-submission: false
     enable-request-cache: true
     enable-home-custom: false
-  basic:
-    enable: false
-  documents:
-    - group: 默认分组
-      name: 接口文档
-      locations: classpath:markdown/接口说明.md
+    enable-after-script: true
+    enable-filter-multipart: true
+    enable-filter-basic-error-controller: true
+    enable-dynamic-parameter: true
+    enable-group: true                  # 确保启用分组
+    default-models-expand-depth: 3      # 展开深度
+    default-model-expand-depth: 3       # 模型展开深度
+    enable-search: true                 # 启用搜索功能
 
 # 系统参数配置
 law-firm:
