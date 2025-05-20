@@ -138,11 +138,13 @@ public class LawFirmApiApplication {
     }
 
     public static void main(String[] args) {
-        // 设置系统属性
-        setSystemProperties();
+        // 强制最早设置并打印，帮助排查配置被覆盖问题
+        System.setProperty("springdoc.api-docs.json-base64-encoded", "false");
+        System.out.println("[DEBUG] 启动前 springdoc.api-docs.json-base64-encoded = " + System.getProperty("springdoc.api-docs.json-base64-encoded"));
         
-        // 设置API文档特定配置属性
-        setApiDocumentationProperties();
+        // 在应用启动前设置其他关键系统属性
+        System.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER");
+        System.setProperty("knife4j.enable", "true");
         
         SpringApplication app = new SpringApplication(LawFirmApiApplication.class);
         Environment env = app.run(args).getEnvironment();

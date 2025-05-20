@@ -42,26 +42,17 @@ public class ApiWebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         log.info("配置API文档和静态资源处理器");
-        
-        // API文档资源 - Knife4j和SpringDoc
-        registry.addResourceHandler("doc.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-        
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        
-        registry.addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/swagger-ui/");
 
-        // knife4j专用资源        
-        registry.addResourceHandler("/knife4j/**")
-                .addResourceLocations("classpath:/META-INF/resources/knife4j/");
-        
-        // v3/api-docs统一处理
-        registry.addResourceHandler("/v3/api-docs/**")
+        // Knife4j/Swagger UI 静态资源
+        registry.addResourceHandler("/doc.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
-        
-        // 静态资源
+        registry.addResourceHandler("/swagger-ui/**", "/webjars/**", "/knife4j/**")
+                .addResourceLocations(
+                        "classpath:/META-INF/resources/swagger-ui/",
+                        "classpath:/META-INF/resources/webjars/",
+                        "classpath:/META-INF/resources/knife4j/");
+
+        // 其他静态资源
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
     }
@@ -72,19 +63,8 @@ public class ApiWebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        log.info("配置API文档视图控制器");
-        
-        // API文档数据路径
-        registry.addRedirectViewController("/api-docs", "/v3/api-docs");
-        
-        // Knife4j路径
-        registry.addViewController("/doc.html").setViewName("doc.html");
-        
-        // 简化访问路径
+        // 只保留重定向
         registry.addRedirectViewController("/api", "/doc.html");
-        
-        // 添加诊断端点重定向
-        registry.addRedirectViewController("/api/doc-config", "/api/doc-config");
     }
     
     /**
@@ -114,5 +94,11 @@ public class ApiWebMvcConfig implements WebMvcConfigurer {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         // API层不再配置转换器，使用common-web中的配置
         // 避免与common-web模块的配置冲突
+    }
+
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        // 插到最前面，优先处理 byte[]
+        converters.add(0, new org.springframework.http.converter.ByteArrayHttpMessageConverter());
     }
 } 

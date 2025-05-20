@@ -9,12 +9,12 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
-import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Primary;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +23,9 @@ import java.util.List;
 /**
  * OpenAPI配置类
  * 配置API文档生成
+ * 
+ * 使用SpringDoc 2.3.0 (适用于Spring Boot 3.x)
+ * 分组配置通过application.yml中的springdoc.group-configs属性实现
  */
 @Configuration("apiDocConfig")
 @Profile({"dev", "test"}) // 仅在开发和测试环境默认启用
@@ -48,8 +51,10 @@ public class OpenApiConfig {
     
     /**
      * 配置OpenAPI信息
+     * 在SpringDoc 2.x中，分组通过application.yml中的配置项实现
      */
-    @Bean
+    @Bean(name = "openAPI")
+    @Primary
     public OpenAPI lawFirmOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
@@ -113,62 +118,5 @@ public class OpenApiConfig {
         }
         
         return servers;
-    }
-    
-    /**
-     * 系统管理API分组
-     */
-    @Bean
-    public GroupedOpenApi systemApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("系统管理")
-                .pathsToMatch("/api/system/**", "/api/auth/**")
-                .packagesToScan("com.lawfirm.system", "com.lawfirm.auth")
-                .build();
-    }
-    
-    /**
-     * 业务管理API分组
-     */
-    @Bean
-    public GroupedOpenApi businessApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("业务管理")
-                .pathsToMatch("/api/v1/**")
-                .packagesToScan(
-                    "com.lawfirm.client", 
-                    "com.lawfirm.cases", 
-                    "com.lawfirm.contract", 
-                    "com.lawfirm.document",
-                    "com.lawfirm.task",
-                    "com.lawfirm.schedule",
-                    "com.lawfirm.finance",
-                    "com.lawfirm.knowledge",
-                    "com.lawfirm.archive",
-                    "com.lawfirm.personnel"
-                )
-                .build();
-    }
-    
-    /**
-     * 公共API分组
-     */
-    @Bean
-    public GroupedOpenApi publicApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("公共接口")
-                .pathsToMatch("/api/health", "/api/version")
-                .build();
-    }
-    
-    /**
-     * 所有API分组 
-     */
-    @Bean
-    public GroupedOpenApi allApiGroup() {
-        return GroupedOpenApi.builder()
-                .group("所有接口")
-                .pathsToMatch("/api/**")
-                .build();
     }
 } 

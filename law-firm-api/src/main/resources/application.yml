@@ -205,7 +205,9 @@ springdoc:
     # 禁用base64编码，确保返回明文JSON
     json-base64-encoded: false
   swagger-ui:
-    enabled: false
+    enabled: true
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
   # 内容类型配置
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
@@ -215,6 +217,19 @@ springdoc:
   api-docs.resolve-schema-properties: true
   default-support-form-data: true
   api-docs.version: OPENAPI_3_0
+  paths-to-match: /api/**
+  # SpringDoc 3.x 分组配置
+  group-configs:
+    - group: "系统管理"
+      paths-to-match: "/api/system/**,/api/auth/**"
+      packages-to-scan: "com.lawfirm.system,com.lawfirm.auth"
+    - group: "业务管理"
+      paths-to-match: "/api/v1/**"
+      packages-to-scan: "com.lawfirm.client,com.lawfirm.cases,com.lawfirm.contract,com.lawfirm.document,com.lawfirm.task,com.lawfirm.schedule,com.lawfirm.finance,com.lawfirm.knowledge,com.lawfirm.archive,com.lawfirm.personnel"
+    - group: "公共接口"
+      paths-to-match: "/api/health,/api/version"
+    - group: "所有接口"
+      paths-to-match: "/api/**"
 
 # Knife4j增强配置
 knife4j:
@@ -231,8 +246,9 @@ knife4j:
     footer-custom-content: Copyright © 2023-2025 XYZ Law Firm
     enable-host-submission: false
     enable-request-cache: true
-    enable-home-custom: true
-    home-custom-path: classpath:markdown/home.md
+    enable-home-custom: false
+  basic:
+    enable: false
   documents:
     - group: 默认分组
       name: 接口文档
