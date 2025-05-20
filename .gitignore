@@ -54,4 +54,7 @@ yarn-error.log*
 *.swp
 
 # 只保留 .gitignore 文件本身
-!.gitignore 
+!.gitignore
+
+# Maven settings.xml
+settings.xml 
