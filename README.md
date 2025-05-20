@@ -85,6 +85,10 @@
 
 ## 联系我们
 如需进一步技术支持、定制开发或商务合作，请联系项目维护团队：
-- 邮箱：support@yourlawfirm.com
-- 官网：https://yourlawfirm.com
+- 邮箱：junyuzhan@yOutlook.com
+- 官网：https://junyuzhan.com
 - 或通过项目Issue区留言
+
+## 开源协议
+
+本项目采用 [GNU GPL v3.0](LICENSE) 开源协议，任何人可以自由使用、修改和分发本项目，但必须遵循 GPL v3.0 的相关条款，详情请见根目录 LICENSE 文件。
