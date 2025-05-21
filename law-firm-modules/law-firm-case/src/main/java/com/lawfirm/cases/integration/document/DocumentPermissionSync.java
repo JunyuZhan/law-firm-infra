@@ -56,10 +56,37 @@ public class DocumentPermissionSync {
                     })
                     .collect(Collectors.toList());
 
-            // 同步权限到文档系统
-            documentPermissionService.syncBusinessDocumentsPermission("CASE", caseId, userPermissions);
+            log.info("案件团队成员权限映射完成，caseId={}，团队成员数={}，即将同步到文档系统", 
+                    caseId, teamMembers.size());
             
-            log.info("案件团队权限同步到文档系统完成，caseId={}", caseId);
+            // 同步权限到文档系统，添加重试机制
+            int maxRetries = 3;
+            boolean success = false;
+            Exception lastException = null;
+            
+            for (int attempt = 1; attempt <= maxRetries && !success; attempt++) {
+                try {
+                    // 同步权限到文档系统
+                    documentPermissionService.syncBusinessDocumentsPermission("CASE", caseId, userPermissions);
+                    success = true;
+                    log.info("案件团队权限同步到文档系统完成，caseId={}，尝试次数={}", caseId, attempt);
+                } catch (Exception e) {
+                    lastException = e;
+                    log.warn("案件团队权限同步到文档系统失败，caseId={}，尝试次数={}，将进行重试", 
+                            caseId, attempt, e);
+                    // 等待一段时间后重试
+                    try {
+                        Thread.sleep(1000 * attempt);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
+            }
+            
+            if (!success && lastException != null) {
+                log.error("同步案件团队权限到文档系统失败，达到最大重试次数，caseId={}", caseId, lastException);
+            }
         } catch (Exception e) {
             log.error("同步案件团队权限到文档系统异常，caseId={}", caseId, e);
         }

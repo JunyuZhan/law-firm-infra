@@ -6,10 +6,12 @@ import com.lawfirm.model.task.vo.WorkTaskCommentVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.stereotype.Component;
 
 /**
  * 工作任务评论转换器
  */
+@Component("workTaskCommentConverter")
 @Mapper(
     componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.IGNORE

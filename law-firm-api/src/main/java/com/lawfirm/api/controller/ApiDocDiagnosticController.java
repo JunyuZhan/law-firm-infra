@@ -1,5 +1,6 @@
 package com.lawfirm.api.controller;
 
+import com.lawfirm.api.constant.ApiConstants;
 import com.lawfirm.common.core.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ import java.util.Map;
  * API文档诊断控制器
  * 用于检查API文档配置问题
  */
-@RestController
-@RequestMapping("/api")
+@RestController("apiDocDiagnosticController")
+@RequestMapping(ApiConstants.API_BASE + "/doc")
 @Slf4j
 public class ApiDocDiagnosticController {
 

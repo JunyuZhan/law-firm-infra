@@ -104,5 +104,27 @@
             <artifactId>client-model</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- 添加core层服务依赖，修复注入相关编译错误 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-audit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-storage</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-search</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

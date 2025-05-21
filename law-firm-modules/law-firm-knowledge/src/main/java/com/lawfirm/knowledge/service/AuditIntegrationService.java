@@ -93,6 +93,74 @@ public class AuditIntegrationService {
                 knowledge.getId(), knowledge.getTitle(), e.getMessage(), e);
         }
     }
+    
+    /**
+     * 记录知识相关操作
+     *
+     * @param message 详细消息描述
+     * @param operationType 操作类型
+     * @param knowledgeId 知识ID
+     */
+    public void recordKnowledgeOperation(String message, String operationType, Long knowledgeId) {
+        if (knowledgeId == null) {
+            log.error("知识ID为空，无法记录审计");
+            return;
+        }
+
+        try {
+            // 构建审计日志
+            AuditLogDTO auditLog = new AuditLogDTO();
+            auditLog.setModule("知识管理");
+            auditLog.setDescription(getOperationDescription(operationType));
+            
+            // 根据操作类型设置前后数据
+            if (operationType.startsWith("DELETE")) {
+                auditLog.setBeforeData(message);
+                auditLog.setAfterData(null);
+            } else if (operationType.startsWith("UPLOAD") || operationType.startsWith("CREATE")) {
+                auditLog.setBeforeData(null);
+                auditLog.setAfterData(message);
+            } else {
+                auditLog.setBeforeData("原始数据");
+                auditLog.setAfterData(message);
+            }
+            
+            // 使用请求参数保存业务ID
+            auditLog.setRequestParams("{\"knowledgeId\":" + knowledgeId + ",\"operationType\":\"" + operationType + "\"}");
+            
+            // 记录审计日志
+            auditService.log(auditLog);
+            
+            log.info("知识操作审计记录成功: knowledgeId={}, operationType={}", knowledgeId, operationType);
+        } catch (Exception e) {
+            log.error("知识操作审计记录失败: knowledgeId={}, operationType={}, error={}", 
+                knowledgeId, operationType, e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * 获取操作描述
+     */
+    private String getOperationDescription(String operationType) {
+        switch (operationType) {
+            case "UPLOAD_ATTACHMENT":
+                return "上传附件";
+            case "DELETE_ATTACHMENT":
+                return "删除附件";
+            case "DELETE_ATTACHMENTS":
+                return "批量删除附件";
+            case "CREATE_TAG":
+                return "创建标签";
+            case "DELETE_TAG":
+                return "删除标签";
+            case "CREATE_TAG_RELATION":
+                return "创建标签关联";
+            case "DELETE_TAG_RELATION":
+                return "删除标签关联";
+            default:
+                return "知识操作";
+        }
+    }
 
     /**
      * 查询知识文档操作日志

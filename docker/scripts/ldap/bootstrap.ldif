@@ -1,0 +1,82 @@
+# 组织单位 - 用户
+dn: ou=users,dc=lawfirm,dc=local
+objectClass: organizationalUnit
+ou: users
+
+# 组织单位 - 组
+dn: ou=groups,dc=lawfirm,dc=local
+objectClass: organizationalUnit
+ou: groups
+
+# 管理员组
+dn: cn=administrators,ou=groups,dc=lawfirm,dc=local
+objectClass: groupOfNames
+cn: administrators
+member: cn=admin,dc=lawfirm,dc=local
+member: uid=admin,ou=users,dc=lawfirm,dc=local
+
+# 律师组
+dn: cn=lawyers,ou=groups,dc=lawfirm,dc=local
+objectClass: groupOfNames
+cn: lawyers
+member: uid=lawyer1,ou=users,dc=lawfirm,dc=local
+
+# 工作人员组
+dn: cn=staff,ou=groups,dc=lawfirm,dc=local
+objectClass: groupOfNames
+cn: staff
+member: uid=staff1,ou=users,dc=lawfirm,dc=local
+
+# 管理员用户
+dn: uid=admin,ou=users,dc=lawfirm,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: admin
+sn: Admin
+givenName: System
+cn: System Admin
+displayName: System Administrator
+uidNumber: 10000
+gidNumber: 10000
+userPassword: admin123
+homeDirectory: /home/admin
+loginShell: /bin/bash
+mail: admin@lawfirm.local
+telephoneNumber: +86 10 12345678
+
+# 律师1
+dn: uid=lawyer1,ou=users,dc=lawfirm,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: lawyer1
+sn: Zhang
+givenName: San
+cn: Zhang San
+displayName: Zhang San
+uidNumber: 10001
+gidNumber: 10001
+userPassword: lawyer123
+homeDirectory: /home/lawyer1
+loginShell: /bin/bash
+mail: zhangsan@lawfirm.local
+telephoneNumber: +86 10 12345679
+
+# 工作人员1
+dn: uid=staff1,ou=users,dc=lawfirm,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: staff1
+sn: Li
+givenName: Si
+cn: Li Si
+displayName: Li Si
+uidNumber: 10002
+gidNumber: 10002
+userPassword: staff123
+homeDirectory: /home/staff1
+loginShell: /bin/bash
+mail: lisi@lawfirm.local
+telephoneNumber: +86 10 12345680 

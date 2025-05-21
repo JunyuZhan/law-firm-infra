@@ -15,6 +15,14 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.model.storage.service.FileService;
+import com.lawfirm.model.storage.service.BucketService;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.workflow.service.ProcessService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,6 +41,48 @@ import java.util.stream.Collectors;
 public class ExpenseServiceImpl extends BaseServiceImpl<ExpenseMapper, Expense> implements ExpenseService {
 
     private final SecurityContext securityContext;
+
+    /**
+     * 注入core层审计服务，便于后续记录支出操作日志
+     */
+    @Autowired(required = false)
+    @Qualifier("financeAuditService")
+    private AuditService auditService;
+
+    /**
+     * 注入core层消息发送服务，便于后续支出相关通知等
+     */
+    @Autowired(required = false)
+    @Qualifier("financeMessageSender")
+    private MessageSender messageSender;
+
+    /**
+     * 注入core层文件存储服务，便于后续支出附件上传等
+     */
+    @Autowired(required = false)
+    @Qualifier("financeFileService")
+    private FileService fileService;
+
+    /**
+     * 注入core层存储桶服务，便于后续支出桶管理等
+     */
+    @Autowired(required = false)
+    @Qualifier("financeBucketService")
+    private BucketService bucketService;
+
+    /**
+     * 注入core层全文检索服务，便于后续支出检索等
+     */
+    @Autowired(required = false)
+    @Qualifier("financeSearchService")
+    private SearchService searchService;
+
+    /**
+     * 注入core层流程服务，便于后续支出审批流转等
+     */
+    @Autowired(required = false)
+    @Qualifier("financeProcessService")
+    private ProcessService processService;
 
     @Override
     @PreAuthorize("hasPermission('expense', 'create')")

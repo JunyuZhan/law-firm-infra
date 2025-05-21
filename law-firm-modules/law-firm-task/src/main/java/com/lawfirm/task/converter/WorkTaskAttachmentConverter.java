@@ -6,10 +6,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 /**
  * 工作任务附件转换器
  */
+@Component("workTaskAttachmentConverter")
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface WorkTaskAttachmentConverter {
 

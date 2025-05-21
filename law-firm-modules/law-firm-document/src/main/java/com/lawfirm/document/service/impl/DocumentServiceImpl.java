@@ -41,6 +41,13 @@ import com.lawfirm.model.document.mapper.DocumentTagMapper;
 import com.lawfirm.model.document.mapper.DocumentTagRelMapper;
 import com.lawfirm.model.document.entity.base.DocumentTag;
 import com.lawfirm.model.document.entity.base.DocumentTagRel;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.model.storage.service.FileService;
+import com.lawfirm.model.storage.service.BucketService;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.workflow.service.ProcessService;
 
 /**
  * 文档服务实现类
@@ -60,6 +67,48 @@ public class DocumentServiceImpl extends BaseServiceImpl<DocumentMapper, BaseDoc
     @Value("${law-firm.storage.default-bucket:}")
     private String defaultBucketName;
     
+    /**
+     * 注入core层审计服务，便于后续记录文档操作日志
+     */
+    @Autowired(required = false)
+    @Qualifier("documentAuditService")
+    private AuditService auditService;
+
+    /**
+     * 注入core层消息发送服务，便于后续文档相关通知等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentMessageSender")
+    private MessageSender messageSender;
+
+    /**
+     * 注入core层文件存储服务，便于后续文档附件上传等
+     */
+    @Autowired(required = false)
+    @Qualifier("storageFileServiceImpl")
+    private FileService fileService;
+
+    /**
+     * 注入core层存储桶服务，便于后续文档桶管理等
+     */
+    @Autowired(required = false)
+    @Qualifier("storageBucketServiceImpl")
+    private BucketService bucketService;
+
+    /**
+     * 注入core层全文检索服务，便于后续文档检索等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentSearchService")
+    private SearchService searchService;
+
+    /**
+     * 注入core层流程服务，便于后续文档审批流转等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentProcessService")
+    private ProcessService processService;
+
     @Autowired
     public DocumentServiceImpl(StorageManager storageManager, SecurityManager securityManager, ApplicationEventPublisher eventPublisher, StorageBucketMapper storageBucketMapper, StorageContext storageContext, DocumentTagMapper documentTagMapper, DocumentTagRelMapper documentTagRelMapper) {
         this.storageManager = storageManager;

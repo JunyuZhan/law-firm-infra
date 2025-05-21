@@ -110,6 +110,11 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>core-message</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-ai</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <!-- MyBatis Plus -->
         <dependency>

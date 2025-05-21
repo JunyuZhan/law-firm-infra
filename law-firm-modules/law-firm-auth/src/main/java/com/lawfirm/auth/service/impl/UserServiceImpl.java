@@ -14,9 +14,17 @@ import com.lawfirm.model.auth.vo.UserInfoVO;
 import com.lawfirm.model.auth.vo.UserVO;
 import com.lawfirm.auth.security.details.SecurityUserDetails;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
+import com.lawfirm.model.log.dto.AuditLogDTO;
+import com.lawfirm.model.log.enums.BusinessTypeEnum;
+import com.lawfirm.model.log.enums.OperateTypeEnum;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.storage.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +34,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,6 +51,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     
+    @Autowired
+    @Qualifier("coreAuditServiceImpl")
+    private AuditService auditService;
+    
+    @Autowired
+    @Qualifier("searchServiceImpl")
+    private SearchService searchService;
+    
+    @Autowired
+    @Qualifier("storageFileServiceImpl")
+    private FileService fileService;
+    
     /**
      * 获取当前登录用户ID
      */
@@ -56,6 +77,32 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         // 加密密码
         user.setPassword(passwordEncoder.encode(createDTO.getPassword()));
         save(user);
+        
+        // 记录审计日志
+        AuditLogDTO auditLog = new AuditLogDTO();
+        auditLog.setModule("auth");
+        auditLog.setDescription("创建用户: " + user.getUsername());
+        auditLog.setOperateType(OperateTypeEnum.CREATE);
+        auditLog.setBusinessType(BusinessTypeEnum.USER);
+        auditLog.setOperatorName(SecurityUtils.getCurrentUsername());
+        auditLog.setStatus(0); // 正常状态
+        auditService.logAsync(auditLog);
+        
+        // 更新搜索索引
+        try {
+            Map<String, Object> data = new HashMap<>();
+            data.put("id", user.getId());
+            data.put("username", user.getUsername());
+            data.put("mobile", user.getMobile());
+            data.put("email", user.getEmail());
+            data.put("status", user.getStatus());
+            
+            // 使用SearchService添加文档
+            searchService.indexDoc("users", user.getId().toString(), data);
+        } catch (Exception e) {
+            log.error("索引用户信息失败", e);
+        }
+        
         return user.getId();
     }
     
@@ -65,8 +112,51 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         if (user == null) {
             throw new RuntimeException("用户不存在");
         }
+        
+        // 保存更新前的数据
+        String beforeData = null;
+        try {
+            beforeData = com.lawfirm.common.util.json.JsonUtils.toJsonString(user);
+        } catch (Exception e) {
+            log.error("转换用户数据为JSON失败", e);
+        }
+        
         BeanUtils.copyProperties(updateDTO, user);
         updateById(user);
+        
+        // 记录审计日志
+        AuditLogDTO auditLog = new AuditLogDTO();
+        auditLog.setModule("auth");
+        auditLog.setDescription("更新用户: " + user.getUsername());
+        auditLog.setOperateType(OperateTypeEnum.UPDATE);
+        auditLog.setBusinessType(BusinessTypeEnum.USER);
+        auditLog.setOperatorName(SecurityUtils.getCurrentUsername());
+        auditLog.setStatus(0); // 正常状态
+        auditLog.setBeforeData(beforeData);
+        
+        try {
+            String afterData = com.lawfirm.common.util.json.JsonUtils.toJsonString(user);
+            auditLog.setAfterData(afterData);
+        } catch (Exception e) {
+            log.error("转换用户数据为JSON失败", e);
+        }
+        
+        auditService.logAsync(auditLog);
+        
+        // 更新搜索索引
+        try {
+            Map<String, Object> data = new HashMap<>();
+            data.put("id", user.getId());
+            data.put("username", user.getUsername());
+            data.put("mobile", user.getMobile());
+            data.put("email", user.getEmail());
+            data.put("status", user.getStatus());
+            
+            // 使用SearchService更新文档
+            searchService.updateDoc("users", user.getId().toString(), data);
+        } catch (Exception e) {
+            log.error("更新用户索引失败", e);
+        }
     }
     
     @Override

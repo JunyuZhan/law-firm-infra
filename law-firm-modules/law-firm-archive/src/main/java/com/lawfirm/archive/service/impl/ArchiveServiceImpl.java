@@ -14,9 +14,18 @@ import com.lawfirm.model.archive.mapper.ArchiveFileMapper;
 import com.lawfirm.model.archive.mapper.ArchiveMainMapper;
 import com.lawfirm.model.archive.mapper.CaseArchiveMapper;
 import com.lawfirm.model.archive.service.ArchiveService;
+import com.lawfirm.model.storage.service.FileService;
+import com.lawfirm.model.storage.service.BucketService;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.model.workflow.service.ProcessService;
+import com.lawfirm.model.workflow.service.TaskService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +51,35 @@ public class ArchiveServiceImpl extends ServiceImpl<ArchiveMainMapper, ArchiveMa
     
     @Autowired
     private ArchiveFileMapper archiveFileMapper;
+
+    // Core层服务注入
+    @Autowired
+    @Qualifier("storageFileServiceImpl")
+    private FileService fileService;
+    
+    @Autowired
+    @Qualifier("storageBucketServiceImpl")
+    private BucketService bucketService;
+    
+    @Autowired
+    @Qualifier("searchServiceImpl")
+    private SearchService searchService;
+    
+    @Autowired
+    @Qualifier("coreAuditServiceImpl")
+    private AuditService auditService;
+    
+    @Autowired
+    @Qualifier("messageSender")
+    private MessageSender messageSender;
+    
+    @Autowired
+    @Qualifier("coreProcessServiceImpl")
+    private ProcessService processService;
+    
+    @Autowired
+    @Qualifier("taskServiceImpl")
+    private TaskService taskService;
 
     /**
      * 实现BaseService中的exists抽象方法

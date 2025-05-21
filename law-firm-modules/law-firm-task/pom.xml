@@ -105,6 +105,16 @@
             <artifactId>organization-model</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Core Message -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>message-model</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -2,12 +2,22 @@ package com.lawfirm.model.ai.service;
 
 import java.util.List;
 import java.util.Map;
+import com.lawfirm.model.ai.dto.AIRequestDTO;
+import com.lawfirm.model.ai.vo.AIResponseVO;
 
 /**
  * AI服务接口
  * 提供AI相关功能，如文档摘要生成、关键信息提取等
  */
 public interface AiService {
+    
+    /**
+     * 通用AI处理方法
+     * 
+     * @param requestDTO AI请求DTO
+     * @return AI响应VO
+     */
+    AIResponseVO process(AIRequestDTO requestDTO);
     
     /**
      * 生成文本摘要

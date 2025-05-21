@@ -53,6 +53,14 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>core-message</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-workflow</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-ai</artifactId>
+        </dependency>
         
         <!-- Common模块依赖 -->
         <dependency>

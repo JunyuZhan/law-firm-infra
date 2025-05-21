@@ -21,6 +21,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lawfirm.document.exception.DocumentException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.model.storage.service.FileService;
+import com.lawfirm.model.storage.service.BucketService;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.workflow.service.ProcessService;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +43,48 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateDocumentMapper,
 
     private final StorageManager storageManager;
     private final SecurityManager securityManager;
+    
+    /**
+     * 注入core层审计服务，便于后续记录模板操作日志
+     */
+    @Autowired(required = false)
+    @Qualifier("documentAuditService")
+    private AuditService auditService;
+
+    /**
+     * 注入core层消息发送服务，便于后续模板相关通知等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentMessageSender")
+    private MessageSender messageSender;
+
+    /**
+     * 注入core层文件存储服务，便于后续模板附件上传等
+     */
+    @Autowired(required = false)
+    @Qualifier("storageFileServiceImpl")
+    private FileService fileService;
+
+    /**
+     * 注入core层存储桶服务，便于后续模板桶管理等
+     */
+    @Autowired(required = false)
+    @Qualifier("storageBucketServiceImpl")
+    private BucketService bucketService;
+
+    /**
+     * 注入core层全文检索服务，便于后续模板检索等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentSearchService")
+    private SearchService searchService;
+
+    /**
+     * 注入core层流程服务，便于后续模板审批流转等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentProcessService")
+    private ProcessService processService;
     
     public TemplateServiceImpl(StorageManager storageManager, SecurityManager securityManager) {
         this.storageManager = storageManager;

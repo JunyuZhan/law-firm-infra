@@ -3,7 +3,7 @@ package com.lawfirm.client.controller;
 import com.lawfirm.client.constant.ClientConstants;
 import com.lawfirm.client.task.DataCleanupTask;
 import com.lawfirm.common.core.api.CommonResult;
-import com.lawfirm.common.security.annotation.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.lawfirm.model.base.controller.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

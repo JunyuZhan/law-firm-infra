@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -197,19 +198,31 @@ public class CaseController {
         description = "获取指定用户参与的所有案件列表。包括用户作为：\n" +
                 "1. 主办律师的案件\n" +
                 "2. 协办律师的案件\n" +
-                "3. 案件审批人的案件\n" +
-                "4. 案件参与人的案件"
+                "3. 案件审批人的案件\n"
     )
     @GetMapping("/user/{userId}")
     public List<CaseQueryVO> getUserCases(
             @Parameter(description = "用户ID") 
             @PathVariable("userId") Long userId) {
-        log.info("获取用户相关案件: userId={}", userId);
-        List<Case> caseList = caseService.getUserCases(userId);
-        // 转换为VO列表
-        return caseList.stream()
-                .map(this::convertToCaseQueryVO)
-                .collect(Collectors.toList());
+        log.info("获取用户相关案件: {}", userId);
+        List<Case> cases = caseService.getUserCases(userId);
+        return cases.stream().map(this::convertToCaseQueryVO).collect(Collectors.toList());
+    }
+
+    @Operation(
+        summary = "评估案件风险",
+        description = "对案件进行AI风险评估，分析潜在风险点和建议：\n" +
+                "1. 案件关键信息分析\n" +
+                "2. 潜在法律风险评估\n" +
+                "3. 案件进展建议\n" +
+                "4. 相似案例参考"
+    )
+    @GetMapping("/{id}/risk-assessment")
+    public Map<String, Object> assessCaseRisk(
+            @Parameter(description = "案件ID") 
+            @PathVariable("id") Long id) {
+        log.info("评估案件风险: {}", id);
+        return caseService.assessCaseRisk(id);
     }
 
     /**

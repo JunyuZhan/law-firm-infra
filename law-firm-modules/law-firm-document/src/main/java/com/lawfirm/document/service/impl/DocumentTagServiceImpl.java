@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.lawfirm.common.security.context.SecurityContextHolder;
 import com.lawfirm.document.exception.DocumentException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
 
 /**
  * 文档标签服务实现类
@@ -28,6 +32,20 @@ import com.lawfirm.document.exception.DocumentException;
 @Slf4j
 @Service("documentTagServiceImpl")
 public class DocumentTagServiceImpl extends BaseServiceImpl<DocumentTagMapper, DocumentTag> implements DocumentTagService {
+
+    /**
+     * 注入core层审计服务，便于后续记录标签操作日志
+     */
+    @Autowired(required = false)
+    @Qualifier("documentAuditService")
+    private AuditService auditService;
+
+    /**
+     * 注入core层消息发送服务，便于后续标签相关通知等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentMessageSender")
+    private MessageSender messageSender;
 
     @Override
     public Long getCurrentTenantId() {

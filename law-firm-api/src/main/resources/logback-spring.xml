@@ -51,7 +51,7 @@
             <outputPatternAsHeader>false</outputPatternAsHeader>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <fileNamePattern>logs/archive/${appName}.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
             <maxFileSize>${logFileMaxSize}</maxFileSize>
             <maxHistory>${logFileMaxHistory}</maxHistory>
             <totalSizeCap>${logFileTotalSizeCap}</totalSizeCap>

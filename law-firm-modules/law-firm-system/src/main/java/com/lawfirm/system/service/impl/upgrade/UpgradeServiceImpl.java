@@ -23,9 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import com.lawfirm.system.exception.SystemException;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +37,6 @@ import java.util.Base64;
 
 @Slf4j
 @Service("systemUpgradeServiceImpl")
-@RequiredArgsConstructor
 @ConditionalOnExpression("'${spring.profiles.active}' != 'nodb'")
 public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> implements UpgradeService {
 
@@ -45,6 +44,18 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
     private final FileService fileService;
     private final JdbcTemplate jdbcTemplate;
     private final FileOperator fileOperator;
+
+    public UpgradeServiceImpl(
+        PatchMapper patchMapper,
+        @Qualifier("storageFileServiceImpl") FileService fileService,
+        JdbcTemplate jdbcTemplate,
+        FileOperator fileOperator
+    ) {
+        this.patchMapper = patchMapper;
+        this.fileService = fileService;
+        this.jdbcTemplate = jdbcTemplate;
+        this.fileOperator = fileOperator;
+    }
 
     @Override
     public List<UpgradeVO> selectUpgradeList(UpgradeQueryDTO queryDTO) {

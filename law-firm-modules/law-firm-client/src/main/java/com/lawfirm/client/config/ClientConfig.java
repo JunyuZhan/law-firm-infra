@@ -6,6 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.workflow.service.ProcessService;
 
 /**
  * 客户模块基础配置类
@@ -49,5 +54,37 @@ public class ClientConfig {
             // 前缀+年月日+6位随机数
             return PREFIX + System.currentTimeMillis() % 1000000000;
         }
+    }
+
+    /**
+     * 注入core层审计服务
+     */
+    @Bean(name = "clientAuditService")
+    public AuditService clientAuditService(@Qualifier("coreAuditServiceImpl") AuditService auditService) {
+        return auditService;
+    }
+
+    /**
+     * 注入core层消息发送服务
+     */
+    @Bean(name = "clientMessageSender")
+    public MessageSender clientMessageSender(@Qualifier("coreMessageSender") MessageSender messageSender) {
+        return messageSender;
+    }
+
+    /**
+     * 注入core层搜索服务
+     */
+    @Bean(name = "clientSearchService")
+    public SearchService clientSearchService(@Qualifier("coreSearchServiceImpl") SearchService searchService) {
+        return searchService;
+    }
+
+    /**
+     * 注入core层流程服务
+     */
+    @Bean(name = "clientProcessService")
+    public ProcessService clientProcessService(@Qualifier("coreProcessServiceImpl") ProcessService processService) {
+        return processService;
     }
 }

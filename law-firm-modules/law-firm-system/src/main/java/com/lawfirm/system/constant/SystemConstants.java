@@ -43,4 +43,29 @@ public final class SystemConstants {
      * 数据库备份API路径前缀
      */
     public static final String API_DATABASE_PREFIX = "/api/v1/database";
+    
+    /**
+     * 日志API路径前缀
+     */
+    public static final String API_LOG_PREFIX = "/api/v1/monitors/logs";
+    
+    /**
+     * 审计API路径前缀
+     */
+    public static final String API_AUDIT_PREFIX = "/api/v1/monitors/audits";
+    
+    /**
+     * 告警API路径前缀
+     */
+    public static final String API_ALERT_PREFIX = "/api/v1/monitors/alerts";
+    
+    /**
+     * 应用监控API路径前缀
+     */
+    public static final String API_APP_MONITOR_PREFIX = "/api/v1/monitors/apps";
+    
+    /**
+     * 数据库监控API路径前缀
+     */
+    public static final String API_DB_MONITOR_PREFIX = "/api/v1/monitors/databases";
 } 

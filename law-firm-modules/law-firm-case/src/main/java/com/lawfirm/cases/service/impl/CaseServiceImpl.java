@@ -8,6 +8,7 @@ import com.lawfirm.cases.core.audit.CaseAuditProvider;
 import com.lawfirm.cases.core.message.CaseMessageManager;
 import com.lawfirm.cases.core.search.CaseSearchManager;
 import com.lawfirm.cases.core.workflow.CaseWorkflowManager;
+import com.lawfirm.cases.core.ai.CaseAIManager;
 import com.lawfirm.cases.integration.client.ClientComponent;
 import com.lawfirm.model.cases.mapper.base.CaseMapper;
 import com.lawfirm.model.cases.mapper.team.CaseTeamMemberMapper;
@@ -50,6 +51,7 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
     private final ClientComponent clientComponent;
     private final CaseTeamMemberMapper caseTeamMemberMapper;
     private final ArchiveService archiveService;
+    private final CaseAIManager aiManager;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -625,5 +627,47 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
                 .or()
                 .in(teamCaseIds != null && !teamCaseIds.isEmpty(), Case::getId, teamCaseIds)
                 .list();
+    }
+
+    /**
+     * 评估案件风险
+     *
+     * @param caseId 案件ID
+     * @return 风险评估结果
+     */
+    @Override
+    public Map<String, Object> assessCaseRisk(Long caseId) {
+        log.info("评估案件风险: {}", caseId);
+
+        // 获取案件信息
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
+        }
+
+        // 转换为数据Map
+        Map<String, Object> caseData = new HashMap<>();
+        caseData.put("caseName", caseEntity.getCaseName());
+        caseData.put("caseType", caseEntity.getCaseType());
+        caseData.put("caseStatus", caseEntity.getCaseStatus());
+        caseData.put("clientId", caseEntity.getClientId());
+        caseData.put("clientName", caseEntity.getClientName());
+        caseData.put("lawyer", caseEntity.getLawyerId());
+        caseData.put("filingDate", caseEntity.getFilingTime());
+        
+        // 调用AI服务进行风险评估
+        Map<String, Object> riskResult = aiManager.getCaseRiskAssessment(caseId, caseData);
+        
+        // 记录审计
+        auditProvider.auditCaseUpdate(
+                caseId,
+                Long.valueOf(caseEntity.getCreateBy()),
+                null,
+                null,
+                Map.of("action", "风险评估")
+        );
+        
+        log.info("案件风险评估完成, ID: {}", caseId);
+        return riskResult;
     }
 }

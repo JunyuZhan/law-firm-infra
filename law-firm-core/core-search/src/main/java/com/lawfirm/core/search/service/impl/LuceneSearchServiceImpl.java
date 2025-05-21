@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -508,21 +509,87 @@ public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, Se
 
     /**
      * 将Lucene Document转换为Map
+     * TODO: 完善类型转换逻辑
      */
     private Map<String, Object> documentToMap(Document document) {
         Map<String, Object> result = new HashMap<>();
+        Map<String, List<Object>> multiValueFields = new HashMap<>();
         
+        // 第一遍：收集所有字段，识别多值字段
         for (IndexableField field : document.getFields()) {
             String name = field.name();
             
-            if (field.stringValue() != null) {
-                result.put(name, field.stringValue());
-            } else if (field.numericValue() != null) {
-                result.put(name, field.numericValue());
+            // 如果已经在结果Map中存在，可能是多值字段
+            if (result.containsKey(name)) {
+                // 创建或获取多值字段列表
+                List<Object> values = multiValueFields.computeIfAbsent(name, k -> new ArrayList<>());
+                
+                // 如果是第一次遇到重复，需要将原来的值也加入列表
+                if (values.isEmpty()) {
+                    values.add(result.get(name));
+                }
+                
+                // 添加当前值
+                if (field.numericValue() != null) {
+                    values.add(field.numericValue());
+                } else if (field.stringValue() != null) {
+                    values.add(field.stringValue());
+                }
+                
+                // 暂时将多值列表放入结果
+                result.put(name, values);
+            } else {
+                // 单值字段处理
+                if (field.numericValue() != null) {
+                    // 数值字段
+                    Number numValue = field.numericValue();
+                    // 根据数值类型分别处理
+                    if (numValue instanceof Integer || numValue instanceof Long) {
+                        result.put(name, numValue.longValue());
+                    } else if (numValue instanceof Float || numValue instanceof Double) {
+                        result.put(name, numValue.doubleValue());
+                    } else {
+                        result.put(name, numValue);
+                    }
+                } else if (field.stringValue() != null) {
+                    // 字符串字段
+                    String value = field.stringValue();
+                    
+                    // 特殊处理布尔值
+                    if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+                        result.put(name, Boolean.parseBoolean(value));
+                    } else {
+                        // 尝试转换为日期格式
+                        if (isDateFormat(value)) {
+                            try {
+                                // 尝试解析为日期
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                                Date date = dateFormat.parse(value);
+                                result.put(name, date);
+                            } catch (Exception e) {
+                                // 解析失败，保留原始字符串
+                                result.put(name, value);
+                            }
+                        } else {
+                            result.put(name, value);
+                        }
+                    }
+                }
             }
         }
         
         return result;
+    }
+    
+    /**
+     * 判断字符串是否可能是日期格式
+     */
+    private boolean isDateFormat(String value) {
+        // 简单检查是否符合ISO日期格式
+        return value != null && 
+               value.length() > 10 && 
+               value.contains("T") &&
+               value.matches("^\\d{4}-\\d{2}-\\d{2}T.*");
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lawfirm.model.base.service.BaseService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 案件基础服务接口
@@ -156,4 +157,12 @@ public interface CaseService extends BaseService<Case> {
      * @return 案件列表
      */
     List<Case> getUserCases(Long userId);
+    
+    /**
+     * 评估案件风险
+     *
+     * @param caseId 案件ID
+     * @return 风险评估结果
+     */
+    Map<String, Object> assessCaseRisk(Long caseId);
 } 

@@ -24,7 +24,7 @@ import java.util.Map;
  * 仅在开发环境中使用，用于演示OpenAPI注解的使用方法
  */
 @Tag(name = "API文档示例", description = "API文档注解使用示例，仅在开发环境中可用")
-@RestController
+@RestController("templateApiController")
 @RequestMapping(ApiConstants.API_BASE + "/example")
 @Profile("dev") // 仅在开发环境可用
 @Slf4j

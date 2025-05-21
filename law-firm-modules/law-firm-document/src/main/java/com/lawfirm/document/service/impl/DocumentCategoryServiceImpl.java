@@ -15,6 +15,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lawfirm.document.exception.DocumentException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
 
 import java.util.List;
 
@@ -28,6 +32,20 @@ public class DocumentCategoryServiceImpl extends BaseServiceImpl<DocumentCategor
 
     private final SecurityManager securityManager;
     
+    /**
+     * 注入core层审计服务，便于后续记录分类操作日志
+     */
+    @Autowired(required = false)
+    @Qualifier("documentAuditService")
+    private AuditService auditService;
+
+    /**
+     * 注入core层消息发送服务，便于后续分类相关通知等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentMessageSender")
+    private MessageSender messageSender;
+
     public DocumentCategoryServiceImpl(SecurityManager securityManager) {
         this.securityManager = securityManager;
     }

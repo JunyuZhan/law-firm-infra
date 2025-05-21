@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.lawfirm.core.storage.strategy.StorageContext;
 import com.lawfirm.core.storage.strategy.StorageStrategy;
 import com.lawfirm.model.storage.enums.StorageTypeEnum;
+import com.lawfirm.model.storage.service.FileService;
 
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
@@ -116,5 +118,13 @@ public class StorageConfiguration {
     public StorageProperties storagePropertiesFromProvider(StoragePropertiesProvider provider) {
         log.info("从业务层获取存储配置");
         return provider.getStorageProperties();
+    }
+
+    /**
+     * 包装storageFileServiceImpl为coreFileServiceImpl，解决多Bean注入歧义
+     */
+    @Bean(name = "coreFileServiceImpl")
+    public FileService coreFileServiceImpl(@Qualifier("storageFileServiceImpl") FileService fileService) {
+        return fileService;
     }
 } 

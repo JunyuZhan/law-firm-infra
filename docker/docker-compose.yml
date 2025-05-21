@@ -36,6 +36,18 @@ services:
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
       - SPRING_REDIS_DATABASE=0
+      # RabbitMQ配置
+      - SPRING_RABBITMQ_ENABLED=true
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_VIRTUAL_HOST=/
+      # LDAP配置
+      - SPRING_LDAP_ENABLED=false
+      - SPRING_SECURITY_LDAP_ENABLED=false
+      # 邮件配置
+      - SPRING_MAIL_ENABLED=false
       # MinIO配置
       - MINIO_ENDPOINT=http://minio:9000
       - MINIO_ACCESS_KEY=minioadmin
@@ -48,7 +60,7 @@ services:
       - SPRING_FLYWAY_OUT_OF_ORDER=true
       - SPRING_FLYWAY_IGNORE_MIGRATION_PATTERNS=*:missing
       - SPRING_FLYWAY_TABLE=flyway_schema_history
-      - SPRING_FLYWAY_LOCATIONS=classpath:db/migration,classpath:db/migration/modules
+      - SPRING_FLYWAY_LOCATIONS=classpath:META-INF/db/migration
       - SPRING_FLYWAY_PLACEHOLDERS_SCHEMA=${DB_NAME}
       # 禁用各模块的Flyway，只使用主应用的统一配置
       - SYSTEM_FLYWAY_ENABLED=false
@@ -75,6 +87,10 @@ services:
       - LAWFIRM_STORAGE_TYPE=MINIO
       - LAWFIRM_STORAGE_PATH=/app/storage
       - LAWFIRM_STORAGE_TEMP_PATH=/app/storage/temp
+      # 健康检查配置
+      - MANAGEMENT_HEALTH_LDAP_ENABLED=false
+      - MANAGEMENT_HEALTH_MAIL_ENABLED=false
+      - MANAGEMENT_HEALTH_RABBIT_ENABLED=true
       # 监控配置
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics,prometheus
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=always
@@ -101,6 +117,8 @@ services:
       redis:
         condition: service_healthy
       minio:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     volumes:
       - app_logs:/app/logs
@@ -196,6 +214,41 @@ services:
         max-size: "100m"
         max-file: "10"
 
+  # RabbitMQ消息队列
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: law-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"   # AMQP协议端口
+      - "15672:15672" # 管理界面端口
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+
   # MinIO对象存储
   minio:
     image: minio/minio
@@ -239,9 +292,10 @@ networks:
 
 # 命名卷
 volumes:
-  mysql_data:    # MySQL数据持久化
-  redis_data:    # Redis数据持久化
-  minio_data:    # MinIO数据持久化
-  app_logs:      # 应用日志
-  app_storage:   # 上传文件存储
-  app_lucene:    # Lucene索引存储 
+  mysql_data:     # MySQL数据持久化
+  redis_data:     # Redis数据持久化
+  minio_data:     # MinIO数据持久化
+  rabbitmq_data:  # RabbitMQ数据持久化
+  app_logs:       # 应用日志
+  app_storage:    # 上传文件存储
+  app_lucene:     # Lucene索引存储 

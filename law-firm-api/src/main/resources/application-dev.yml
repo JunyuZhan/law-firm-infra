@@ -120,6 +120,13 @@ management:
     # 根据实际使用情况决定是否启用Redis
     redis:
       enabled: true
+    # 禁用不需要的服务健康检查
+    ldap:
+      enabled: false
+    mail:
+      enabled: false
+    rabbit:
+      enabled: false
     defaults:
       enabled: true
 

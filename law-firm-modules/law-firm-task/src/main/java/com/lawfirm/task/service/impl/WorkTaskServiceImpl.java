@@ -36,6 +36,9 @@ import com.lawfirm.model.cases.dto.base.CaseBaseDTO;
 import com.lawfirm.model.client.dto.ClientDTO;
 import com.lawfirm.model.organization.dto.department.DepartmentDTO;
 import org.springframework.beans.factory.annotation.Value;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.model.message.entity.base.BaseMessage;
+import com.lawfirm.model.message.enums.MessageTypeEnum;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,7 +52,7 @@ import java.util.HashMap;
  * 工作任务服务实现类
  */
 @Slf4j
-@Service
+@Service("workTaskService")
 public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTask> implements WorkTaskService {
 
     @Autowired
@@ -70,6 +73,10 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      */
     @Autowired(required = false)
     private NotificationService notificationService;
+
+    @Autowired(required = false)
+    @Qualifier("taskMessageSender")
+    private MessageSender messageSender;
 
     /**
      * 通知服务接口
@@ -787,7 +794,18 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      * 发送任务创建通知
      */
     public void sendTaskCreatedNotification(Long taskId, String taskName, Long assigneeId, Map<String, Object> variables) {
-        if (notificationService != null && assigneeId != null) {
+        boolean sent = false;
+        if (messageSender != null && assigneeId != null) {
+            BaseMessage message = new BaseMessage();
+            message.setTitle("新任务分配：" + taskName);
+            message.setContent("您有新任务，请及时处理。");
+            message.setReceiverId(assigneeId);
+            message.setBusinessId(taskId);
+            message.setType(MessageTypeEnum.NOTICE);
+            messageSender.send(message);
+            sent = true;
+        }
+        if (!sent && notificationService != null && assigneeId != null) {
             notificationService.send("task_created", assigneeId, "新任务分配：" + taskName, "您有新任务，请及时处理。", variables);
         }
         log.info("[通知] 任务创建: taskId={}, taskName={}, assigneeId={}", taskId, taskName, assigneeId);
@@ -797,7 +815,18 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      * 发送任务分配通知
      */
     public void sendTaskAssignedNotification(Long taskId, String taskName, Long assigneeId, Long oldAssigneeId, Map<String, Object> variables) {
-        if (notificationService != null && assigneeId != null) {
+        boolean sent = false;
+        if (messageSender != null && assigneeId != null) {
+            BaseMessage message = new BaseMessage();
+            message.setTitle("任务分配：" + taskName);
+            message.setContent("您被分配了新任务。");
+            message.setReceiverId(assigneeId);
+            message.setBusinessId(taskId);
+            message.setType(MessageTypeEnum.NOTICE);
+            messageSender.send(message);
+            sent = true;
+        }
+        if (!sent && notificationService != null && assigneeId != null) {
             notificationService.send("task_assigned", assigneeId, "任务分配：" + taskName, "您被分配了新任务。", variables);
         }
         if (notificationService != null && oldAssigneeId != null && !Objects.equals(assigneeId, oldAssigneeId)) {
@@ -810,7 +839,18 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      * 发送任务完成通知
      */
     public void sendTaskCompletedNotification(Long taskId, String taskName, Long assigneeId, Map<String, Object> variables) {
-        if (notificationService != null && assigneeId != null) {
+        boolean sent = false;
+        if (messageSender != null && assigneeId != null) {
+            BaseMessage message = new BaseMessage();
+            message.setTitle("任务完成：" + taskName);
+            message.setContent("您的任务已完成。");
+            message.setReceiverId(assigneeId);
+            message.setBusinessId(taskId);
+            message.setType(MessageTypeEnum.NOTICE);
+            messageSender.send(message);
+            sent = true;
+        }
+        if (!sent && notificationService != null && assigneeId != null) {
             notificationService.send("task_completed", assigneeId, "任务完成：" + taskName, "您的任务已完成。", variables);
         }
         log.info("[通知] 任务完成: taskId={}, taskName={}, assigneeId={}", taskId, taskName, assigneeId);
@@ -820,7 +860,18 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      * 发送任务截止提醒
      */
     public void sendTaskDueReminder(Long taskId, String taskName, Long assigneeId, LocalDateTime dueDate) {
-        if (notificationService != null && assigneeId != null) {
+        boolean sent = false;
+        if (messageSender != null && assigneeId != null) {
+            BaseMessage message = new BaseMessage();
+            message.setTitle("任务截止提醒：" + taskName);
+            message.setContent("您的任务即将截止，截止时间：" + dueDate);
+            message.setReceiverId(assigneeId);
+            message.setBusinessId(taskId);
+            message.setType(MessageTypeEnum.NOTICE);
+            messageSender.send(message);
+            sent = true;
+        }
+        if (!sent && notificationService != null && assigneeId != null) {
             notificationService.send("task_due_reminder", assigneeId, "任务截止提醒：" + taskName, "您的任务即将截止，截止时间：" + dueDate, null);
         }
         log.info("[通知] 任务截止提醒: taskId={}, taskName={}, assigneeId={}, dueDate={}", taskId, taskName, assigneeId, dueDate);
@@ -830,7 +881,18 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      * 发送任务超时提醒
      */
     public void sendTaskOverdueNotification(Long taskId, String taskName, Long assigneeId, LocalDateTime dueDate) {
-        if (notificationService != null && assigneeId != null) {
+        boolean sent = false;
+        if (messageSender != null && assigneeId != null) {
+            BaseMessage message = new BaseMessage();
+            message.setTitle("任务超时提醒：" + taskName);
+            message.setContent("您的任务已超时，截止时间：" + dueDate);
+            message.setReceiverId(assigneeId);
+            message.setBusinessId(taskId);
+            message.setType(MessageTypeEnum.NOTICE);
+            messageSender.send(message);
+            sent = true;
+        }
+        if (!sent && notificationService != null && assigneeId != null) {
             notificationService.send("task_overdue", assigneeId, "任务超时提醒：" + taskName, "您的任务已超时，截止时间：" + dueDate, null);
         }
         log.info("[通知] 任务超时提醒: taskId={}, taskName={}, assigneeId={}, dueDate={}", taskId, taskName, assigneeId, dueDate);
@@ -840,7 +902,19 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      * 批量发送任务通知
      */
     public void sendBatchTaskNotification(List<Long> recipientIds, String subject, String content, Map<String, Object> variables) {
-        if (notificationService != null && recipientIds != null && !recipientIds.isEmpty()) {
+        boolean sent = false;
+        if (messageSender != null && recipientIds != null && !recipientIds.isEmpty()) {
+            for (Long userId : recipientIds) {
+                BaseMessage message = new BaseMessage();
+                message.setTitle(subject);
+                message.setContent(content);
+                message.setReceiverId(userId);
+                message.setType(MessageTypeEnum.NOTICE);
+                messageSender.send(message);
+            }
+            sent = true;
+        }
+        if (!sent && notificationService != null && recipientIds != null && !recipientIds.isEmpty()) {
             notificationService.sendBatch("task_batch", recipientIds, subject, content, variables);
         }
         log.info("[通知] 批量任务通知: subject={}, recipients={}", subject, recipientIds);

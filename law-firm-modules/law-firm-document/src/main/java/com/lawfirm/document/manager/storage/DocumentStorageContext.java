@@ -2,18 +2,22 @@ package com.lawfirm.document.manager.storage;
 
 import com.lawfirm.model.storage.service.FileService;
 import com.lawfirm.model.storage.service.BucketService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * 文档存储上下文，提供文档存储相关的配置和上下文信息
  */
 @Component
-@RequiredArgsConstructor
 public class DocumentStorageContext {
     
     private final FileService fileService;
     private final BucketService bucketService;
+    
+    public DocumentStorageContext(@Qualifier("storageFileServiceImpl") FileService fileService, BucketService bucketService) {
+        this.fileService = fileService;
+        this.bucketService = bucketService;
+    }
     
     /**
      * 获取文档默认存储桶ID

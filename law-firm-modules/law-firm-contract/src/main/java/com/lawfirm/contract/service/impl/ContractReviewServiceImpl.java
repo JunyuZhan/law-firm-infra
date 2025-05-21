@@ -18,6 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.lawfirm.common.security.utils.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.model.storage.service.FileService;
+import com.lawfirm.model.storage.service.BucketService;
+import com.lawfirm.model.search.service.SearchService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +36,41 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("contractReviewService")
 public class ContractReviewServiceImpl extends ServiceImpl<ContractReviewBaseMapper, ContractReview> implements ContractReviewService {
+
+    /**
+     * 注入core层审计服务，便于后续记录审核操作日志
+     */
+    @Autowired(required = false)
+    @Qualifier("clientAuditService")
+    private AuditService auditService;
+
+    /**
+     * 注入core层消息发送服务，便于后续审核相关通知等
+     */
+    @Autowired(required = false)
+    @Qualifier("clientMessageSender")
+    private MessageSender messageSender;
+
+    /**
+     * 注入core层文件存储服务，便于后续审核相关附件上传等
+     */
+    @Autowired(required = false)
+    @Qualifier("clientFileService")
+    private FileService fileService;
+
+    /**
+     * 注入core层存储桶服务
+     */
+    @Autowired(required = false)
+    @Qualifier("clientBucketService")
+    private BucketService bucketService;
+
+    /**
+     * 注入core层搜索服务
+     */
+    @Autowired(required = false)
+    @Qualifier("clientSearchService")
+    private SearchService searchService;
 
     @Override
     public boolean exists(QueryWrapper<ContractReview> queryWrapper) {

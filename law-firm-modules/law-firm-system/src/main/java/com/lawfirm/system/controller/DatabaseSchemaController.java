@@ -2,6 +2,7 @@ package com.lawfirm.system.controller;
 
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.data.util.DatabaseSchemaGenerator;
+import com.lawfirm.system.constant.SystemConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,9 +26,9 @@ import java.nio.file.Paths;
  * 仅在开发环境启用
  */
 @Slf4j
-@RestController
+@RestController("databaseSchemaController")
 @RequiredArgsConstructor
-@RequestMapping("/system/db/schema")
+@RequestMapping(SystemConstants.API_DATABASE_PREFIX + "/schema")
 @Tag(name = "数据库表结构管理", description = "提供数据库表结构生成和查看功能")
 @Profile({"dev", "develop"})
 @ConditionalOnProperty(name = "law-firm.database.auto-generate-schema", havingValue = "true")

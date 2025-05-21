@@ -1,4 +1,4 @@
-package com.lawfirm.core.workflow.service;
+package com.lawfirm.model.workflow.service;
 
 import java.util.Map;
 import java.util.List;

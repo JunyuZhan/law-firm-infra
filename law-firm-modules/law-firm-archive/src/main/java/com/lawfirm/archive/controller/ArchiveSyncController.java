@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * 档案同步控制器
  */
-@RestController
+@RestController("archiveSyncController")
 @RequestMapping(ArchiveBusinessConstants.Controller.API_SYNC_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "档案同步", description = "档案同步相关接口")

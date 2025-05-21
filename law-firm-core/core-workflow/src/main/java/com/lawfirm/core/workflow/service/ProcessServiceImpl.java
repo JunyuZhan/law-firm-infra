@@ -21,7 +21,7 @@ import java.util.Map;
  * </p>
  */
 @Slf4j
-@Service
+@Service("coreProcessServiceImpl")
 @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
 public class ProcessServiceImpl implements ProcessService {
 

@@ -11,6 +11,8 @@ import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * 存储相关定时任务
@@ -87,14 +89,117 @@ public class StorageTask {
      * 存储统计任务（最小可用实现）
      * TODO: 后续需对接存储模块，统计文档存储空间等信息
      */
+    @Scheduled(cron = "0 0 4 * * ?") // 每天凌晨4点执行
     public void statStorage() {
         log.info("开始统计存储空间和文件数");
         try {
+            // 获取存储类型
+            String storageType = storageManager.getStorageType();
+            log.info("当前存储类型: {}", storageType);
+            
+            // 统计本地存储
             long totalSize = storageManager.getTotalStorageSize();
             long fileCount = storageManager.getTotalFileCount();
-            log.info("存储统计：文件数：{}，总空间：{} MB", fileCount, totalSize / 1024 / 1024);
+            
+            // 如果是基于对象存储的实现，获取更详细的统计信息
+            try {
+                // 通过StorageManager获取BucketService
+                java.lang.reflect.Field bucketServiceField = StorageManager.class.getDeclaredField("bucketService");
+                bucketServiceField.setAccessible(true);
+                Object bucketService = bucketServiceField.get(storageManager);
+                
+                if (bucketService != null) {
+                    log.info("发现BucketService，收集存储桶统计信息");
+                    
+                    // 获取所有存储桶方法
+                    java.lang.reflect.Method findAllMethod = bucketService.getClass().getMethod("findAll");
+                    java.lang.reflect.Method getUsageMethod = bucketService.getClass().getMethod("getUsage", Long.class);
+                    
+                    // 获取所有存储桶
+                    List<?> buckets = (List<?>) findAllMethod.invoke(bucketService);
+                    
+                    // 按存储类型分组统计
+                    Map<String, StorageStats> statsByType = new HashMap<>();
+                    
+                    for (Object bucket : buckets) {
+                        // 获取存储桶ID和类型
+                        Long bucketId = (Long) bucket.getClass().getMethod("getId").invoke(bucket);
+                        Object storageTypeEnum = bucket.getClass().getMethod("getStorageType").invoke(bucket);
+                        String bucketName = (String) bucket.getClass().getMethod("getBucketName").invoke(bucket);
+                        String bucketType = storageTypeEnum.toString();
+                        
+                        // 获取存储桶使用情况
+                        Object bucketInfo = getUsageMethod.invoke(bucketService, bucketId);
+                        
+                        // 从BucketVO中提取统计信息
+                        Long usedSize = (Long) bucketInfo.getClass().getMethod("getUsedSize").invoke(bucketInfo);
+                        Long bucketFileCount = (Long) bucketInfo.getClass().getMethod("getFileCount").invoke(bucketInfo);
+                        
+                        // 更新统计
+                        StorageStats stats = statsByType.getOrDefault(bucketType, new StorageStats());
+                        stats.addSize(usedSize != null ? usedSize : 0L);
+                        stats.addCount(bucketFileCount != null ? bucketFileCount : 0L);
+                        stats.addBucket();
+                        
+                        statsByType.put(bucketType, stats);
+                        
+                        log.info("存储桶 [{}] 统计：文件数：{}，总空间：{} MB", 
+                                bucketName, 
+                                bucketFileCount, 
+                                usedSize != null ? usedSize / 1024 / 1024 : 0);
+                    }
+                    
+                    // 输出各类型存储的统计
+                    for (Map.Entry<String, StorageStats> entry : statsByType.entrySet()) {
+                        StorageStats stats = entry.getValue();
+                        log.info("存储类型 [{}] 统计：存储桶数：{}，文件数：{}，总空间：{} MB", 
+                                entry.getKey(), 
+                                stats.getBucketCount(),
+                                stats.getFileCount(), 
+                                stats.getTotalSize() / 1024 / 1024);
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("获取存储桶统计信息失败，仅使用本地统计: {}", e.getMessage());
+            }
+            
+            // 输出总计
+            log.info("存储统计总计：文件数：{}，总空间：{} MB", fileCount, totalSize / 1024 / 1024);
         } catch (Exception e) {
             log.error("存储统计失败", e);
+        }
+    }
+
+    /**
+     * 存储统计辅助类
+     */
+    private static class StorageStats {
+        private long totalSize = 0;
+        private long fileCount = 0;
+        private int bucketCount = 0;
+        
+        public void addSize(long size) {
+            this.totalSize += size;
+        }
+        
+        public void addCount(long count) {
+            this.fileCount += count;
+        }
+        
+        public void addBucket() {
+            this.bucketCount++;
+        }
+        
+        public long getTotalSize() {
+            return totalSize;
+        }
+        
+        public long getFileCount() {
+            return fileCount;
+        }
+        
+        public int getBucketCount() {
+            return bucketCount;
         }
     }
 }

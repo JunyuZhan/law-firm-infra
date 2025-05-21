@@ -6,10 +6,12 @@ import com.lawfirm.model.task.vo.WorkTaskTagVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.stereotype.Component;
 
 /**
  * 工作任务标签转换器
  */
+@Component("workTaskTagConverter")
 @Mapper(
     componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.IGNORE

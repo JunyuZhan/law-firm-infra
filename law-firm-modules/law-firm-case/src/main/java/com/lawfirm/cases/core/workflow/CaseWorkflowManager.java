@@ -1,6 +1,5 @@
 package com.lawfirm.cases.core.workflow;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.lawfirm.model.workflow.service.ProcessService;
@@ -20,13 +19,16 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class CaseWorkflowManager {
     
-    @Qualifier("coreProcessServiceImpl")
     private final ProcessService processService;
-    @Qualifier("coreTaskServiceImpl")
     private final TaskService taskService;
+    
+    public CaseWorkflowManager(@Qualifier("coreProcessServiceImpl") ProcessService processService,
+                               @Qualifier("taskServiceImpl") TaskService taskService) {
+        this.processService = processService;
+        this.taskService = taskService;
+    }
     
     /**
      * 启动案件处理流程

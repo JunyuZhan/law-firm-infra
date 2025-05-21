@@ -22,6 +22,13 @@ import com.lawfirm.model.client.dto.contact.ContactCreateDTO;
 import com.lawfirm.model.client.service.ContactService;
 import com.lawfirm.model.client.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
+import com.lawfirm.model.storage.service.FileService;
+import com.lawfirm.model.storage.service.BucketService;
+import com.lawfirm.model.search.service.SearchService;
+import com.lawfirm.model.workflow.service.ProcessService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +48,48 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, Client> imp
     
     @Autowired
     private TagService tagService;
+    
+    /**
+     * 注入core层审计服务，便于后续记录客户操作日志
+     */
+    @Autowired(required = false)
+    @Qualifier("clientAuditService")
+    private AuditService auditService;
+
+    /**
+     * 注入core层消息发送服务，便于后续客户通知等
+     */
+    @Autowired(required = false)
+    @Qualifier("clientMessageSender")
+    private MessageSender messageSender;
+
+    /**
+     * 注入core层文件存储服务，便于后续客户附件上传等
+     */
+    @Autowired(required = false)
+    @Qualifier("clientFileService")
+    private FileService fileService;
+
+    /**
+     * 注入core层存储桶服务
+     */
+    @Autowired(required = false)
+    @Qualifier("clientBucketService")
+    private BucketService bucketService;
+
+    /**
+     * 注入core层搜索服务
+     */
+    @Autowired(required = false)
+    @Qualifier("clientSearchService")
+    private SearchService searchService;
+
+    /**
+     * 注入core层流程服务
+     */
+    @Autowired(required = false)
+    @Qualifier("clientProcessService")
+    private ProcessService processService;
     
     @Override
     @Transactional(rollbackFor = Exception.class)

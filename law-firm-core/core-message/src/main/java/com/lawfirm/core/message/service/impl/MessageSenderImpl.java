@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -93,5 +96,13 @@ public class MessageSenderImpl implements MessageSender {
                 log.info("[DELETE] 批量删除消息: id={}", id);
             }
         }
+    }
+}
+
+@Configuration
+class MessageSenderBeanConfig {
+    @Bean(name = "coreMessageSender")
+    public MessageSender coreMessageSender(@Qualifier("messageSender") MessageSender messageSender) {
+        return messageSender;
     }
 } 

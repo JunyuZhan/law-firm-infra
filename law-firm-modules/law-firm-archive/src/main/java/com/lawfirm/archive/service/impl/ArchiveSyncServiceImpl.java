@@ -67,16 +67,110 @@ public class ArchiveSyncServiceImpl extends ServiceImpl<ArchiveSyncRecordMapper,
             // 实际同步逻辑，调用外部系统API
             // TODO: 实现实际同步逻辑
             
-            // 记录同步成功
-            ArchiveSyncRecord record = new ArchiveSyncRecord();
-            record.setArchiveId(archiveId);
-            record.setSyncSystemCode(systemCode);
-            record.setSyncTime(LocalDateTime.now());
-            record.setSyncStatus(1); // 成功
-            getBaseMapper().insert(record);
+            // 查询档案信息
+            ArchiveMain archive = archiveMainMapper.selectById(archiveId);
+            if (archive == null) {
+                log.error("档案不存在，archiveId: {}", archiveId);
+                throw new RuntimeException("档案不存在");
+            }
             
-            log.info("档案同步成功，archiveId: {}, systemCode: {}", archiveId, systemCode);
-            return true;
+            // 根据同步配置获取外部系统API信息
+            String apiUrl = config.getSyncUrl();
+            String apiKey = config.getAuthToken();
+            String apiSecret = config.getAuthToken(); // 使用相同的token作为密钥
+            
+            // 准备请求参数
+            Map<String, Object> requestParams = new HashMap<>();
+            requestParams.put("archiveId", archiveId);
+            requestParams.put("archiveNo", archive.getArchiveNo());
+            requestParams.put("title", archive.getTitle());
+            requestParams.put("sourceType", archive.getSourceType());
+            requestParams.put("createTime", archive.getCreateTime());
+            requestParams.put("createBy", archive.getCreateBy());
+            
+            // 添加更多档案元数据
+            if (archive.getArchiveData() != null) {
+                // 如果存在JSON格式的归档数据，解析并添加
+                try {
+                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    Map<String, Object> archiveData = mapper.readValue(archive.getArchiveData(), 
+                            new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+                    requestParams.putAll(archiveData);
+                } catch (Exception e) {
+                    log.warn("解析归档数据失败: {}", e.getMessage());
+                }
+            }
+            
+            // 实际调用HTTP客户端发送请求
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.set("X-API-KEY", apiKey);
+            headers.set("X-API-SECRET", apiSecret);
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+            
+            org.springframework.http.HttpEntity<Map<String, Object>> requestEntity = 
+                    new org.springframework.http.HttpEntity<>(requestParams, headers);
+            
+            // 使用RestTemplate发送请求
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            
+            // 设置超时
+            org.springframework.http.client.SimpleClientHttpRequestFactory factory = 
+                    new org.springframework.http.client.SimpleClientHttpRequestFactory();
+            factory.setConnectTimeout(5000); // 连接超时5秒
+            factory.setReadTimeout(10000);   // 读取超时10秒
+            restTemplate.setRequestFactory(factory);
+            
+            try {
+                org.springframework.http.ResponseEntity<String> response = 
+                        restTemplate.postForEntity(apiUrl, requestEntity, String.class);
+                
+                // 解析响应
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    log.info("同步请求成功，响应: {}", response.getBody());
+                    
+                    // 检查响应内容中是否包含成功标识
+                    boolean syncSuccess = checkSyncSuccess(response.getBody());
+                    
+                    if (syncSuccess) {
+                        // 更新档案同步状态
+                        archive.setIsSynced(1); // 已同步
+                        archive.setSyncTime(LocalDateTime.now().toString()); // 转换为字符串类型
+                        archiveMainMapper.updateById(archive);
+                        
+                        // 记录同步成功
+                        ArchiveSyncRecord record = new ArchiveSyncRecord();
+                        record.setArchiveId(archiveId);
+                        record.setSyncSystemCode(systemCode);
+                        record.setSyncTime(LocalDateTime.now());
+                        record.setSyncStatus(1); // 成功
+                        record.setSyncDataSnapshot(response.getBody()); // 保存响应数据
+                        getBaseMapper().insert(record);
+                        
+                        log.info("档案同步成功，archiveId: {}, systemCode: {}", archiveId, systemCode);
+                        return true;
+                    } else {
+                        // 同步失败，记录错误信息
+                        log.error("外部系统处理失败，响应: {}", response.getBody());
+                        // 记录同步失败
+                        ArchiveSyncRecord record = new ArchiveSyncRecord();
+                        record.setArchiveId(archiveId);
+                        record.setSyncSystemCode(systemCode);
+                        record.setSyncTime(LocalDateTime.now());
+                        record.setSyncStatus(0); // 失败
+                        record.setErrorMessage("外部系统处理失败: " + response.getBody());
+                        record.setSyncDataSnapshot(response.getBody()); // 保存响应数据
+                        getBaseMapper().insert(record);
+                        return false;
+                    }
+                } else {
+                    // 请求失败
+                    log.error("同步请求失败，状态码: {}, 响应: {}", response.getStatusCode().value(), response.getBody());
+                    throw new RuntimeException("同步请求失败: " + response.getStatusCode());
+                }
+            } catch (org.springframework.web.client.RestClientException e) {
+                log.error("发送同步请求异常: {}", e.getMessage(), e);
+                throw new RuntimeException("发送同步请求异常: " + e.getMessage(), e);
+            }
         } catch (Exception e) {
             log.error("档案同步失败，archiveId: {}, systemCode: {}, error: {}", archiveId, systemCode, e.getMessage());
             
@@ -388,5 +482,36 @@ public class ArchiveSyncServiceImpl extends ServiceImpl<ArchiveSyncRecordMapper,
     @Override
     public String getCurrentUsername() {
         return "admin"; // 默认用户名
+    }
+    
+    /**
+     * 检查同步响应是否成功
+     * 
+     * @param responseBody 响应体内容
+     * @return 是否成功
+     */
+    private boolean checkSyncSuccess(String responseBody) {
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(responseBody);
+            
+            // 假设外部系统的响应格式包含code字段，0表示成功
+            if (root.has("code")) {
+                int code = root.get("code").asInt(-1);
+                return code == 0;
+            }
+            
+            // 或者包含success字段
+            if (root.has("success")) {
+                return root.get("success").asBoolean(false);
+            }
+            
+            // 默认情况，认为成功
+            return true;
+        } catch (Exception e) {
+            log.warn("解析同步响应失败: {}", e.getMessage());
+            // 解析失败，默认为不成功
+            return false;
+        }
     }
 }

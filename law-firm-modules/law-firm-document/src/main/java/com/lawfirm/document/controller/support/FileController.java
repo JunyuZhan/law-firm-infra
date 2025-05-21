@@ -10,14 +10,14 @@ import com.lawfirm.document.constant.DocumentConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,12 +31,21 @@ import java.nio.charset.StandardCharsets;
 @Tag(name = "文件操作", description = "文件上传下载接口")
 @RestController("documentFileController")
 @RequestMapping(DocumentConstants.API_FILE_PREFIX)
-@RequiredArgsConstructor
 public class FileController {
 
     private final DocumentService documentService;
     private final BucketService bucketService;
     private final StorageManager storageManager;
+
+    public FileController(
+        DocumentService documentService,
+        @Qualifier("storageBucketServiceImpl") BucketService bucketService,
+        StorageManager storageManager
+    ) {
+        this.documentService = documentService;
+        this.bucketService = bucketService;
+        this.storageManager = storageManager;
+    }
 
     /**
      * 上传文档文件

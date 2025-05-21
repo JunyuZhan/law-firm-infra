@@ -50,6 +50,26 @@
             <artifactId>core-audit</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-storage</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-search</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-workflow</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         
         <!-- 通用层依赖 -->
         <dependency>

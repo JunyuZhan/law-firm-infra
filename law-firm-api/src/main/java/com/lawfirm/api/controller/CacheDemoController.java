@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * 仅在开发和测试环境可用
  */
 @Tag(name = "缓存演示", description = "缓存功能演示接口(仅开发环境)")
-@RestController
+@RestController("cacheDemoController")
 @RequestMapping(ApiConstants.API_BASE + "/demo/cache")
 @Slf4j
 @Profile({"dev", "test"})

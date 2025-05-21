@@ -82,17 +82,50 @@ spring:
       enabled: false
     repositories:
       enabled: false
+    urls: ${SPRING_LDAP_URLS:ldap://localhost:389}
+    base: ${SPRING_LDAP_BASE:dc=lawfirm,dc=local}
+    username: ${SPRING_LDAP_USERNAME:cn=admin,dc=lawfirm,dc=local}
+    password: ${SPRING_LDAP_PASSWORD:admin_password}
   security:
     ldap:
-      enabled: false
+      enabled: ${SPRING_SECURITY_LDAP_ENABLED:false}
   mail:
-    enabled: false
-    host: ""
-    port: -1
+    enabled: ${SPRING_MAIL_ENABLED:false}
+    host: ${SPRING_MAIL_HOST:smtp.example.com}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME:notification@example.com}
+    password: ${SPRING_MAIL_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH:true}
+          starttls:
+            enable: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE:true}
+        transport:
+          protocol: ${SPRING_MAIL_TRANSPORT_PROTOCOL:smtp}
+        debug: ${SPRING_MAIL_DEBUG:false}
+    test-connection: ${SPRING_MAIL_TEST_CONNECTION:false}
+    default-encoding: UTF-8
   rabbitmq:
-    enabled: false
-    host: ""
-    port: -1
+    enabled: ${SPRING_RABBITMQ_ENABLED:false}
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    virtual-host: ${SPRING_RABBITMQ_VIRTUAL_HOST:/}
+    publisher-returns: true
+    publisher-confirm-type: correlated
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1
+        concurrency: 5
+        max-concurrency: 10
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          multiplier: 1.5
   # 线程池任务执行器配置
   task:
     execution:
@@ -350,4 +383,10 @@ management:
     diskspace:
       enabled: true
     redis:
+      enabled: false
+    ldap:
+      enabled: false
+    mail:
+      enabled: false
+    rabbit:
       enabled: false

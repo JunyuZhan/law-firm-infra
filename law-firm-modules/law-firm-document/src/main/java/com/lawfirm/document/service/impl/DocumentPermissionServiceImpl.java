@@ -8,6 +8,10 @@ import com.lawfirm.model.document.service.DocumentPermissionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.log.service.AuditService;
+import com.lawfirm.core.message.service.MessageSender;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,6 +31,20 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
     private final Map<Long, List<DocumentPermission>> documentPermissionsMap = new ConcurrentHashMap<>();
     private final Map<Long, List<DocumentPermission>> subjectPermissionsMap = new ConcurrentHashMap<>();
     private final Map<String, Map<Long, Map<Long, String>>> businessPermissionsMap = new ConcurrentHashMap<>();
+
+    /**
+     * 注入core层审计服务，便于后续记录权限操作日志
+     */
+    @Autowired(required = false)
+    @Qualifier("documentAuditService")
+    private AuditService auditService;
+
+    /**
+     * 注入core层消息发送服务，便于后续权限相关通知等
+     */
+    @Autowired(required = false)
+    @Qualifier("documentMessageSender")
+    private MessageSender messageSender;
 
     @Override
     @Transactional

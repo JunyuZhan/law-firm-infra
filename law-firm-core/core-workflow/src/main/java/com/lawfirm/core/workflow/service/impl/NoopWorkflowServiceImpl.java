@@ -1,10 +1,11 @@
 package com.lawfirm.core.workflow.service.impl;
 
-import com.lawfirm.core.workflow.service.WorkflowService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
+import com.lawfirm.model.workflow.service.WorkflowService;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Map;
  * </p>
  */
 @Slf4j
-@Service
+@Service("workflowService")
 @Primary
 @ConditionalOnProperty(prefix = "law-firm", name = "workflow.enabled", havingValue = "false", matchIfMissing = true)
 public class NoopWorkflowServiceImpl implements WorkflowService {
@@ -49,4 +50,4 @@ public class NoopWorkflowServiceImpl implements WorkflowService {
     public boolean isWorkflowEnabled() {
         return false;
     }
-} 
+}

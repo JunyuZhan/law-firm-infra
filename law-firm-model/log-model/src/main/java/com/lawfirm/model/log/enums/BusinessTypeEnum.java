@@ -74,6 +74,16 @@ public enum BusinessTypeEnum {
     DOCUMENT("DOCUMENT", "文档管理"),
 
     /**
+     * 日程管理
+     */
+    SCHEDULE("SCHEDULE", "日程管理"),
+
+    /**
+     * 会议室管理
+     */
+    MEETING_ROOM("MEETING_ROOM", "会议室管理"),
+
+    /**
      * 其他
      */
     OTHER("OTHER", "其他");

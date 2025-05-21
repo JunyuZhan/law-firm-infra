@@ -20,13 +20,16 @@
 - 多AI引擎支持（OpenAI、百度、本地、Dify）
 - 文本处理和对话功能
 - 基础的文档分析能力
+- 敏感数据处理
+- 法律决策支持服务
 
 主要组件：
 - provider: AI服务提供者（支持多种AI引擎）
-- service: AI核心服务实现
+- service: AI核心服务实现（QAService、TextAnalysisService、DocProcessService、DecisionSupportService、AISensitiveDataService）
 - handler: AI请求处理器
 - config: AI配置管理
 - utils: AI工具类
+- event: AI相关事件处理
 
 ### 2.2 审计日志模块 (core-audit)
 
@@ -35,6 +38,9 @@
 - 数据变更审计
 - 基于AOP的审计实现
 - 审计日志查询
+- 字段级别变更追踪（@AuditField注解）
+- 模块级审计（@AuditModule注解）
+- 支持审计忽略（@AuditIgnore注解）
 
 ### 2.3 消息处理模块 (core-message)
 
@@ -44,6 +50,9 @@
 - 短信通知
 - 消息模板管理
 - 消息发送记录
+- 同步和异步消息发送
+- 消息安全处理（敏感信息加密）
+- 基于策略模式的多渠道消息发送
 
 ### 2.4 搜索服务模块 (core-search)
 
@@ -52,6 +61,9 @@
 - 多字段组合搜索
 - 基础的聚合分析
 - 搜索结果排序
+- 数据库检索集成
+- 索引管理（创建、更新、删除）
+- 搜索建议功能
 
 ### 2.5 存储服务模块 (core-storage)
 
@@ -62,6 +74,8 @@
 - 腾讯云COS
 - 基础的文件管理
 - 存储桶管理
+- 文件访问权限控制
+- 异步文件处理任务
 
 ### 2.6 工作流引擎模块 (core-workflow)
 
@@ -71,6 +85,9 @@
 - 任务管理
 - 流程表单
 - 流程监控
+- 流程权限控制
+- 流程模板管理
+- 流程事件监听
 
 ## 3. 技术架构
 
@@ -82,6 +99,7 @@
 - MinIO：对象存储
 - RocketMQ：消息队列
 - OpenAI SDK：AI服务
+- Spring AOP：切面编程
 
 ### 3.2 存储方案
 - MySQL：结构化数据
@@ -96,6 +114,7 @@
 - 统一的代码格式化模板
 - 完整的注释文档
 - 单元测试覆盖
+- 服务接口使用`@Component`注解并指定Bean名称
 
 ### 4.2 接口规范
 - 核心层只提供服务接口，不提供REST接口
@@ -103,10 +122,11 @@
 - 接口实现要考虑并发安全
 - 异常要统一处理和转换
 - 核心接口要有降级和限流措施
+- 接口实现类需使用明确的Bean名称，便于依赖注入时指定
 
 ### 4.3 安全规范
 - 数据加密传输
-- 访问权限控制
+- 访问权限控制（基于SecurityContextHolder权限验证）
 - 操作日志记录
 - 敏感信息脱敏
 
@@ -164,6 +184,10 @@ private SearchService searchService;  // 注入搜索服务
 @Autowired
 @Qualifier("aiQAServiceImpl")
 private QAService qaService;  // 注入AI问答服务
+
+@Autowired
+@Qualifier("messageSender")
+private MessageSender messageSender;  // 注入消息发送服务
 ```
 
 ### 5.3 服务调用示例
@@ -204,24 +228,98 @@ bucket.setStorageType(StorageTypeEnum.MINIO);
 Long bucketId = bucketService.createBucket(bucket);
 ```
 
-## 6. 安全与合规
+#### 5.3.3 AI服务调用
 
-### 6.1 数据安全
+```java
+// 获取法律问题的回答
+String answer = qaService.getLegalAnswer("什么是知识产权保护期限?");
+
+// 获取带引用的法律回答
+Map<String, Object> answerWithReferences = qaService.getLegalAnswerWithReferences(
+    "商标侵权的法律责任有哪些?"
+);
+
+// 文本分析
+TextAnalysisResult result = textAnalysisService.analyzeText(legalText);
+```
+
+#### 5.3.4 消息服务调用
+
+```java
+// 创建消息
+BaseMessage message = new SystemMessage();
+message.setContent("您有一个新的案件需要处理");
+message.setRecipientId(lawyerId);
+message.setType(MessageType.NOTIFICATION);
+
+// 发送消息
+messageSender.send(message);
+```
+
+## 6. 配置说明
+
+### 6.1 AI模块配置
+```yaml
+law-firm:
+  core:
+    ai:
+      enabled: true
+      default-provider: openai  # 可选：openai, baidu, local, dify
+      openai:
+        api-key: your_api_key
+        model: gpt-4
+      timeout-seconds: 30
+```
+
+### 6.2 审计模块配置
+```yaml
+law-firm:
+  core:
+    audit:
+      enabled: true
+      async-executor:
+        core-pool-size: 5
+        max-pool-size: 10
+        queue-capacity: 100
+      log-retention-days: 90
+```
+
+### 6.3 消息模块配置
+```yaml
+message:
+  enabled: true
+  async: true
+  email:
+    enabled: true
+    host: smtp.example.com
+    port: 25
+    username: notify@lawfirm.com
+  sms:
+    enabled: true
+    provider: aliyun
+```
+
+## 7. 安全与合规
+
+### 7.1 数据安全
 - 敏感信息过滤
 - 审计日志加密存储
 - 访问权限控制
+- 消息内容加密
 
-### 6.2 性能考虑
+### 7.2 性能考虑
 - 异步日志记录
 - 日志批量处理
 - 合理的日志保留策略
+- 搜索性能优化
 
-### 6.3 合规保障
+### 7.3 合规保障
 - 满足监管合规要求
 - 支持多种审计规范
 - 审计日志防篡改
+- 数据脱敏处理
 
-## 7. 更新日志
+## 8. 更新日志
 - 2024-03-18: 初始版本发布
 - 2024-03-19: 完成案件管理模块实现
 - 2024-03-20: 完成认证授权模块实现

@@ -34,7 +34,7 @@ import java.util.Optional;
  * 作为各业务模块API的统一入口
  */
 @Tag(name = "API网关", description = "API网关统一入口接口，提供系统基础信息和健康检查")
-@RestController
+@RestController("apiGatewayController")
 @RequestMapping(ApiConstants.API_BASE)
 @RequiredArgsConstructor
 @Slf4j

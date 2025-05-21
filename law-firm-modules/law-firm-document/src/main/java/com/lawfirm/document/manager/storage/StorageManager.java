@@ -8,11 +8,11 @@ import com.lawfirm.model.storage.enums.StorageTypeEnum;
 import com.lawfirm.core.storage.strategy.StorageContext;
 import com.lawfirm.core.storage.strategy.StorageStrategy;
 import com.lawfirm.core.storage.config.StorageProperties;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +26,6 @@ import java.util.UUID;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 @ConditionalOnProperty(name = "lawfirm.storage.enabled", havingValue = "true", matchIfMissing = false)
 public class StorageManager {
 
@@ -34,6 +33,18 @@ public class StorageManager {
     private final BucketService bucketService;
     private final StorageContext storageContext;
     private final StorageProperties storageProperties;
+
+    public StorageManager(
+        @Qualifier("storageFileServiceImpl") FileService fileService,
+        @Qualifier("storageBucketServiceImpl") BucketService bucketService,
+        StorageContext storageContext,
+        StorageProperties storageProperties
+    ) {
+        this.fileService = fileService;
+        this.bucketService = bucketService;
+        this.storageContext = storageContext;
+        this.storageProperties = storageProperties;
+    }
 
     /**
      * 上传文档
