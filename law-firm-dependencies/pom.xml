@@ -893,14 +893,99 @@
                 <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-system</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-auth</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-document</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-personnel</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-client</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-contract</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-archive</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-case</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-finance</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-knowledge</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-schedule</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-task</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>law-firm-evidence</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>evidence-model</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>archive-model</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>task-model</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lawfirm</groupId>
+                <artifactId>schedule-model</artifactId>
+                <version>${revision}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     
     <!-- 添加Maven仓库配置 -->
     <repositories>
         <repository>
-            <id>maven-central</id>
-            <name>Maven Central</name>
+            <id>central</id>
+            <name>Maven Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>
             <releases>
                 <enabled>true</enabled>

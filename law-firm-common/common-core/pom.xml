@@ -6,9 +6,9 @@
 
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-common</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>common-core</artifactId>
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         
         <!-- 测试依赖 -->

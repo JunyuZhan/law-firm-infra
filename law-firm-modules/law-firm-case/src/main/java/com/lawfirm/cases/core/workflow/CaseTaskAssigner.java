@@ -1,8 +1,8 @@
 package com.lawfirm.cases.core.workflow;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class CaseTaskAssigner {
-    
     // 注入工作流服务
     private final com.lawfirm.model.workflow.service.TaskService taskService;
     

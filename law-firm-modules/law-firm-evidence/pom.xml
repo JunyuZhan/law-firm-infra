@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lawfirm</groupId>
+        <artifactId>law-firm</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>law-firm-evidence</artifactId>
+    <packaging>jar</packaging>
+    <name>law-firm-evidence</name>
+    <dependencies>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>evidence-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-storage</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-ai</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-audit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-workflow</artifactId>
+        </dependency>
+        <!-- 其他如spring-boot-starter, mybatis-plus, lombok等依赖按需添加 -->
+    </dependencies>
+</project> 

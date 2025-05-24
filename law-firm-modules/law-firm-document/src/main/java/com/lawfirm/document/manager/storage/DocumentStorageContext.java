@@ -14,7 +14,7 @@ public class DocumentStorageContext {
     private final FileService fileService;
     private final BucketService bucketService;
     
-    public DocumentStorageContext(@Qualifier("storageFileServiceImpl") FileService fileService, BucketService bucketService) {
+    public DocumentStorageContext(@Qualifier("storageFileServiceImpl") FileService fileService, @Qualifier("storageBucketServiceImpl") BucketService bucketService) {
         this.fileService = fileService;
         this.bucketService = bucketService;
     }

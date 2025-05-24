@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-modules</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>law-firm-task</artifactId>
@@ -18,7 +19,6 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>task-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- Common Core -->
@@ -85,25 +85,21 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>personnel-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- Case Model -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>case-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- Client Model -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>client-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- Organization Model -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>organization-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- Core Message -->

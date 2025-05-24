@@ -368,3 +368,16 @@ CaseContractVO contractDetail = caseContractService.getCaseContractDetail(caseId
 3. 创建案件时 → 关联已有的委托合同
 4. 案件进行中 → 可关联更多相关合同（如服务合同）
 5. 查看案件详情 → 可查看所有关联的合同
+
+## 资源文件与数据库迁移脚本
+
+- `resources/application-case.yml`：模块配置文件，已存在。
+- `resources/processes/case-process.bpmn20.xml`、`case-approval.bpmn20.xml`：流程定义文件，已存在。
+- `resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`：自动配置导入文件，已存在。
+- `resources/META-INF/db/migration/`：数据库迁移脚本目录，**已存在**，主要脚本包括：
+  - `V7000__add_case_module_responsibility_notes.sql`
+  - `V7001__init_case_tables.sql`
+  - `V7002__init_case_data.sql`
+  - `V7003__reconcile_case_party_tables.sql`
+  - `V7004__reconcile_participant_tables.sql`
+  - `V7005__add_case_approval_tables.sql`

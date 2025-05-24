@@ -7,6 +7,26 @@
 - 为外部档案系统提供数据同步接口
 - 管理归档状态与可见性控制
 
+## 1.1 与其他模块的关系
+
+- **案件管理模块**：
+  - 档案管理模块通过API接收案件管理模块推送的结案归档数据，实现案件归档的落地存储。
+  - 归档后，案件管理模块中的案件状态会被更新为"已归档"，并限制后续操作。
+
+- **文件管理模块**：
+  - 档案管理模块通过文件管理模块实现归档文件的上传、下载、存储与关联。
+  - 归档文件的元数据与实际文件分离，便于统一管理和权限控制。
+
+- **外部档案系统**：
+  - 档案管理模块为外部档案系统提供数据同步接口，支持增量同步、同步确认等功能。
+  - 支持多系统对接和同步日志记录。
+
+- **权限与认证模块**：
+  - 归档相关接口会集成统一的权限认证、API密钥校验、IP白名单等安全机制。
+
+- **基础数据/组织/人员模块**（如有）：
+  - 归档记录中的部门、经办人等信息会与组织、人员等基础数据模块关联。
+
 ## 2. 业务流程
 
 ### 2.1 归档流转流程
@@ -92,14 +112,19 @@ CREATE TABLE archive_sync_log (
 ```
 law-firm-archive/
 ├── controller/         # 控制器层
-│   ├── ArchiveController.java     # 档案管理控制器
-│   └── ArchiveSyncController.java # 档案同步控制器
+│   ├── ArchiveController.java       # 档案管理控制器
+│   ├── ArchiveSyncController.java   # 档案同步控制器
+│   └── ArchiveFileController.java   # 档案文件控制器（文件上传/下载/关联）
 ├── service/            # 服务层
+│   ├── ArchiveService.java          # 档案服务接口
+│   ├── ArchiveSyncService.java      # 同步服务接口
 │   └── impl/
-│       ├── ArchiveServiceImpl.java  # 档案服务实现
+│       ├── ArchiveServiceImpl.java      # 档案服务实现
 │       └── ArchiveSyncServiceImpl.java # 同步服务实现
-└── config/             # 配置类
-    └── ArchiveConfig.java         # 档案配置类
+├── config/             # 配置类
+│   └── ArchiveConfig.java           # 档案配置类
+├── constant/           # 常量类
+│   └── ArchiveBusinessConstants.java    # 业务常量
 ```
 
 ## 5. 核心功能设计

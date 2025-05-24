@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +20,12 @@ import java.util.List;
 /**
  * 案件文档控制器
  */
-@Slf4j
 @RestController("caseDocumentController")
 @RequestMapping(CaseBusinessConstants.Controller.API_DOCUMENT_PREFIX)
 @RequiredArgsConstructor
 @Tag(name = "案件文档管理", description = "提供案件文档管理功能，包括文档上传、下载、分类、版本控制、共享等操作")
 public class DocumentController {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DocumentController.class);
 
     private final CaseDocumentService documentService;
 

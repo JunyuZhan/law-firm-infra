@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,7 @@ public class ProcessController {
         description = "发起新的审批流程，包括设置审批类型、审批人、审批内容等信息"
     )
     @PostMapping("/approvals")
+    @PreAuthorize("hasAuthority('process:approval:initiate')")
     public Long initiateApproval(
             @Parameter(description = "审批信息，包括审批类型、标题、内容、审批人等") 
             @RequestBody @Validated CaseApprovalDTO approvalDTO) {
@@ -48,6 +50,7 @@ public class ProcessController {
         description = "更新未开始处理的审批信息，包括审批内容、审批人等"
     )
     @PutMapping("/approvals")
+    @PreAuthorize("hasAuthority('process:approval:edit')")
     public boolean updateApproval(
             @Parameter(description = "更新的审批信息，包括可修改的审批相关字段") 
             @RequestBody @Validated CaseApprovalDTO approvalDTO) {
@@ -60,6 +63,7 @@ public class ProcessController {
         description = "取消未完成的审批流程，需要提供取消原因"
     )
     @DeleteMapping("/approvals/{approvalId}")
+    @PreAuthorize("hasAuthority('process:approval:cancel')")
     public boolean cancelApproval(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId,
@@ -74,6 +78,7 @@ public class ProcessController {
         description = "获取审批的详细信息，包括审批基本信息、当前审批状态、审批历史等"
     )
     @GetMapping("/approvals/{approvalId}")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public CaseApprovalVO getApprovalDetail(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId) {
@@ -86,6 +91,7 @@ public class ProcessController {
         description = "获取指定案件关联的所有审批记录列表"
     )
     @GetMapping("/cases/{caseId}/approvals")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public List<CaseApprovalVO> listCaseApprovals(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -98,6 +104,7 @@ public class ProcessController {
         description = "分页查询案件的审批记录，支持按审批类型和状态筛选"
     )
     @GetMapping("/cases/{caseId}/approvals/page")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public IPage<CaseApprovalVO> pageApprovals(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -119,6 +126,7 @@ public class ProcessController {
         description = "对审批进行通过或拒绝操作，需要提供审批意见"
     )
     @PutMapping("/approvals/{approvalId}/approve")
+    @PreAuthorize("hasAuthority('process:approval:approve')")
     public boolean approve(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId,
@@ -135,6 +143,7 @@ public class ProcessController {
         description = "将审批转交给其他用户处理，需要提供转交原因"
     )
     @PutMapping("/approvals/{approvalId}/transfer")
+    @PreAuthorize("hasAuthority('process:approval:transfer')")
     public boolean transferApproval(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId,
@@ -151,6 +160,7 @@ public class ProcessController {
         description = "在当前审批人前或后添加新的审批人"
     )
     @PutMapping("/approvals/{approvalId}/approvers/add")
+    @PreAuthorize("hasAuthority('process:approval:edit')")
     public boolean addApprover(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId,
@@ -167,6 +177,7 @@ public class ProcessController {
         description = "移除审批流程中的某个审批人，需要提供减签原因"
     )
     @PutMapping("/approvals/{approvalId}/approvers/remove")
+    @PreAuthorize("hasAuthority('process:approval:edit')")
     public boolean removeApprover(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId,
@@ -183,6 +194,7 @@ public class ProcessController {
         description = "对未处理的审批进行催办，系统将通知相关审批人"
     )
     @PostMapping("/approvals/{approvalId}/urge")
+    @PreAuthorize("hasAuthority('process:approval:urge')")
     public boolean urgeApproval(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId) {
@@ -195,6 +207,7 @@ public class ProcessController {
         description = "获取指定用户待处理的审批列表"
     )
     @GetMapping("/approvals/pending")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public List<CaseApprovalVO> listPendingApprovals(
             @Parameter(description = "用户ID") 
             @RequestParam Long userId) {
@@ -207,6 +220,7 @@ public class ProcessController {
         description = "获取指定用户在指定时间范围内已处理的审批列表"
     )
     @GetMapping("/approvals/handled")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public List<CaseApprovalVO> listHandledApprovals(
             @Parameter(description = "用户ID") 
             @RequestParam Long userId,
@@ -223,6 +237,7 @@ public class ProcessController {
         description = "获取指定用户在指定时间范围内发起的审批列表"
     )
     @GetMapping("/approvals/initiated")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public List<CaseApprovalVO> listInitiatedApprovals(
             @Parameter(description = "用户ID") 
             @RequestParam Long userId,
@@ -239,6 +254,7 @@ public class ProcessController {
         description = "获取审批的完整处理记录，包括每个审批环节的处理情况"
     )
     @GetMapping("/approvals/{approvalId}/flow")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public List<CaseApprovalVO> getApprovalFlowRecords(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId) {
@@ -251,6 +267,7 @@ public class ProcessController {
         description = "检查指定ID的审批是否存在"
     )
     @GetMapping("/approvals/{approvalId}/exists")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public boolean checkApprovalExists(
             @Parameter(description = "审批ID") 
             @PathVariable("approvalId") Long approvalId) {
@@ -263,6 +280,7 @@ public class ProcessController {
         description = "统计指定案件的审批数量，支持按审批类型和状态统计"
     )
     @GetMapping("/cases/{caseId}/approvals/count")
+    @PreAuthorize("hasAuthority('process:approval:view')")
     public int countApprovals(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,

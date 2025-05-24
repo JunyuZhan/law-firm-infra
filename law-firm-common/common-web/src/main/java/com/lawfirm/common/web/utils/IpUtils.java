@@ -136,102 +136,34 @@ public class IpUtils {
 
     /**
      * 根据IP地址获取真实地理位置
-     * TODO: 集成第三方IP地址库获取真实地理位置
+     * 集成ip2region 2.x 离线库获取真实地理位置
      */
     public static String getRealAddressByIP(String ip) {
         if (StringUtils.isEmpty(ip) || !isValidIP(ip)) {
             return "未知";
         }
-        
-        // 返回原始IP地址以通过单元测试
-        // 在生产环境中可以考虑使用以下逻辑
-        /*
-        // 本地IP直接返回
         if (LOCALHOST.equals(ip) || isInternalIP(ip)) {
             return "内网IP";
         }
-        
         try {
-            // 使用离线IP库实现（推荐使用IP2Region）
-            // 示例代码，实际需要引入IP2Region依赖
-            /*
-            // 初始化IP库查询对象
-            String dbPath = "ip2region.db"; // IP库文件路径
-            DbSearcher searcher = new DbSearcher(new DbConfig(), dbPath);
-            
-            // 查询IP地址
-            DataBlock dataBlock = searcher.memorySearch(ip);
-            String region = dataBlock.getRegion();
-            
-            // 解析结果，格式通常为：国家|区域|省份|城市|ISP
+            // 2.x 版本使用 ip2region.xdb 文件
+            String dbPath = "ip2region.xdb";
+            // 加载xdb文件到内存（推荐，避免频繁IO）
+            byte[] cBuff = org.lionsoul.ip2region.xdb.Searcher.loadContentFromFile(dbPath);
+            org.lionsoul.ip2region.xdb.Searcher searcher = org.lionsoul.ip2region.xdb.Searcher.newWithBuffer(cBuff);
+            String region = searcher.search(ip);
             if (region != null && region.length() > 0) {
                 String[] blocks = region.split("\\|");
-                if (blocks.length > 0) {
-                    // 组合地理位置信息
-                    StringBuilder address = new StringBuilder();
-                    // 国家
-                    if (!blocks[0].equals("0")) {
-                        address.append(blocks[0]);
-                    }
-                    // 省份
-                    if (!blocks[2].equals("0")) {
-                        address.append(blocks[2]);
-                    }
-                    // 城市
-                    if (!blocks[3].equals("0")) {
-                        address.append(blocks[3]);
-                    }
-                    return address.toString();
-                }
+                StringBuilder address = new StringBuilder();
+                if (blocks.length > 0 && !blocks[0].equals("0")) address.append(blocks[0]); // 国家
+                if (blocks.length > 2 && !blocks[2].equals("0")) address.append(blocks[2]); // 省份
+                if (blocks.length > 3 && !blocks[3].equals("0")) address.append(blocks[3]); // 城市
+                return address.length() > 0 ? address.toString() : ip;
             }
-            *\/
-            
-            // 或者使用在线API服务（如果允许联网）
-            /*
-            RestTemplate restTemplate = new RestTemplate();
-            String apiUrl = "https://ip.taobao.com/outGetIpInfo?ip=" + ip + "&accessKey=alibaba-inc";
-            
-            ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                // 解析JSON响应
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = mapper.readTree(response.getBody());
-                
-                if (root.get("code").asInt() == 0) {
-                    JsonNode data = root.get("data");
-                    
-                    StringBuilder address = new StringBuilder();
-                    // 国家
-                    if (data.has("country") && !data.get("country").asText().equals("XX")) {
-                        address.append(data.get("country").asText());
-                    }
-                    // 省份
-                    if (data.has("region") && !data.get("region").asText().equals("XX")) {
-                        address.append(data.get("region").asText());
-                    }
-                    // 城市
-                    if (data.has("city") && !data.get("city").asText().equals("XX")) {
-                        address.append(data.get("city").asText());
-                    }
-                    
-                    if (address.length() > 0) {
-                        return address.toString();
-                    }
-                }
-            }
-            *\/
-            
-            // 临时返回默认值
-            log.info("IP地址: {}, 使用默认地理位置", ip);
-            return "互联网IP:" + ip;
-            
+            return ip;
         } catch (Exception e) {
             log.error("获取IP地址地理位置异常: {}", e.getMessage(), e);
             return ip;
         }
-        */
-        
-        // 直接返回原始IP，确保测试通过
-        return ip;
     }
 } 

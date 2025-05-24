@@ -5,13 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import lombok.extern.slf4j.Slf4j;
 
 import com.lawfirm.common.security.config.SecurityConfig;
 import com.lawfirm.common.security.core.SecurityService;
 import com.lawfirm.common.security.audit.SecurityAudit;
 import com.lawfirm.cases.constant.CaseBusinessConstants;
 
-import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * 案件模块安全配置类

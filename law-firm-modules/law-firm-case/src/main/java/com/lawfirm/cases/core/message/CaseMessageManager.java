@@ -1,6 +1,5 @@
 package com.lawfirm.cases.core.message;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.lawfirm.core.message.service.MessageSender;
 import com.lawfirm.core.message.service.MessageManager;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import com.lawfirm.model.message.entity.business.CaseMessage;
 import com.lawfirm.model.message.enums.MessageTypeEnum;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;

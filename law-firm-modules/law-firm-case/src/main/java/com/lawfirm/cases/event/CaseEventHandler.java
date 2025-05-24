@@ -7,11 +7,11 @@ import com.lawfirm.model.cases.event.CaseCreatedEvent;
 import com.lawfirm.model.cases.event.CaseDocumentAddedEvent;
 import com.lawfirm.model.cases.event.CaseStatusChangedEvent;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class CaseEventHandler {
-    
     private final CaseAuditProvider auditProvider;
     private final CaseMessageManager messageManager;
     private final ApplicationEventPublisher eventPublisher;

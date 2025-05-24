@@ -6,9 +6,9 @@
 
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-modules</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>law-firm-finance</artifactId>
@@ -20,87 +20,72 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 数据模型层依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>finance-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 添加合同模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>contract-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 添加案件模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>case-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 核心层依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-audit</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-message</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-storage</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-search</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-workflow</artifactId>
-            <version>${project.version}</version>
         </dependency>
         
         <!-- 通用层依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-cache</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-security</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-log</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- Lombok -->

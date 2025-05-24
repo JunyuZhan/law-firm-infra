@@ -6,8 +6,9 @@
     
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-model</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>knowledge-model</artifactId>
@@ -19,14 +20,12 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${project.version}</version>
         </dependency>
         
         <!-- 依赖 base-model 模块 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
         
         <!-- Spring Boot Starter -->

@@ -81,7 +81,8 @@ import java.util.Arrays;
         "com.lawfirm.schedule",
         "com.lawfirm.task",
         "com.lawfirm.analysis",
-        "com.lawfirm.archive"
+        "com.lawfirm.archive",
+        "com.lawfirm.evidence"
     },
     exclude = {
         // 不使用JPA

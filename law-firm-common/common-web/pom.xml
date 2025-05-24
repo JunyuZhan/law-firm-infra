@@ -6,9 +6,9 @@
 
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-common</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>common-web</artifactId>
@@ -59,10 +59,11 @@
             <optional>true</optional>
         </dependency>
         
-        <!-- IP地址库 -->
+        <!-- IP地址库（2.x新API，需配合ip2region.xdb文件） -->
         <dependency>
             <groupId>org.lionsoul</groupId>
             <artifactId>ip2region</artifactId>
+            <version>2.7.0</version>
         </dependency>
         
         <!-- HTML解析（用于XSS过滤） -->
@@ -81,6 +82,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project> 

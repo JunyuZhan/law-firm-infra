@@ -87,7 +87,6 @@ public class StorageTask {
 
     /**
      * 存储统计任务（最小可用实现）
-     * TODO: 后续需对接存储模块，统计文档存储空间等信息
      */
     @Scheduled(cron = "0 0 4 * * ?") // 每天凌晨4点执行
     public void statStorage() {

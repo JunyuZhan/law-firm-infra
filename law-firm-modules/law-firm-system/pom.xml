@@ -2,15 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <properties>
-        <revision>1.0.0</revision>
-    </properties>
-    
     <parent>
-        <artifactId>law-firm-modules</artifactId>
         <groupId>com.lawfirm</groupId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -29,74 +25,60 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-audit</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-storage</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-search</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-ai</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-message</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-workflow</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <!-- 通用模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-cache</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-security</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-log</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-message</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-util</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <!-- MyBatis Plus -->

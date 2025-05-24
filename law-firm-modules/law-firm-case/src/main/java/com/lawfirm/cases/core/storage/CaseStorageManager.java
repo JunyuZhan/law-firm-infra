@@ -1,6 +1,5 @@
 package com.lawfirm.cases.core.storage;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import com.lawfirm.model.storage.service.StorageService;
@@ -22,9 +21,10 @@ import java.util.stream.Collectors;
  *
  * @author JunyuZhan
  */
-@Slf4j
 @Component
 public class CaseStorageManager {
+    
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CaseStorageManager.class);
     
     private final StorageService storageService;
     private final FileService fileService;

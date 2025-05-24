@@ -1,12 +1,12 @@
 package com.lawfirm.cases.core.search;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.lawfirm.model.search.service.SearchService;
 import com.lawfirm.model.search.service.IndexService;
 import com.lawfirm.model.search.dto.search.SearchRequestDTO;
 import com.lawfirm.model.search.vo.SearchVO;
 import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;

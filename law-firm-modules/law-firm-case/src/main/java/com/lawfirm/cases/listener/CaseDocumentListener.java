@@ -22,7 +22,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class CaseDocumentListener {
-
     private final CaseAuditProvider auditProvider;
     private final CaseMessageManager messageManager;
     private final CaseDocumentMapper documentMapper;

@@ -15,7 +15,7 @@
     <artifactId>law-firm-modules</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-    <name>Law Firm Modules</name>
+    <name>law-firm-modules</name>
     <description>法律事务管理系统模块</description>
 
     <properties>
@@ -37,6 +37,8 @@
         <module>law-firm-knowledge</module>
         <module>law-firm-schedule</module>
         <module>law-firm-task</module>
+        <module>law-firm-evidence</module>
+        <module>law-firm-analysis</module>
     </modules>
 
     <dependencyManagement>

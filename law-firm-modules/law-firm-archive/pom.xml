@@ -6,12 +6,12 @@
     
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-modules</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>law-firm-archive</artifactId>
-    <version>${revision}</version>
     <packaging>jar</packaging>
     <description>律所档案管理模块</description>
 
@@ -20,27 +20,22 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-security</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-cache</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- MyBatis Plus -->
@@ -125,27 +120,22 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-storage</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-search</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-audit</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-message</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-workflow</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- Spring Boot依赖 -->
@@ -165,7 +155,6 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>archive-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

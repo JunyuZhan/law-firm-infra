@@ -509,7 +509,6 @@ public class LuceneSearchServiceImpl extends BaseServiceImpl<SearchDocMapper, Se
 
     /**
      * 将Lucene Document转换为Map
-     * TODO: 完善类型转换逻辑
      */
     private Map<String, Object> documentToMap(Document document) {
         Map<String, Object> result = new HashMap<>();

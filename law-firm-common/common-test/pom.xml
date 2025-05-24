@@ -5,8 +5,9 @@
 
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-common</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>common-test</artifactId>
@@ -89,6 +90,11 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

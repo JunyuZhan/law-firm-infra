@@ -23,7 +23,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class CaseApprovalListener {
-
     private final CaseAuditProvider auditProvider;
     private final CaseMessageManager messageManager;
     

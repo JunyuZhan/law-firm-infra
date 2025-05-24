@@ -53,59 +53,67 @@ law-firm-auth 与 auth-model 的关系是实现与定义的关系：
 └─────────────────────────────────────────────────────────┘
 ```
 
-## 目录结构
+## 目录结构（简化且保留文件名）
+
 ```plaintext
 law-firm-auth/
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/
-│       │       └── lawfirm/
-│       │           └── auth/
-│       │               ├── config/            # 配置类
-│       │               │   ├── SecurityConfig.java        # 安全配置
-│       │               │   ├── CorsConfig.java            # 跨域配置
-│       │               │   └── RedisConfig.java           # Redis配置
-│       │               ├── controller/        # 控制器
-│       │               │   ├── AuthController.java        # 认证控制器
-│       │               │   ├── UserController.java        # 用户控制器
-│       │               │   ├── RoleController.java        # 角色控制器
-│       │               │   └── PermissionController.java  # 权限控制器
-│       │               ├── exception/         # 异常处理
-│       │               │   ├── GlobalExceptionHandler.java  # 全局异常处理器
-│       │               │   └── AuthException.java           # 认证授权异常
-│       │               ├── security/          # 安全相关
-│       │               │   ├── filter/          # 过滤器
-│       │               │   │   ├── JwtAuthenticationFilter.java   # JWT认证过滤器
-│       │               │   │   └── JsonLoginFilter.java           # JSON登录过滤器
-│       │               │   ├── handler/         # 处理器
-│       │               │   │   ├── LoginSuccessHandler.java       # 登录成功处理器
-│       │               │   │   ├── LoginFailureHandler.java       # 登录失败处理器
-│       │               │   │   └── LogoutHandler.java             # 登出处理器
-│       │               │   ├── provider/        # 提供者
-│       │               │   │   ├── JwtTokenProvider.java          # JWT令牌提供者
-│       │               │   │   └── CustomAuthenticationProvider.java  # 自定义认证提供者
-│       │               │   └── details/         # 用户详情
-│       │               │       └── SecurityUserDetails.java       # 安全用户详情
-│       │               ├── service/           # 服务层
-│       │               │   ├── impl/            # 服务实现
-│       │               │   │   ├── AuthServiceImpl.java         # 认证服务实现
-│       │               │   │   ├── UserServiceImpl.java         # 用户服务实现
-│       │               │   │   ├── RoleServiceImpl.java         # 角色服务实现
-│       │               │   │   ├── PermissionServiceImpl.java   # 权限服务实现
-│       │               │   │   ├── TeamPermissionServiceImpl.java # 团队权限服务实现
-│       │               │   │   ├── BusinessPermissionServiceImpl.java # 业务权限服务实现
-│       │               │   │   ├── PermissionRequestServiceImpl.java # 权限请求服务实现
-│       │               │   │   ├── LoginHistoryServiceImpl.java  # 登录历史服务实现
-│       │               │   │   └── UserPersonnelServiceImpl.java # 用户人员关联服务实现
-│       │               │   └── support/         # 支持服务
-│       │               │       └── PermissionCheckerImpl.java   # 权限检查器实现
-│       │               └── utils/             # 工具类
-│       │                   ├── SecurityUtils.java              # 安全工具类
-│       │                   └── PasswordUtils.java              # 密码工具类
-│       └── resources/
-│           └── application.yml     # 应用配置
+├── config/
+│   ├── SecurityConfig.java
+│   ├── SimpleSecurityConfig.java
+│   ├── LoginHistoryServiceConfig.java
+│   ├── AuthMybatisConfig.java
+│   └── AuthAutoConfiguration.java
+├── controller/
+│   ├── AuthController.java
+│   ├── UserController.java
+│   ├── RoleController.java
+│   └── PermissionController.java
+├── entity/
+│   └── LoginHistory.java
+├── exception/
+│   ├── AuthExceptionHandler.java
+│   └── AuthException.java
+├── security/
+│   ├── JwtAuthenticationFilter.java
+│   ├── JsonLoginFilter.java
+│   ├── LoginSuccessHandler.java
+│   ├── LoginFailureHandler.java
+│   ├── LogoutHandler.java
+│   ├── JwtTokenProvider.java
+│   ├── CustomAuthenticationProvider.java
+│   ├── SecurityUserDetails.java
+│   ├── AuthorizationDaoImpl.java
+│   ├── AuthorizationConfig.java
+│   └── （如有 context 相关类也放这里）
+├── service/
+│   ├── AuthServiceImpl.java
+│   ├── UserServiceImpl.java
+│   ├── RoleServiceImpl.java
+│   ├── PermissionServiceImpl.java
+│   ├── TeamPermissionServiceImpl.java
+│   ├── BusinessPermissionServiceImpl.java
+│   ├── PermissionRequestServiceImpl.java
+│   ├── LoginHistoryServiceImpl.java
+│   ├── UserPersonnelServiceImpl.java
+│   └── PermissionCheckerImpl.java
+├── utils/
+│   ├── SecurityUtils.java
+│   └── PasswordUtils.java
+└── resources/
+    ├── application.yml
+    ├── application-auth.yml
+    └── META-INF/db/migration/
+        ├── V2001__init_auth_tables.sql
+        ├── V2002__init_auth_data.sql
+        └── V2000__add_auth_module_responsibility_notes.sql
 ```
+
+## 数据库迁移脚本
+- 所有表结构、初始数据、权限数据等均通过 Flyway/Liquibase 规范化管理，脚本位于 `src/main/resources/META-INF/db/migration/`。
+- 主要脚本：
+  - `V2001__init_auth_tables.sql`：认证、用户、角色、权限等核心表结构
+  - `V2002__init_auth_data.sql`：初始化基础数据、字典、权限等
+  - `V2000__add_auth_module_responsibility_notes.sql`：模块责任说明
 
 ## 关键组件说明
 
@@ -312,3 +320,23 @@ public class SecurityConfig {
     }
 }
 ```
+
+## 与业务模块的关系
+
+law-firm-auth 模块作为律所系统的安全与权限中枢，与所有业务模块（如案件、合同、档案、财务、知识等）存在紧密关联，主要体现在：
+
+- **统一认证**：所有业务模块的接口访问、页面操作均需通过auth模块的认证（如JWT），实现单点登录和用户身份识别。
+- **权限校验**：业务模块在数据操作、流程审批、页面展示等环节，均通过auth模块的权限体系（如RBAC、数据范围、操作权限）进行细粒度控制。
+- **数据隔离**：auth模块提供的数据权限能力，确保不同用户、团队、部门只能访问和操作授权范围内的数据。
+- **用户与角色信息**：业务模块通过auth模块获取当前用户、角色、组织等基础信息，用于业务流转、审批、归档等场景。
+- **安全审计与消息通知**：业务模块的关键操作（如审批、归档、借阅、删除等）通过core层的审计、消息服务进行日志记录和通知，auth模块提供用户、权限等基础支撑。
+
+### 典型集成方式
+- 业务模块通过依赖`auth-model`、`common-security`等，直接调用auth模块的接口或服务。
+- 通过JWT等token机制，业务模块在每次请求时都能获取当前用户身份和权限信息。
+- 通过Spring Security的全局拦截和方法级注解（如@PreAuthorize），实现细粒度的权限控制。
+
+### 示例
+- 案件归档、合同审批、档案借阅等业务操作前，先通过auth模块校验当前用户是否有相应操作权限和数据访问范围。
+- 业务模块的"创建人"、"经办人"、"审批人"等字段，均通过auth模块获取用户信息。
+- 业务模块的操作日志、通知推送等，均依赖auth模块的用户、角色、权限等基础能力。

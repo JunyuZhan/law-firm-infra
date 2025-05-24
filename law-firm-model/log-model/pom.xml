@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-model</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>log-model</artifactId>
@@ -18,29 +19,24 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- Common层依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-util</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-log</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- MapStruct -->

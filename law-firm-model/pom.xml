@@ -36,6 +36,8 @@
         <module>schedule-model</module>
         <module>task-model</module>
         <module>archive-model</module>
+        <module>evidence-model</module>
+        <module>analysis-model</module>
     </modules>
 
     <dependencyManagement>

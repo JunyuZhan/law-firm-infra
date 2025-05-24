@@ -33,6 +33,7 @@ spring:
       - personnel # 人员管理
       - analysis  # 分析功能
       - archive   # 档案管理
+      - evidence  # 证据管理
   # 主要配置保留在这里，让应用启动时便于查看
   main:
     allow-bean-definition-overriding: true

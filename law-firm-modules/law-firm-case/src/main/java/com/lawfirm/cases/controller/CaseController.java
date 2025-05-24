@@ -9,14 +9,31 @@ import com.lawfirm.model.cases.entity.base.Case;
 import com.lawfirm.model.cases.service.base.CaseService;
 import com.lawfirm.model.cases.vo.base.CaseDetailVO;
 import com.lawfirm.model.cases.vo.base.CaseQueryVO;
+import com.lawfirm.cases.service.CaseEvidenceBizService;
+import com.lawfirm.model.evidence.vo.EvidenceVO;
+import com.lawfirm.model.evidence.dto.EvidenceDTO;
+import com.lawfirm.model.evidence.dto.EvidenceReviewDTO;
+import com.lawfirm.model.evidence.vo.EvidenceReviewVO;
+import com.lawfirm.model.evidence.dto.EvidenceTraceDTO;
+import com.lawfirm.model.evidence.vo.EvidenceTraceVO;
+import com.lawfirm.model.evidence.dto.EvidenceAttachmentDTO;
+import com.lawfirm.model.evidence.vo.EvidenceAttachmentVO;
+import com.lawfirm.model.evidence.dto.EvidenceTagRelationDTO;
+import com.lawfirm.model.evidence.vo.EvidenceTagRelationVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import com.lawfirm.model.auth.annotation.RequiresPermission;
+import com.lawfirm.model.auth.enums.OperationTypeEnum;
+import com.lawfirm.model.auth.enums.ModuleTypeEnum;
 
 import java.util.List;
 import java.util.Map;
@@ -25,20 +42,24 @@ import java.util.stream.Collectors;
 /**
  * 案件基本控制器
  */
-@Slf4j
 @Tag(name = "案件管理", description = "案件管理接口")
 @RestController("caseController")
 @RequestMapping(CaseBusinessConstants.Controller.API_PREFIX)
 @RequiredArgsConstructor
 public class CaseController {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CaseController.class);
 
     private final CaseService caseService;
+    @Autowired
+    private CaseEvidenceBizService caseEvidenceBizService;
 
     @Operation(
         summary = "创建案件",
         description = "创建新的案件记录，包括案件基本信息（案件名称、案由、受理法院等）、当事人信息（原告、被告等）、代理律师、收费信息等"
     )
     @PostMapping
+    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.CREATE, message = "无案件创建权限")
+    @PreAuthorize("hasAuthority('case:create')")
     public Long createCase(
             @Parameter(description = "案件创建参数，包括：\n" +
                     "1. 案件基本信息：案件名称、案由、受理法院、案件类型等\n" +
@@ -55,6 +76,8 @@ public class CaseController {
         description = "更新已有案件的基本信息，包括案件进展情况、当事人信息变更、代理律师调整等，注意已归档的案件不能更新"
     )
     @PutMapping("/{id}")
+    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.EDIT, message = "无案件编辑权限")
+    @PreAuthorize("hasAuthority('case:edit')")
     public boolean updateCase(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id, 
@@ -76,6 +99,8 @@ public class CaseController {
                 "3. 已归档的案件不能删除"
     )
     @DeleteMapping("/{id}")
+    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.DELETE, message = "无案件删除权限")
+    @PreAuthorize("hasAuthority('case:delete')")
     public boolean deleteCase(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id) {
@@ -93,6 +118,8 @@ public class CaseController {
                 "5. 相关统计：文档数量、费用总额等"
     )
     @GetMapping("/{id}")
+    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.READ_ONLY, message = "无案件查看权限")
+    @PreAuthorize("hasAuthority('case:view')")
     public CaseDetailVO getCaseDetail(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id) {
@@ -110,6 +137,8 @@ public class CaseController {
                 "5. 时间范围：立案时间、归档时间等"
     )
     @GetMapping
+    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.READ_ONLY, message = "无案件查看权限")
+    @PreAuthorize("hasAuthority('case:view')")
     public IPage<CaseQueryVO> pageCases(
             @Parameter(description = "查询参数，包括：\n" +
                     "1. 分页参数：页码、每页大小\n" +
@@ -130,6 +159,7 @@ public class CaseController {
                 "5. 完成：案件已正常办结"
     )
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasAuthority('case:edit')")
     public boolean changeStatus(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id,
@@ -149,6 +179,8 @@ public class CaseController {
                 "3. 审批通过后状态才会实际变更"
     )
     @PutMapping("/{id}/status/approve")
+    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.APPROVE, message = "无案件审批权限")
+    @PreAuthorize("hasAuthority('case:approve')")
     public boolean approveStatusChange(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id,
@@ -169,6 +201,8 @@ public class CaseController {
                 "4. 归档后案件信息将锁定，不能修改"
     )
     @PutMapping("/{id}/archive")
+    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.ARCHIVE, message = "无案件归档权限")
+    @PreAuthorize("hasAuthority('case:archive')")
     public boolean archiveCase(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id) {
@@ -184,6 +218,7 @@ public class CaseController {
                 "3. 激活后案件状态将恢复为'进行中'"
     )
     @PutMapping("/{id}/reactivate")
+    @PreAuthorize("hasAuthority('case:edit')")
     public boolean reactivateCase(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id,
@@ -201,6 +236,7 @@ public class CaseController {
                 "3. 案件审批人的案件\n"
     )
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('case:view')")
     public List<CaseQueryVO> getUserCases(
             @Parameter(description = "用户ID") 
             @PathVariable("userId") Long userId) {
@@ -218,11 +254,227 @@ public class CaseController {
                 "4. 相似案例参考"
     )
     @GetMapping("/{id}/risk-assessment")
+    @PreAuthorize("hasAuthority('case:view')")
     public Map<String, Object> assessCaseRisk(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id) {
         log.info("评估案件风险: {}", id);
         return caseService.assessCaseRisk(id);
+    }
+
+    /**
+     * 查询案件下所有证据
+     */
+    @GetMapping("/{caseId}/evidences")
+    public List<EvidenceVO> getCaseEvidences(@PathVariable Long caseId) {
+        return caseEvidenceBizService.getEvidenceByCaseId(caseId);
+    }
+
+    @Operation(summary = "查询案件下单个证据详情")
+    @GetMapping("/{caseId}/evidences/{evidenceId}")
+    public EvidenceVO getCaseEvidenceDetail(@PathVariable Long caseId, @PathVariable Long evidenceId) {
+        EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+        if (vo == null || !caseId.equals(vo.getCaseId())) {
+            throw new IllegalArgumentException("证据不存在或不属于该案件");
+        }
+        return vo;
+    }
+
+    @Operation(summary = "为案件新增证据")
+    @PostMapping("/{caseId}/evidences")
+    public ResponseEntity<Long> addEvidence(@PathVariable Long caseId, @RequestBody EvidenceDTO dto) {
+        dto.setCaseId(caseId);
+        Long evidenceId = caseEvidenceBizService.addEvidence(dto);
+        return new ResponseEntity<>(evidenceId, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "删除案件下的证据")
+    @DeleteMapping("/{caseId}/evidences/{evidenceId}")
+    public ResponseEntity<Void> deleteEvidence(@PathVariable Long caseId, @PathVariable Long evidenceId) {
+        EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+        if (vo == null || !caseId.equals(vo.getCaseId())) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        caseEvidenceBizService.deleteEvidence(evidenceId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "为证据添加审核记录")
+    @PostMapping("/{caseId}/evidences/{evidenceId}/reviews")
+    public ResponseEntity<Long> addEvidenceReview(@PathVariable Long caseId, @PathVariable Long evidenceId, @RequestBody EvidenceReviewDTO dto) {
+        dto.setEvidenceId(evidenceId);
+        Long reviewId = caseEvidenceBizService.addEvidenceReview(dto);
+        return new ResponseEntity<>(reviewId, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "查询证据的所有审核记录")
+    @GetMapping("/{caseId}/evidences/{evidenceId}/reviews")
+    public List<EvidenceReviewVO> listEvidenceReviews(@PathVariable Long caseId, @PathVariable Long evidenceId) {
+        EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+        if (vo == null || !caseId.equals(vo.getCaseId())) {
+            throw new IllegalArgumentException("证据不存在或不属于该案件");
+        }
+        return caseEvidenceBizService.listEvidenceReviews(evidenceId);
+    }
+
+    @Operation(summary = "添加证据流转记录")
+    @PostMapping("/{caseId}/evidences/{evidenceId}/traces")
+    public ResponseEntity<Long> addEvidenceTrace(@PathVariable Long caseId, @PathVariable Long evidenceId, @RequestBody EvidenceTraceDTO dto) {
+        dto.setEvidenceId(evidenceId);
+        Long traceId = caseEvidenceBizService.addEvidenceTrace(dto);
+        return new ResponseEntity<>(traceId, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "查询证据流转记录")
+    @GetMapping("/{caseId}/evidences/{evidenceId}/traces")
+    public List<EvidenceTraceVO> listEvidenceTraces(@PathVariable Long caseId, @PathVariable Long evidenceId) {
+        EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+        if (vo == null || !caseId.equals(vo.getCaseId())) {
+            throw new IllegalArgumentException("证据不存在或不属于该案件");
+        }
+        return caseEvidenceBizService.listEvidenceTraces(evidenceId);
+    }
+
+    @Operation(summary = "为证据添加附件")
+    @PostMapping("/{caseId}/evidences/{evidenceId}/attachments")
+    public ResponseEntity<Long> addEvidenceAttachment(@PathVariable Long caseId, @PathVariable Long evidenceId, @RequestBody EvidenceAttachmentDTO dto) {
+        dto.setEvidenceId(evidenceId);
+        Long attachmentId = caseEvidenceBizService.addEvidenceAttachment(dto);
+        return new ResponseEntity<>(attachmentId, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "删除证据附件")
+    @DeleteMapping("/{caseId}/evidences/{evidenceId}/attachments/{attachmentId}")
+    public ResponseEntity<Void> deleteEvidenceAttachment(@PathVariable Long caseId, @PathVariable Long evidenceId, @PathVariable Long attachmentId) {
+        caseEvidenceBizService.deleteEvidenceAttachment(attachmentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "查询证据所有附件")
+    @GetMapping("/{caseId}/evidences/{evidenceId}/attachments")
+    public List<EvidenceAttachmentVO> listEvidenceAttachments(@PathVariable Long caseId, @PathVariable Long evidenceId) {
+        EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+        if (vo == null || !caseId.equals(vo.getCaseId())) {
+            throw new IllegalArgumentException("证据不存在或不属于该案件");
+        }
+        return caseEvidenceBizService.listEvidenceAttachments(evidenceId);
+    }
+
+    @Operation(summary = "为证据添加标签")
+    @PostMapping("/{caseId}/evidences/{evidenceId}/tags")
+    public ResponseEntity<Long> addEvidenceTag(@PathVariable Long caseId, @PathVariable Long evidenceId, @RequestBody EvidenceTagRelationDTO dto) {
+        dto.setEvidenceId(evidenceId);
+        Long tagRelationId = caseEvidenceBizService.addEvidenceTag(dto);
+        return new ResponseEntity<>(tagRelationId, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "删除证据标签")
+    @DeleteMapping("/{caseId}/evidences/{evidenceId}/tags/{tagRelationId}")
+    public ResponseEntity<Void> deleteEvidenceTag(@PathVariable Long caseId, @PathVariable Long evidenceId, @PathVariable Long tagRelationId) {
+        caseEvidenceBizService.deleteEvidenceTag(tagRelationId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "查询证据所有标签")
+    @GetMapping("/{caseId}/evidences/{evidenceId}/tags")
+    public List<EvidenceTagRelationVO> listEvidenceTags(@PathVariable Long caseId, @PathVariable Long evidenceId) {
+        EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+        if (vo == null || !caseId.equals(vo.getCaseId())) {
+            throw new IllegalArgumentException("证据不存在或不属于该案件");
+        }
+        return caseEvidenceBizService.listEvidenceTags(evidenceId);
+    }
+
+    @Operation(summary = "批量删除案件下的证据")
+    @DeleteMapping("/{caseId}/evidences/batch-delete")
+    @PreAuthorize("hasAuthority('case:evidence:delete')")
+    public ResponseEntity<Void> batchDeleteEvidence(@PathVariable Long caseId, @RequestBody List<Long> evidenceIds) {
+        for (Long evidenceId : evidenceIds) {
+            EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+            if (vo == null || !caseId.equals(vo.getCaseId())) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        caseEvidenceBizService.batchDeleteEvidence(evidenceIds);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "批量新增案件下证据")
+    @PostMapping("/{caseId}/evidences/batch-add")
+    @PreAuthorize("hasAuthority('case:evidence:add')")
+    public ResponseEntity<List<Long>> batchAddEvidence(@PathVariable Long caseId, @RequestBody List<EvidenceDTO> dtos) {
+        for (EvidenceDTO dto : dtos) {
+            dto.setCaseId(caseId);
+        }
+        List<Long> ids = caseEvidenceBizService.batchAddEvidence(dtos);
+        return new ResponseEntity<>(ids, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "批量归档案件下证据")
+    @PostMapping("/{caseId}/evidences/batch-archive")
+    @PreAuthorize("hasAuthority('case:evidence:archive')")
+    public ResponseEntity<Void> batchArchiveEvidence(@PathVariable Long caseId, @RequestBody List<Long> evidenceIds) {
+        for (Long evidenceId : evidenceIds) {
+            EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+            if (vo == null || !caseId.equals(vo.getCaseId())) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        caseEvidenceBizService.batchArchiveEvidence(evidenceIds);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "批量为证据添加标签")
+    @PostMapping("/{caseId}/evidences/{evidenceId}/tags/batch-add")
+    @PreAuthorize("hasAuthority('case:evidence:tag:add')")
+    public ResponseEntity<Void> batchAddEvidenceTags(@PathVariable Long caseId, @PathVariable Long evidenceId, @RequestBody List<EvidenceTagRelationDTO> dtos) {
+        for (EvidenceTagRelationDTO dto : dtos) {
+            dto.setEvidenceId(evidenceId);
+        }
+        caseEvidenceBizService.batchAddEvidenceTags(dtos);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "批量删除证据标签")
+    @DeleteMapping("/{caseId}/evidences/{evidenceId}/tags/batch-delete")
+    @PreAuthorize("hasAuthority('case:evidence:tag:delete')")
+    public ResponseEntity<Void> batchDeleteEvidenceTags(@PathVariable Long caseId, @PathVariable Long evidenceId, @RequestBody List<Long> tagRelationIds) {
+        caseEvidenceBizService.batchDeleteEvidenceTags(tagRelationIds);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "批量导出案件下证据")
+    @PostMapping("/{caseId}/evidences/batch-export")
+    @PreAuthorize("hasAuthority('case:evidence:export')")
+    public ResponseEntity<byte[]> batchExportEvidence(@PathVariable Long caseId, @RequestBody List<Long> evidenceIds) {
+        for (Long evidenceId : evidenceIds) {
+            EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+            if (vo == null || !caseId.equals(vo.getCaseId())) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        byte[] fileBytes = caseEvidenceBizService.exportEvidenceBatch(evidenceIds);
+        return ResponseEntity.ok()
+            .header("Content-Disposition", "attachment; filename=evidence_export.xlsx")
+            .header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            .body(fileBytes);
+    }
+
+    @Operation(summary = "批量导出案件下证据（PDF）")
+    @PostMapping("/{caseId}/evidences/batch-export-pdf")
+    @PreAuthorize("hasAuthority('case:evidence:export')")
+    public ResponseEntity<byte[]> batchExportEvidencePdf(@PathVariable Long caseId, @RequestBody List<Long> evidenceIds) {
+        for (Long evidenceId : evidenceIds) {
+            EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
+            if (vo == null || !caseId.equals(vo.getCaseId())) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        byte[] fileBytes = caseEvidenceBizService.exportEvidenceBatchPdf(evidenceIds);
+        return ResponseEntity.ok()
+            .header("Content-Disposition", "attachment; filename=evidence_export.pdf")
+            .header("Content-Type", "application/pdf")
+            .body(fileBytes);
     }
 
     /**

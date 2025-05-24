@@ -15,11 +15,6 @@ SELECT 1, NULL, NULL, 'admin', '$2a$10$x70nSjQ/j5MzV9t.ZBRQAOokoMnLkDsJCnq6HT45m
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_user WHERE username = 'admin');
 
--- 创建测试律师用户（密码：admin123）
-INSERT INTO auth_user (id, tenant_id, tenant_code, username, password, email, mobile, status, create_time, create_by, remark)
-SELECT 2, NULL, NULL, 'lawyer', '$2a$10$x70nSjQ/j5MzV9t.ZBRQAOokoMnLkDsJCnq6HT45mh3ezEh9jzJ7i', 'lawyer@lawfirm.com', '13800000001', 0, NOW(), 'admin', '测试用律师账号'
-FROM DUAL
-WHERE NOT EXISTS (SELECT 1 FROM auth_user WHERE username = 'lawyer');
 
 -- 创建初始角色
 INSERT INTO auth_role (id, tenant_id, tenant_code, name, code, type, data_scope, business_role_type, status, create_time, create_by, remark)
@@ -28,9 +23,39 @@ FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ROLE_ADMIN');
 
 INSERT INTO auth_role (id, tenant_id, tenant_code, name, code, type, data_scope, business_role_type, status, create_time, create_by, remark)
-SELECT 2, NULL, NULL, '律师', 'ROLE_LAWYER', 0, 2, 'LAWYER', 0, NOW(), 'system', '系统内置角色，拥有案件管理等权限'
+SELECT 2, NULL, NULL, '主任', 'ROLE_DIRECTOR', 0, 0, 'DIRECTOR', 0, NOW(), 'system', '律所主任，业务管理者'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ROLE_DIRECTOR');
+
+INSERT INTO auth_role (id, tenant_id, tenant_code, name, code, type, data_scope, business_role_type, status, create_time, create_by, remark)
+SELECT 3, NULL, NULL, '合伙人', 'ROLE_PARTNER', 0, 0, 'PARTNER', 0, NOW(), 'system', '合伙人律师，高级律师'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ROLE_PARTNER');
+
+INSERT INTO auth_role (id, tenant_id, tenant_code, name, code, type, data_scope, business_role_type, status, create_time, create_by, remark)
+SELECT 4, NULL, NULL, '律师', 'ROLE_LAWYER', 0, 2, 'LAWYER', 0, NOW(), 'system', '执业律师，办理案件及客户管理'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ROLE_LAWYER');
+
+INSERT INTO auth_role (id, tenant_id, tenant_code, name, code, type, data_scope, business_role_type, status, create_time, create_by, remark)
+SELECT 5, NULL, NULL, '实习律师', 'ROLE_TRAINEE', 0, 2, 'TRAINEE', 0, NOW(), 'system', '实习律师，权限受限'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ROLE_TRAINEE');
+
+INSERT INTO auth_role (id, tenant_id, tenant_code, name, code, type, data_scope, business_role_type, status, create_time, create_by, remark)
+SELECT 6, NULL, NULL, '行政', 'ROLE_CLERK', 0, 1, 'CLERK', 0, NOW(), 'system', '行政人员，负责律所行政管理'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ROLE_CLERK');
+
+INSERT INTO auth_role (id, tenant_id, tenant_code, name, code, type, data_scope, business_role_type, status, create_time, create_by, remark)
+SELECT 7, NULL, NULL, '财务', 'ROLE_FINANCE', 0, 1, 'FINANCE', 0, NOW(), 'system', '财务人员，负责律所财务管理'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ROLE_FINANCE');
+
+INSERT INTO auth_role (id, tenant_id, tenant_code, name, code, type, data_scope, business_role_type, status, create_time, create_by, remark)
+SELECT 8, NULL, NULL, '普通用户', 'ROLE_USER', 0, 3, 'USER', 0, NOW(), 'system', '系统普通用户'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM auth_role WHERE code = 'ROLE_USER');
 
 -- 创建初始权限
 -- 系统管理权限

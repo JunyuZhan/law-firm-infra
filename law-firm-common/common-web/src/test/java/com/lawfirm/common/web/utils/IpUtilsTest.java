@@ -116,7 +116,7 @@ class IpUtilsTest {
     @Test
     void getRealAddressByIP_ShouldReturnIPAddress() {
         String ip = "192.168.1.1";
-        assertEquals(ip, IpUtils.getRealAddressByIP(ip));
+        assertEquals("内网IP", IpUtils.getRealAddressByIP(ip));
     }
 
     @Test

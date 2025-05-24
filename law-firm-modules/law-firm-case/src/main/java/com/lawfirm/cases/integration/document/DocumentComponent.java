@@ -22,7 +22,6 @@ import java.util.Optional;
 @Lazy
 @RequiredArgsConstructor
 public class DocumentComponent {
-
     private final DocumentService documentService;
 
     /**

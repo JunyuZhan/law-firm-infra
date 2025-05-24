@@ -37,7 +37,22 @@ public enum OperationTypeEnum implements BaseEnum<String> {
     /**
      * 申请权限
      */
-    APPLY("apply", "申请权限");
+    APPLY("apply", "申请权限"),
+    
+    /**
+     * 编辑权限
+     */
+    EDIT("edit", "编辑权限"),
+    
+    /**
+     * 删除权限
+     */
+    DELETE("delete", "删除权限"),
+    
+    /**
+     * 归档权限
+     */
+    ARCHIVE("archive", "归档权限");
     
     private final String code;
     private final String name;

@@ -4,9 +4,9 @@ import com.lawfirm.cases.core.audit.CaseAuditProvider;
 import com.lawfirm.cases.core.message.CaseMessageManager;
 import com.lawfirm.model.cases.event.CaseStatusChangedEvent;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class CaseStatusListener {
-
     private final CaseAuditProvider auditProvider;
     private final CaseMessageManager messageManager;
     

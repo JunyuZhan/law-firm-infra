@@ -1,13 +1,13 @@
 package com.lawfirm.cases.core.audit;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.lawfirm.model.log.service.AuditService;
 import com.lawfirm.model.log.dto.AuditLogDTO;
 import com.lawfirm.model.log.enums.BusinessTypeEnum;
 import com.lawfirm.model.log.enums.OperateTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
@@ -24,7 +24,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class CaseAuditProvider {
-    
     // 注入审计服务
     @Autowired
     private AuditService auditService;

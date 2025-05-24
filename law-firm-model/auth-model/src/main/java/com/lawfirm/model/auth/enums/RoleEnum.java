@@ -9,6 +9,12 @@ import lombok.Getter;
 public enum RoleEnum {
     
     ADMIN("admin", "系统管理员", "系统最高权限管理者", null, DataScopeEnum.ALL),
+    DIRECTOR("director", "律所主任", "律所业务管理者", ADMIN, DataScopeEnum.ALL),
+    PARTNER("partner", "合伙人律师", "高级律师，参与管理事务所业务", DIRECTOR, DataScopeEnum.TEAM),
+    LAWYER("lawyer", "执业律师", "普通执业律师，办理案件及客户管理", PARTNER, DataScopeEnum.PERSONAL),
+    TRAINEE("trainee", "实习律师", "实习期律师，权限受限", LAWYER, DataScopeEnum.PERSONAL),
+    CLERK("clerk", "行政人员", "负责律所行政管理", ADMIN, DataScopeEnum.DEPARTMENT_RELATED),
+    FINANCE("finance", "财务人员", "负责律所财务管理", ADMIN, DataScopeEnum.DEPARTMENT_FULL),
     USER("user", "普通用户", "系统普通用户", ADMIN, DataScopeEnum.PERSONAL);
 
     private final String code;

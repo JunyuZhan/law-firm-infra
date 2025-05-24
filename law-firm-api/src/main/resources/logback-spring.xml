@@ -9,8 +9,12 @@
     <springProperty scope="context" name="logFileTotalSizeCap" source="logging.file.total-size-cap" defaultValue="3GB"/>
     <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="law-firm-api"/>
 
+    <!-- 日志路径最佳实践：默认 logs/，支持外部LOG_PATH覆盖，不再用临时目录 -->
+    <property name="LOG_PATH" value="${LOG_PATH:-logs}"/>
+    <property name="LOG_FILE_NAME" value="${appName}.log"/>
+    <property name="LOG_FILE" value="${LOG_PATH}/${LOG_FILE_NAME}"/>
+    
     <!-- 通用属性配置 -->
-    <property name="LOG_FILE_NAME" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/logs/${appName}.log}"/>
     <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"/>
     <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%t] %-40.40logger{39} : %m%n%wEx"/>
     
@@ -43,7 +47,7 @@
 
     <!-- 文件日志配置 - 优化按日期和大小滚动策略 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_FILE_NAME}</file>
+        <file>${LOG_FILE}</file>
         <immediateFlush>true</immediateFlush>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <charset>${FILE_CHARSET}</charset>
@@ -51,7 +55,7 @@
             <outputPatternAsHeader>false</outputPatternAsHeader>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logs/archive/${appName}.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/archive/${appName}.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
             <maxFileSize>${logFileMaxSize}</maxFileSize>
             <maxHistory>${logFileMaxHistory}</maxHistory>
             <totalSizeCap>${logFileTotalSizeCap}</totalSizeCap>

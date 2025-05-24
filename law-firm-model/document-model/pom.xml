@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-model</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>document-model</artifactId>
     <name>${project.artifactId}</name>
-    <description>文档管理核心模块</description>
+    <description>文档管理模型模块</description>
 
     <dependencies>
         <!-- Jakarta EE -->

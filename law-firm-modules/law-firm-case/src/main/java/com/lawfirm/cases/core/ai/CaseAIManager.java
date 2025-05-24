@@ -1,12 +1,12 @@
 package com.lawfirm.cases.core.ai;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.lawfirm.model.ai.service.AiService;
 import com.lawfirm.model.ai.dto.AIRequestDTO;
 import com.lawfirm.model.ai.vo.AIResponseVO;
 import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class CaseAIManager {
-    
     @Qualifier("coreAIServiceImpl")
     private final AiService aiService;
     

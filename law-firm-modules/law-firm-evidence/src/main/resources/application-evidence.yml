@@ -1,0 +1,39 @@
+# law-firm-evidence 业务模块专属配置
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:META-INF/db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    out-of-order: false
+    table: flyway_schema_history_evidence
+
+# 证据模块自定义配置
+evidence:
+  review:
+    auto-approve: false           # 审核是否自动通过
+    max-reviewers: 3              # 最大审核人数
+    reminder-enabled: true        # 审核提醒开关
+    reminder-before-minutes: 60   # 审核前提醒时间
+  attachment:
+    allowed-types: pdf,jpg,png,doc,docx,xls,xlsx
+    max-file-size: 20MB
+    storage-path: ${user.home}/.law-firm/evidence-attachments
+  trace:
+    enable-audit: true            # 是否开启流转审计
+    audit-log-retention-days: 180 # 审计日志保留天数
+  challenge:
+    allow-multiple: true          # 是否允许多次质证
+    max-challenges: 5             # 单条证据最大质证次数
+  tag:
+    max-tags-per-evidence: 10     # 单条证据最大标签数
+  fact:
+    proof-level-default: 一般     # 默认证明力等级
+  permission:
+    creator-can-delete: true
+    reviewer-can-edit: true
+    challenger-can-respond: true
+
+module:
+  name: evidence 

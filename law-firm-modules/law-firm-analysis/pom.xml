@@ -6,8 +6,9 @@
 
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-modules</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>law-firm-analysis</artifactId>
@@ -54,6 +55,53 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- 业务模型依赖：必须有 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>analysis-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 业务依赖：案件模块 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-case</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- core消息服务 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-message</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- core存储服务 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-storage</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- core检索服务 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-search</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- core审计服务 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-audit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- core智能AI服务 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-ai</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

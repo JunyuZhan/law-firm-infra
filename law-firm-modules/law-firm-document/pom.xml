@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-modules</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>law-firm-document</artifactId>
@@ -32,113 +33,92 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>document-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>auth-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>workflow-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>storage-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>base-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>ai-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-util</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <!-- 核心功能依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-storage</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-audit</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-workflow</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-message</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-ai</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <!-- 通用功能依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-cache</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-security</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-log</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-message</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <!-- 业务模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-auth</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-system</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <!-- Spring Boot Starter -->

@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lawfirm</groupId>
-        <artifactId>law-firm-modules</artifactId>
+        <artifactId>law-firm</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>law-firm-case</artifactId>
@@ -18,93 +19,78 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-core</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-web</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-data</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>common-log</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 案件模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>case-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 合同模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>contract-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 认证模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>auth-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 客户模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>client-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 客户服务模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-client</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 文档模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>document-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         
         <!-- 人事模型依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>personnel-model</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <!-- 核心模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-workflow</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-audit</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-storage</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-search</artifactId>
-            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.lawfirm</groupId>
@@ -113,7 +99,6 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>core-ai</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <!-- MyBatis Plus -->
@@ -152,13 +137,31 @@
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>archive-model</artifactId>
-            <version>${revision}</version>
         </dependency>
         <!-- 档案管理模块依赖 -->
         <dependency>
             <groupId>com.lawfirm</groupId>
             <artifactId>law-firm-archive</artifactId>
-            <version>${revision}</version>
+        </dependency>
+
+        <!-- Evidence module dependency -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>law-firm-evidence</artifactId>
+        </dependency>
+
+        <!-- PDF导出依赖 -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>io</artifactId>
         </dependency>
     </dependencies>
 </project> 
