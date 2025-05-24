@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class WorkTaskAttachmentController {
      * 上传任务附件
      */
     @Operation(summary = "上传任务附件", description = "为工作任务上传附件文件")
+    @PreAuthorize("hasAuthority('" + TASK_ATTACHMENT_CREATE + "')")
     @PostMapping("/upload")
     public CommonResult<WorkTaskAttachmentDTO> uploadAttachment(
             @Parameter(description = "任务ID") 
@@ -49,6 +52,7 @@ public class WorkTaskAttachmentController {
      * 删除任务附件
      */
     @Operation(summary = "删除任务附件", description = "删除指定的任务附件")
+    @PreAuthorize("hasAuthority('" + TASK_ATTACHMENT_DELETE + "')")
     @DeleteMapping("/{attachmentId}")
     public CommonResult<Void> deleteAttachment(
             @Parameter(description = "任务ID") 
@@ -64,6 +68,7 @@ public class WorkTaskAttachmentController {
      * 获取任务附件详情
      */
     @Operation(summary = "获取任务附件详情", description = "获取任务附件的详细信息")
+    @PreAuthorize("hasAuthority('" + TASK_ATTACHMENT_VIEW + "')")
     @GetMapping("/{attachmentId}")
     public CommonResult<WorkTaskAttachmentDTO> getAttachmentDetail(
             @Parameter(description = "任务ID") 
@@ -78,6 +83,7 @@ public class WorkTaskAttachmentController {
      * 获取任务附件列表
      */
     @Operation(summary = "获取任务附件列表", description = "获取指定任务的所有附件")
+    @PreAuthorize("hasAuthority('" + TASK_ATTACHMENT_VIEW + "')")
     @GetMapping("/list")
     public CommonResult<List<WorkTaskAttachmentDTO>> getTaskAttachments(
             @Parameter(description = "任务ID") 
@@ -90,6 +96,7 @@ public class WorkTaskAttachmentController {
      * 下载任务附件
      */
     @Operation(summary = "下载任务附件", description = "下载指定的任务附件")
+    @PreAuthorize("hasAuthority('" + TASK_ATTACHMENT_VIEW + "')")
     @GetMapping("/{attachmentId}/download")
     public ResponseEntity<byte[]> downloadAttachment(
             @Parameter(description = "任务ID") 
@@ -111,6 +118,7 @@ public class WorkTaskAttachmentController {
      * 预览任务附件
      */
     @Operation(summary = "预览任务附件", description = "预览指定的任务附件")
+    @PreAuthorize("hasAuthority('" + TASK_ATTACHMENT_VIEW + "')")
     @GetMapping("/{attachmentId}/preview")
     public ResponseEntity<byte[]> previewAttachment(
             @Parameter(description = "任务ID") 
@@ -130,6 +138,7 @@ public class WorkTaskAttachmentController {
      * 获取任务附件预览链接
      */
     @Operation(summary = "获取任务附件预览链接", description = "获取指定任务附件的预览链接")
+    @PreAuthorize("hasAuthority('" + TASK_ATTACHMENT_VIEW + "')")
     @GetMapping("/{attachmentId}/preview-url")
     public CommonResult<String> getAttachmentPreviewUrl(
             @Parameter(description = "任务ID") 
@@ -144,6 +153,7 @@ public class WorkTaskAttachmentController {
      * 获取任务附件下载链接
      */
     @Operation(summary = "获取任务附件下载链接", description = "获取指定任务附件的下载链接")
+    @PreAuthorize("hasAuthority('" + TASK_ATTACHMENT_VIEW + "')")
     @GetMapping("/{attachmentId}/download-url")
     public CommonResult<String> getAttachmentDownloadUrl(
             @Parameter(description = "任务ID") 

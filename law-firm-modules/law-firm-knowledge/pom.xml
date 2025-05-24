@@ -96,5 +96,15 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>log-model</artifactId>
         </dependency>
+        
+        <!-- AI能力依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-ai</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>ai-model</artifactId>
+        </dependency>
     </dependencies>
 </project> 

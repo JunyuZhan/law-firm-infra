@@ -3,6 +3,7 @@ package com.lawfirm.model.ai.dto;
 import com.lawfirm.model.base.dto.BaseDTO;
 import java.io.Serializable;
 import java.util.Map;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * AI请求数据传输对象
@@ -12,10 +13,15 @@ public class AIRequestDTO implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    @Schema(description = "输入数据")
     private String inputData; // 输入数据
+    @Schema(description = "模型版本")
     private String modelVersion; // 模型版本
+    @Schema(description = "操作类型")
     private String action; // 操作类型
+    @Schema(description = "模型名称")
     private String modelName; // 模型名称
+    @Schema(description = "请求参数")
     private Map<String, Object> params; // 请求参数
 
     // 构造函数

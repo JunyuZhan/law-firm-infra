@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class CaseContractController {
 
     @Operation(summary = "关联合同到案件")
     @PostMapping("/associate/{contractId}")
+    @PreAuthorize(CONTRACT_EDIT)
     public ResponseEntity<Boolean> associateContract(
             @Parameter(description = "案件ID") @PathVariable Long caseId,
             @Parameter(description = "合同ID") @PathVariable Long contractId) {
@@ -35,6 +38,7 @@ public class CaseContractController {
 
     @Operation(summary = "取消关联合同")
     @DeleteMapping("/disassociate/{contractId}")
+    @PreAuthorize(CONTRACT_EDIT)
     public ResponseEntity<Boolean> disassociateContract(
             @Parameter(description = "案件ID") @PathVariable Long caseId,
             @Parameter(description = "合同ID") @PathVariable Long contractId) {
@@ -44,6 +48,7 @@ public class CaseContractController {
 
     @Operation(summary = "获取案件关联的合同详情")
     @GetMapping("/{contractId}")
+    @PreAuthorize(CONTRACT_VIEW)
     public ResponseEntity<CaseContractVO> getContractDetail(
             @Parameter(description = "案件ID") @PathVariable Long caseId,
             @Parameter(description = "合同ID") @PathVariable Long contractId) {
@@ -53,6 +58,7 @@ public class CaseContractController {
 
     @Operation(summary = "获取案件的所有关联合同")
     @GetMapping
+    @PreAuthorize(CONTRACT_VIEW)
     public ResponseEntity<List<CaseContractVO>> listContracts(
             @Parameter(description = "案件ID") @PathVariable Long caseId) {
         List<CaseContractVO> contracts = caseContractService.listCaseContracts(caseId);
@@ -61,6 +67,7 @@ public class CaseContractController {
 
     @Operation(summary = "检查案件是否有有效合同")
     @GetMapping("/status")
+    @PreAuthorize(CONTRACT_VIEW)
     public ResponseEntity<Boolean> checkContractStatus(
             @Parameter(description = "案件ID") @PathVariable Long caseId) {
         boolean isValid = caseContractService.checkCaseContractStatus(caseId);

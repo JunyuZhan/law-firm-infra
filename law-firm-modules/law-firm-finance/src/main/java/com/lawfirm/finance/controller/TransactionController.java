@@ -18,6 +18,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,6 +37,7 @@ public class TransactionController {
 
     @PostMapping
     @Operation(summary = "创建交易", description = "创建新的交易记录")
+    @PreAuthorize(FINANCE_CREATE)
     public ResponseEntity<Transaction> createTransaction(@RequestBody @Validated Transaction transaction) {
         logger.info("创建交易: {}", transaction);
         Long transactionId = transactionService.createTransaction(transaction);
@@ -43,6 +46,7 @@ public class TransactionController {
 
     @GetMapping("/{id}")
     @Operation(summary = "获取交易详情", description = "根据ID获取交易详情")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<Transaction> getTransaction(
             @Parameter(description = "交易ID") @PathVariable Long id) {
         logger.info("获取交易详情, id: {}", id);
@@ -51,6 +55,7 @@ public class TransactionController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新交易", description = "更新交易信息")
+    @PreAuthorize(FINANCE_EDIT)
     public ResponseEntity<Transaction> updateTransaction(
             @Parameter(description = "交易ID") @PathVariable Long id,
             @RequestBody @Validated Transaction transaction) {
@@ -66,6 +71,7 @@ public class TransactionController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除交易", description = "根据ID删除交易")
+    @PreAuthorize(FINANCE_DELETE)
     public ResponseEntity<Void> deleteTransaction(
             @Parameter(description = "交易ID") @PathVariable Long id) {
         logger.info("删除交易, id: {}", id);
@@ -79,6 +85,7 @@ public class TransactionController {
 
     @GetMapping
     @Operation(summary = "查询交易列表", description = "根据条件查询交易列表")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<List<Transaction>> listTransactions(
             @Parameter(description = "交易类型") @RequestParam(required = false) TransactionTypeEnum type,
             @Parameter(description = "账户ID") @RequestParam(required = false) Long accountId,
@@ -94,6 +101,7 @@ public class TransactionController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询交易", description = "分页查询交易信息")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<IPage<Transaction>> pageTransactions(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer size,
@@ -112,6 +120,7 @@ public class TransactionController {
 
     @GetMapping("/account/{accountId}")
     @Operation(summary = "按账户查询交易", description = "查询指定账户的交易记录")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<List<Transaction>> listTransactionsByAccount(
             @Parameter(description = "账户ID") @PathVariable Long accountId,
             @Parameter(description = "开始时间") @RequestParam(required = false) 
@@ -126,6 +135,7 @@ public class TransactionController {
 
     @GetMapping("/account/{accountId}/page")
     @Operation(summary = "按账户分页查询交易", description = "分页查询指定账户的交易记录")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<IPage<Transaction>> pageTransactionsByAccount(
             @Parameter(description = "账户ID") @PathVariable Long accountId,
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer current,
@@ -143,6 +153,7 @@ public class TransactionController {
 
     @GetMapping("/contract/{contractId}")
     @Operation(summary = "按合同查询交易", description = "查询指定合同的交易记录")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<List<Transaction>> listTransactionsByContract(
             @Parameter(description = "合同ID") @PathVariable Long contractId) {
         logger.info("按合同查询交易, contractId: {}", contractId);
@@ -152,6 +163,7 @@ public class TransactionController {
 
     @GetMapping("/client/{clientId}")
     @Operation(summary = "按客户查询交易", description = "查询指定客户的交易记录")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<List<Transaction>> listTransactionsByClient(
             @Parameter(description = "客户ID") @PathVariable Long clientId,
             @Parameter(description = "开始时间") @RequestParam(required = false) 
@@ -166,6 +178,7 @@ public class TransactionController {
 
     @GetMapping("/sum")
     @Operation(summary = "统计交易金额", description = "统计指定条件的交易总金额")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<BigDecimal> sumTransactionAmount(
             @Parameter(description = "交易类型") @RequestParam(required = false) TransactionTypeEnum type,
             @Parameter(description = "账户ID") @RequestParam(required = false) Long accountId,
@@ -181,6 +194,7 @@ public class TransactionController {
 
     @GetMapping("/account/{accountId}/sum")
     @Operation(summary = "统计账户交易金额", description = "统计指定账户的交易总金额")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<BigDecimal> sumAccountTransactionAmount(
             @Parameter(description = "账户ID") @PathVariable Long accountId,
             @Parameter(description = "交易类型") @RequestParam(required = false) TransactionTypeEnum type,
@@ -196,6 +210,7 @@ public class TransactionController {
 
     @PostMapping("/export")
     @Operation(summary = "导出交易数据", description = "导出指定交易的数据")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<String> exportTransactions(
             @RequestBody List<Long> transactionIds) {
         logger.info("导出交易数据, transactionIds: {}", transactionIds);

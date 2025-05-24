@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class KnowledgeTagController {
      */
     @Operation(summary = "获取所有标签", description = "获取所有知识标签列表")
     @GetMapping
+    @PreAuthorize(KNOWLEDGE_VIEW)
     public ResponseEntity<List<KnowledgeTagVO>> getAllTags() {
         List<KnowledgeTag> tags = tagService.list();
         return ResponseEntity.ok(knowledgeConvert.toTagVOList(tags));
@@ -45,6 +48,7 @@ public class KnowledgeTagController {
      */
     @Operation(summary = "获取标签详情", description = "根据ID获取标签详情")
     @GetMapping("/{id}")
+    @PreAuthorize(KNOWLEDGE_VIEW)
     public ResponseEntity<KnowledgeTagVO> getTagById(
             @Parameter(description = "标签ID") @PathVariable Long id) {
         KnowledgeTag tag = tagService.getById(id);
@@ -59,6 +63,7 @@ public class KnowledgeTagController {
      */
     @Operation(summary = "创建标签", description = "创建新的知识标签")
     @PostMapping
+    @PreAuthorize(KNOWLEDGE_CREATE)
     public ResponseEntity<KnowledgeTagVO> createTag(
             @Parameter(description = "标签信息") @RequestBody KnowledgeTag tag) {
         boolean success = tagService.save(tag);
@@ -75,6 +80,7 @@ public class KnowledgeTagController {
      */
     @Operation(summary = "更新标签", description = "根据ID更新知识标签")
     @PutMapping("/{id}")
+    @PreAuthorize(KNOWLEDGE_EDIT)
     public ResponseEntity<KnowledgeTagVO> updateTag(
             @Parameter(description = "标签ID") @PathVariable Long id,
             @Parameter(description = "标签信息") @RequestBody KnowledgeTag tag) {
@@ -105,6 +111,7 @@ public class KnowledgeTagController {
      */
     @Operation(summary = "删除标签", description = "根据ID删除知识标签")
     @DeleteMapping("/{id}")
+    @PreAuthorize(KNOWLEDGE_DELETE)
     public ResponseEntity<Void> deleteTag(
             @Parameter(description = "标签ID") @PathVariable Long id) {
         try {
@@ -121,6 +128,7 @@ public class KnowledgeTagController {
      */
     @Operation(summary = "获取热门标签", description = "获取使用最多的热门标签")
     @GetMapping("/hot")
+    @PreAuthorize(KNOWLEDGE_VIEW)
     public ResponseEntity<List<KnowledgeTagVO>> getHotTags(
             @Parameter(description = "限制数量") @RequestParam(required = false, defaultValue = "10") Integer limit) {
         List<KnowledgeTag> hotTags = tagService.listHotTags(limit);

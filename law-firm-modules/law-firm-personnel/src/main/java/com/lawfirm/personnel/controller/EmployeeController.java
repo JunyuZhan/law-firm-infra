@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @RestController("employeeController")
 @RequestMapping(PersonnelConstants.API_EMPLOYEE_PREFIX)
 @Validated
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLERK')")
 public class EmployeeController {
 
     @Autowired

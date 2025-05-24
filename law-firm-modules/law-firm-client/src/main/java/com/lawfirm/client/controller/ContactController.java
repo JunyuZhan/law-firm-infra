@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.lawfirm.client.constant.ClientConstants;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "获取客户的联系人列表")
     @GetMapping("/list/{clientId}")
+    @PreAuthorize(CLIENT_VIEW)
     public CommonResult<List<ContactVO>> list(@PathVariable("clientId") Long clientId) {
         return success(contactService.listClientContacts(clientId));
     }
@@ -43,6 +46,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "分页查询联系人")
     @GetMapping("/page/{clientId}")
+    @PreAuthorize(CLIENT_VIEW)
     public CommonResult<List<ContactVO>> page(
             @PathVariable("clientId") Long clientId,
             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
@@ -59,6 +63,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "获取联系人详情")
     @GetMapping("/{id}")
+    @PreAuthorize(CLIENT_VIEW)
     public CommonResult<ContactVO> getById(@PathVariable("id") Long id) {
         return success(contactService.getContact(id));
     }
@@ -68,6 +73,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "获取客户的默认联系人")
     @GetMapping("/default/{clientId}")
+    @PreAuthorize(CLIENT_VIEW)
     public CommonResult<ContactVO> getDefaultContact(@PathVariable("clientId") Long clientId) {
         return success(contactService.getDefaultContact(clientId));
     }
@@ -77,6 +83,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "新增联系人")
     @PostMapping
+    @PreAuthorize(CLIENT_CREATE)
     public CommonResult<Long> add(@Validated @RequestBody ContactCreateDTO dto) {
         return success(contactService.createContact(dto));
     }
@@ -86,6 +93,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "修改联系人")
     @PutMapping
+    @PreAuthorize(CLIENT_EDIT)
     public CommonResult<Boolean> update(@Validated @RequestBody ContactCreateDTO dto) {
         contactService.updateContact(dto);
         return success(true);
@@ -96,6 +104,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "删除联系人")
     @DeleteMapping("/{id}")
+    @PreAuthorize(CLIENT_DELETE)
     public CommonResult<Boolean> remove(@PathVariable("id") Long id) {
         contactService.deleteContact(id);
         return success(true);
@@ -106,6 +115,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "设置默认联系人")
     @PutMapping("/default/{id}")
+    @PreAuthorize(CLIENT_EDIT)
     public CommonResult<Boolean> setDefault(@PathVariable("id") Long id) {
         contactService.setDefault(id, 1); // 1表示设为默认
         return success(true);
@@ -116,6 +126,7 @@ public class ContactController extends BaseController {
      */
     @Operation(summary = "批量删除联系人")
     @DeleteMapping("/batch/{ids}")
+    @PreAuthorize(CLIENT_DELETE)
     public CommonResult<Boolean> batchRemove(@PathVariable("ids") Long[] ids) {
         for (Long id : ids) {
             contactService.deleteContact(id);

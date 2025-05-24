@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.lawfirm.finance.constant.FinanceConstants;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,6 +34,7 @@ public class AccountController {
     
     @PostMapping
     @Operation(summary = "创建账户", description = "创建新的账户")
+    @PreAuthorize(FINANCE_CREATE)
     public ResponseEntity<Account> createAccount(@RequestBody @Validated AccountCreateDTO createDTO) {
         log.info("创建账户: {}", createDTO);
         Account account = new Account();
@@ -56,6 +59,7 @@ public class AccountController {
     
     @GetMapping("/{id}")
     @Operation(summary = "获取账户详情", description = "根据ID获取账户详情")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<Account> getAccount(
             @Parameter(description = "账户ID") @PathVariable Long id) {
         log.info("获取账户详情, id: {}", id);
@@ -64,6 +68,7 @@ public class AccountController {
     
     @PutMapping("/{id}")
     @Operation(summary = "更新账户", description = "更新账户信息")
+    @PreAuthorize(FINANCE_EDIT)
     public ResponseEntity<Account> updateAccount(
             @Parameter(description = "账户ID") @PathVariable Long id,
             @RequestBody @Validated AccountUpdateDTO updateDTO) {
@@ -96,6 +101,7 @@ public class AccountController {
     
     @DeleteMapping("/{id}")
     @Operation(summary = "删除账户", description = "根据ID删除账户")
+    @PreAuthorize(FINANCE_DELETE)
     public ResponseEntity<Void> deleteAccount(
             @Parameter(description = "账户ID") @PathVariable Long id) {
         log.info("删除账户, id: {}", id);
@@ -109,6 +115,7 @@ public class AccountController {
     
     @GetMapping
     @Operation(summary = "查询账户列表", description = "根据条件查询账户列表")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<List<Account>> listAccounts(
             @Parameter(description = "账户状态") @RequestParam(required = false) Integer status) {
         log.info("查询账户列表, status: {}", status);
@@ -118,6 +125,7 @@ public class AccountController {
     
     @GetMapping("/page")
     @Operation(summary = "分页查询账户", description = "分页查询账户信息")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<IPage<Account>> pageAccounts(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer size,
@@ -129,6 +137,7 @@ public class AccountController {
     
     @PostMapping("/{id}/increase")
     @Operation(summary = "增加账户余额", description = "增加指定账户的余额")
+    @PreAuthorize(FINANCE_EDIT)
     public ResponseEntity<Void> increaseBalance(
             @Parameter(description = "账户ID") @PathVariable Long id,
             @Parameter(description = "增加金额") @RequestParam BigDecimal amount,
@@ -144,6 +153,7 @@ public class AccountController {
     
     @PostMapping("/{id}/decrease")
     @Operation(summary = "减少账户余额", description = "减少指定账户的余额")
+    @PreAuthorize(FINANCE_EDIT)
     public ResponseEntity<Void> decreaseBalance(
             @Parameter(description = "账户ID") @PathVariable Long id,
             @Parameter(description = "减少金额") @RequestParam BigDecimal amount,
@@ -159,6 +169,7 @@ public class AccountController {
     
     @PostMapping("/{id}/freeze")
     @Operation(summary = "冻结账户金额", description = "冻结指定账户的部分金额")
+    @PreAuthorize(FINANCE_EDIT)
     public ResponseEntity<Void> freezeAmount(
             @Parameter(description = "账户ID") @PathVariable Long id,
             @Parameter(description = "冻结金额") @RequestParam BigDecimal amount,
@@ -174,6 +185,7 @@ public class AccountController {
     
     @PostMapping("/{id}/unfreeze")
     @Operation(summary = "解冻账户金额", description = "解冻指定账户的部分金额")
+    @PreAuthorize(FINANCE_EDIT)
     public ResponseEntity<Void> unfreezeAmount(
             @Parameter(description = "账户ID") @PathVariable Long id,
             @Parameter(description = "解冻金额") @RequestParam BigDecimal amount,
@@ -189,6 +201,7 @@ public class AccountController {
     
     @PostMapping("/{id}/transfer")
     @Operation(summary = "账户转账", description = "从指定账户转账到目标账户")
+    @PreAuthorize(FINANCE_EDIT)
     public ResponseEntity<Long> transfer(
             @Parameter(description = "源账户ID") @PathVariable Long id,
             @Parameter(description = "目标账户ID") @RequestParam Long toAccountId,
@@ -202,6 +215,7 @@ public class AccountController {
     
     @GetMapping("/{id}/transactions")
     @Operation(summary = "查询账户交易记录", description = "查询指定账户的交易记录")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<List<Transaction>> listAccountTransactions(
             @Parameter(description = "账户ID") @PathVariable Long id,
             @Parameter(description = "开始时间") @RequestParam(required = false) String startTime,
@@ -213,6 +227,7 @@ public class AccountController {
     
     @GetMapping("/{id}/transactions/page")
     @Operation(summary = "分页查询账户交易记录", description = "分页查询指定账户的交易记录")
+    @PreAuthorize(FINANCE_VIEW)
     public ResponseEntity<IPage<Transaction>> pageAccountTransactions(
             @Parameter(description = "账户ID") @PathVariable Long id,
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer current,

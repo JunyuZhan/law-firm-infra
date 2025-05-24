@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import com.lawfirm.archive.constant.ArchiveBusinessConstants;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ public class ArchiveSyncController {
      */
     @PostMapping("/single")
     @Operation(summary = "同步单个档案", description = "同步单个档案到外部系统")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Boolean> syncArchive(
             @Parameter(description = "档案ID") @RequestParam String archiveId,
             @Parameter(description = "外部系统编码") @RequestParam String systemCode) {
@@ -46,6 +49,7 @@ public class ArchiveSyncController {
      */
     @PostMapping("/batch")
     @Operation(summary = "批量同步档案", description = "批量同步档案到外部系统")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Map<String, Boolean>> batchSyncArchives(
             @Parameter(description = "档案ID列表") @RequestBody List<String> archiveIds,
             @Parameter(description = "外部系统编码") @RequestParam String systemCode) {
@@ -59,6 +63,7 @@ public class ArchiveSyncController {
      */
     @PostMapping("/pending")
     @Operation(summary = "同步所有未同步档案", description = "同步所有未同步的档案到外部系统")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Map<String, Boolean>> syncPendingArchives(
             @Parameter(description = "外部系统编码") @RequestParam String systemCode) {
         
@@ -71,6 +76,7 @@ public class ArchiveSyncController {
      */
     @PostMapping("/config")
     @Operation(summary = "添加或更新同步配置", description = "添加或更新外部系统同步配置")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Boolean> saveOrUpdateSyncConfig(@RequestBody SyncConfigDTO syncConfigDTO) {
         
         boolean result = archiveSyncService.saveOrUpdateSyncConfig(syncConfigDTO);
@@ -82,6 +88,7 @@ public class ArchiveSyncController {
      */
     @GetMapping("/config/{systemCode}")
     @Operation(summary = "获取同步配置详情", description = "获取外部系统同步配置详情")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<SyncConfigDTO> getSyncConfig(@PathVariable String systemCode) {
         
         SyncConfigDTO config = archiveSyncService.getSyncConfig(systemCode);
@@ -93,6 +100,7 @@ public class ArchiveSyncController {
      */
     @GetMapping("/config/list")
     @Operation(summary = "获取所有同步配置", description = "获取所有外部系统同步配置")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<List<SyncConfigDTO>> listAllSyncConfigs() {
         
         List<SyncConfigDTO> configs = archiveSyncService.listAllSyncConfigs();
@@ -104,6 +112,7 @@ public class ArchiveSyncController {
      */
     @DeleteMapping("/config/{systemCode}")
     @Operation(summary = "删除同步配置", description = "删除外部系统同步配置")
+    @PreAuthorize(ARCHIVE_DELETE)
     public CommonResult<Boolean> deleteSyncConfig(@PathVariable String systemCode) {
         
         boolean result = archiveSyncService.deleteSyncConfig(systemCode);
@@ -115,6 +124,7 @@ public class ArchiveSyncController {
      */
     @PutMapping("/config/{systemCode}/enable")
     @Operation(summary = "启用同步配置", description = "启用外部系统同步配置")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Boolean> enableSyncConfig(@PathVariable String systemCode) {
         
         boolean result = archiveSyncService.enableSyncConfig(systemCode);
@@ -126,6 +136,7 @@ public class ArchiveSyncController {
      */
     @PutMapping("/config/{systemCode}/disable")
     @Operation(summary = "禁用同步配置", description = "禁用外部系统同步配置")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Boolean> disableSyncConfig(@PathVariable String systemCode) {
         
         boolean result = archiveSyncService.disableSyncConfig(systemCode);
@@ -137,6 +148,7 @@ public class ArchiveSyncController {
      */
     @GetMapping("/records")
     @Operation(summary = "查询同步记录", description = "分页查询档案同步记录")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<Page<ArchiveSyncRecordDTO>> pageSyncRecords(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页条数") @RequestParam(defaultValue = "10") long size,

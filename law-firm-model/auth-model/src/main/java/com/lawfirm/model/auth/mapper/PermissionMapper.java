@@ -30,6 +30,7 @@ public interface PermissionMapper extends BaseMapper<Permission> {
      * 
      * @return 权限列表
      */
+    @Select("SELECT * FROM auth_permission WHERE deleted = 0 ORDER BY sort")
     List<Permission> selectAll();
     
     /**

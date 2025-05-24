@@ -39,6 +39,11 @@ public class ModelConfig {
     private Map<String, ModelParam> modelParams = new HashMap<>();
     
     /**
+     * Deepseek配置
+     */
+    private DeepseekConfig deepseek = new DeepseekConfig();
+    
+    /**
      * OpenAI配置
      */
     @Data
@@ -155,5 +160,21 @@ public class ModelConfig {
          * 主题惩罚
          */
         private Float presencePenalty = 0.0f;
+    }
+
+    @Data
+    public static class DeepseekConfig {
+        /**
+         * API密钥
+         */
+        private String apiKey;
+        /**
+         * 接口地址
+         */
+        private String endpoint;
+        /**
+         * 默认模型
+         */
+        private String modelName;
     }
 } 

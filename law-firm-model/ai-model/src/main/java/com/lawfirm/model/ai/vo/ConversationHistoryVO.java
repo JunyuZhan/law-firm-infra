@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 会话历史VO
@@ -16,12 +17,19 @@ public class ConversationHistoryVO extends BaseVO {
     
     private static final long serialVersionUID = 1L;
     
+    @Schema(description = "会话ID")
     private String conversationId;   // 会话ID
+    @Schema(description = "用户ID")
     private String userId;           // 用户ID
+    @Schema(description = "会话标题")
     private String title;            // 会话标题
+    @Schema(description = "最后活动时间")
     private Date lastActiveTime;     // 最后活动时间
+    @Schema(description = "会话状态：active进行中/closed已结束")
     private String conversationStatus; // 会话状态：active进行中/closed已结束
+    @Schema(description = "使用的模型ID")
     private String modelId;          // 使用的模型ID
+    @Schema(description = "消息列表")
     private transient List<MessageVO> messages; // 消息列表
     
     /**
@@ -48,10 +56,15 @@ public class ConversationHistoryVO extends BaseVO {
     public static class MessageVO implements Serializable {
         private static final long serialVersionUID = 1L;
         
+        @Schema(description = "消息ID")
         private String messageId;   // 消息ID
+        @Schema(description = "角色：user用户/assistant助手/system系统")
         private String role;        // 角色：user用户/assistant助手/system系统
+        @Schema(description = "消息内容")
         private String content;     // 消息内容
+        @Schema(description = "消息时间")
         private Date timestamp;     // 消息时间
+        @Schema(description = "引用列表（可选）")
         private transient List<String> references; // 引用列表（可选）
         
         public MessageVO() {

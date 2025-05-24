@@ -2,6 +2,7 @@ package com.lawfirm.model.ai.entity;
 
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * AI模型配置实体类
@@ -11,20 +12,35 @@ public class AIModelConfig extends ModelBaseEntity {
     
     private static final long serialVersionUID = 1L;
     
+    @Schema(description = "模型ID")
     private String modelId;          // 模型ID
+    @Schema(description = "模型名称")
     private String modelName;        // 模型名称
+    @Schema(description = "服务提供商（如OpenAI、百度、Deepseek等）")
     private String provider;         // 服务提供商（如OpenAI、百度等）
+    @Schema(description = "模型类型")
     private String modelType;        // 模型类型
+    @Schema(description = "API版本")
     private String apiVersion;       // API版本
+    @Schema(description = "模型版本")
     private String modelVersion;     // 模型版本
+    @Schema(description = "服务端点URL")
     private String endpoint;         // 服务端点URL
+    @Schema(description = "API密钥（加密存储）")
     private String apiKey;           // API密钥（加密存储）
+    @Schema(description = "最大Token数")
     private Integer maxTokens;       // 最大Token数
+    @Schema(description = "温度参数（控制创造性，0-2）")
     private Double temperature;      // 温度参数（控制创造性，0-2）
+    @Schema(description = "Top P参数")
     private Double topP;             // Top P参数
+    @Schema(description = "提示词模板（系统提示词）")
     private String promptTemplate;   // 提示词模板（系统提示词）
+    @Schema(description = "最后使用时间")
     private LocalDateTime lastUsedTime; // 最后使用时间
+    @Schema(description = "额外配置（JSON格式）")
     private String configJson;       // 额外配置（JSON格式）
+    @Schema(description = "描述")
     private String description;      // 描述
     
     /**

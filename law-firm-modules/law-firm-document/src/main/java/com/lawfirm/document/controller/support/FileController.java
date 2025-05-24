@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Qualifier;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +57,7 @@ public class FileController {
         summary = "上传文档文件",
         description = "上传文档文件到指定的存储桶，支持多种文件格式，返回文件对象信息，包含文件ID、URL等"
     )
+    @PreAuthorize(DOCUMENT_CREATE)
     public CommonResult<FileObject> uploadFile(
             @Parameter(description = "文件") @RequestPart("file") MultipartFile file,
             @Parameter(description = "存储桶ID") @RequestParam(required = false, defaultValue = "1") Long bucketId) throws IOException {
@@ -78,6 +81,7 @@ public class FileController {
         summary = "下载文档",
         description = "根据文档ID下载文件，支持所有文件格式，返回文件流。自动设置文件名和相关响应头"
     )
+    @PreAuthorize(DOCUMENT_VIEW)
     public ResponseEntity<InputStreamResource> downloadFile(
             @Parameter(description = "文档ID") @PathVariable Long id) throws IOException {
         // 获取文档输入流
@@ -113,6 +117,7 @@ public class FileController {
         summary = "获取文档访问URL",
         description = "获取文档的访问URL，可用于在线预览或下载。URL的有效期和访问权限由存储系统控制"
     )
+    @PreAuthorize(DOCUMENT_VIEW)
     public CommonResult<String> getDocumentUrl(
             @Parameter(description = "文档ID") @PathVariable Long id) {
         String url = documentService.getDocumentUrl(id);

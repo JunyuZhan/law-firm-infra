@@ -34,6 +34,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import com.lawfirm.model.auth.annotation.RequiresPermission;
 import com.lawfirm.model.auth.enums.OperationTypeEnum;
 import com.lawfirm.model.auth.enums.ModuleTypeEnum;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import com.lawfirm.cases.core.ai.CaseAIManager;
 
 import java.util.List;
 import java.util.Map;
@@ -52,14 +54,15 @@ public class CaseController {
     private final CaseService caseService;
     @Autowired
     private CaseEvidenceBizService caseEvidenceBizService;
+    @Autowired
+    private CaseAIManager caseAIManager;
 
     @Operation(
         summary = "创建案件",
         description = "创建新的案件记录，包括案件基本信息（案件名称、案由、受理法院等）、当事人信息（原告、被告等）、代理律师、收费信息等"
     )
     @PostMapping
-    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.CREATE, message = "无案件创建权限")
-    @PreAuthorize("hasAuthority('case:create')")
+    @PreAuthorize(CASE_CREATE)
     public Long createCase(
             @Parameter(description = "案件创建参数，包括：\n" +
                     "1. 案件基本信息：案件名称、案由、受理法院、案件类型等\n" +
@@ -76,8 +79,7 @@ public class CaseController {
         description = "更新已有案件的基本信息，包括案件进展情况、当事人信息变更、代理律师调整等，注意已归档的案件不能更新"
     )
     @PutMapping("/{id}")
-    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.EDIT, message = "无案件编辑权限")
-    @PreAuthorize("hasAuthority('case:edit')")
+    @PreAuthorize(CASE_EDIT)
     public boolean updateCase(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id, 
@@ -99,8 +101,7 @@ public class CaseController {
                 "3. 已归档的案件不能删除"
     )
     @DeleteMapping("/{id}")
-    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.DELETE, message = "无案件删除权限")
-    @PreAuthorize("hasAuthority('case:delete')")
+    @PreAuthorize(CASE_DELETE)
     public boolean deleteCase(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id) {
@@ -118,8 +119,7 @@ public class CaseController {
                 "5. 相关统计：文档数量、费用总额等"
     )
     @GetMapping("/{id}")
-    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.READ_ONLY, message = "无案件查看权限")
-    @PreAuthorize("hasAuthority('case:view')")
+    @PreAuthorize(CASE_VIEW)
     public CaseDetailVO getCaseDetail(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id) {
@@ -137,8 +137,7 @@ public class CaseController {
                 "5. 时间范围：立案时间、归档时间等"
     )
     @GetMapping
-    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.READ_ONLY, message = "无案件查看权限")
-    @PreAuthorize("hasAuthority('case:view')")
+    @PreAuthorize(CASE_VIEW)
     public IPage<CaseQueryVO> pageCases(
             @Parameter(description = "查询参数，包括：\n" +
                     "1. 分页参数：页码、每页大小\n" +
@@ -159,7 +158,7 @@ public class CaseController {
                 "5. 完成：案件已正常办结"
     )
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('case:edit')")
+    @PreAuthorize(CASE_EDIT)
     public boolean changeStatus(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id,
@@ -179,8 +178,7 @@ public class CaseController {
                 "3. 审批通过后状态才会实际变更"
     )
     @PutMapping("/{id}/status/approve")
-    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.APPROVE, message = "无案件审批权限")
-    @PreAuthorize("hasAuthority('case:approve')")
+    @PreAuthorize(CASE_APPROVE)
     public boolean approveStatusChange(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id,
@@ -201,8 +199,7 @@ public class CaseController {
                 "4. 归档后案件信息将锁定，不能修改"
     )
     @PutMapping("/{id}/archive")
-    @RequiresPermission(module = ModuleTypeEnum.DOCUMENT, operation = OperationTypeEnum.ARCHIVE, message = "无案件归档权限")
-    @PreAuthorize("hasAuthority('case:archive')")
+    @PreAuthorize(CASE_ARCHIVE)
     public boolean archiveCase(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id) {
@@ -218,7 +215,7 @@ public class CaseController {
                 "3. 激活后案件状态将恢复为'进行中'"
     )
     @PutMapping("/{id}/reactivate")
-    @PreAuthorize("hasAuthority('case:edit')")
+    @PreAuthorize(CASE_EDIT)
     public boolean reactivateCase(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id,
@@ -236,7 +233,7 @@ public class CaseController {
                 "3. 案件审批人的案件\n"
     )
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAuthority('case:view')")
+    @PreAuthorize(CASE_VIEW)
     public List<CaseQueryVO> getUserCases(
             @Parameter(description = "用户ID") 
             @PathVariable("userId") Long userId) {
@@ -254,7 +251,7 @@ public class CaseController {
                 "4. 相似案例参考"
     )
     @GetMapping("/{id}/risk-assessment")
-    @PreAuthorize("hasAuthority('case:view')")
+    @PreAuthorize(CASE_VIEW)
     public Map<String, Object> assessCaseRisk(
             @Parameter(description = "案件ID") 
             @PathVariable("id") Long id) {
@@ -387,7 +384,7 @@ public class CaseController {
 
     @Operation(summary = "批量删除案件下的证据")
     @DeleteMapping("/{caseId}/evidences/batch-delete")
-    @PreAuthorize("hasAuthority('case:evidence:delete')")
+    @PreAuthorize(EVIDENCE_DELETE)
     public ResponseEntity<Void> batchDeleteEvidence(@PathVariable Long caseId, @RequestBody List<Long> evidenceIds) {
         for (Long evidenceId : evidenceIds) {
             EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
@@ -401,7 +398,7 @@ public class CaseController {
 
     @Operation(summary = "批量新增案件下证据")
     @PostMapping("/{caseId}/evidences/batch-add")
-    @PreAuthorize("hasAuthority('case:evidence:add')")
+    @PreAuthorize(EVIDENCE_CREATE)
     public ResponseEntity<List<Long>> batchAddEvidence(@PathVariable Long caseId, @RequestBody List<EvidenceDTO> dtos) {
         for (EvidenceDTO dto : dtos) {
             dto.setCaseId(caseId);
@@ -412,7 +409,7 @@ public class CaseController {
 
     @Operation(summary = "批量归档案件下证据")
     @PostMapping("/{caseId}/evidences/batch-archive")
-    @PreAuthorize("hasAuthority('case:evidence:archive')")
+    @PreAuthorize(EVIDENCE_ARCHIVE)
     public ResponseEntity<Void> batchArchiveEvidence(@PathVariable Long caseId, @RequestBody List<Long> evidenceIds) {
         for (Long evidenceId : evidenceIds) {
             EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
@@ -426,7 +423,7 @@ public class CaseController {
 
     @Operation(summary = "批量为证据添加标签")
     @PostMapping("/{caseId}/evidences/{evidenceId}/tags/batch-add")
-    @PreAuthorize("hasAuthority('case:evidence:tag:add')")
+    @PreAuthorize(EVIDENCE_TAG_ADD)
     public ResponseEntity<Void> batchAddEvidenceTags(@PathVariable Long caseId, @PathVariable Long evidenceId, @RequestBody List<EvidenceTagRelationDTO> dtos) {
         for (EvidenceTagRelationDTO dto : dtos) {
             dto.setEvidenceId(evidenceId);
@@ -437,7 +434,7 @@ public class CaseController {
 
     @Operation(summary = "批量删除证据标签")
     @DeleteMapping("/{caseId}/evidences/{evidenceId}/tags/batch-delete")
-    @PreAuthorize("hasAuthority('case:evidence:tag:delete')")
+    @PreAuthorize(EVIDENCE_TAG_DELETE)
     public ResponseEntity<Void> batchDeleteEvidenceTags(@PathVariable Long caseId, @PathVariable Long evidenceId, @RequestBody List<Long> tagRelationIds) {
         caseEvidenceBizService.batchDeleteEvidenceTags(tagRelationIds);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -445,7 +442,7 @@ public class CaseController {
 
     @Operation(summary = "批量导出案件下证据")
     @PostMapping("/{caseId}/evidences/batch-export")
-    @PreAuthorize("hasAuthority('case:evidence:export')")
+    @PreAuthorize(EVIDENCE_EXPORT)
     public ResponseEntity<byte[]> batchExportEvidence(@PathVariable Long caseId, @RequestBody List<Long> evidenceIds) {
         for (Long evidenceId : evidenceIds) {
             EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
@@ -462,7 +459,7 @@ public class CaseController {
 
     @Operation(summary = "批量导出案件下证据（PDF）")
     @PostMapping("/{caseId}/evidences/batch-export-pdf")
-    @PreAuthorize("hasAuthority('case:evidence:export')")
+    @PreAuthorize(EVIDENCE_EXPORT)
     public ResponseEntity<byte[]> batchExportEvidencePdf(@PathVariable Long caseId, @RequestBody List<Long> evidenceIds) {
         for (Long evidenceId : evidenceIds) {
             EvidenceVO vo = caseEvidenceBizService.getEvidenceDetail(evidenceId);
@@ -475,6 +472,121 @@ public class CaseController {
             .header("Content-Disposition", "attachment; filename=evidence_export.pdf")
             .header("Content-Type", "application/pdf")
             .body(fileBytes);
+    }
+
+    @Operation(summary = "AI要素抽取", description = "对案件描述进行AI要素抽取")
+    @GetMapping("/{id}/ai-extract")
+    @PreAuthorize(CASE_VIEW)
+    public Map<String, Object> aiExtract(@Parameter(description = "案件ID") @PathVariable Long id) {
+        return caseService.extractCaseElements(id);
+    }
+
+    @Operation(summary = "AI自动摘要", description = "对案件描述进行AI自动摘要")
+    @GetMapping("/{id}/ai-summary")
+    @PreAuthorize(CASE_VIEW)
+    public String aiSummary(@Parameter(description = "案件ID") @PathVariable Long id) {
+        return caseService.summarizeCase(id);
+    }
+
+    @Operation(summary = "AI自动生成案件文书", description = "根据案件信息自动生成指定类型的法律文书")
+    @GetMapping("/{id}/ai-generate-doc")
+    @PreAuthorize(CASE_VIEW)
+    public String aiGenerateDoc(@Parameter(description = "案件ID") @PathVariable Long id,
+                                @Parameter(description = "文书类型，如起诉状/答辩状/委托书等") @RequestParam String type) {
+        return caseService.generateCaseDocument(id, type);
+    }
+
+    /**
+     * AI案件自动生成文书（支持多类型、风格、要素补全、批量生成）
+     */
+    @PostMapping("/ai/generate-document")
+    @io.swagger.v3.oas.annotations.Operation(summary = "AI自动生成案件文书（多类型/风格/批量）")
+    public org.springframework.http.ResponseEntity<?> aiGenerateLegalDocument(@RequestBody java.util.Map<String, Object> body) {
+        String docType = (String) body.get("docType");
+        java.util.Map<String, Object> elements = (java.util.Map<String, Object>) body.get("elements");
+        String style = (String) body.get("style");
+        boolean batch = body.get("batch") != null && (Boolean) body.get("batch");
+        java.util.List<java.util.Map<String, Object>> batchList = (java.util.List<java.util.Map<String, Object>>) body.get("batchList");
+        return org.springframework.http.ResponseEntity.ok(caseAIManager.generateLegalDocument(docType, elements, style, batch, batchList));
+    }
+
+    /**
+     * AI案件摘要
+     */
+    @PostMapping("/ai/summary")
+    @io.swagger.v3.oas.annotations.Operation(summary = "AI案件摘要")
+    public org.springframework.http.ResponseEntity<String> aiCaseSummary(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        Integer maxLength = body.get("maxLength") != null ? (Integer) body.get("maxLength") : 200;
+        return org.springframework.http.ResponseEntity.ok(caseAIManager.generateDocumentSummary(content, maxLength));
+    }
+
+    /**
+     * AI案件查重/相似度分析
+     */
+    @PostMapping("/ai/similarity")
+    @io.swagger.v3.oas.annotations.Operation(summary = "AI案件查重/相似度分析")
+    public org.springframework.http.ResponseEntity<java.util.List<java.util.Map<String, Object>>> aiCaseSimilarity(@RequestBody java.util.Map<String, Object> body) {
+        String description = (String) body.get("description");
+        Integer limit = body.get("limit") != null ? (Integer) body.get("limit") : 5;
+        return org.springframework.http.ResponseEntity.ok(caseAIManager.getSimilarCaseRecommendations(description, limit));
+    }
+
+    /**
+     * AI案件要素抽取
+     */
+    @PostMapping("/ai/extract")
+    @io.swagger.v3.oas.annotations.Operation(summary = "AI案件要素抽取")
+    public org.springframework.http.ResponseEntity<java.util.Map<String, Object>> aiCaseExtract(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        return org.springframework.http.ResponseEntity.ok(caseAIManager.extractCaseKeyElements(content));
+    }
+
+    /**
+     * AI案件风险评估
+     */
+    @PostMapping("/ai/risk")
+    @io.swagger.v3.oas.annotations.Operation(summary = "AI案件风险评估")
+    public org.springframework.http.ResponseEntity<java.util.Map<String, Object>> aiCaseRisk(@RequestBody java.util.Map<String, Object> body) {
+        Long caseId = body.get("caseId") != null ? Long.valueOf(body.get("caseId").toString()) : null;
+        java.util.Map<String, Object> caseData = (java.util.Map<String, Object>) body.get("caseData");
+        return org.springframework.http.ResponseEntity.ok(caseAIManager.getCaseRiskAssessment(caseId, caseData));
+    }
+
+    /**
+     * AI案件智能问答
+     */
+    @PostMapping("/ai/qa")
+    @io.swagger.v3.oas.annotations.Operation(summary = "AI案件智能问答")
+    public org.springframework.http.ResponseEntity<String> aiCaseQA(@RequestBody java.util.Map<String, Object> body) {
+        // 复用文档问答能力或后续扩展
+        // 这里假设有caseAIManager.caseQA(question, content)
+        String question = (String) body.get("question");
+        String content = (String) body.get("content");
+        // 若caseAIManager未实现caseQA，可调用generateDocumentSummary等通用能力
+        return org.springframework.http.ResponseEntity.ok("暂未实现专用案件问答，可扩展");
+    }
+
+    /**
+     * AI相似案例推荐
+     */
+    @PostMapping("/ai/recommend")
+    @io.swagger.v3.oas.annotations.Operation(summary = "AI相似案例推荐")
+    public org.springframework.http.ResponseEntity<java.util.List<java.util.Map<String, Object>>> aiCaseRecommend(@RequestBody java.util.Map<String, Object> body) {
+        String description = (String) body.get("description");
+        Integer limit = body.get("limit") != null ? (Integer) body.get("limit") : 5;
+        return org.springframework.http.ResponseEntity.ok(caseAIManager.getSimilarCaseRecommendations(description, limit));
+    }
+
+    /**
+     * AI案件文书纠错与润色
+     */
+    @PostMapping("/ai/proofread")
+    @io.swagger.v3.oas.annotations.Operation(summary = "AI案件文书纠错与润色")
+    public org.springframework.http.ResponseEntity<String> aiCaseProofread(@RequestBody java.util.Map<String, Object> body) {
+        // 这里假设有caseAIManager.proofreadAndPolish(content)
+        String content = (String) body.get("content");
+        return org.springframework.http.ResponseEntity.ok("暂未实现专用案件文书纠错润色，可扩展");
     }
 
     /**

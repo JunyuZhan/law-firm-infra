@@ -9,10 +9,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 工作任务评论控制器
@@ -30,6 +33,7 @@ public class WorkTaskCommentController {
      * 添加任务评论
      */
     @Operation(summary = "添加任务评论", description = "为工作任务添加评论")
+    @PreAuthorize("hasAuthority('" + TASK_COMMENT_CREATE + "')")
     @PostMapping
     public CommonResult<Long> addComment(
             @Parameter(description = "任务ID") 
@@ -46,6 +50,7 @@ public class WorkTaskCommentController {
      * 删除任务评论
      */
     @Operation(summary = "删除任务评论", description = "删除指定的任务评论")
+    @PreAuthorize("hasAuthority('" + TASK_COMMENT_DELETE + "')")
     @DeleteMapping("/{commentId}")
     public CommonResult<Void> deleteComment(
             @Parameter(description = "任务ID") 
@@ -61,6 +66,7 @@ public class WorkTaskCommentController {
      * 获取任务评论详情
      */
     @Operation(summary = "获取任务评论详情", description = "获取任务评论的详细信息")
+    @PreAuthorize("hasAuthority('" + TASK_COMMENT_VIEW + "')")
     @GetMapping("/{commentId}")
     public CommonResult<WorkTaskCommentDTO> getCommentDetail(
             @Parameter(description = "任务ID") 
@@ -75,6 +81,7 @@ public class WorkTaskCommentController {
      * 获取任务评论列表
      */
     @Operation(summary = "获取任务评论列表", description = "获取指定任务的所有评论")
+    @PreAuthorize("hasAuthority('" + TASK_COMMENT_VIEW + "')")
     @GetMapping("/list")
     public CommonResult<List<WorkTaskCommentDTO>> getTaskComments(
             @Parameter(description = "任务ID") 
@@ -87,6 +94,7 @@ public class WorkTaskCommentController {
      * 回复任务评论
      */
     @Operation(summary = "回复任务评论", description = "回复指定的任务评论")
+    @PreAuthorize("hasAuthority('" + TASK_COMMENT_CREATE + "')")
     @PostMapping("/{parentId}/reply")
     public CommonResult<Long> replyComment(
             @Parameter(description = "任务ID") 

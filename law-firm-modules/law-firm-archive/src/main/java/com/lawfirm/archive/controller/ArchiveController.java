@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.lawfirm.archive.constant.ArchiveBusinessConstants;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +67,7 @@ public class ArchiveController {
      */
     @PostMapping("/case/archive")
     @Operation(summary = "案件归档", description = "接收案件管理模块归档请求")
+    @PreAuthorize(ARCHIVE_CREATE)
     public CommonResult<String> archiveCase(@RequestBody @Validated CaseArchiveDTO archiveDTO) {
         log.info("接收案件归档请求，caseId={}", archiveDTO.getCaseId());
         
@@ -116,6 +119,7 @@ public class ArchiveController {
      */
     @GetMapping("/list")
     @Operation(summary = "获取档案列表", description = "根据条件查询档案列表")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<String> getArchiveList() {
         // ArchiveService没有getArchiveList方法，建议前端直接用分页接口
         return CommonResult.success("请使用分页查询接口");
@@ -126,6 +130,7 @@ public class ArchiveController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "获取档案详情", description = "根据档案ID获取详情")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<CaseArchiveDTO> getArchiveDetail(@PathVariable String id) {
         // ArchiveService没有getArchiveDetail方法，建议用getCaseArchiveDetail
         CaseArchiveDTO detail = archiveService.getCaseArchiveDetail(id);
@@ -137,6 +142,7 @@ public class ArchiveController {
      */
     @GetMapping("/no/{archiveNo}")
     @Operation(summary = "根据档案号获取详情", description = "根据档案编号获取详情")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<ArchiveMain> getArchiveByNo(@PathVariable String archiveNo) {
         ArchiveMain archive = archiveService.getArchiveByNo(archiveNo);
         if (archive == null) {
@@ -150,6 +156,7 @@ public class ArchiveController {
      */
     @PutMapping("/{id}/status")
     @Operation(summary = "更新档案状态", description = "更新档案状态")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Boolean> updateArchiveStatus(
             @PathVariable String id, 
             @RequestParam com.lawfirm.model.archive.enums.ArchiveStatusEnum status) {
@@ -186,6 +193,7 @@ public class ArchiveController {
      */
     @GetMapping("/case/{id}")
     @Operation(summary = "获取案件档案详情", description = "根据档案ID获取详情")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<CaseArchiveDTO> getCaseArchiveDetail(@PathVariable String id) {
         CaseArchiveDTO dto = archiveService.getCaseArchiveDetail(id);
         return CommonResult.success(dto);
@@ -196,6 +204,7 @@ public class ArchiveController {
      */
     @PutMapping("/case/update")
     @Operation(summary = "更新案件档案", description = "更新案件档案信息")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Boolean> updateCaseArchive(@RequestBody @Validated CaseArchiveDTO archiveDTO) {
         boolean result = archiveService.updateCaseArchive(archiveDTO);
         return CommonResult.success(result);
@@ -206,6 +215,7 @@ public class ArchiveController {
      */
     @DeleteMapping("/case/{id}")
     @Operation(summary = "删除案件档案", description = "删除案件档案")
+    @PreAuthorize(ARCHIVE_DELETE)
     public CommonResult<Boolean> deleteCaseArchive(@PathVariable String id) {
         boolean result = archiveService.deleteCaseArchive(id);
         return CommonResult.success(result);
@@ -216,6 +226,7 @@ public class ArchiveController {
      */
     @GetMapping("/case/page")
     @Operation(summary = "分页查询案件档案", description = "分页查询案件档案")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<Page<CaseArchiveDTO>> pageCaseArchive(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页条数") @RequestParam(defaultValue = "10") long size,
@@ -243,6 +254,7 @@ public class ArchiveController {
      */
     @PostMapping("/file/borrow")
     @Operation(summary = "借阅档案文件", description = "借阅档案文件")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Boolean> borrowArchiveFile(
             @Parameter(description = "文件ID") @RequestParam String fileId,
             @Parameter(description = "借阅人ID") @RequestParam String borrowerId,
@@ -257,6 +269,7 @@ public class ArchiveController {
      */
     @PostMapping("/file/return")
     @Operation(summary = "归还档案文件", description = "归还档案文件")
+    @PreAuthorize(ARCHIVE_EDIT)
     public CommonResult<Boolean> returnArchiveFile(
             @Parameter(description = "文件ID") @RequestParam String fileId) {
         
@@ -269,6 +282,7 @@ public class ArchiveController {
      */
     @GetMapping("/search")
     @Operation(summary = "档案全文检索", description = "全文检索档案内容")
+    @PreAuthorize(ARCHIVE_VIEW)
     public CommonResult<SearchVO> searchArchive(
             @Parameter(description = "搜索关键词") @RequestParam String keyword,
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") int pageNum,

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -19,18 +20,17 @@ import java.util.regex.Pattern;
 /**
  * 文本分析服务实现类
  */
+@Slf4j
 @Component("aiTextAnalysisServiceImpl")
 @RequiredArgsConstructor
 public class TextAnalysisServiceImpl implements TextAnalysisService {
-    
-    private static final Logger logger = LoggerFactory.getLogger(TextAnalysisServiceImpl.class);
     
     @Autowired
     private AIProviderFactory providerFactory;
     
     @Override
     public Map<String, Object> extractKeyInfo(String text) {
-        logger.info("提取文本关键信息");
+        log.info("提取文本关键信息");
         
         try {
             AIProvider provider = providerFactory.getDefaultProvider();
@@ -48,14 +48,14 @@ public class TextAnalysisServiceImpl implements TextAnalysisService {
             
             return keyInfo;
         } catch (Exception e) {
-            logger.error("提取文本关键信息失败", e);
+            log.error("提取文本关键信息失败", e);
             throw new AIException("提取文本关键信息失败: " + e.getMessage(), e);
         }
     }
     
     @Override
     public String generateSummary(String text, int maxLength) {
-        logger.info("生成文本摘要，最大长度: {}", maxLength);
+        log.info("生成文本摘要，最大长度: {}", maxLength);
         
         try {
             AIProvider provider = providerFactory.getDefaultProvider();
@@ -75,14 +75,14 @@ public class TextAnalysisServiceImpl implements TextAnalysisService {
             
             return summary;
         } catch (Exception e) {
-            logger.error("生成文本摘要失败", e);
+            log.error("生成文本摘要失败", e);
             throw new AIException("生成文本摘要失败: " + e.getMessage(), e);
         }
     }
     
     @Override
     public double calculateSimilarity(String text1, String text2) {
-        logger.info("计算文本相似度");
+        log.info("计算文本相似度");
         
         try {
             // 使用嵌入向量计算相似度
@@ -96,14 +96,14 @@ public class TextAnalysisServiceImpl implements TextAnalysisService {
             
             return similarity;
         } catch (Exception e) {
-            logger.error("计算文本相似度失败", e);
+            log.error("计算文本相似度失败", e);
             throw new AIException("计算文本相似度失败: " + e.getMessage(), e);
         }
     }
     
     @Override
     public Map<String, String> identifyTerms(String text) {
-        logger.info("识别文本中的专业术语");
+        log.info("识别文本中的专业术语");
         
         try {
             AIProvider provider = providerFactory.getDefaultProvider();
@@ -126,14 +126,14 @@ public class TextAnalysisServiceImpl implements TextAnalysisService {
             
             return terms;
         } catch (Exception e) {
-            logger.error("识别文本中的专业术语失败", e);
+            log.error("识别文本中的专业术语失败", e);
             throw new AIException("识别文本中的专业术语失败: " + e.getMessage(), e);
         }
     }
     
     @Override
     public Map<String, Double> classifyText(String text) {
-        logger.info("对文本进行分类");
+        log.info("对文本进行分类");
         
         try {
             AIProvider provider = providerFactory.getDefaultProvider();
@@ -155,21 +155,21 @@ public class TextAnalysisServiceImpl implements TextAnalysisService {
                     Double confidence = Double.parseDouble(entry.getValue().toString());
                     classifications.put(entry.getKey(), confidence);
                 } catch (NumberFormatException e) {
-                    logger.warn("解析分类置信度失败: {}", entry.getValue());
+                    log.warn("解析分类置信度失败: {}", entry.getValue());
                     classifications.put(entry.getKey(), 0.0);
                 }
             }
             
             return classifications;
         } catch (Exception e) {
-            logger.error("对文本进行分类失败", e);
+            log.error("对文本进行分类失败", e);
             throw new AIException("对文本进行分类失败: " + e.getMessage(), e);
         }
     }
     
     @Override
     public Map<String, List<String>> extractEntities(String text) {
-        logger.info("提取文本中的命名实体");
+        log.info("提取文本中的命名实体");
         
         try {
             AIProvider provider = providerFactory.getDefaultProvider();
@@ -201,7 +201,7 @@ public class TextAnalysisServiceImpl implements TextAnalysisService {
             
             return entities;
         } catch (Exception e) {
-            logger.error("提取文本中的命名实体失败", e);
+            log.error("提取文本中的命名实体失败", e);
             throw new AIException("提取文本中的命名实体失败: " + e.getMessage(), e);
         }
     }

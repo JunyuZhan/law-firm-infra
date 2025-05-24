@@ -9,6 +9,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import com.lawfirm.model.ai.service.QAService;
+import com.lawfirm.model.ai.service.DocProcessService;
+import com.lawfirm.model.ai.service.TextAnalysisService;
+import com.lawfirm.model.ai.service.DecisionSupportService;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.File;
 
@@ -85,5 +90,25 @@ public class KnowledgeConfig {
             log.info("知识附件最大大小: {}", knowledgeProperties.getAttachment().getMaxSize());
             log.info("知识分类最大深度: {}", knowledgeProperties.getCategory().getMaxDepth());
         }
+    }
+
+    @Bean(name = "knowledgeQAService")
+    public QAService knowledgeQAService(@Qualifier("aiQAServiceImpl") QAService qaService) {
+        return qaService;
+    }
+
+    @Bean(name = "knowledgeDocProcessService")
+    public DocProcessService knowledgeDocProcessService(@Qualifier("aiDocProcessServiceImpl") DocProcessService docProcessService) {
+        return docProcessService;
+    }
+
+    @Bean(name = "knowledgeTextAnalysisService")
+    public TextAnalysisService knowledgeTextAnalysisService(@Qualifier("aiTextAnalysisServiceImpl") TextAnalysisService textAnalysisService) {
+        return textAnalysisService;
+    }
+
+    @Bean(name = "knowledgeDecisionSupportService")
+    public DecisionSupportService knowledgeDecisionSupportService(@Qualifier("aiDecisionSupportServiceImpl") DecisionSupportService decisionSupportService) {
+        return decisionSupportService;
     }
 } 

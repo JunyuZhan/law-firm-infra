@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.lawfirm.client.constant.ClientConstants;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +36,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "获取客户的跟进记录列表")
     @GetMapping("/list/{clientId}")
+    @PreAuthorize(CLIENT_VIEW)
     public CommonResult<List<ClientFollowUp>> list(@PathVariable("clientId") Long clientId) {
         return success(followUpService.listByClientId(clientId));
     }
@@ -43,6 +46,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "分页查询跟进记录")
     @GetMapping("/page")
+    @PreAuthorize(CLIENT_VIEW)
     public CommonResult<IPage<ClientFollowUp>> page(
             @RequestParam(value = "clientId", required = false) Long clientId,
             @RequestParam(value = "status", required = false) Integer status,
@@ -58,6 +62,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "获取跟进记录详情")
     @GetMapping("/{id}")
+    @PreAuthorize(CLIENT_VIEW)
     public CommonResult<ClientFollowUp> getById(@PathVariable("id") Long id) {
         return success(followUpService.getFollowUp(id));
     }
@@ -67,6 +72,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "新增跟进记录")
     @PostMapping
+    @PreAuthorize(CLIENT_EDIT)
     public CommonResult<Long> add(@Validated @RequestBody ClientFollowUp followUp) {
         return success(followUpService.addFollowUp(followUp));
     }
@@ -76,6 +82,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "修改跟进记录")
     @PutMapping
+    @PreAuthorize(CLIENT_EDIT)
     public CommonResult<Boolean> update(@Validated @RequestBody ClientFollowUp followUp) {
         followUpService.updateFollowUp(followUp);
         return success(true);
@@ -86,6 +93,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "删除跟进记录")
     @DeleteMapping("/{id}")
+    @PreAuthorize(CLIENT_DELETE)
     public CommonResult<Boolean> remove(@PathVariable("id") Long id) {
         followUpService.deleteFollowUp(id);
         return success(true);
@@ -96,6 +104,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "完成跟进任务")
     @PostMapping("/complete/{id}")
+    @PreAuthorize(CLIENT_EDIT)
     public CommonResult<Boolean> complete(
             @PathVariable("id") Long id,
             @RequestParam("content") String content,
@@ -113,6 +122,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "取消跟进任务")
     @PostMapping("/cancel/{id}")
+    @PreAuthorize(CLIENT_EDIT)
     public CommonResult<Boolean> cancel(
             @PathVariable("id") Long id,
             @RequestParam("reason") String reason) {
@@ -125,6 +135,7 @@ public class FollowUpController extends BaseController {
      */
     @Operation(summary = "获取待处理的跟进任务")
     @GetMapping("/pending")
+    @PreAuthorize(CLIENT_VIEW)
     public CommonResult<List<ClientFollowUp>> getPendingFollowUps(
             @RequestParam(value = "startTime", required = false) LocalDateTime startTime,
             @RequestParam(value = "endTime", required = false) LocalDateTime endTime) {

@@ -37,6 +37,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+
 /**
  * 外部日历控制器
  */
@@ -55,7 +57,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "创建外部日历")
     @PostMapping
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<Long> createExternalCalendar(@Valid @RequestBody ExternalCalendarDTO calendarDTO) {
         log.info("创建外部日历：{}", calendarDTO.getName());
         Long id = externalCalendarService.createExternalCalendar(calendarDTO);
@@ -64,7 +66,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "更新外部日历")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<Boolean> updateExternalCalendar(
             @Parameter(description = "外部日历ID") @PathVariable Long id,
             @Valid @RequestBody ExternalCalendarDTO calendarDTO) {
@@ -75,7 +77,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "获取外部日历详情")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<ExternalCalendarVO> getExternalCalendarDetail(@Parameter(description = "外部日历ID") @PathVariable Long id) {
         log.info("获取外部日历详情：{}", id);
         ExternalCalendarVO calendarVO = externalCalendarService.getExternalCalendarDetail(id);
@@ -84,7 +86,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "删除外部日历")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<Boolean> deleteExternalCalendar(@Parameter(description = "外部日历ID") @PathVariable Long id) {
         log.info("删除外部日历：{}", id);
         boolean success = externalCalendarService.deleteExternalCalendar(id);
@@ -93,7 +95,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "获取用户的外部日历列表")
     @GetMapping("/list/user")
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<List<ExternalCalendarVO>> listUserExternalCalendars(
             @Parameter(description = "用户ID") @RequestParam(required = false) Long userId) {
         log.info("获取用户的外部日历列表");
@@ -103,7 +105,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "分页查询外部日历")
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<Page<ExternalCalendarVO>> pageExternalCalendars(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -118,7 +120,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "同步外部日历")
     @PostMapping("/{id}/sync")
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<Integer> syncExternalCalendar(
             @Parameter(description = "外部日历ID") @PathVariable Long id,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -130,7 +132,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "添加外部日历授权")
     @PostMapping("/authorize")
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<String> authorizeExternalCalendar(@Valid @RequestBody ExternalCalendarDTO calendarDTO) {
         log.info("添加外部日历授权：{}，提供商类型：{}", calendarDTO.getName(), calendarDTO.getProviderType());
         String authUrl = externalCalendarService.getAuthorizationUrl(calendarDTO);
@@ -150,7 +152,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "更新外部日历状态")
     @PutMapping("/{id}/status/{status}")
-    @PreAuthorize("hasAuthority('schedule:calendar:external')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EXTERNAL + "')")
     public CommonResult<Boolean> updateExternalCalendarStatus(
             @Parameter(description = "外部日历ID") @PathVariable Long id,
             @Parameter(description = "状态") @PathVariable Integer status) {
@@ -161,7 +163,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "导入iCalendar文件")
     @PostMapping("/import-ical")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:import')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_IMPORT + "')")
     public CommonResult<Integer> importICalendar(
             @Parameter(description = "iCal文件") @RequestParam("file") MultipartFile file,
             @Parameter(description = "是否覆盖已有事件") @RequestParam(defaultValue = "false") boolean override) {
@@ -179,7 +181,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "导出iCalendar文件")
     @GetMapping("/export-ical")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:export')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_EXPORT + "')")
     public ResponseEntity<InputStreamResource> exportICalendar(
             @Parameter(description = "开始时间过滤器") @RequestParam(required = false) String startTimeFilter,
             @Parameter(description = "结束时间过滤器") @RequestParam(required = false) String endTimeFilter) {
@@ -202,7 +204,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "获取已连接的日历账号")
     @GetMapping("/accounts")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_VIEW + "')")
     public CommonResult<List<ExternalCalendarAccountVO>> getConnectedAccounts() {
         log.info("获取已连接的日历账号");
         Long userId = SecurityUtils.getUserId();
@@ -212,7 +214,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "添加外部日历账号")
     @PostMapping("/accounts")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:manage')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_MANAGE + "')")
     public CommonResult<Boolean> addCalendarAccount(@Valid @RequestBody ExternalCalendarAccountDTO accountDTO) {
         log.info("添加外部日历账号：{}", accountDTO.getType());
         Long userId = SecurityUtils.getUserId();
@@ -225,7 +227,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "删除外部日历账号")
     @DeleteMapping("/accounts/{type}")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:manage')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_MANAGE + "')")
     public CommonResult<Boolean> removeCalendarAccount(@Parameter(description = "账号类型") @PathVariable String type) {
         log.info("删除外部日历账号：{}", type);
         Long userId = SecurityUtils.getUserId();
@@ -235,7 +237,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "设置同步配置")
     @PutMapping("/sync-config/{type}")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:manage')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_MANAGE + "')")
     public CommonResult<Boolean> setSyncConfig(
             @Parameter(description = "账号类型") @PathVariable String type,
             @Valid @RequestBody CalendarSyncConfigDTO configDTO) {
@@ -251,7 +253,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "获取同步配置")
     @GetMapping("/sync-config/{type}")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_VIEW + "')")
     public CommonResult<Object> getSyncConfig(@Parameter(description = "账号类型") @PathVariable String type) {
         log.info("获取同步配置：{}", type);
         Long userId = SecurityUtils.getUserId();
@@ -261,7 +263,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "立即同步")
     @PostMapping("/sync-now/{type}")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:sync')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_SYNC + "')")
     public CommonResult<Object> syncNow(@Parameter(description = "账号类型") @PathVariable String type) {
         log.info("立即同步：{}", type);
         Long userId = SecurityUtils.getUserId();
@@ -271,7 +273,7 @@ public class ExternalCalendarController {
     
     @Operation(summary = "获取同步历史")
     @GetMapping("/sync-history/{type}")
-    @PreAuthorize("hasAuthority('schedule:external-calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EXTERNAL_CALENDAR_VIEW + "')")
     public CommonResult<Page<CalendarSyncHistoryVO>> getSyncHistory(
             @Parameter(description = "账号类型") @PathVariable String type,
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,

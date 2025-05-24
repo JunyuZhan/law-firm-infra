@@ -10,15 +10,20 @@ import com.lawfirm.model.task.service.WorkTaskCommentService;
 import com.lawfirm.model.task.service.WorkTaskService;
 import com.lawfirm.model.task.vo.WorkTaskVO;
 import com.lawfirm.task.constant.TaskBusinessConstants;
+import com.lawfirm.task.service.TaskAIManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 工作任务控制器
@@ -33,10 +38,12 @@ public class WorkTaskController {
     private final WorkTaskService workTaskService;
     private final WorkTaskCommentService workTaskCommentService;
     private final WorkTaskAttachmentService workTaskAttachmentService;
+    private final TaskAIManager taskAIManager;
     
     /**
      * 创建工作任务
      */
+    @PreAuthorize("hasAuthority('" + TASK_CREATE + "')")
     @Operation(summary = "创建工作任务", description = "创建新的工作任务")
     @PostMapping
     public CommonResult<Long> createTask(
@@ -50,6 +57,7 @@ public class WorkTaskController {
     /**
      * 更新工作任务
      */
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     @Operation(summary = "更新工作任务", description = "更新已有工作任务的基本信息")
     @PutMapping("/{taskId}")
     public CommonResult<Void> updateTask(
@@ -66,6 +74,7 @@ public class WorkTaskController {
     /**
      * 删除工作任务
      */
+    @PreAuthorize("hasAuthority('" + TASK_DELETE + "')")
     @Operation(summary = "删除工作任务", description = "删除指定的工作任务记录")
     @DeleteMapping("/{taskId}")
     public CommonResult<Void> deleteTask(
@@ -79,6 +88,7 @@ public class WorkTaskController {
     /**
      * 获取工作任务详情
      */
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     @Operation(summary = "获取工作任务详情", description = "获取工作任务的详细信息")
     @GetMapping("/{taskId}")
     public CommonResult<WorkTaskDTO> getTaskDetail(
@@ -91,6 +101,7 @@ public class WorkTaskController {
     /**
      * 查询工作任务列表
      */
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     @Operation(summary = "查询工作任务列表", description = "根据条件查询工作任务列表")
     @GetMapping
     public CommonResult<List<WorkTaskDTO>> queryTaskList(
@@ -195,5 +206,81 @@ public class WorkTaskController {
             @PathVariable Long taskId) {
         log.info("获取任务附件列表: taskId={}", taskId);
         return CommonResult.success(workTaskAttachmentService.getAttachmentsByTaskId(taskId));
+    }
+
+    /**
+     * AI任务智能摘要
+     */
+    @PostMapping("/ai/summary")
+    public org.springframework.http.ResponseEntity<String> aiTaskSummary(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        Integer maxLength = body.get("maxLength") != null ? (Integer) body.get("maxLength") : 200;
+        return org.springframework.http.ResponseEntity.ok(taskAIManager.summarize(content, maxLength));
+    }
+
+    /**
+     * AI任务智能分类
+     */
+    @PostMapping("/ai/classify")
+    public org.springframework.http.ResponseEntity<java.util.Map<String, Double>> aiTaskClassify(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        return org.springframework.http.ResponseEntity.ok(taskAIManager.classify(content));
+    }
+
+    /**
+     * AI任务标签推荐
+     */
+    @PostMapping("/ai/tags")
+    public org.springframework.http.ResponseEntity<java.util.List<String>> aiTaskTags(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        Integer limit = body.get("limit") != null ? (Integer) body.get("limit") : 5;
+        return org.springframework.http.ResponseEntity.ok(taskAIManager.recommendTags(content, limit));
+    }
+
+    /**
+     * AI任务推荐
+     */
+    @PostMapping("/ai/recommend")
+    public org.springframework.http.ResponseEntity<java.util.List<java.util.Map<String, Object>>> aiTaskRecommend(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        Integer limit = body.get("limit") != null ? (Integer) body.get("limit") : 5;
+        return org.springframework.http.ResponseEntity.ok(taskAIManager.recommendTasks(content, limit));
+    }
+
+    /**
+     * AI任务智能问答
+     */
+    @PostMapping("/ai/qa")
+    public org.springframework.http.ResponseEntity<String> aiTaskQA(@RequestBody java.util.Map<String, Object> body) {
+        String question = (String) body.get("question");
+        String context = (String) body.get("content");
+        return org.springframework.http.ResponseEntity.ok(taskAIManager.qa(question, context));
+    }
+
+    /**
+     * AI任务自动生成
+     */
+    @PostMapping("/ai/generate")
+    public org.springframework.http.ResponseEntity<String> aiTaskGenerate(@RequestBody java.util.Map<String, Object> body) {
+        return org.springframework.http.ResponseEntity.ok(taskAIManager.generate(body));
+    }
+
+    /**
+     * AI任务多模型并发智能摘要
+     */
+    @PostMapping("/ai/summary/batch")
+    public org.springframework.http.ResponseEntity<java.util.Map<String, Object>> aiTaskSummaryBatch(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        java.util.List<String> modelNames = (java.util.List<String>) body.get("modelNames");
+        java.util.Map<String, Object> results = new java.util.concurrent.ConcurrentHashMap<>();
+        java.util.List<java.util.concurrent.CompletableFuture<Void>> futures = new java.util.ArrayList<>();
+        for (String model : modelNames) {
+            futures.add(java.util.concurrent.CompletableFuture.runAsync(() -> {
+                String summary = taskAIManager.summarizeWithModel(content, model, 200);
+                results.put(model, summary);
+            }));
+        }
+        java.util.concurrent.CompletableFuture.allOf(futures.toArray(new java.util.concurrent.CompletableFuture[0])).join();
+        return org.springframework.http.ResponseEntity.ok(results);
     }
 } 

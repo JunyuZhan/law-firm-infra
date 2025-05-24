@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,12 +33,14 @@ public class InvoiceController {
 
     @PostMapping
     @Operation(summary = "创建发票")
+    @PreAuthorize(FINANCE_CREATE)
     public CommonResult<Long> createInvoice(@Valid @RequestBody Invoice invoice) {
         return CommonResult.success(invoiceService.createInvoice(invoice));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新发票")
+    @PreAuthorize(FINANCE_EDIT)
     public CommonResult<Boolean> updateInvoice(@PathVariable("id") Long id, 
                                             @Valid @RequestBody Invoice invoice) {
         invoice.setId(id);
@@ -45,18 +49,21 @@ public class InvoiceController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除发票")
+    @PreAuthorize(FINANCE_DELETE)
     public CommonResult<Boolean> deleteInvoice(@PathVariable("id") Long id) {
         return CommonResult.success(invoiceService.deleteInvoice(id));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取发票详情")
+    @PreAuthorize(FINANCE_VIEW)
     public CommonResult<Invoice> getInvoice(@PathVariable("id") Long id) {
         return CommonResult.success(invoiceService.getInvoiceById(id));
     }
 
     @PutMapping("/{id}/status")
     @Operation(summary = "更新发票状态")
+    @PreAuthorize(FINANCE_EDIT)
     public CommonResult<Boolean> updateInvoiceStatus(
             @PathVariable("id") Long id,
             @Parameter(description = "发票状态") @RequestParam InvoiceStatusEnum status,
@@ -66,6 +73,7 @@ public class InvoiceController {
 
     @PutMapping("/{id}/confirm")
     @Operation(summary = "确认开票")
+    @PreAuthorize(FINANCE_EDIT)
     public CommonResult<Boolean> confirmInvoice(
             @PathVariable("id") Long id,
             @Parameter(description = "发票号码") @RequestParam String invoiceNo,
@@ -77,6 +85,7 @@ public class InvoiceController {
 
     @PutMapping("/{id}/cancel")
     @Operation(summary = "取消发票")
+    @PreAuthorize(FINANCE_EDIT)
     public CommonResult<Boolean> cancelInvoice(
             @PathVariable("id") Long id,
             @Parameter(description = "取消原因") @RequestParam String reason) {
@@ -85,6 +94,7 @@ public class InvoiceController {
 
     @GetMapping("/list")
     @Operation(summary = "查询发票列表")
+    @PreAuthorize(FINANCE_VIEW)
     public CommonResult<List<Invoice>> listInvoices(
             @Parameter(description = "发票类型") @RequestParam(required = false) InvoiceTypeEnum invoiceType,
             @Parameter(description = "发票状态") @RequestParam(required = false) InvoiceStatusEnum status,
@@ -96,6 +106,7 @@ public class InvoiceController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询发票")
+    @PreAuthorize(FINANCE_VIEW)
     public CommonResult<IPage<Invoice>> pageInvoices(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") long size,
@@ -110,12 +121,14 @@ public class InvoiceController {
 
     @GetMapping("/contract/{contractId}")
     @Operation(summary = "按合同查询发票")
+    @PreAuthorize(FINANCE_VIEW)
     public CommonResult<List<Invoice>> listInvoicesByContract(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(invoiceService.listInvoicesByContract(contractId));
     }
 
     @GetMapping("/client/{clientId}")
     @Operation(summary = "按客户查询发票")
+    @PreAuthorize(FINANCE_VIEW)
     public CommonResult<List<Invoice>> listInvoicesByClient(
             @PathVariable("clientId") Long clientId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -125,6 +138,7 @@ public class InvoiceController {
 
     @GetMapping("/export")
     @Operation(summary = "导出发票")
+    @PreAuthorize(FINANCE_VIEW)
     public CommonResult<String> exportInvoices(@Parameter(description = "发票ID列表") @RequestParam List<Long> invoiceIds) {
         return CommonResult.success(invoiceService.exportInvoices(invoiceIds));
     }

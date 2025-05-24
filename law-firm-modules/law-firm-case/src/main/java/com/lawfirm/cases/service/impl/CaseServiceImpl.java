@@ -670,4 +670,56 @@ public class CaseServiceImpl extends BaseServiceImpl<CaseMapper, Case> implement
         log.info("案件风险评估完成, ID: {}", caseId);
         return riskResult;
     }
+
+    @Override
+    public Map<String, Object> extractCaseElements(Long caseId) {
+        log.info("AI要素抽取: {}", caseId);
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
+        }
+        String content = caseEntity.getCaseDescription();
+        if (content == null || content.isEmpty()) {
+            throw new RuntimeException("案件描述为空");
+        }
+        // 调用AI能力进行要素抽取
+        return aiManager.extractDocumentInfo(content, null);
+    }
+
+    @Override
+    public String summarizeCase(Long caseId) {
+        log.info("AI自动摘要: {}", caseId);
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
+        }
+        String content = caseEntity.getCaseDescription();
+        if (content == null || content.isEmpty()) {
+            throw new RuntimeException("案件描述为空");
+        }
+        // 调用AI能力生成摘要
+        String summary = aiManager.generateDocumentSummary(content, 200);
+        if (summary == null) throw new RuntimeException("AI摘要生成失败");
+        return summary;
+    }
+
+    @Override
+    public String generateCaseDocument(Long caseId, String docType) {
+        log.info("AI自动生成案件文书: {}, 类型:{}", caseId, docType);
+        Case caseEntity = getById(caseId);
+        if (caseEntity == null) {
+            throw new RuntimeException("案件不存在: " + caseId);
+        }
+        Map<String, Object> caseInfo = new HashMap<>();
+        caseInfo.put("caseNumber", caseEntity.getCaseNumber());
+        caseInfo.put("caseName", caseEntity.getCaseName());
+        caseInfo.put("caseDescription", caseEntity.getCaseDescription());
+        caseInfo.put("clientName", caseEntity.getClientName());
+        caseInfo.put("opposingParty", caseEntity.getOpposingParty());
+        caseInfo.put("courtName", caseEntity.getCourtName());
+        // 可根据需要补充更多字段
+        String doc = aiManager.generateLegalDocumentSuggestion(docType, caseInfo);
+        if (doc == null) throw new RuntimeException("AI文书生成失败");
+        return doc;
+    }
 }

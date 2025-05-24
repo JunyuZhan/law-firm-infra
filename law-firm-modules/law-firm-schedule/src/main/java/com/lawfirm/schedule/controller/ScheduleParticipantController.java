@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 日程参与人控制器
@@ -35,7 +36,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "添加参与人")
     @PostMapping
-    @PreAuthorize("hasAuthority('schedule:participant:add')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_CREATE + "')")
     public CommonResult<Long> addParticipant(@Valid @RequestBody ScheduleParticipantDTO participantDTO) {
         log.info("添加日程参与人，日程ID：{}，参与人：{}", participantDTO.getScheduleId(), participantDTO.getParticipantId());
         
@@ -51,7 +52,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "批量添加参与人")
     @PostMapping("/batch")
-    @PreAuthorize("hasAuthority('schedule:participant:add')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_CREATE + "')")
     public CommonResult<Integer> batchAddParticipants(
             @Parameter(description = "日程ID") @RequestParam Long scheduleId,
             @Parameter(description = "参与人列表") @RequestBody List<Long> userIds) {
@@ -62,7 +63,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "移除参与人")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:participant:remove')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_DELETE + "')")
     public CommonResult<Boolean> removeParticipant(@Parameter(description = "参与人ID") @PathVariable Long id) {
         log.info("移除日程参与人，ID：{}", id);
         boolean success = participantService.removeParticipant(id);
@@ -71,7 +72,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "批量移除参与人")
     @DeleteMapping("/batch")
-    @PreAuthorize("hasAuthority('schedule:participant:remove')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_DELETE + "')")
     public CommonResult<Integer> batchRemoveParticipants(
             @Parameter(description = "日程ID") @RequestParam Long scheduleId,
             @Parameter(description = "参与人列表") @RequestBody List<Long> userIds) {
@@ -82,7 +83,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "更新参与状态")
     @PutMapping("/status")
-    @PreAuthorize("hasAuthority('schedule:participant:update')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_EDIT + "')")
     public CommonResult<Boolean> updateStatus(
             @Parameter(description = "日程ID") @RequestParam Long scheduleId,
             @Parameter(description = "状态") @RequestParam Integer status) {
@@ -94,7 +95,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "获取日程参与人列表")
     @GetMapping("/list/schedule/{scheduleId}")
-    @PreAuthorize("hasAuthority('schedule:participant:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_VIEW + "')")
     public CommonResult<List<ScheduleParticipantVO>> listByScheduleId(@Parameter(description = "日程ID") @PathVariable Long scheduleId) {
         log.info("获取日程参与人列表，日程ID：{}", scheduleId);
         List<ScheduleParticipantVO> participants = participantService.listByScheduleId(scheduleId);
@@ -103,7 +104,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "获取参与人详情")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:participant:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_VIEW + "')")
     public CommonResult<ScheduleParticipantVO> getParticipantDetail(@Parameter(description = "参与人ID") @PathVariable Long id) {
         log.info("获取参与人详情，ID：{}", id);
         ScheduleParticipantVO participantVO = participantService.getDetail(id);
@@ -112,7 +113,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "分页查询参与人")
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('schedule:participant:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_VIEW + "')")
     public CommonResult<Page<ScheduleParticipantVO>> pageParticipants(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -128,7 +129,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "检查是否参与日程")
     @GetMapping("/check")
-    @PreAuthorize("hasAuthority('schedule:participant:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_VIEW + "')")
     public CommonResult<Boolean> checkParticipation(
             @Parameter(description = "日程ID") @RequestParam Long scheduleId,
             @Parameter(description = "用户ID") @RequestParam(required = false) Long userId) {
@@ -142,7 +143,7 @@ public class ScheduleParticipantController {
     
     @Operation(summary = "获取我的参与日程")
     @GetMapping("/my")
-    @PreAuthorize("hasAuthority('schedule:participant:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_PARTICIPANT_VIEW + "')")
     public CommonResult<Page<ScheduleParticipantVO>> getMyParticipations(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,

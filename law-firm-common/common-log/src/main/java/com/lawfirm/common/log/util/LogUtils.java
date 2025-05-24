@@ -2,7 +2,7 @@ package com.lawfirm.common.log.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 /**
  * 日志工具类
  */
+@Slf4j
 @Component("commonLogUtils")
 public class LogUtils {
     private static volatile ObjectMapper staticObjectMapper;
@@ -142,22 +143,22 @@ public class LogUtils {
     /**
      * 条件日志
      */
-    public static void logIf(Logger logger, boolean condition, Supplier<String> msgSupplier) {
-        if (condition && logger.isDebugEnabled()) {
-            logger.debug(msgSupplier.get());
+    public static void logIf(boolean condition, Supplier<String> msgSupplier) {
+        if (condition && log.isDebugEnabled()) {
+            log.debug(msgSupplier.get());
         }
     }
 
     /**
      * 带性能记录的日志
      */
-    public static void logWithPerformance(Logger logger, String operation, Runnable task) {
+    public static void logWithPerformance(String operation, Runnable task) {
         long startTime = System.currentTimeMillis();
         try {
             task.run();
         } finally {
             long endTime = System.currentTimeMillis();
-            logger.info("{} took {} ms", operation, (endTime - startTime));
+            log.info("{} took {} ms", operation, (endTime - startTime));
         }
     }
 } 

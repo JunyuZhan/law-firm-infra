@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 风险评估结果VO
@@ -17,16 +18,27 @@ public class RiskAssessmentResultVO extends BaseVO {
     
     private static final long serialVersionUID = 1L;
     
+    @Schema(description = "请求ID")
     private String requestId;       // 请求ID
+    @Schema(description = "案件ID")
     private String caseId;          // 案件ID
+    @Schema(description = "案件标题")
     private String caseTitle;       // 案件标题
+    @Schema(description = "评估时间")
     private Date assessmentTime;    // 评估时间
+    @Schema(description = "总体风险评分（0-100）")
     private Double overallRiskScore; // 总体风险评分（0-100）
+    @Schema(description = "风险等级：high高/medium中/low低")
     private String riskLevel;       // 风险等级：high高/medium中/low低
+    @Schema(description = "风险因素列表")
     private transient List<RiskFactorVO> riskFactors; // 风险因素列表
+    @Schema(description = "优势点")
     private transient List<String> strengths; // 优势点
+    @Schema(description = "弱点")
     private transient List<String> weaknesses; // 弱点
+    @Schema(description = "详细分析")
     private transient Map<String, Object> detailedAnalysis; // 详细分析
+    @Schema(description = "建议行动")
     private transient List<String> recommendationActions; // 建议行动
     
     /**
@@ -56,14 +68,22 @@ public class RiskAssessmentResultVO extends BaseVO {
     public static class RiskFactorVO implements Serializable {
         private static final long serialVersionUID = 1L;
         
+        @Schema(description = "因素ID")
         private String factorId;     // 因素ID
+        @Schema(description = "因素名称")
         private String factorName;   // 因素名称
+        @Schema(description = "描述")
         private String description;  // 描述
+        @Schema(description = "分值（0-100）")
         private Double score;        // 分值（0-100）
+        @Schema(description = "级别：high高/medium中/low低")
         private String level;        // 级别：high高/medium中/low低
+        @Schema(description = "类别（如法律风险、证据风险等）")
         private String category;     // 类别（如法律风险、证据风险等）
+        @Schema(description = "解释说明")
         private String explanation;  // 解释说明
-        private transient List<String> relatedItems; // 相关项（如相关文档、法规等）
+        @Schema(description = "相关项（如相关文档、法规等）")
+        private transient List<String> relatedItems; // 相关项
         
         public RiskFactorVO() {
             this.relatedItems = new ArrayList<>();

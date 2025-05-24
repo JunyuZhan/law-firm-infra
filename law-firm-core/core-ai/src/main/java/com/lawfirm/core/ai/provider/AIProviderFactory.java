@@ -2,8 +2,7 @@ package com.lawfirm.core.ai.provider;
 
 import com.lawfirm.core.ai.exception.AIException;
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * AI服务提供者工厂类
  * 负责管理和获取不同的AI服务提供者
  */
+@Slf4j
 @Component
 public class AIProviderFactory {
-    
-    private static final Logger logger = LoggerFactory.getLogger(AIProviderFactory.class);
     
     @Autowired
     private List<AIProvider> providers;
@@ -32,10 +30,10 @@ public class AIProviderFactory {
         if (providers != null && !providers.isEmpty()) {
             for (AIProvider provider : providers) {
                 providerMap.put(provider.getName(), provider);
-                logger.info("注册AI提供者: {}", provider.getName());
+                log.info("注册AI提供者: {}", provider.getName());
             }
         } else {
-            logger.warn("没有找到任何AI提供者实现");
+            log.warn("没有找到任何AI提供者实现");
         }
     }
     
@@ -85,9 +83,9 @@ public class AIProviderFactory {
         boolean result = provider.initialize(config);
         if (result) {
             providerConfigs.put(providerName, config);
-            logger.info("成功初始化AI提供者: {}", providerName);
+            log.info("成功初始化AI提供者: {}", providerName);
         } else {
-            logger.error("初始化AI提供者失败: {}", providerName);
+            log.error("初始化AI提供者失败: {}", providerName);
         }
         return result;
     }
@@ -118,9 +116,9 @@ public class AIProviderFactory {
         for (AIProvider provider : providerMap.values()) {
             try {
                 provider.shutdown();
-                logger.info("已关闭AI提供者: {}", provider.getName());
+                log.info("已关闭AI提供者: {}", provider.getName());
             } catch (Exception e) {
-                logger.error("关闭AI提供者 {} 时发生错误", provider.getName(), e);
+                log.error("关闭AI提供者 {} 时发生错误", provider.getName(), e);
             }
         }
     }

@@ -19,6 +19,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import com.lawfirm.auth.utils.SecurityUtils;
 import com.lawfirm.model.auth.constant.AuthConstants;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 用户控制器
@@ -38,7 +39,7 @@ public class UserController {
      */
     @Operation(summary = "创建用户", description = "创建新用户")
     @PostMapping
-    @PreAuthorize("hasAuthority('sys:user:create')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_CREATE + "')")
     public CommonResult<Long> createUser(@Valid @RequestBody UserCreateDTO createDTO) {
         Long userId = userService.createUser(createDTO);
         return CommonResult.success(userId);
@@ -49,7 +50,7 @@ public class UserController {
      */
     @Operation(summary = "更新用户", description = "更新用户信息")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('sys:user:update')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_UPDATE + "')")
     public CommonResult<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO updateDTO) {
         userService.updateUser(id, updateDTO);
         return CommonResult.success();
@@ -60,7 +61,7 @@ public class UserController {
      */
     @Operation(summary = "删除用户", description = "删除指定用户")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('sys:user:delete')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_DELETE + "')")
     public CommonResult<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return CommonResult.success();
@@ -71,7 +72,7 @@ public class UserController {
      */
     @Operation(summary = "批量删除用户", description = "批量删除用户")
     @DeleteMapping("/batch")
-    @PreAuthorize("hasAuthority('sys:user:delete')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_DELETE + "')")
     public CommonResult<?> batchDeleteUsers(@RequestBody List<Long> ids) {
         userService.deleteUsers(ids);
         return CommonResult.success();
@@ -82,7 +83,7 @@ public class UserController {
      */
     @Operation(summary = "获取用户详情", description = "获取指定用户详情")
     @GetMapping("/getUser/{id}")
-    @PreAuthorize("hasAuthority('sys:user:read')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_READ + "')")
     public CommonResult<UserVO> getUser(@PathVariable Long id) {
         UserVO userVO = userService.getUserById(id);
         return CommonResult.success(userVO);
@@ -93,7 +94,7 @@ public class UserController {
      */
     @Operation(summary = "分页查询用户", description = "分页查询用户列表")
     @GetMapping("/getUserPage")
-    @PreAuthorize("hasAuthority('sys:user:read')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_READ + "')")
     public CommonResult<Page<UserVO>> getUserPage(UserQueryDTO queryDTO) {
         Page<UserVO> page = userService.pageUsers(queryDTO);
         return CommonResult.success(page);
@@ -104,7 +105,7 @@ public class UserController {
      */
     @Operation(summary = "修改密码", description = "修改用户密码")
     @PutMapping("/updatePassword/{id}")
-    @PreAuthorize("hasAuthority('sys:user:update') or #id == authentication.principal.userId")
+    @PreAuthorize("hasAuthority('" + SYS_USER_UPDATE + "') or #id == authentication.principal.userId")
     public CommonResult<?> updatePassword(@PathVariable Long id, 
                                          @RequestParam String oldPassword,
                                          @RequestParam String newPassword) {
@@ -117,7 +118,7 @@ public class UserController {
      */
     @Operation(summary = "重置密码", description = "重置用户密码")
     @PutMapping("/resetPassword/{id}")
-    @PreAuthorize("hasAuthority('sys:user:update')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_UPDATE + "')")
     public CommonResult<String> resetPassword(@PathVariable Long id) {
         String newPassword = userService.resetPassword(id);
         return CommonResult.success(newPassword);
@@ -128,7 +129,7 @@ public class UserController {
      */
     @Operation(summary = "更新用户状态", description = "启用或禁用用户")
     @PutMapping("/updateStatus/{id}")
-    @PreAuthorize("hasAuthority('sys:user:update')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_UPDATE + "')")
     public CommonResult<?> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
         userService.updateStatus(id, status);
         return CommonResult.success();
@@ -151,7 +152,7 @@ public class UserController {
      */
     @Operation(summary = "分配用户角色", description = "为用户分配角色")
     @PutMapping("/assignRoles/{id}")
-    @PreAuthorize("hasAuthority('sys:user:update')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_UPDATE + "')")
     public CommonResult<?> assignRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {
         userService.assignRoles(id, roleIds);
         return CommonResult.success();
@@ -162,7 +163,7 @@ public class UserController {
      */
     @Operation(summary = "获取用户角色ID列表", description = "获取用户已分配的角色ID列表")
     @GetMapping("/getUserRoles/{id}")
-    @PreAuthorize("hasAuthority('sys:user:read')")
+    @PreAuthorize("hasAuthority('" + SYS_USER_READ + "')")
     public CommonResult<List<Long>> getUserRoles(@PathVariable Long id) {
         List<Long> roleIds = userService.getUserRoleIds(id);
         return CommonResult.success(roleIds);

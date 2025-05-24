@@ -23,6 +23,8 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+
 /**
  * 会议室预订管理控制器
  */
@@ -38,7 +40,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "创建预订")
     @PostMapping
-    @PreAuthorize("hasAuthority('schedule:meeting:create')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_CREATE + "')")
     public CommonResult<Long> createBooking(@Valid @RequestBody MeetingRoomBookingDTO bookingDTO) {
         log.info("创建会议室预订：{}", bookingDTO.getTitle());
         Long id = bookingService.createBooking(
@@ -55,7 +57,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "更新预订")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:meeting:update')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_EDIT + "')")
     public CommonResult<Boolean> updateBooking(
             @Parameter(description = "预订ID") @PathVariable Long id,
             @Valid @RequestBody MeetingRoomBookingDTO bookingDTO) {
@@ -75,7 +77,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "获取预订详情")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_VIEW + "')")
     public CommonResult<MeetingRoomBookingVO> getBookingDetail(@Parameter(description = "预订ID") @PathVariable Long id) {
         log.info("获取会议室预订详情：{}", id);
         MeetingRoomBookingVO bookingVO = bookingService.getBookingDetail(id);
@@ -84,7 +86,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "取消预订")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:meeting:delete')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_DELETE + "')")
     public CommonResult<Boolean> cancelBooking(@Parameter(description = "预订ID") @PathVariable Long id) {
         log.info("取消会议室预订：{}", id);
         boolean success = bookingService.cancelBooking(id, SecurityUtils.getUserId());
@@ -93,7 +95,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "获取会议室的预订列表")
     @GetMapping("/list/room/{roomId}")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_VIEW + "')")
     public CommonResult<List<MeetingRoomBookingVO>> listByRoomId(
             @Parameter(description = "会议室ID") @PathVariable Long roomId,
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -105,7 +107,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "获取用户的预订列表")
     @GetMapping("/list/user/{userId}")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_VIEW + "')")
     public CommonResult<List<MeetingRoomBookingVO>> listByUserId(
             @Parameter(description = "用户ID") @PathVariable Long userId,
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -117,7 +119,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "分页查询预订")
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_VIEW + "')")
     public CommonResult<Page<MeetingRoomBookingVO>> pageBookings(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -135,7 +137,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "审核预订")
     @PutMapping("/{id}/review")
-    @PreAuthorize("hasAuthority('schedule:meeting:admin')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_EDIT + "')")
     public CommonResult<Boolean> reviewBooking(
             @Parameter(description = "预订ID") @PathVariable Long id,
             @Parameter(description = "审核状态") @RequestParam Integer status,
@@ -147,7 +149,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "检查会议室是否可用")
     @GetMapping("/check-availability")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_VIEW + "')")
     public CommonResult<Boolean> checkRoomAvailability(
             @Parameter(description = "会议室ID") @RequestParam Long roomId,
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -160,7 +162,7 @@ public class MeetingRoomBookingController {
     
     @Operation(summary = "获取我的预订列表")
     @GetMapping("/list/my")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_BOOKING_VIEW + "')")
     public CommonResult<List<MeetingRoomBookingVO>> listMyBookings(
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @Parameter(description = "结束时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {

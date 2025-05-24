@@ -9,6 +9,10 @@ import com.lawfirm.model.log.service.AuditService;
 import com.lawfirm.core.message.service.MessageSender;
 import com.lawfirm.model.search.service.SearchService;
 import com.lawfirm.model.workflow.service.ProcessService;
+import com.lawfirm.model.ai.service.QAService;
+import com.lawfirm.model.ai.service.DocProcessService;
+import com.lawfirm.model.ai.service.TextAnalysisService;
+import com.lawfirm.model.ai.service.DecisionSupportService;
 
 /**
  * 文档模块配置类
@@ -50,5 +54,25 @@ public class DocumentModuleConfig {
     @Bean(name = "documentProcessService")
     public ProcessService documentProcessService(@Qualifier("coreProcessServiceImpl") ProcessService processService) {
         return processService;
+    }
+
+    @Bean(name = "documentQAService")
+    public QAService documentQAService(@Qualifier("aiQAServiceImpl") QAService qaService) {
+        return qaService;
+    }
+
+    @Bean(name = "documentDocProcessService")
+    public DocProcessService documentDocProcessService(@Qualifier("aiDocProcessServiceImpl") DocProcessService docProcessService) {
+        return docProcessService;
+    }
+
+    @Bean(name = "documentTextAnalysisService")
+    public TextAnalysisService documentTextAnalysisService(@Qualifier("aiTextAnalysisServiceImpl") TextAnalysisService textAnalysisService) {
+        return textAnalysisService;
+    }
+
+    @Bean(name = "documentDecisionSupportService")
+    public DecisionSupportService documentDecisionSupportService(@Qualifier("aiDecisionSupportServiceImpl") DecisionSupportService decisionSupportService) {
+        return decisionSupportService;
     }
 } 

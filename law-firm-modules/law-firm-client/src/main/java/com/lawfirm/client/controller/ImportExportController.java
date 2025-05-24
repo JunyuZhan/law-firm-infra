@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.lawfirm.common.security.utils.SecurityUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -46,6 +48,7 @@ public class ImportExportController extends BaseController {
      * @return 导入结果
      */
     @PostMapping("/import")
+    @PreAuthorize(CLIENT_EDIT)
     public CommonResult<ImportResult> importClients(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return error("上传文件不能为空");
@@ -87,6 +90,7 @@ public class ImportExportController extends BaseController {
      * @param response HTTP响应
      */
     @GetMapping("/template/{type}")
+    @PreAuthorize(CLIENT_EDIT)
     public void downloadTemplate(@PathVariable("type") String type, HttpServletResponse response) {
         try {
             response.setContentType("application/octet-stream");
@@ -116,6 +120,7 @@ public class ImportExportController extends BaseController {
      * @param response HTTP响应
      */
     @GetMapping("/export")
+    @PreAuthorize(CLIENT_EDIT)
     public void exportClients(@RequestParam("ids") List<Long> ids, HttpServletResponse response) {
         try {
             // 查询客户数据

@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,6 +41,7 @@ public class ReceivableController {
      */
     @PostMapping
     @Operation(summary = "创建应收账款")
+    @PreAuthorize(FINANCE_CREATE)
     public Long createReceivable(@Valid @RequestBody Receivable receivable) {
         return receivableService.createReceivable(receivable);
     }
@@ -48,6 +51,7 @@ public class ReceivableController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "更新应收账款")
+    @PreAuthorize(FINANCE_EDIT)
     public Boolean updateReceivable(@PathVariable Long id, @Valid @RequestBody Receivable receivable) {
         receivable.setId(id);
         return receivableService.updateReceivable(receivable);
@@ -58,6 +62,7 @@ public class ReceivableController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "获取应收账款详情")
+    @PreAuthorize(FINANCE_VIEW)
     public ReceivableDetailVO getReceivable(@PathVariable Long id) {
         return receivableService.getReceivable(id);
     }
@@ -67,6 +72,7 @@ public class ReceivableController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除应收账款")
+    @PreAuthorize(FINANCE_DELETE)
     public Boolean deleteReceivable(@PathVariable Long id) {
         return receivableService.deleteReceivable(id);
     }
@@ -76,6 +82,7 @@ public class ReceivableController {
      */
     @PutMapping("/{id}/status")
     @Operation(summary = "更新应收账款状态")
+    @PreAuthorize(FINANCE_EDIT)
     public Boolean updateReceivableStatus(@PathVariable Long id, 
                                         @Parameter(description = "状态") @RequestParam ReceivableStatusEnum status,
                                         @Parameter(description = "备注") @RequestParam(required = false) String remark) {
@@ -87,6 +94,7 @@ public class ReceivableController {
      */
     @PostMapping("/{id}/receipt")
     @Operation(summary = "记录收款")
+    @PreAuthorize(FINANCE_EDIT)
     public Long recordReceipt(@PathVariable Long id,
                             @Parameter(description = "收款金额") @RequestParam BigDecimal amount,
                             @Parameter(description = "收款账户ID") @RequestParam Long accountId,
@@ -100,6 +108,7 @@ public class ReceivableController {
      */
     @GetMapping("/list")
     @Operation(summary = "查询应收账款列表")
+    @PreAuthorize(FINANCE_VIEW)
     public List<ReceivableDetailVO> listReceivables(@RequestParam(required = false) Long contractId,
                                                    @RequestParam(required = false) Long clientId,
                                                    @RequestParam(required = false) ReceivableStatusEnum status,
@@ -112,6 +121,7 @@ public class ReceivableController {
      */
     @GetMapping("/page")
     @Operation(summary = "分页查询应收账款")
+    @PreAuthorize(FINANCE_VIEW)
     public IPage<ReceivableDetailVO> pageReceivables(@RequestParam(defaultValue = "1") long current,
                                                     @RequestParam(defaultValue = "10") long size,
                                                     @RequestParam(required = false) Long contractId,
@@ -127,6 +137,7 @@ public class ReceivableController {
      */
     @GetMapping("/contract/{contractId}")
     @Operation(summary = "按合同查询应收账款")
+    @PreAuthorize(FINANCE_VIEW)
     public List<ReceivableDetailVO> listReceivablesByContract(@PathVariable Long contractId) {
         return receivableService.listReceivablesByContract(contractId);
     }
@@ -136,6 +147,7 @@ public class ReceivableController {
      */
     @GetMapping("/client/{clientId}")
     @Operation(summary = "按客户查询应收账款")
+    @PreAuthorize(FINANCE_VIEW)
     public List<ReceivableDetailVO> listReceivablesByClient(@PathVariable Long clientId) {
         return receivableService.listReceivablesByClient(clientId);
     }
@@ -145,6 +157,7 @@ public class ReceivableController {
      */
     @GetMapping("/sum")
     @Operation(summary = "统计应收账款总额")
+    @PreAuthorize(FINANCE_VIEW)
     public BigDecimal sumReceivableAmount(@RequestParam(required = false) Long contractId,
                                         @RequestParam(required = false) Long clientId,
                                         @RequestParam(required = false) ReceivableStatusEnum status) {
@@ -156,6 +169,7 @@ public class ReceivableController {
      */
     @GetMapping("/sum/received")
     @Operation(summary = "统计已收款总额")
+    @PreAuthorize(FINANCE_VIEW)
     public BigDecimal sumReceivedAmount(@RequestParam(required = false) Long contractId,
                                       @RequestParam(required = false) Long clientId) {
         return receivableService.sumReceivedAmount(contractId, clientId);
@@ -166,6 +180,7 @@ public class ReceivableController {
      */
     @GetMapping("/sum/unreceived")
     @Operation(summary = "统计未收款总额")
+    @PreAuthorize(FINANCE_VIEW)
     public BigDecimal sumUnreceivedAmount(@RequestParam(required = false) Long contractId,
                                         @RequestParam(required = false) Long clientId) {
         return receivableService.sumUnreceivedAmount(contractId, clientId);
@@ -176,6 +191,7 @@ public class ReceivableController {
      */
     @GetMapping("/aging")
     @Operation(summary = "账龄分析")
+    @PreAuthorize(FINANCE_VIEW)
     public Map<String, BigDecimal> agingAnalysis(@RequestParam(required = false) Long clientId) {
         return receivableService.agingAnalysis(clientId);
     }
@@ -185,6 +201,7 @@ public class ReceivableController {
      */
     @PutMapping("/overdue/update")
     @Operation(summary = "更新应收账款逾期状态")
+    @PreAuthorize(FINANCE_EDIT)
     public Integer updateOverdueStatus() {
         return receivableService.updateOverdueStatus();
     }

@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS sys_server_monitor (
   disk_usage DECIMAL(10,2) COMMENT '磁盘使用率(%)',
   network_rx BIGINT COMMENT '网络接收量(bytes)',
   network_tx BIGINT COMMENT '网络发送量(bytes)',
-  server_load VARCHAR(50) COMMENT '服务器负载',
+  server_load VARCHAR(1024) COMMENT '服务器负载',
   monitor_time DATETIME COMMENT '监控时间',
   version INTEGER DEFAULT 0 COMMENT '版本号',
   status INTEGER DEFAULT 0 COMMENT '状态（0-正常，1-禁用）',

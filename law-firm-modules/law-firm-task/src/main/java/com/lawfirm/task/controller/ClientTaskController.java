@@ -10,11 +10,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 客户任务控制器
@@ -32,6 +35,7 @@ public class ClientTaskController {
      * 创建客户任务
      */
     @Operation(summary = "创建客户任务", description = "为指定客户创建新任务")
+    @PreAuthorize("hasAuthority('" + TASK_CREATE + "')")
     @PostMapping
     public CommonResult<Long> createClientTask(
             @Parameter(description = "客户ID") 
@@ -48,6 +52,7 @@ public class ClientTaskController {
      * 获取客户任务列表
      */
     @Operation(summary = "获取客户任务列表", description = "获取指定客户的所有任务")
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     @GetMapping
     public CommonResult<List<WorkTaskDTO>> getClientTasks(
             @Parameter(description = "客户ID") 
@@ -67,6 +72,7 @@ public class ClientTaskController {
      * 获取客户任务统计
      */
     @Operation(summary = "获取客户任务统计", description = "获取指定客户的任务统计信息")
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     @GetMapping("/statistics")
     public CommonResult<Map<String, Object>> getClientTaskStatistics(
             @Parameter(description = "客户ID") 

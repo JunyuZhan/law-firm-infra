@@ -3,6 +3,7 @@ package com.lawfirm.model.evidence.service;
 import com.lawfirm.model.evidence.dto.EvidenceDTO;
 import com.lawfirm.model.evidence.vo.EvidenceVO;
 import java.util.List;
+import java.util.Map;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,4 +58,11 @@ public interface EvidenceService {
      */
     @Operation(summary = "归档证据")
     void archiveEvidence(@Parameter(description = "证据ID") Long evidenceId);
+
+    /**
+     * AI要素抽取
+     * @param evidenceId 证据ID
+     * @return 结构化要素
+     */
+    Map<String, Object> extractEvidenceInfo(Long evidenceId);
 } 

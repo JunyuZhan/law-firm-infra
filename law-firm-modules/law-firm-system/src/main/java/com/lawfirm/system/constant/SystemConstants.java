@@ -68,4 +68,9 @@ public final class SystemConstants {
      * 数据库监控API路径前缀
      */
     public static final String API_DB_MONITOR_PREFIX = "/api/v1/monitors/databases";
+    
+    /**
+     * AI配置API路径前缀
+     */
+    public static final String API_AI_CONFIG_PREFIX = "/api/v1/system/ai-config";
 } 

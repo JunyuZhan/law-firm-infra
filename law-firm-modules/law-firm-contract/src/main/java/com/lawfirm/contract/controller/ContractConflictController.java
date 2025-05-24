@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class ContractConflictController {
 
     @Operation(summary = "检查合同冲突")
     @PostMapping("/check")
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<ContractConflictResultDTO> checkConflict(
             @Parameter(description = "冲突检查参数") @Validated @RequestBody ContractConflictCheckDTO checkDTO) {
         ContractConflictResultDTO result = conflictService.checkConflict(checkDTO);
@@ -37,6 +40,7 @@ public class ContractConflictController {
 
     @Operation(summary = "获取冲突历史")
     @GetMapping("/history/{contractId}")
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<List<ContractConflictVO>> getConflictHistory(
             @Parameter(description = "合同ID") @PathVariable Long contractId) {
         List<ContractConflictVO> history = conflictService.getConflictHistory(contractId);
@@ -45,6 +49,7 @@ public class ContractConflictController {
 
     @Operation(summary = "分页查询冲突")
     @GetMapping("/page")
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<Page<ContractConflictVO>> pageConflicts(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -59,6 +64,7 @@ public class ContractConflictController {
 
     @Operation(summary = "解决冲突")
     @PostMapping("/{id}/resolve")
+    @PreAuthorize(CONTRACT_EDIT)
     public CommonResult<Void> resolveConflict(
             @Parameter(description = "冲突ID") @PathVariable Long id,
             @Parameter(description = "解决方案") @RequestParam String resolution) {
@@ -68,6 +74,7 @@ public class ContractConflictController {
 
     @Operation(summary = "批量解决冲突")
     @PostMapping("/batch-resolve")
+    @PreAuthorize(CONTRACT_EDIT)
     public CommonResult<Void> batchResolveConflicts(
             @Parameter(description = "冲突ID列表") @RequestBody List<Long> ids,
             @Parameter(description = "解决方案") @RequestParam String resolution) {
@@ -77,6 +84,7 @@ public class ContractConflictController {
 
     @Operation(summary = "获取冲突详情")
     @GetMapping("/{id}")
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<ContractConflictVO> getConflictDetail(
             @Parameter(description = "冲突ID") @PathVariable Long id) {
         ContractConflictVO detail = conflictService.getConflictDetail(id);
@@ -85,6 +93,7 @@ public class ContractConflictController {
 
     @Operation(summary = "检查是否存在冲突")
     @GetMapping("/exists/{contractId}")
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<Boolean> hasConflict(
             @Parameter(description = "合同ID") @PathVariable Long contractId) {
         boolean exists = conflictService.hasConflict(contractId);
@@ -93,6 +102,7 @@ public class ContractConflictController {
 
     @Operation(summary = "获取未解决冲突数量")
     @GetMapping("/count/{contractId}")
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<Integer> countUnresolvedConflicts(@PathVariable Long contractId) {
         return CommonResult.success(conflictService.getUnresolvedConflictCount(contractId));
     }

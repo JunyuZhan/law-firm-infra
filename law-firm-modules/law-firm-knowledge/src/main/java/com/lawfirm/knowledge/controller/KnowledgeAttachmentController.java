@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.util.List;
 
@@ -30,6 +32,7 @@ public class KnowledgeAttachmentController {
      */
     @Operation(summary = "获取附件列表", description = "根据知识文档ID获取附件列表")
     @GetMapping("/list/{knowledgeId}")
+    @PreAuthorize(KNOWLEDGE_VIEW)
     public ResponseEntity<List<KnowledgeAttachment>> getAttachmentsByKnowledgeId(
             @Parameter(description = "知识文档ID") @PathVariable Long knowledgeId) {
         List<KnowledgeAttachment> attachments = attachmentService.listByKnowledgeId(knowledgeId);
@@ -41,6 +44,7 @@ public class KnowledgeAttachmentController {
      */
     @Operation(summary = "添加附件", description = "添加新的知识附件")
     @PostMapping
+    @PreAuthorize(KNOWLEDGE_CREATE)
     public ResponseEntity<Boolean> addAttachment(
             @Parameter(description = "附件信息") @RequestBody KnowledgeAttachment attachment) {
         boolean success = attachmentService.save(attachment);
@@ -52,6 +56,7 @@ public class KnowledgeAttachmentController {
      */
     @Operation(summary = "更新附件", description = "根据ID更新知识附件信息")
     @PutMapping("/{id}")
+    @PreAuthorize(KNOWLEDGE_EDIT)
     public ResponseEntity<Boolean> updateAttachment(
             @Parameter(description = "附件ID") @PathVariable Long id,
             @Parameter(description = "附件信息") @RequestBody KnowledgeAttachment attachment) {
@@ -71,6 +76,7 @@ public class KnowledgeAttachmentController {
      */
     @Operation(summary = "删除附件", description = "根据ID删除知识附件")
     @DeleteMapping("/{id}")
+    @PreAuthorize(KNOWLEDGE_DELETE)
     public ResponseEntity<Boolean> deleteAttachment(
             @Parameter(description = "附件ID") @PathVariable Long id) {
         try {

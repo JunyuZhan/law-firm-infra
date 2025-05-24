@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 日程关联控制器
@@ -36,7 +37,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "创建案件关联")
     @PostMapping("/case")
-    @PreAuthorize("hasAuthority('schedule:relation:create')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_CREATE + "')")
     public CommonResult<Boolean> createCaseRelation(@Valid @RequestBody ScheduleCaseRelationDTO relationDTO) {
         log.info("创建日程与案件关联，日程ID：{}，案件ID：{}", relationDTO.getScheduleId(), relationDTO.getCaseId());
         boolean result = relationService.linkCase(
@@ -48,7 +49,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "创建任务关联")
     @PostMapping("/task")
-    @PreAuthorize("hasAuthority('schedule:relation:create')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_CREATE + "')")
     public CommonResult<Boolean> createTaskRelation(@Valid @RequestBody ScheduleTaskRelationDTO relationDTO) {
         log.info("创建日程与任务关联，日程ID：{}，任务ID：{}", relationDTO.getScheduleId(), relationDTO.getTaskId());
         boolean result = relationService.linkTask(
@@ -60,7 +61,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "删除案件关联")
     @DeleteMapping("/case")
-    @PreAuthorize("hasAuthority('schedule:relation:delete')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_DELETE + "')")
     public CommonResult<Boolean> deleteCaseRelation(
             @Parameter(description = "日程ID") @RequestParam Long scheduleId,
             @Parameter(description = "案件ID") @RequestParam Long caseId) {
@@ -71,7 +72,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "删除任务关联")
     @DeleteMapping("/task")
-    @PreAuthorize("hasAuthority('schedule:relation:delete')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_DELETE + "')")
     public CommonResult<Boolean> deleteTaskRelation(
             @Parameter(description = "日程ID") @RequestParam Long scheduleId,
             @Parameter(description = "任务ID") @RequestParam Long taskId) {
@@ -82,7 +83,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "获取日程关联的案件")
     @GetMapping("/case/list/{scheduleId}")
-    @PreAuthorize("hasAuthority('schedule:relation:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_VIEW + "')")
     public CommonResult<List<ScheduleCaseRelationVO>> listCaseRelations(@Parameter(description = "日程ID") @PathVariable Long scheduleId) {
         log.info("获取日程关联的案件，日程ID：{}", scheduleId);
         List<ScheduleCaseRelationVO> relations = relationService.listCaseRelations(scheduleId);
@@ -91,7 +92,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "获取日程关联的任务")
     @GetMapping("/task/list/{scheduleId}")
-    @PreAuthorize("hasAuthority('schedule:relation:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_VIEW + "')")
     public CommonResult<List<ScheduleTaskRelationVO>> listTaskRelations(@Parameter(description = "日程ID") @PathVariable Long scheduleId) {
         log.info("获取日程关联的任务，日程ID：{}", scheduleId);
         List<ScheduleTaskRelationVO> relations = relationService.listTaskRelations(scheduleId);
@@ -100,7 +101,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "获取案件关联的日程")
     @GetMapping("/case/schedules/{caseId}")
-    @PreAuthorize("hasAuthority('schedule:relation:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_VIEW + "')")
     public CommonResult<List<ScheduleCaseRelationVO>> listSchedulesByCaseId(@Parameter(description = "案件ID") @PathVariable Long caseId) {
         log.info("获取案件关联的日程，案件ID：{}", caseId);
         List<ScheduleCaseRelationVO> relations = relationService.listSchedulesByCaseId(caseId);
@@ -109,7 +110,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "获取任务关联的日程")
     @GetMapping("/task/schedules/{taskId}")
-    @PreAuthorize("hasAuthority('schedule:relation:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_VIEW + "')")
     public CommonResult<List<ScheduleTaskRelationVO>> listSchedulesByTaskId(@Parameter(description = "任务ID") @PathVariable Long taskId) {
         log.info("获取任务关联的日程，任务ID：{}", taskId);
         List<ScheduleTaskRelationVO> relations = relationService.listSchedulesByTaskId(taskId);
@@ -118,7 +119,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "批量关联案件")
     @PostMapping("/case/batch")
-    @PreAuthorize("hasAuthority('schedule:relation:create')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_CREATE + "')")
     public CommonResult<Boolean> batchLinkCases(@Valid @RequestBody List<ScheduleCaseRelationDTO> relationDTOs) {
         log.info("批量关联案件，数量：{}", relationDTOs.size());
         boolean success = relationService.batchLinkCases(relationDTOs);
@@ -127,7 +128,7 @@ public class ScheduleRelationController {
     
     @Operation(summary = "批量关联任务")
     @PostMapping("/task/batch")
-    @PreAuthorize("hasAuthority('schedule:relation:create')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_RELATION_CREATE + "')")
     public CommonResult<Boolean> batchLinkTasks(@Valid @RequestBody List<ScheduleTaskRelationDTO> relationDTOs) {
         log.info("批量关联任务，数量：{}", relationDTOs.size());
         boolean success = relationService.batchLinkTasks(relationDTOs);

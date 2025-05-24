@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.util.Map;
 
@@ -34,6 +36,7 @@ public class PreviewController {
         summary = "预览文档",
         description = "根据文档ID获取文档的预览URL，支持多种文档格式的在线预览"
     )
+    @PreAuthorize(DOCUMENT_VIEW)
     public CommonResult<String> previewDocument(
             @Parameter(description = "文档ID") @PathVariable Long id) {
         String previewUrl = documentService.previewDocument(id);
@@ -48,6 +51,7 @@ public class PreviewController {
         summary = "预览模板",
         description = "根据模板ID和参数预览模板渲染后的效果，支持动态替换模板中的变量"
     )
+    @PreAuthorize(DOCUMENT_VIEW)
     public CommonResult<String> previewTemplate(
             @Parameter(description = "模板ID") @PathVariable Long id,
             @Parameter(description = "模板参数") @RequestBody Map<String, Object> params) {
@@ -63,6 +67,7 @@ public class PreviewController {
         summary = "获取HTML预览内容",
         description = "获取文档的HTML格式预览内容，如果文档格式支持转换为HTML则返回HTML内容，否则返回预览URL"
     )
+    @PreAuthorize(DOCUMENT_VIEW)
     public CommonResult<String> getHtmlContent(
             @Parameter(description = "文档ID") @PathVariable Long id) {
         // DocumentService中没有定义getDocumentHtmlContent方法

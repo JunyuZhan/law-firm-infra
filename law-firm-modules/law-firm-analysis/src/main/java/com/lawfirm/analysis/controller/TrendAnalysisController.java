@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.lawfirm.analysis.constant.AnalysisBusinessConstants;
 import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
-@PreAuthorize("hasAnyRole('ADMIN','DIRECTOR','PARTNER')")
+@PreAuthorize("hasAuthority('" + ANALYSIS_VIEW + "')")
 @Tag(name = "趋势分析", description = "趋势分析接口")
 @RestController
 @RequestMapping(AnalysisBusinessConstants.Controller.API_PREFIX + "/trend-analysis")

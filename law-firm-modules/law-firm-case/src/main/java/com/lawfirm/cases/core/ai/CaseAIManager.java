@@ -196,4 +196,78 @@ public class CaseAIManager {
             return null;
         }
     }
+    
+    /**
+     * 案件自动生成文书（支持多类型、风格、要素补全、批量生成）
+     * @param docType 文书类型（如起诉状、答辩状、调解书等）
+     * @param caseElements 案件要素（如当事人、案由、事实、请求等）
+     * @param style 文书风格（如正式、简明、专业、通俗等，可选）
+     * @param batch 是否批量生成（如多个案件/多份文书）
+     * @param batchList 批量要素列表（可选，batch为true时使用）
+     * @return 生成的文书内容或文书列表
+     */
+    public Object generateLegalDocument(String docType, Map<String, Object> caseElements, String style, boolean batch, List<Map<String, Object>> batchList) {
+        log.info("案件自动生成文书，类型: {}，风格: {}，批量: {}", docType, style, batch);
+        try {
+            AIRequestDTO requestDTO = new AIRequestDTO();
+            requestDTO.setAction("CASE_DOCUMENT_GENERATE");
+            requestDTO.setModelName("case-document-generate");
+            Map<String, Object> params = new HashMap<>();
+            params.put("docType", docType);
+            params.put("elements", caseElements);
+            if (style != null) params.put("style", style);
+            if (batch) params.put("batch", true);
+            if (batch && batchList != null) params.put("batchList", batchList);
+            requestDTO.setParams(params);
+            AIResponseVO response = aiService.process(requestDTO);
+            if (response != null && response.isSuccess()) {
+                if (batch) {
+                    Object result = response.getData().get("documents");
+                    if (result instanceof List) {
+                        @SuppressWarnings("unchecked")
+                        List<String> docs = (List<String>) result;
+                        return docs;
+                    }
+                    return result;
+                } else {
+                    return response.getData().get("document");
+                }
+            } else {
+                log.error("案件文书自动生成失败: {}", response != null ? response.getMessage() : "无响应");
+                return null;
+            }
+        } catch (Exception e) {
+            log.error("案件文书自动生成时发生错误", e);
+            return null;
+        }
+    }
+    
+    /**
+     * 提取文档关键信息（用于案件要素抽取等）
+     * @param content 文档内容
+     * @param docType 文档类型（可选）
+     * @return 关键信息Map
+     */
+    public Map<String, Object> extractDocumentInfo(String content, String docType) {
+        log.info("提取文档关键信息，类型:{}", docType);
+        try {
+            AIRequestDTO requestDTO = new AIRequestDTO();
+            requestDTO.setAction("EXTRACT_DOCUMENT_INFO");
+            requestDTO.setModelName("doc-info-extract");
+            Map<String, Object> params = new HashMap<>();
+            params.put("text", content);
+            if (docType != null) params.put("docType", docType);
+            requestDTO.setParams(params);
+            AIResponseVO response = aiService.process(requestDTO);
+            if (response != null && response.isSuccess()) {
+                return response.getData();
+            } else {
+                log.error("文档关键信息提取失败: {}", response != null ? response.getMessage() : "无响应");
+                return Map.of();
+            }
+        } catch (Exception e) {
+            log.error("文档关键信息提取时发生错误", e);
+            return Map.of();
+        }
+    }
 } 

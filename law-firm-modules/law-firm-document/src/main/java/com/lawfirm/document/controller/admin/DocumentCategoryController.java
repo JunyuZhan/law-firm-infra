@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class DocumentCategoryController {
         summary = "创建分类",
         description = "创建新的文档分类，用于对文档进行分类管理。支持设置分类名称、父分类、排序等信息"
     )
+    @PreAuthorize(DOCUMENT_CREATE)
     public CommonResult<Long> createCategory(
             @Parameter(description = "创建参数") @RequestBody @Validated CategoryCreateDTO createDTO) {
         Long categoryId = categoryService.createCategory(createDTO);
@@ -54,6 +57,7 @@ public class DocumentCategoryController {
         summary = "更新分类",
         description = "更新已存在的文档分类信息，包括分类名称、父分类、排序等信息"
     )
+    @PreAuthorize(DOCUMENT_EDIT)
     public CommonResult<Void> updateCategory(
             @Parameter(description = "更新参数") @RequestBody @Validated CategoryUpdateDTO updateDTO) {
         categoryService.updateCategory(updateDTO);
@@ -68,6 +72,7 @@ public class DocumentCategoryController {
         summary = "删除分类",
         description = "删除指定的文档分类。如果分类下有子分类或文档，需要先处理这些关联内容"
     )
+    @PreAuthorize(DOCUMENT_DELETE)
     public CommonResult<Void> deleteCategory(
             @Parameter(description = "分类ID") @PathVariable Long id) {
         categoryService.deleteCategory(id);
@@ -82,6 +87,7 @@ public class DocumentCategoryController {
         summary = "获取分类详情",
         description = "获取指定分类的详细信息，包括分类名称、父分类、创建时间等信息"
     )
+    @PreAuthorize(DOCUMENT_VIEW)
     public CommonResult<CategoryVO> getCategory(
             @Parameter(description = "分类ID") @PathVariable Long id) {
         CategoryVO category = categoryService.getCategory(id);
@@ -96,6 +102,7 @@ public class DocumentCategoryController {
         summary = "分页查询分类",
         description = "分页获取文档分类列表，支持按名称、创建时间等条件筛选"
     )
+    @PreAuthorize(DOCUMENT_VIEW)
     public CommonResult<Page<CategoryVO>> pageCategories(
             @Parameter(description = "查询参数") CategoryQueryDTO queryDTO,
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
@@ -114,6 +121,7 @@ public class DocumentCategoryController {
         summary = "获取分类列表",
         description = "获取所有文档分类列表，支持按条件筛选，常用于下拉选择等场景"
     )
+    @PreAuthorize(DOCUMENT_VIEW)
     public CommonResult<List<CategoryVO>> listCategories(
             @Parameter(description = "查询参数") CategoryQueryDTO queryDTO) {
         List<CategoryVO> categories = categoryService.listCategories(queryDTO);

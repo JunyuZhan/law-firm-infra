@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 文档分析结果VO
@@ -17,17 +18,29 @@ public class DocumentAnalysisResultVO extends BaseVO {
     
     private static final long serialVersionUID = 1L;
     
+    @Schema(description = "请求ID")
     private String requestId;        // 请求ID
+    @Schema(description = "文档ID")
     private String documentId;       // 文档ID
+    @Schema(description = "文档类型")
     private String documentType;     // 文档类型
+    @Schema(description = "处理操作")
     private String operation;        // 处理操作
+    @Schema(description = "分析时间")
     private Date analysisTime;       // 分析时间
+    @Schema(description = "处理状态：success成功/failed失败")
     private String processStatus;    // 处理状态：success成功/failed失败
+    @Schema(description = "错误信息（若有）")
     private String errorMessage;     // 错误信息（若有）
+    @Schema(description = "分类结果及置信度")
     private transient Map<String, Double> classification; // 分类结果及置信度
+    @Schema(description = "提取的关键信息")
     private transient Map<String, Object> extractedInfo; // 提取的关键信息
+    @Schema(description = "摘要内容")
     private String summary;          // 摘要内容
+    @Schema(description = "条款分析结果")
     private transient List<ClauseAnalysisVO> clauseAnalysis; // 条款分析结果
+    @Schema(description = "元数据")
     private transient Map<String, Object> metadata; // 元数据
     
     /**
@@ -57,13 +70,21 @@ public class DocumentAnalysisResultVO extends BaseVO {
     public static class ClauseAnalysisVO implements Serializable {
         private static final long serialVersionUID = 1L;
         
+        @Schema(description = "条款ID")
         private String clauseId;      // 条款ID
+        @Schema(description = "条款标题")
         private String clauseTitle;   // 条款标题
+        @Schema(description = "条款内容")
         private String clauseContent; // 条款内容
+        @Schema(description = "条款类型")
         private String clauseType;    // 条款类型
+        @Schema(description = "重要性：high高/medium中/low低")
         private String importance;    // 重要性：high高/medium中/low低
+        @Schema(description = "风险评级：high高/medium中/low低/none无")
         private String risk;          // 风险评级：high高/medium中/low低/none无
+        @Schema(description = "分析说明")
         private String analysis;      // 分析说明
+        @Schema(description = "相关法规")
         private transient List<String> relatedLaws; // 相关法规
         
         public ClauseAnalysisVO() {

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 法律问答结果VO
@@ -14,12 +15,19 @@ public class AnswerVO extends BaseVO {
     
     private static final long serialVersionUID = 1L;
     
+    @Schema(description = "问题ID")
     private String questionId;    // 问题ID
+    @Schema(description = "原始问题")
     private String question;      // 原始问题
+    @Schema(description = "回答内容")
     private String answer;        // 回答内容
+    @Schema(description = "置信度（0-1）")
     private Double confidence;    // 置信度（0-1）
+    @Schema(description = "回答时间")
     private Date answerTime;      // 回答时间
+    @Schema(description = "回答来源（模型名称）")
     private String answerSource;  // 回答来源（模型名称）
+    @Schema(description = "引用来源列表")
     private transient List<ReferenceItem> references; // 引用来源列表
     
     public AnswerVO() {
@@ -31,9 +39,13 @@ public class AnswerVO extends BaseVO {
     public static class ReferenceItem implements Serializable {
         private static final long serialVersionUID = 1L;
         
+        @Schema(description = "标题")
         private String title;      // 标题
+        @Schema(description = "引用内容")
         private String content;    // 引用内容
+        @Schema(description = "来源（如法规名称、案例编号等）")
         private String source;     // 来源（如法规名称、案例编号等）
+        @Schema(description = "相关性（0-1）")
         private Double relevance;  // 相关性（0-1）
         
         public ReferenceItem() {

@@ -1,17 +1,16 @@
 package com.lawfirm.core.message.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import com.lawfirm.common.log.util.LogUtils;
 
+@Slf4j
 public class MessageLogUtils {
-    private static final Logger log = LoggerFactory.getLogger(MessageLogUtils.class);
     private static final String[] SENSITIVE_FIELDS = {"password", "token", "secret"};
 
     public static void logMessageSend(String messageId, Object message) {
         final String content = LogUtils.formatArg(message);
         final String desensitizedContent = LogUtils.desensitize(content, SENSITIVE_FIELDS);
-        LogUtils.logWithPerformance(log, "Message sent - ID: " + messageId, () -> {
+        LogUtils.logWithPerformance("Message sent - ID: " + messageId, () -> {
             log.info("Message Content: {}", desensitizedContent);
         });
     }
@@ -19,7 +18,7 @@ public class MessageLogUtils {
     public static void logMessageReceive(String messageId, Object message) {
         final String content = LogUtils.formatArg(message);
         final String desensitizedContent = LogUtils.desensitize(content, SENSITIVE_FIELDS);
-        LogUtils.logWithPerformance(log, "Message received - ID: " + messageId, () -> {
+        LogUtils.logWithPerformance("Message received - ID: " + messageId, () -> {
             log.info("Message Content: {}", desensitizedContent);
         });
     }
@@ -30,7 +29,7 @@ public class MessageLogUtils {
     }
 
     public static void logMessageProcess(String messageId, String status) {
-        LogUtils.logWithPerformance(log, "Message process - ID: " + messageId, () -> {
+        LogUtils.logWithPerformance("Message process - ID: " + messageId, () -> {
             log.info("Status: {}", status);
         });
     }

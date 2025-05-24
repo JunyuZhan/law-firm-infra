@@ -2,6 +2,8 @@ package com.lawfirm.core.ai.provider;
 
 import com.lawfirm.core.ai.config.ModelConfig;
 import com.lawfirm.core.ai.exception.AIException;
+import com.lawfirm.model.ai.entity.AIModelConfig;
+import com.lawfirm.model.ai.service.AIModelConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class BaiduAIProvider implements AIProvider {
     
     @Autowired
     private ModelConfig modelConfig;
+    
+    @Autowired
+    private AIModelConfigService aiModelConfigService;
     
     private String apiKey;
     private String secretKey;
@@ -70,6 +75,7 @@ public class BaiduAIProvider implements AIProvider {
     
     @Override
     public String sendTextRequest(String prompt, Map<String, Object> options) {
+        loadLatestConfig();
         try {
             logger.info("向百度AI发送文本请求");
             
@@ -89,6 +95,7 @@ public class BaiduAIProvider implements AIProvider {
     
     @Override
     public String sendChatRequest(Map<String, Object>[] messages, Map<String, Object> options) {
+        loadLatestConfig();
         try {
             logger.info("向百度AI发送聊天请求");
             
@@ -108,6 +115,7 @@ public class BaiduAIProvider implements AIProvider {
     
     @Override
     public float[] createEmbedding(String text) {
+        loadLatestConfig();
         try {
             logger.info("创建百度AI嵌入向量");
             
@@ -145,6 +153,17 @@ public class BaiduAIProvider implements AIProvider {
     public void shutdown() {
         // 关闭资源
         logger.info("关闭百度AI服务提供者");
+    }
+    
+    private void loadLatestConfig() {
+        AIModelConfig config = aiModelConfigService.getDefault();
+        if (config != null && "baidu".equalsIgnoreCase(config.getProvider())) {
+            this.apiKey = config.getApiKey();
+            this.secretKey = config.getConfigJson(); // 假设 secretKey 存在 configJson 或扩展字段
+            this.baseUrl = config.getEndpoint();
+            this.defaultModel = config.getModelName();
+            // 可扩展其它参数
+        }
     }
     
     // 模拟延迟，实际实现中移除此方法

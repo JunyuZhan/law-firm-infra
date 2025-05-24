@@ -22,6 +22,8 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+
 /**
  * 日程事件控制器
  */
@@ -37,7 +39,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "创建事件")
     @PostMapping
-    @PreAuthorize("hasAuthority('schedule:event:create')")
+    @PreAuthorize(SCHEDULE_EVENT_CREATE)
     public CommonResult<Long> createEvent(@Valid @RequestBody ScheduleEventDTO eventDTO) {
         log.info("创建日程事件，日程ID：{}", eventDTO.getScheduleId());
         
@@ -58,7 +60,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "更新事件")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:event:update')")
+    @PreAuthorize(SCHEDULE_EVENT_EDIT)
     public CommonResult<Boolean> updateEvent(
             @Parameter(description = "事件ID") @PathVariable Long id,
             @Valid @RequestBody ScheduleEventDTO eventDTO) {
@@ -78,7 +80,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "删除事件")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:event:delete')")
+    @PreAuthorize(SCHEDULE_EVENT_DELETE)
     public CommonResult<Boolean> deleteEvent(@Parameter(description = "事件ID") @PathVariable Long id) {
         log.info("删除日程事件：{}", id);
         boolean success = eventService.removeEvent(id);
@@ -87,7 +89,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "获取事件详情")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:event:view')")
+    @PreAuthorize(SCHEDULE_EVENT_VIEW)
     public CommonResult<ScheduleEventVO> getEventDetail(@Parameter(description = "事件ID") @PathVariable Long id) {
         log.info("获取日程事件详情：{}", id);
         ScheduleEventVO eventVO = eventService.getEventDetail(id);
@@ -96,7 +98,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "获取日程的所有事件")
     @GetMapping("/list/schedule/{scheduleId}")
-    @PreAuthorize("hasAuthority('schedule:event:view')")
+    @PreAuthorize(SCHEDULE_EVENT_VIEW)
     public CommonResult<List<ScheduleEventVO>> listByScheduleId(@Parameter(description = "日程ID") @PathVariable Long scheduleId) {
         log.info("获取日程的所有事件，日程ID：{}", scheduleId);
         List<ScheduleEventVO> events = eventService.listByScheduleId(scheduleId);
@@ -105,7 +107,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "获取时间范围内的事件")
     @GetMapping("/list/time-range")
-    @PreAuthorize("hasAuthority('schedule:event:view')")
+    @PreAuthorize(SCHEDULE_EVENT_VIEW)
     public CommonResult<List<ScheduleEventVO>> listByTimeRange(
             @Parameter(description = "日程ID") @RequestParam Long scheduleId,
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -117,7 +119,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "分页查询事件")
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('schedule:event:view')")
+    @PreAuthorize(SCHEDULE_EVENT_VIEW)
     public CommonResult<Page<ScheduleEventVO>> pageEvents(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -133,7 +135,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "移动事件")
     @PutMapping("/{id}/move")
-    @PreAuthorize("hasAuthority('schedule:event:update')")
+    @PreAuthorize(SCHEDULE_EVENT_EDIT)
     public CommonResult<Boolean> moveEvent(
             @Parameter(description = "事件ID") @PathVariable Long id,
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -145,7 +147,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "获取我的所有事件")
     @GetMapping("/list/my")
-    @PreAuthorize("hasAuthority('schedule:event:view')")
+    @PreAuthorize(SCHEDULE_EVENT_VIEW)
     public CommonResult<List<ScheduleEventVO>> listMyEvents(
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @Parameter(description = "结束时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
@@ -157,7 +159,7 @@ public class ScheduleEventController {
     
     @Operation(summary = "检查事件冲突")
     @GetMapping("/check-conflict")
-    @PreAuthorize("hasAuthority('schedule:event:view')")
+    @PreAuthorize(SCHEDULE_EVENT_VIEW)
     public CommonResult<Boolean> checkEventConflict(
             @Parameter(description = "日程ID") @RequestParam Long scheduleId,
             @Parameter(description = "事件ID") @RequestParam(required = false) Long eventId,

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class DataCleanupController extends BaseController {
      */
     @Operation(summary = "清理临时客户数据")
     @PostMapping("/temporary-clients")
-    @PreAuthorize("hasAuthority('client:cleanup:execute')")
+    @PreAuthorize(CLIENT_CLEANUP_EXECUTE)
     public CommonResult<String> cleanupTemporaryClients() {
         try {
             dataCleanupTask.cleanupTemporaryClients();
@@ -54,7 +55,7 @@ public class DataCleanupController extends BaseController {
      */
     @Operation(summary = "归档不活跃客户")
     @PostMapping("/inactive-clients")
-    @PreAuthorize("hasAuthority('client:cleanup:execute')")
+    @PreAuthorize(CLIENT_CLEANUP_EXECUTE)
     public CommonResult<String> archiveInactiveClients() {
         try {
             dataCleanupTask.archiveInactiveClients();
@@ -72,7 +73,7 @@ public class DataCleanupController extends BaseController {
      */
     @Operation(summary = "清理已完成跟进记录")
     @PostMapping("/followups")
-    @PreAuthorize("hasAuthority('client:cleanup:execute')")
+    @PreAuthorize(CLIENT_CLEANUP_EXECUTE)
     public CommonResult<String> cleanupCompletedFollowUps() {
         try {
             dataCleanupTask.cleanupCompletedFollowUps();
@@ -90,7 +91,7 @@ public class DataCleanupController extends BaseController {
      */
     @Operation(summary = "获取数据清理统计信息")
     @GetMapping("/statistics")
-    @PreAuthorize("hasAuthority('client:cleanup:view')")
+    @PreAuthorize(CLIENT_CLEANUP_VIEW)
     public CommonResult<Map<String, Object>> getCleanupStatistics() {
         try {
             Map<String, Object> statistics = new HashMap<>();

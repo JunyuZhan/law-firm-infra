@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class KnowledgeCategoryController {
      */
     @Operation(summary = "获取分类树", description = "获取完整的知识分类树结构")
     @GetMapping("/tree")
+    @PreAuthorize(KNOWLEDGE_VIEW)
     public ResponseEntity<List<KnowledgeCategoryVO>> getCategoryTree() {
         List<KnowledgeCategory> categoryTree = categoryService.getCategoryTree();
         return ResponseEntity.ok(knowledgeConvert.toCategoryVOList(categoryTree));
@@ -46,6 +49,7 @@ public class KnowledgeCategoryController {
      */
     @Operation(summary = "获取子分类", description = "根据父分类ID获取子分类列表")
     @GetMapping("/children/{parentId}")
+    @PreAuthorize(KNOWLEDGE_VIEW)
     public ResponseEntity<List<KnowledgeCategoryVO>> getSubCategories(
             @Parameter(description = "父分类ID") @PathVariable Long parentId) {
         List<KnowledgeCategory> subCategories = categoryService.getSubCategories(parentId);
@@ -57,6 +61,7 @@ public class KnowledgeCategoryController {
      */
     @Operation(summary = "获取分类路径", description = "获取指定分类ID的完整路径（从根到当前）")
     @GetMapping("/path/{categoryId}")
+    @PreAuthorize(KNOWLEDGE_VIEW)
     public ResponseEntity<List<KnowledgeCategoryVO>> getCategoryPath(
             @Parameter(description = "分类ID") @PathVariable Long categoryId) {
         List<KnowledgeCategory> categoryPath = categoryService.getCategoryPath(categoryId);
@@ -68,6 +73,7 @@ public class KnowledgeCategoryController {
      */
     @Operation(summary = "创建分类", description = "创建新的知识分类")
     @PostMapping
+    @PreAuthorize(KNOWLEDGE_CREATE)
     public ResponseEntity<KnowledgeCategoryVO> createCategory(
             @Parameter(description = "分类信息") @RequestBody @Valid KnowledgeCategory category) {
         boolean success = categoryService.save(category);
@@ -84,6 +90,7 @@ public class KnowledgeCategoryController {
      */
     @Operation(summary = "更新分类", description = "根据ID更新知识分类")
     @PutMapping("/{id}")
+    @PreAuthorize(KNOWLEDGE_EDIT)
     public ResponseEntity<KnowledgeCategoryVO> updateCategory(
             @Parameter(description = "分类ID") @PathVariable Long id,
             @Parameter(description = "分类信息") @RequestBody @Valid KnowledgeCategory category) {
@@ -114,6 +121,7 @@ public class KnowledgeCategoryController {
      */
     @Operation(summary = "删除分类", description = "根据ID删除知识分类")
     @DeleteMapping("/{id}")
+    @PreAuthorize(KNOWLEDGE_DELETE)
     public ResponseEntity<Void> deleteCategory(
             @Parameter(description = "分类ID") @PathVariable Long id) {
         try {

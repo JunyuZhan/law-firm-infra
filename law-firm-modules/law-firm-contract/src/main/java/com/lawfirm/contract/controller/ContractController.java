@@ -18,8 +18,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import com.lawfirm.contract.service.ContractAIManager;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 合同管理控制器
@@ -33,6 +38,7 @@ import java.util.List;
 public class ContractController {
 
     private final ContractService contractService;
+    private final ContractAIManager contractAIManager;
 
     /**
      * 创建合同
@@ -42,6 +48,7 @@ public class ContractController {
         summary = "创建合同",
         description = "创建新的合同记录，包括合同基本信息、合同内容、合同附件等"
     )
+    @PreAuthorize(CONTRACT_CREATE)
     public CommonResult<Long> createContract(
             @Parameter(description = "合同创建参数，包括合同名称、类型、内容等") @RequestBody @Validated ContractCreateDTO createDTO) {
         log.info("创建合同: {}", createDTO.getContractName());
@@ -57,6 +64,7 @@ public class ContractController {
         summary = "更新合同",
         description = "根据ID更新合同信息，支持更新合同基本信息、内容和附件等"
     )
+    @PreAuthorize(CONTRACT_EDIT)
     public CommonResult<Boolean> updateContract(
             @Parameter(description = "合同ID") @PathVariable("id") Long id,
             @Parameter(description = "合同更新参数，包括需要更新的字段") @RequestBody @Validated ContractUpdateDTO updateDTO) {
@@ -74,6 +82,7 @@ public class ContractController {
         summary = "获取合同详情",
         description = "根据ID获取合同的详细信息，包括基本信息、内容、附件、审批状态等"
     )
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<ContractDetailVO> getContract(
             @Parameter(description = "合同ID") @PathVariable("id") Long id) {
         log.info("获取合同详情: {}", id);
@@ -90,6 +99,7 @@ public class ContractController {
         summary = "删除合同",
         description = "根据ID删除合同，同时删除关联的附件和审批记录等"
     )
+    @PreAuthorize(CONTRACT_DELETE)
     public CommonResult<Boolean> deleteContract(
             @Parameter(description = "合同ID") @PathVariable("id") Long id) {
         log.info("删除合同: {}", id);
@@ -110,6 +120,7 @@ public class ContractController {
             @Parameter(name = "size", description = "每页记录数", required = true),
             @Parameter(name = "queryDTO", description = "查询参数，包括合同名称、类型、状态等")
     })
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<IPage<ContractVO>> getContractPage(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
@@ -128,10 +139,85 @@ public class ContractController {
         summary = "查询合同列表",
         description = "根据条件查询合同列表，不分页，支持按合同名称、类型、状态等条件筛选"
     )
+    @PreAuthorize(CONTRACT_VIEW)
     public CommonResult<List<ContractVO>> getContractList(
             @Parameter(description = "查询参数，包括合同名称、类型、状态等") ContractQueryDTO queryDTO) {
         log.info("查询合同列表");
         List<ContractVO> contracts = contractService.listContracts(queryDTO);
         return CommonResult.success(contracts);
+    }
+
+    /**
+     * AI合同智能摘要
+     */
+    @PostMapping("/ai/summary")
+    @Operation(summary = "AI智能生成合同摘要")
+    public ResponseEntity<String> aiContractSummary(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        Integer maxLength = body.get("maxLength") != null ? (Integer) body.get("maxLength") : 200;
+        return ResponseEntity.ok(contractAIManager.generateContractSummary(content, maxLength));
+    }
+
+    /**
+     * AI合同风险识别
+     */
+    @PostMapping("/ai/risk")
+    @Operation(summary = "AI识别合同风险")
+    public ResponseEntity<java.util.Map<String, Object>> aiContractRisk(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        return ResponseEntity.ok(contractAIManager.detectContractRisks(content));
+    }
+
+    /**
+     * AI合同条款推荐
+     */
+    @PostMapping("/ai/clauses")
+    @Operation(summary = "AI智能推荐合同条款")
+    public ResponseEntity<java.util.List<String>> aiContractClauses(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        Integer limit = body.get("limit") != null ? (Integer) body.get("limit") : 5;
+        return ResponseEntity.ok(contractAIManager.recommendContractClauses(content, limit));
+    }
+
+    /**
+     * AI合同智能问答
+     */
+    @PostMapping("/ai/qa")
+    @Operation(summary = "AI合同智能问答")
+    public ResponseEntity<String> aiContractQA(@RequestBody java.util.Map<String, Object> body) {
+        String question = (String) body.get("question");
+        String content = (String) body.get("content");
+        return ResponseEntity.ok(contractAIManager.contractQA(question, content));
+    }
+
+    /**
+     * AI合同查重/相似度分析
+     */
+    @PostMapping("/ai/similarity")
+    @Operation(summary = "AI合同查重/相似度分析")
+    public ResponseEntity<List<Map<String, Object>>> aiContractSimilarity(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        Integer limit = body.get("limit") != null ? (Integer) body.get("limit") : 5;
+        return ResponseEntity.ok(contractAIManager.findSimilarContracts(content, limit));
+    }
+
+    /**
+     * AI合同自动生成
+     */
+    @PostMapping("/ai/generate")
+    @Operation(summary = "AI合同自动生成")
+    public ResponseEntity<String> aiContractGenerate(@RequestBody java.util.Map<String, Object> body) {
+        // 直接将body作为要素传递
+        return ResponseEntity.ok(contractAIManager.generateContractByTemplate(body));
+    }
+
+    /**
+     * AI合同纠错与润色
+     */
+    @PostMapping("/ai/proofread")
+    @Operation(summary = "AI合同纠错与润色")
+    public ResponseEntity<String> aiContractProofread(@RequestBody java.util.Map<String, Object> body) {
+        String content = (String) body.get("content");
+        return ResponseEntity.ok(contractAIManager.proofreadAndPolish(content));
     }
 } 

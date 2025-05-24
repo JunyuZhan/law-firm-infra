@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * 审批流控制器
@@ -30,6 +32,7 @@ public class CaseApprovalController {
      */
     @Operation(summary = "发起审批", description = "发起案件审批流，包括出函审批等多类型")
     @PostMapping("/initiate")
+    @PreAuthorize(PROCESS_APPROVAL_INITIATE)
     public Long initiateApproval(
             @Parameter(description = "审批发起参数，包括案件ID、类型、标题、发起人等")
             @RequestBody @Validated CaseApprovalDTO dto) {
@@ -42,6 +45,7 @@ public class CaseApprovalController {
      */
     @Operation(summary = "审批操作", description = "对审批流进行同意/拒绝操作")
     @PostMapping("/approve")
+    @PreAuthorize(PROCESS_APPROVAL_APPROVE)
     public boolean approve(
             @Parameter(description = "审批ID") @RequestParam Long approvalId,
             @Parameter(description = "是否同意") @RequestParam boolean approved,
@@ -55,6 +59,7 @@ public class CaseApprovalController {
      */
     @Operation(summary = "查询审批详情", description = "根据审批ID获取审批主表详情")
     @GetMapping("/detail/{approvalId}")
+    @PreAuthorize(PROCESS_APPROVAL_VIEW)
     public CaseApprovalVO getApprovalDetail(
             @Parameter(description = "审批ID") @PathVariable Long approvalId) {
         log.info("查询审批详情: approvalId={}", approvalId);
@@ -66,6 +71,7 @@ public class CaseApprovalController {
      */
     @Operation(summary = "查询审批流转历史", description = "根据审批ID获取所有流转节点记录")
     @GetMapping("/flow/{approvalId}")
+    @PreAuthorize(PROCESS_APPROVAL_VIEW)
     public List<CaseApprovalVO> getApprovalFlowRecords(
             @Parameter(description = "审批ID") @PathVariable Long approvalId) {
         log.info("查询审批流转历史: approvalId={}", approvalId);

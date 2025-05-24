@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 @Tag(name = "分析任务管理", description = "分析任务相关接口")
 @RestController("analysisTaskController")

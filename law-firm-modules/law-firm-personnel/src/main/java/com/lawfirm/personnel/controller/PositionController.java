@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @RestController("positionController")
 @RequestMapping(PersonnelConstants.API_POSITION_PREFIX)
 @Validated
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLERK')")
 public class PositionController {
 
     @Autowired

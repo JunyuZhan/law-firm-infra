@@ -23,6 +23,8 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
+
 /**
  * 日历管理控制器
  */
@@ -38,7 +40,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "创建日历")
     @PostMapping
-    @PreAuthorize("hasAuthority('schedule:calendar:create')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_CREATE + "')")
     public CommonResult<Long> createCalendar(@Valid @RequestBody ScheduleCalendarDTO calendarDTO) {
         log.info("创建日历：{}", calendarDTO.getName());
         Long userId = SecurityUtils.getUserId();
@@ -56,7 +58,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "更新日历")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:calendar:update')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EDIT + "')")
     public CommonResult<Boolean> updateCalendar(
             @Parameter(description = "日历ID") @PathVariable Long id,
             @Valid @RequestBody ScheduleCalendarDTO calendarDTO) {
@@ -73,7 +75,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "删除日历")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:calendar:delete')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_DELETE + "')")
     public CommonResult<Boolean> deleteCalendar(@Parameter(description = "日历ID") @PathVariable Long id) {
         log.info("删除日历：{}", id);
         boolean success = calendarService.deleteCalendar(id);
@@ -82,7 +84,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "获取日历详情")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_VIEW + "')")
     public CommonResult<ScheduleCalendarVO> getCalendarDetail(@Parameter(description = "日历ID") @PathVariable Long id) {
         log.info("获取日历详情：{}", id);
         ScheduleCalendarVO calendarVO = calendarService.getCalendarDetail(id);
@@ -91,7 +93,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "获取用户所有日历")
     @GetMapping("/list/user/{userId}")
-    @PreAuthorize("hasAuthority('schedule:calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_VIEW + "')")
     public CommonResult<List<ScheduleCalendarVO>> listByUserId(@Parameter(description = "用户ID") @PathVariable Long userId) {
         log.info("获取用户的所有日历，用户ID：{}", userId);
         List<ScheduleCalendarVO> calendars = calendarService.listByUserId(userId);
@@ -100,7 +102,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "获取我的所有日历")
     @GetMapping("/list/my")
-    @PreAuthorize("hasAuthority('schedule:calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_VIEW + "')")
     public CommonResult<List<ScheduleCalendarVO>> listMyCalendars() {
         log.info("获取我的所有日历");
         Long userId = SecurityUtils.getUserId();
@@ -110,7 +112,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "设置日历显示状态")
     @PutMapping("/{id}/visibility")
-    @PreAuthorize("hasAuthority('schedule:calendar:update')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EDIT + "')")
     public CommonResult<Boolean> setCalendarVisibility(
             @Parameter(description = "日历ID") @PathVariable Long id,
             @Parameter(description = "可见性") @RequestParam Integer visibility) {
@@ -121,7 +123,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "获取共享日历")
     @GetMapping("/list/shared")
-    @PreAuthorize("hasAuthority('schedule:calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_VIEW + "')")
     public CommonResult<List<ScheduleCalendarVO>> listSharedCalendars() {
         log.info("获取与我共享的日历");
         Long userId = SecurityUtils.getUserId();
@@ -131,7 +133,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "分页查询日历")
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('schedule:calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_VIEW + "')")
     public CommonResult<Page<ScheduleCalendarVO>> pageCalendars(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -145,7 +147,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "设置默认日历")
     @PutMapping("/{id}/default")
-    @PreAuthorize("hasAuthority('schedule:calendar:update')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EDIT + "')")
     public CommonResult<Boolean> setDefaultCalendar(@Parameter(description = "日历ID") @PathVariable Long id) {
         log.info("设置默认日历，日历ID：{}", id);
         Long userId = SecurityUtils.getUserId();
@@ -155,7 +157,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "获取默认日历")
     @GetMapping("/default")
-    @PreAuthorize("hasAuthority('schedule:calendar:view')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_VIEW + "')")
     public CommonResult<ScheduleCalendarVO> getDefaultCalendar() {
         log.info("获取默认日历");
         Long userId = SecurityUtils.getUserId();
@@ -165,7 +167,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "共享日历")
     @PostMapping("/{id}/share")
-    @PreAuthorize("hasAuthority('schedule:calendar:share')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EDIT + "')")
     public CommonResult<Boolean> shareCalendar(
             @Parameter(description = "日历ID") @PathVariable Long id,
             @Parameter(description = "用户ID列表") @RequestBody List<Long> userIds) {
@@ -176,7 +178,7 @@ public class ScheduleCalendarController {
     
     @Operation(summary = "取消共享日历")
     @DeleteMapping("/{id}/share/{userId}")
-    @PreAuthorize("hasAuthority('schedule:calendar:share')")
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CALENDAR_EDIT + "')")
     public CommonResult<Boolean> unshareCalendar(
             @Parameter(description = "日历ID") @PathVariable Long id,
             @Parameter(description = "用户ID") @PathVariable Long userId) {

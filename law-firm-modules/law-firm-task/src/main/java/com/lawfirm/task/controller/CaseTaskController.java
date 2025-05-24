@@ -10,11 +10,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 案例任务控制器
@@ -32,6 +35,7 @@ public class CaseTaskController {
      * 创建案例任务
      */
     @Operation(summary = "创建案例任务", description = "为指定案例创建新任务")
+    @PreAuthorize("hasAuthority('" + TASK_CREATE + "')")
     @PostMapping
     public CommonResult<Long> createCaseTask(
             @Parameter(description = "案例ID") 
@@ -48,6 +52,7 @@ public class CaseTaskController {
      * 获取案例任务列表
      */
     @Operation(summary = "获取案例任务列表", description = "获取指定案例的所有任务")
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     @GetMapping
     public CommonResult<List<WorkTaskDTO>> getCaseTasks(
             @Parameter(description = "案例ID") 
@@ -67,6 +72,7 @@ public class CaseTaskController {
      * 获取案例任务统计
      */
     @Operation(summary = "获取案件任务统计", description = "获取指定案件的任务统计信息")
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     @GetMapping("/statistics")
     public CommonResult<Map<String, Object>> getCaseTaskStatistics(
             @Parameter(description = "案件ID") 

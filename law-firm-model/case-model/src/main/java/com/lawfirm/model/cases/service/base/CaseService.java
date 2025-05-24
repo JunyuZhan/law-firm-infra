@@ -165,4 +165,26 @@ public interface CaseService extends BaseService<Case> {
      * @return 风险评估结果
      */
     Map<String, Object> assessCaseRisk(Long caseId);
+
+    /**
+     * AI要素抽取
+     * @param caseId 案件ID
+     * @return 结构化要素
+     */
+    Map<String, Object> extractCaseElements(Long caseId);
+
+    /**
+     * AI自动摘要
+     * @param caseId 案件ID
+     * @return 摘要内容
+     */
+    String summarizeCase(Long caseId);
+
+    /**
+     * AI自动生成案件文书
+     * @param caseId 案件ID
+     * @param docType 文书类型
+     * @return 文书内容
+     */
+    String generateCaseDocument(Long caseId, String docType);
 } 

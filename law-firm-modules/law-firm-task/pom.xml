@@ -111,6 +111,21 @@
             <groupId>com.lawfirm</groupId>
             <artifactId>message-model</artifactId>
         </dependency>
+
+        <!-- AI能力依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>core-ai</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>ai-model</artifactId>
+        </dependency>
+        <!-- 权限常量依赖 -->
+        <dependency>
+            <groupId>com.lawfirm</groupId>
+            <artifactId>auth-model</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

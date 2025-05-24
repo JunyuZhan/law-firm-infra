@@ -10,10 +10,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 工作任务标签控制器
@@ -31,6 +34,7 @@ public class WorkTaskTagController {
      * 创建任务标签
      */
     @Operation(summary = "创建任务标签", description = "创建新的任务标签")
+    @PreAuthorize("hasAuthority('" + TASK_TAG_CREATE + "')")
     @PostMapping
     public CommonResult<Long> createTag(
             @Parameter(description = "任务标签创建参数") 
@@ -44,6 +48,7 @@ public class WorkTaskTagController {
      * 更新任务标签
      */
     @Operation(summary = "更新任务标签", description = "更新已有任务标签的信息")
+    @PreAuthorize("hasAuthority('" + TASK_TAG_EDIT + "')")
     @PutMapping("/{tagId}")
     public CommonResult<Void> updateTag(
             @Parameter(description = "标签ID") 
@@ -60,6 +65,7 @@ public class WorkTaskTagController {
      * 删除任务标签
      */
     @Operation(summary = "删除任务标签", description = "删除指定的任务标签")
+    @PreAuthorize("hasAuthority('" + TASK_TAG_DELETE + "')")
     @DeleteMapping("/{tagId}")
     public CommonResult<Void> deleteTag(
             @Parameter(description = "标签ID") 
@@ -73,6 +79,7 @@ public class WorkTaskTagController {
      * 获取任务标签详情
      */
     @Operation(summary = "获取任务标签详情", description = "获取任务标签的详细信息")
+    @PreAuthorize("hasAuthority('" + TASK_TAG_VIEW + "')")
     @GetMapping("/{tagId}")
     public CommonResult<WorkTaskTagDTO> getTagDetail(
             @Parameter(description = "标签ID") 
@@ -85,6 +92,7 @@ public class WorkTaskTagController {
      * 查询所有任务标签
      */
     @Operation(summary = "查询所有任务标签", description = "获取所有可用的任务标签")
+    @PreAuthorize("hasAuthority('" + TASK_TAG_VIEW + "')")
     @GetMapping
     public CommonResult<List<WorkTaskTagDTO>> listAllTags() {
         log.info("查询所有任务标签");
@@ -95,6 +103,7 @@ public class WorkTaskTagController {
      * 查询工作任务标签列表
      */
     @Operation(summary = "查询工作任务标签列表", description = "根据条件查询工作任务标签列表")
+    @PreAuthorize("hasAuthority('" + TASK_TAG_VIEW + "')")
     @GetMapping("/query")
     public CommonResult<List<WorkTaskTagDTO>> queryTagList(
             @Parameter(description = "查询参数") 
@@ -107,6 +116,7 @@ public class WorkTaskTagController {
      * 获取任务关联的标签列表
      */
     @Operation(summary = "获取任务关联的标签列表", description = "获取指定任务关联的所有标签")
+    @PreAuthorize("hasAuthority('" + TASK_TAG_VIEW + "')")
     @GetMapping("/by-task/{taskId}")
     public CommonResult<List<WorkTaskTagDTO>> getTagsByTaskId(
             @Parameter(description = "任务ID") 
@@ -119,6 +129,7 @@ public class WorkTaskTagController {
      * 获取热门标签列表
      */
     @Operation(summary = "获取热门标签列表", description = "获取使用频率最高的标签列表")
+    @PreAuthorize("hasAuthority('" + TASK_TAG_VIEW + "')")
     @GetMapping("/popular")
     public CommonResult<List<WorkTaskTagDTO>> getPopularTags(
             @Parameter(description = "限制数量") 

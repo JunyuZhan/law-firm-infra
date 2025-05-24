@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
  * 会议室管理控制器
@@ -38,7 +39,7 @@ public class MeetingRoomController {
     
     @Operation(summary = "创建会议室")
     @PostMapping
-    @PreAuthorize("hasAuthority('schedule:meeting:admin')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_CREATE + "')")
     public CommonResult<Long> createMeetingRoom(@Valid @RequestBody MeetingRoomDTO roomDTO) {
         log.info("创建会议室：{}", roomDTO.getName());
         // 使用转换器将DTO转换为实体
@@ -50,7 +51,7 @@ public class MeetingRoomController {
     
     @Operation(summary = "更新会议室")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:meeting:admin')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_EDIT + "')")
     public CommonResult<Boolean> updateMeetingRoom(
             @Parameter(description = "会议室ID") @PathVariable Long id,
             @Valid @RequestBody MeetingRoomDTO roomDTO) {
@@ -70,7 +71,7 @@ public class MeetingRoomController {
     
     @Operation(summary = "获取会议室详情")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_VIEW + "')")
     public CommonResult<MeetingRoomVO> getMeetingRoomDetail(@Parameter(description = "会议室ID") @PathVariable Long id) {
         log.info("获取会议室详情：{}", id);
         MeetingRoomVO roomVO = meetingRoomService.getMeetingRoomDetail(id);
@@ -79,7 +80,7 @@ public class MeetingRoomController {
     
     @Operation(summary = "删除会议室")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('schedule:meeting:admin')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_DELETE + "')")
     public CommonResult<Boolean> deleteMeetingRoom(@Parameter(description = "会议室ID") @PathVariable Long id) {
         log.info("删除会议室：{}", id);
         boolean success = meetingRoomService.deleteMeetingRoom(id);
@@ -88,7 +89,7 @@ public class MeetingRoomController {
     
     @Operation(summary = "获取所有会议室")
     @GetMapping("/list/all")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_VIEW + "')")
     public CommonResult<List<MeetingRoomVO>> listAllMeetingRooms() {
         log.info("获取所有会议室");
         // 简单实现，获取所有会议室
@@ -99,7 +100,7 @@ public class MeetingRoomController {
     
     @Operation(summary = "分页查询会议室")
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_VIEW + "')")
     public CommonResult<Page<MeetingRoomVO>> pageMeetingRooms(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -116,7 +117,7 @@ public class MeetingRoomController {
     
     @Operation(summary = "修改会议室状态")
     @PutMapping("/{id}/status/{status}")
-    @PreAuthorize("hasAuthority('schedule:meeting:admin')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_EDIT + "')")
     public CommonResult<Boolean> changeMeetingRoomStatus(
             @Parameter(description = "会议室ID") @PathVariable Long id,
             @Parameter(description = "状态") @PathVariable Integer status) {
@@ -127,7 +128,7 @@ public class MeetingRoomController {
     
     @Operation(summary = "获取可用会议室")
     @GetMapping("/list/available")
-    @PreAuthorize("hasAuthority('schedule:meeting:view')")
+    @PreAuthorize("hasAuthority('" + MEETING_ROOM_VIEW + "')")
     public CommonResult<List<MeetingRoomVO>> listAvailableMeetingRooms() {
         log.info("获取可用会议室");
         // 简单实现，获取状态为可用的会议室

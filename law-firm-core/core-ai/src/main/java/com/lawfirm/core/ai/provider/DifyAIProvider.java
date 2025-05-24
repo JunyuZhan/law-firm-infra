@@ -11,9 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
+import com.lawfirm.model.ai.entity.AIModelConfig;
+import com.lawfirm.model.ai.service.AIModelConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Dify AI服务提供者
@@ -33,6 +37,24 @@ public class DifyAIProvider implements AIProvider {
 
     @Value("${law-firm.ai.providers.dify.timeout:30000}")
     private int timeout;
+
+    @Autowired
+    private AIModelConfigService aiModelConfigService;
+
+    private static class DifyConfig {
+        final String apiUrl;
+        final String apiKey;
+        final int timeout;
+        DifyConfig(String apiUrl, String apiKey, int timeout) {
+            this.apiUrl = apiUrl;
+            this.apiKey = apiKey;
+            this.timeout = timeout;
+        }
+    }
+
+    private volatile DifyConfig configCache;
+    private volatile long lastLoadTime = 0;
+    private static final long RELOAD_INTERVAL_MS = 30_000; // 30秒
 
     public DifyAIProvider(@Qualifier("aiRestTemplate") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -61,8 +83,32 @@ public class DifyAIProvider implements AIProvider {
         return true;
     }
 
+    private void loadLatestConfig() {
+        long now = System.currentTimeMillis();
+        if (configCache == null || now - lastLoadTime > RELOAD_INTERVAL_MS) {
+            synchronized (this) {
+                if (configCache == null || now - lastLoadTime > RELOAD_INTERVAL_MS) {
+                    AIModelConfig config = aiModelConfigService.getDefault();
+                    if (config != null && "dify".equalsIgnoreCase(config.getProvider())) {
+                        configCache = new DifyConfig(
+                            config.getEndpoint(),
+                            config.getApiKey(),
+                            this.timeout // 可扩展
+                        );
+                        lastLoadTime = now;
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public String sendTextRequest(String prompt, Map<String, Object> options) {
+        loadLatestConfig();
+        DifyConfig cfg = configCache;
+        String apiUrl = cfg != null ? cfg.apiUrl : this.apiUrl;
+        String apiKey = cfg != null ? cfg.apiKey : this.apiKey;
+        int timeout = cfg != null ? cfg.timeout : this.timeout;
         try {
             log.info("向Dify发送文本请求, prompt长度: {}", prompt.length());
             
@@ -104,6 +150,11 @@ public class DifyAIProvider implements AIProvider {
 
     @Override
     public String sendChatRequest(Map<String, Object>[] messages, Map<String, Object> options) {
+        loadLatestConfig();
+        DifyConfig cfg = configCache;
+        String apiUrl = cfg != null ? cfg.apiUrl : this.apiUrl;
+        String apiKey = cfg != null ? cfg.apiKey : this.apiKey;
+        int timeout = cfg != null ? cfg.timeout : this.timeout;
         try {
             log.info("向Dify发送对话请求, 消息数量: {}", messages.length);
             

@@ -3,6 +3,7 @@ package com.lawfirm.model.ai.vo;
 import com.lawfirm.model.base.vo.BaseVO;
 import java.io.Serializable;
 import java.util.Map;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * AI响应视图对象
@@ -12,10 +13,15 @@ public class AIResponseVO implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    @Schema(description = "输出数据")
     private String outputData; // 输出数据
+    @Schema(description = "状态")
     private String status; // 状态
+    @Schema(description = "是否成功")
     private boolean success; // 是否成功
+    @Schema(description = "消息")
     private String message; // 消息
+    @Schema(description = "数据")
     private Map<String, Object> data; // 数据
 
     // 构造函数

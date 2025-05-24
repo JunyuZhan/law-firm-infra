@@ -6,17 +6,23 @@ import com.lawfirm.model.evidence.service.EvidenceService;
 import com.lawfirm.model.evidence.entity.Evidence;
 import com.lawfirm.model.evidence.mapper.EvidenceMapper;
 import com.lawfirm.evidence.converter.EvidenceConverter;
+import com.lawfirm.model.ai.service.DocProcessService;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service("evidenceService")
 public class EvidenceServiceImpl implements EvidenceService {
     @Autowired
     private EvidenceMapper evidenceMapper;
+
+    @Autowired
+    @Qualifier("evidenceDocProcessService")
+    private DocProcessService docProcessService;
 
     @Override
     public Long addEvidence(EvidenceDTO dto) {
@@ -86,5 +92,14 @@ public class EvidenceServiceImpl implements EvidenceService {
         entity.setArchived(true);
         entity.setArchiveTime(LocalDateTime.now());
         evidenceMapper.updateById(entity);
+    }
+
+    @Override
+    public Map<String, Object> extractEvidenceInfo(Long evidenceId) {
+        Evidence entity = evidenceMapper.selectById(evidenceId);
+        if (entity == null) throw new RuntimeException("证据不存在");
+        String content = entity.getProofMatter();
+        if (content == null || content.isEmpty()) throw new RuntimeException("证据内容为空");
+        return docProcessService.extractDocumentInfo(content, null);
     }
 } 

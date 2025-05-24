@@ -4,10 +4,12 @@ import com.lawfirm.model.ai.service.AiService;
 import com.lawfirm.model.ai.dto.AIRequestDTO;
 import com.lawfirm.model.ai.vo.AIResponseVO;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component("coreAIServiceImpl")
 public class CoreAIServiceImpl implements AiService {
     @Override
