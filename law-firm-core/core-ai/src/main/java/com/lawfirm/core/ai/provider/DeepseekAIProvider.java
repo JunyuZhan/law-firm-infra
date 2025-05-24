@@ -9,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 
 import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -83,12 +86,12 @@ public class DeepseekAIProvider implements AIProvider {
             body.put("prompt", prompt);
             body.put("max_tokens", options != null && options.get("max_tokens") != null ? options.get("max_tokens") : 512);
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 Object choicesObj = response.getBody().get("choices");
-                if (choicesObj instanceof java.util.List choices && !choices.isEmpty()) {
+                if (choicesObj instanceof List<?> choices && !choices.isEmpty()) {
                     Object first = choices.get(0);
-                    if (first instanceof Map firstMap && firstMap.get("text") != null) {
+                    if (first instanceof Map<?, ?> firstMap && firstMap.get("text") != null) {
                         return String.valueOf(firstMap.get("text"));
                     }
                 }
@@ -114,14 +117,14 @@ public class DeepseekAIProvider implements AIProvider {
             body.put("messages", messages);
             body.put("max_tokens", options != null && options.get("max_tokens") != null ? options.get("max_tokens") : 512);
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 Object choicesObj = response.getBody().get("choices");
-                if (choicesObj instanceof java.util.List choices && !choices.isEmpty()) {
+                if (choicesObj instanceof List<?> choices && !choices.isEmpty()) {
                     Object first = choices.get(0);
-                    if (first instanceof Map firstMap && firstMap.get("message") != null) {
-                        Map messageMap = (Map) firstMap.get("message");
-                        if (messageMap.get("content") != null) {
+                    if (first instanceof Map<?, ?> firstMap && firstMap.get("message") != null) {
+                        Map<?, ?> messageMap = (Map<?, ?>) firstMap.get("message");
+                        if (messageMap != null && messageMap.get("content") != null) {
                             return String.valueOf(messageMap.get("content"));
                         }
                     }
@@ -147,12 +150,12 @@ public class DeepseekAIProvider implements AIProvider {
             body.put("model", this.modelName);
             body.put("input", text);
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 Object dataObj = response.getBody().get("data");
-                if (dataObj instanceof java.util.List dataList && !dataList.isEmpty()) {
+                if (dataObj instanceof List<?> dataList && !dataList.isEmpty()) {
                     Object first = dataList.get(0);
-                    if (first instanceof Map firstMap && firstMap.get("embedding") instanceof java.util.List embeddingList) {
+                    if (first instanceof Map<?, ?> firstMap && firstMap.get("embedding") instanceof List<?> embeddingList) {
                         float[] arr = new float[embeddingList.size()];
                         for (int i = 0; i < embeddingList.size(); i++) {
                             arr[i] = ((Number) embeddingList.get(i)).floatValue();
@@ -177,13 +180,13 @@ public class DeepseekAIProvider implements AIProvider {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(this.apiKey);
             HttpEntity<Void> entity = new HttpEntity<>(headers);
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 Object dataObj = response.getBody().get("data");
-                if (dataObj instanceof java.util.List dataList && !dataList.isEmpty()) {
+                if (dataObj instanceof List<?> dataList && !dataList.isEmpty()) {
                     String[] arr = new String[dataList.size()];
                     for (int i = 0; i < dataList.size(); i++) {
-                        arr[i] = dataList.get(i).toString();
+                        arr[i] = String.valueOf(dataList.get(i));
                     }
                     return arr;
                 }
