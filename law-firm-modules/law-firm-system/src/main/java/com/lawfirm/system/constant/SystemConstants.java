@@ -73,4 +73,9 @@ public final class SystemConstants {
      * AI配置API路径前缀
      */
     public static final String API_AI_CONFIG_PREFIX = "/api/v1/system/ai-config";
+    
+    /**
+     * 菜单API路径前缀
+     */
+    public static final String API_MENU_PREFIX = "/api/v1/menu";
 } 

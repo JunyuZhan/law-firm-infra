@@ -42,9 +42,8 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuVO> getMenusByRoleId(Long roleId) {
         log.info("获取角色ID为 {} 的菜单列表", roleId);
-        // 目前PermissionMapper中没有直接通过角色ID查询菜单的方法
-        // 使用空实现，待后续增加实际实现
-        return new ArrayList<>();
+        List<Permission> permissions = permissionMapper.selectPermissionsByRoleId(roleId);
+        return convertToMenuVOList(permissions);
     }
 
     /**
