@@ -1,20 +1,11 @@
 package com.lawfirm.common.test;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringApplication;
 
-/**
- * 测试应用程序基类
- */
 @SpringBootApplication
-public abstract class TestApplication {
-    
-    /**
-     * 配置测试应用程序
-     */
-    protected abstract void configureTestApplication();
-
-    /**
-     * 初始化测试环境
-     */
-    protected abstract void initializeTestEnvironment();
+public class TestApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(TestApplication.class, args);
+    }
 } 

@@ -147,32 +147,58 @@ def collect_module_readme(module_name, module_info):
 
 def generate_user_guide():
     """
-    生成系统使用教程文档
+    生成系统使用教程文档，目录和正文按物理结构分组，支持多级模块
     """
     modules = find_modules()
-    
-    # 创建文档内容
+    # 构建分组
+    group_map = {d: [] for d in MODULE_DIRS}
+    for name, info in modules.items():
+        # info['path'] 例如 law-firm-modules/law-firm-case
+        parts = info['path'].split('/')
+        if parts[0] in group_map:
+            group_map[parts[0]].append((name, info))
+    # 生成目录
     content = "# 律师事务所管理系统使用教程\n\n"
-    content += "本文档自动生成，包含了系统所有业务模块的使用说明。\n\n"
+    content += "本文档自动生成，包含了系统所有模块的使用说明。\n\n"
     content += "## 目录\n\n"
-    
-    # 添加目录
-    business_modules = {name: info for name, info in modules.items() if info["is_business"]}
-    for name, info in sorted(business_modules.items()):
-        content += f"- [{name} - {info['description']}](#{name.lower().replace(' ', '-')})\n"
-    
+    for group, items in group_map.items():
+        if not items:
+            continue
+        group_title = group.replace('-', ' ').title()
+        content += f"- **{group}**\n"
+        # 按路径排序
+        items = sorted(items, key=lambda x: x[1]['path'])
+        for name, info in items:
+            anchor = name.lower().replace(' ', '-')
+            content += f"  - [{name}（{info['description']}）](#{anchor})\n"
     content += "\n---\n\n"
-    
-    # 添加各模块的使用教程
-    for name, info in sorted(business_modules.items()):
-        module_content = collect_module_readme(name, info)
-        content += f"{module_content}\n\n---\n\n"
-    
+    # 生成正文
+    for group, items in group_map.items():
+        if not items:
+            continue
+        for name, info in sorted(items, key=lambda x: x[1]['path']):
+            content += f"# {name}\n\n"
+            # 加描述
+            content += f"> {info['description']}\n\n"
+            # 加README内容
+            module_path = ROOT_DIR / info['path']
+            readme_path = module_path / "README.md"
+            if readme_path.exists():
+                with open(readme_path, "r", encoding="utf-8") as f:
+                    md = f.read().strip()
+                # 去掉重复标题
+                md = re.sub(r"^# .+", "", md).strip()
+                if md:
+                    content += md + "\n\n"
+                else:
+                    content += "_（此模块暂无详细文档）_\n\n"
+            else:
+                content += "_（此模块暂无详细文档）_\n\n"
+            content += "---\n\n"
     # 写入文件
     os.makedirs(os.path.dirname(USER_GUIDE_PATH), exist_ok=True)
     with open(USER_GUIDE_PATH, "w", encoding="utf-8") as f:
         f.write(content)
-    
     print(f"✅ 系统使用教程已更新: {USER_GUIDE_PATH}")
     return True
 
@@ -271,22 +297,103 @@ def update_readme_modules():
     print(f"✅ README.md中已添加文档链接")
     return True
 
+def auto_generate_missing_readmes():
+    """
+    只为不存在 README.md 的子模块生成基础模板，已有 README.md 的模块绝不动
+    """
+    LAYERS = [
+        "law-firm-modules",
+        "law-firm-core",
+        "law-firm-model",
+        "law-firm-common"
+    ]
+    for layer in LAYERS:
+        layer_path = ROOT_DIR / layer
+        if not layer_path.exists():
+            continue
+        for name in os.listdir(layer_path):
+            sub_path = layer_path / name
+            readme_path = sub_path / "README.md"
+            if sub_path.is_dir() and not readme_path.exists():
+                tpl = f"""# {name}\n\n## 模块简介\n请在这里补充该模块的功能、用途、主要接口等说明。\n\n## 主要功能\n- 功能1\n- 功能2\n\n## 配置说明\n如有特殊配置，请在这里说明。\n\n## 依赖关系\n- 依赖模块1\n- 依赖模块2\n"""
+                with open(readme_path, "w", encoding="utf-8") as f:
+                    f.write(tpl)
+                print(f"📝 已自动生成: {readme_path}")
+
+def backup_readme(readme_path):
+    """
+    为指定 README.md 做 .bak 备份
+    """
+    import shutil
+    bak_path = str(readme_path) + ".bak"
+    if os.path.exists(readme_path) and not os.path.exists(bak_path):
+        shutil.copy2(readme_path, bak_path)
+        print(f"🔒 已备份: {readme_path} -> {bak_path}")
+
+def update_layer_readme_index():
+    """
+    只替换"## 子模块文档索引"区块，不会覆盖或删除其他内容。
+    如果没有该区块，插入到"## 模块说明"后，若没有则插入到文件末尾，绝不覆盖文件头。
+    """
+    LAYERS = [
+        "law-firm-modules",
+        "law-firm-core",
+        "law-firm-model",
+        "law-firm-common"
+    ]
+    INDEX_TITLE = "## 子模块文档索引"
+    for layer in LAYERS:
+        layer_path = ROOT_DIR / layer
+        readme_path = layer_path / "README.md"
+        if not readme_path.exists():
+            continue
+        # 备份
+        backup_readme(readme_path)
+        # 查找所有有README.md的子模块
+        submodules = []
+        for name in os.listdir(layer_path):
+            sub_path = layer_path / name
+            if sub_path.is_dir() and (sub_path / "README.md").exists():
+                submodules.append(name)
+        submodules.sort()
+        # 构建索引内容
+        index_lines = [INDEX_TITLE, ""]
+        for sub in submodules:
+            index_lines.append(f"- [{sub}](./{sub}/README.md)")
+        index_lines.append("")
+        index_block = "\n".join(index_lines)
+        # 读取原README内容
+        with open(readme_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        # 正则查找并替换已有的索引区块
+        pattern = re.compile(rf"{INDEX_TITLE}.*?(?=\n## |\Z)", re.DOTALL)
+        if INDEX_TITLE in content:
+            new_content = pattern.sub(index_block, content)
+        elif "## 模块说明" in content:
+            new_content = content.replace("## 模块说明", f"## 模块说明\n\n{index_block}", 1)
+        else:
+            # 插入到文件末尾
+            new_content = content.rstrip() + "\n\n" + index_block + "\n"
+        with open(readme_path, "w", encoding="utf-8") as f:
+            f.write(new_content)
+        print(f"✅ {readme_path} 子模块文档索引已更新")
+
 def main():
     """
     主函数
     """
     try:
         print("📝 开始更新系统文档...")
-        
+        # 先自动补全缺失的README
+        auto_generate_missing_readmes()
         # 生成模块文档
         success1 = generate_module_doc()
-        
         # 生成系统使用教程
         success2 = generate_user_guide()
-        
         # 更新README中的链接
         success3 = update_readme_modules()
-        
+        # 新增：更新各层README的子模块文档索引
+        update_layer_readme_index()
         if success1 and success2 and success3:
             print("✅ 文档更新完成!")
             return 0

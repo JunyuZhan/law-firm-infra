@@ -33,6 +33,15 @@
 | 业务模块层   | law-firm-modules：认证、案件、合同等 |
 | API服务层    | law-firm-api：统一REST API接口 |
 
+## 子模块文档索引
+
+- [API服务层（law-firm-api）](./law-firm-api/README.md)
+- [业务模块层（law-firm-modules）](./law-firm-modules/README.md)
+- [核心功能层（law-firm-core）](./law-firm-core/README.md)
+- [数据模型层（law-firm-model）](./law-firm-model/README.md)
+- [通用基础层（law-firm-common）](./law-firm-common/README.md)
+- [依赖管理层（law-firm-dependencies）](./law-firm-dependencies/README.md)
+
 ## 主要功能模块
 | 模块         | 主要功能           | 亮点/特色           |
 |--------------|--------------------|---------------------|
@@ -85,7 +94,7 @@
 
 ## 联系我们
 如需进一步技术支持、定制开发或商务合作，请联系项目维护团队：
-- 邮箱：junyuzhan@yOutlook.com
+- 邮箱：junyuzhan@outlook.com
 - 官网：https://junyuzhan.com
 - 或通过项目Issue区留言
 

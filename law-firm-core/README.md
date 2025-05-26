@@ -1,3 +1,5 @@
+[返回主项目说明](../README.md)
+
 # 律师事务所管理系统 - 核心功能层
 
 ## 1. 概述
@@ -331,3 +333,12 @@ message:
 - 2024-03-26: 完成知识和AI模块实现
 - 2024-04-05: 完成调度模块实现
 - 2024-04-07: 完成任务模块实现
+
+## 子模块文档索引
+
+- [core-ai](./core-ai/README.md)
+- [core-audit](./core-audit/README.md)
+- [core-message](./core-message/README.md)
+- [core-search](./core-search/README.md)
+- [core-storage](./core-storage/README.md)
+- [core-workflow](./core-workflow/README.md)

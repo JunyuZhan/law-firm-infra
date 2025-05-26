@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  * 服务器监控服务实现
  */
 @Slf4j
-@Service
+@Service("systemServerMonitorServiceImpl")
 @RequiredArgsConstructor
 public class ServerMonitorServiceImpl extends ServiceImpl<SysServerMonitorMapper, SysServerMonitor> {
 

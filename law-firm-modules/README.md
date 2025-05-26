@@ -1,3 +1,5 @@
+[返回主项目说明](../README.md)
+
 # 律师事务所管理系统 (Law Firm Management System)
 
 ## 技术架构
@@ -368,7 +370,22 @@
 4. **V7004**: 合并案例模块中的 `case_party` 和 `case_participant` 表
 5. **V12004**: 将档案模块中的 `case_archive` 表重命名为 `archive_case`
 
-## 开发指南
 
 ...
 
+## 子模块文档索引
+
+- [law-firm-analysis](./law-firm-analysis/README.md)
+- [law-firm-archive](./law-firm-archive/README.md)
+- [law-firm-auth](./law-firm-auth/README.md)
+- [law-firm-case](./law-firm-case/README.md)
+- [law-firm-client](./law-firm-client/README.md)
+- [law-firm-contract](./law-firm-contract/README.md)
+- [law-firm-document](./law-firm-document/README.md)
+- [law-firm-evidence](./law-firm-evidence/README.md)
+- [law-firm-finance](./law-firm-finance/README.md)
+- [law-firm-knowledge](./law-firm-knowledge/README.md)
+- [law-firm-personnel](./law-firm-personnel/README.md)
+- [law-firm-schedule](./law-firm-schedule/README.md)
+- [law-firm-system](./law-firm-system/README.md)
+- [law-firm-task](./law-firm-task/README.md)

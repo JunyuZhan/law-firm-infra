@@ -13,7 +13,7 @@
 
     <artifactId>law-firm-api</artifactId>
     <packaging>jar</packaging>
-    <name>Law Firm API</name>
+    <name>Law-Firm-API</name>
     <description>法律事务管理系统API层</description>
 
     <properties>

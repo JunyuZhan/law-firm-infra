@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * 数据库监控服务实现
  */
 @Slf4j
-@Service
+@Service("systemDbMonitorServiceImpl")
 @RequiredArgsConstructor
 public class DbMonitorServiceImpl extends ServiceImpl<SysDbMonitorMapper, SysDbMonitor> {
 

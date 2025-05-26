@@ -1,14 +1,70 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:law_firm_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
     username: sa
     password:
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
   jpa:
     hibernate:
       ddl-auto: update
   data:
     redis:
-      host: 127.0.0.1
-      port: 6379
-      database: 0 
+      enabled: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  flyway:
+    enabled: true
+    clean-on-validation-error: true
+    clean-disabled: false
+server:
+  port: 8081
+  servlet:
+    context-path: /
+cors:
+  allowed-origins: "*"
+logging:
+  level:
+    root: INFO
+    com.lawfirm: DEBUG
+    org.springframework: INFO
+    org.springframework.test: DEBUG
+    org.springframework.security: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+    org.flywaydb: DEBUG
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+law-firm:
+  security:
+    mock-user:
+      enabled: true
+      username: test
+      role: ROLE_USER
+    disable:
+      csrf: true
+      xss-filter: true
+  core:
+    workflow:
+      enabled: false
+    storage:
+      enabled: true
+      type: memory
+    search:
+      enabled: true
+      searchEngineType: database
+      index-path: ./indices-test
+    audit:
+      enabled: true
+springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_API_DOCS_ENABLED:true}
+  swagger-ui:
+    enabled: ${SPRINGDOC_SWAGGER_UI_ENABLED:true}
+knife4j:
+  enable: ${KNIFE4J_ENABLE:true}
+  production: false 

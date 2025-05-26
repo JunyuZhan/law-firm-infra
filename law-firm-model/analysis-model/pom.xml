@@ -11,7 +11,7 @@
     </parent>
     <artifactId>analysis-model</artifactId>
     <packaging>jar</packaging>
-    <name>数据分析-数据模型</name>
+    <name>analysis-model</name>
     <description>分析模块的数据结构、DTO、VO、枚举、接口、SQL常量等</description>
     <dependencies>
         <dependency>

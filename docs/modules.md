@@ -6,11 +6,8 @@
 
 | 模块名 | 路径 | 描述 |
 | ------ | ---- | ---- |
-| law-firm | law-firm-modules | 法律事务管理系统模块 |
-| law-firm-common | law-firm-common\common-web | Web模块，提供Web相关功能 |
-| law-firm-core | law-firm-core\core-workflow | 工作流核心模块 |
-| law-firm-model | law-firm-model\workflow-model | 工作流模型模块 |
-| law-firm-modules | law-firm-modules\law-firm-task | 任务管理模块 |
+| law-firm | law-firm-modules\law-firm-task | 任务管理模块 |
+| law-firm-core | law-firm-core\core-storage | 存储服务实现模块，提供文件存储和管理功能 |
 
 ## 模块依赖关系
 

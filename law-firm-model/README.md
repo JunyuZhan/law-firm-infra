@@ -1,7 +1,34 @@
+[返回主项目说明](../README.md)
+
 # 数据模型层 (Model Layer)
 
 ## 模块说明
 数据模型层是系统的数据模型定义层,包含所有业务实体、数据传输对象、视图对象等。该层不包含任何业务逻辑,只负责数据的定义和转换。
+
+## 子模块文档索引
+
+- [ai-model](./ai-model/README.md)
+- [analysis-model](./analysis-model/README.md)
+- [archive-model](./archive-model/README.md)
+- [auth-model](./auth-model/README.md)
+- [base-model](./base-model/README.md)
+- [case-model](./case-model/README.md)
+- [client-model](./client-model/README.md)
+- [contract-model](./contract-model/README.md)
+- [document-model](./document-model/README.md)
+- [evidence-model](./evidence-model/README.md)
+- [finance-model](./finance-model/README.md)
+- [knowledge-model](./knowledge-model/README.md)
+- [log-model](./log-model/README.md)
+- [message-model](./message-model/README.md)
+- [organization-model](./organization-model/README.md)
+- [personnel-model](./personnel-model/README.md)
+- [schedule-model](./schedule-model/README.md)
+- [search-model](./search-model/README.md)
+- [storage-model](./storage-model/README.md)
+- [system-model](./system-model/README.md)
+- [task-model](./task-model/README.md)
+- [workflow-model](./workflow-model/README.md)
 
 ## 模块列表
 
