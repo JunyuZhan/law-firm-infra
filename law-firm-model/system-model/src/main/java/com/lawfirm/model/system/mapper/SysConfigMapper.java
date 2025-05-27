@@ -35,12 +35,5 @@ public interface SysConfigMapper extends BaseMapper<SysConfig> {
     @Select(SystemSqlConstants.Config.SELECT_BY_GROUP)
     List<SysConfig> selectByGroup(@Param("configGroup") String configGroup);
 
-    /**
-     * 查询配置列表
-     * 
-     * @param wrapper 查询条件
-     * @return 配置列表
-     */
-    @Select("SELECT * FROM sys_config ${ew.customSqlSegment}")
-    List<SysConfig> selectList(@Param(Constants.WRAPPER) Wrapper<SysConfig> wrapper);
+    // 删除重写的selectList方法，使用BaseMapper的默认实现
 } 

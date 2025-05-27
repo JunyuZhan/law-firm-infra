@@ -65,7 +65,6 @@ public class ArchiveSyncServiceImpl extends ServiceImpl<ArchiveSyncRecordMapper,
         
         try {
             // 实际同步逻辑，调用外部系统API
-            // TODO: 实现实际同步逻辑
             
             // 查询档案信息
             ArchiveMain archive = archiveMainMapper.selectById(archiveId);

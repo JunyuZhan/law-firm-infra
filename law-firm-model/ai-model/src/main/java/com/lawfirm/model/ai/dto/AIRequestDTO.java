@@ -22,7 +22,7 @@ public class AIRequestDTO implements Serializable {
     @Schema(description = "模型名称")
     private String modelName; // 模型名称
     @Schema(description = "请求参数")
-    private Map<String, Object> params; // 请求参数
+    private transient Map<String, Object> params; // 请求参数
 
     // 构造函数
     public AIRequestDTO(String inputData, String modelVersion) {

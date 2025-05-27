@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.cases.core.audit.CaseAuditProvider;
 import com.lawfirm.cases.core.message.CaseMessageManager;
 import com.lawfirm.model.cases.dto.business.CaseEventDTO;
-import com.lawfirm.model.cases.entity.business.CaseEvent;
+import com.lawfirm.model.cases.entity.business.CaseEventEntity;
 import com.lawfirm.model.cases.mapper.business.CaseEventMapper;
 import com.lawfirm.model.cases.service.business.CaseEventService;
 import com.lawfirm.model.cases.vo.business.CaseEventVO;
@@ -43,7 +43,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("创建事件: 案件ID={}, 事件标题={}", eventDTO.getCaseId(), eventDTO.getEventTitle());
         
         // 1. 创建事件实体
-        CaseEvent event = new CaseEvent();
+        CaseEventEntity event = new CaseEventEntity();
         BeanUtils.copyProperties(eventDTO, event);
         event.setCreateTime(LocalDateTime.now());
         event.setUpdateTime(LocalDateTime.now());
@@ -118,13 +118,13 @@ public class EventServiceImpl implements CaseEventService {
         log.info("更新事件: ID={}", eventDTO.getId());
         
         // 1. 获取原事件数据
-        CaseEvent oldEvent = eventMapper.selectById(eventDTO.getId());
+        CaseEventEntity oldEvent = eventMapper.selectById(eventDTO.getId());
         if (oldEvent == null) {
             throw new RuntimeException("事件不存在: " + eventDTO.getId());
         }
         
         // 2. 更新事件数据
-        CaseEvent event = new CaseEvent();
+        CaseEventEntity event = new CaseEventEntity();
         BeanUtils.copyProperties(eventDTO, event);
         event.setUpdateTime(LocalDateTime.now());
         
@@ -203,7 +203,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("删除事件: ID={}", eventId);
         
         // 1. 获取事件数据
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -258,7 +258,7 @@ public class EventServiceImpl implements CaseEventService {
     public CaseEventVO getEventDetail(Long eventId) {
         log.info("获取事件详情: ID={}", eventId);
         
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -273,12 +273,12 @@ public class EventServiceImpl implements CaseEventService {
     public List<CaseEventVO> listCaseEvents(Long caseId) {
         log.info("获取案件所有事件: 案件ID={}", caseId);
         
-        LambdaQueryWrapper<CaseEvent> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CaseEvent::getCaseId, caseId);
-        wrapper.eq(CaseEvent::getDeleted, 0); // 只查询未删除的
-        wrapper.orderByDesc(CaseEvent::getCreateTime);
+        LambdaQueryWrapper<CaseEventEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CaseEventEntity::getCaseId, caseId);
+        wrapper.eq(CaseEventEntity::getDeleted, 0); // 只查询未删除的
+        wrapper.orderByDesc(CaseEventEntity::getCreateTime);
         
-        List<CaseEvent> events = eventMapper.selectList(wrapper);
+        List<CaseEventEntity> events = eventMapper.selectList(wrapper);
         
         return events.stream().map(entity -> {
             CaseEventVO vo = new CaseEventVO();
@@ -293,24 +293,24 @@ public class EventServiceImpl implements CaseEventService {
         log.info("分页查询事件: 案件ID={}, 事件类型={}, 事件状态={}, 页码={}, 每页大小={}", 
                  caseId, eventType, eventStatus, pageNum, pageSize);
         
-        Page<CaseEvent> page = new Page<>(pageNum, pageSize);
-        LambdaQueryWrapper<CaseEvent> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CaseEvent::getCaseId, caseId);
-        wrapper.eq(CaseEvent::getDeleted, 0); // 只查询未删除的
+        Page<CaseEventEntity> page = new Page<>(pageNum, pageSize);
+        LambdaQueryWrapper<CaseEventEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CaseEventEntity::getCaseId, caseId);
+        wrapper.eq(CaseEventEntity::getDeleted, 0); // 只查询未删除的
         
         if (eventType != null) {
-            wrapper.eq(CaseEvent::getEventType, eventType);
+            wrapper.eq(CaseEventEntity::getEventType, eventType);
         }
         
         if (eventStatus != null) {
-            wrapper.eq(CaseEvent::getEventStatus, eventStatus);
+            wrapper.eq(CaseEventEntity::getEventStatus, eventStatus);
         }
         
         // 排序
-        wrapper.orderByDesc(CaseEvent::getUpdateTime);
+        wrapper.orderByDesc(CaseEventEntity::getUpdateTime);
         
         // 执行查询
-        IPage<CaseEvent> resultPage = eventMapper.selectPage(page, wrapper);
+        IPage<CaseEventEntity> resultPage = eventMapper.selectPage(page, wrapper);
         
         // 转换为VO
         return resultPage.convert(entity -> {
@@ -326,7 +326,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("开始事件: ID={}", eventId);
         
         // 1. 获取事件数据
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -364,7 +364,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("完成事件: ID={}", eventId);
         
         // 1. 获取事件数据
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -412,7 +412,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("取消事件: ID={}", eventId);
         
         // 1. 获取事件数据
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -455,7 +455,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("添加事件参与人: 事件ID={}, 参与人ID={}", eventId, participantId);
         
         // 1. 获取事件数据
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -498,7 +498,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("移除事件参与人: 事件ID={}, 参与人ID={}", eventId, participantId);
         
         // 1. 获取事件数据
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -539,7 +539,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("添加事件附件: 事件ID={}, 文件ID={}", eventId, fileId);
         
         // 1. 获取事件数据
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -582,7 +582,7 @@ public class EventServiceImpl implements CaseEventService {
         log.info("移除事件附件: 事件ID={}, 文件ID={}", eventId, fileId);
         
         // 1. 获取事件数据
-        CaseEvent event = eventMapper.selectById(eventId);
+        CaseEventEntity event = eventMapper.selectById(eventId);
         if (event == null) {
             throw new RuntimeException("事件不存在: " + eventId);
         }
@@ -622,23 +622,23 @@ public class EventServiceImpl implements CaseEventService {
         log.info("获取用户事件列表: 用户ID={}, 开始时间={}, 结束时间={}", userId, startTime, endTime);
         
         // 查询用户参与的事件
-        LambdaQueryWrapper<CaseEvent> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CaseEvent::getDeleted, 0);
-        wrapper.and(w -> w.eq(CaseEvent::getOrganizerId, userId)
+        LambdaQueryWrapper<CaseEventEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CaseEventEntity::getDeleted, 0);
+        wrapper.and(w -> w.eq(CaseEventEntity::getOrganizerId, userId)
                 .or()
-                .like(CaseEvent::getParticipantIds, userId));
+                .like(CaseEventEntity::getParticipantIds, userId));
         
         if (startTime != null) {
-            wrapper.ge(CaseEvent::getStartTime, startTime);
+            wrapper.ge(CaseEventEntity::getStartTime, startTime);
         }
         
         if (endTime != null) {
-            wrapper.le(CaseEvent::getEndTime, endTime);
+            wrapper.le(CaseEventEntity::getEndTime, endTime);
         }
         
-        wrapper.orderByAsc(CaseEvent::getStartTime);
+        wrapper.orderByAsc(CaseEventEntity::getStartTime);
         
-        List<CaseEvent> events = eventMapper.selectList(wrapper);
+        List<CaseEventEntity> events = eventMapper.selectList(wrapper);
         
         return events.stream().map(entity -> {
             CaseEventVO vo = new CaseEventVO();
@@ -652,20 +652,20 @@ public class EventServiceImpl implements CaseEventService {
         log.info("获取用户待办事件: 用户ID={}", userId);
         
         // 查询用户待办的事件（未完成且未取消的事件）
-        LambdaQueryWrapper<CaseEvent> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CaseEvent::getDeleted, 0);
-        wrapper.and(w -> w.eq(CaseEvent::getOrganizerId, userId)
+        LambdaQueryWrapper<CaseEventEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CaseEventEntity::getDeleted, 0);
+        wrapper.and(w -> w.eq(CaseEventEntity::getOrganizerId, userId)
                 .or()
-                .like(CaseEvent::getParticipantIds, userId));
+                .like(CaseEventEntity::getParticipantIds, userId));
         
         // 状态为未开始或进行中
-        wrapper.in(CaseEvent::getEventStatus, Arrays.asList(1, 2));
+        wrapper.in(CaseEventEntity::getEventStatus, Arrays.asList(1, 2));
         
         // 按优先级和开始时间排序
-        wrapper.orderByDesc(CaseEvent::getEventPriority);
-        wrapper.orderByAsc(CaseEvent::getStartTime);
+        wrapper.orderByDesc(CaseEventEntity::getEventPriority);
+        wrapper.orderByAsc(CaseEventEntity::getStartTime);
         
-        List<CaseEvent> events = eventMapper.selectList(wrapper);
+        List<CaseEventEntity> events = eventMapper.selectList(wrapper);
         
         return events.stream().map(entity -> {
             CaseEventVO vo = new CaseEventVO();
@@ -678,12 +678,12 @@ public class EventServiceImpl implements CaseEventService {
     public List<CaseEventVO> getCaseTimeline(Long caseId) {
         log.info("获取案件时间线: 案件ID={}", caseId);
         
-        LambdaQueryWrapper<CaseEvent> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CaseEvent::getCaseId, caseId);
-        wrapper.eq(CaseEvent::getDeleted, 0);
-        wrapper.orderByAsc(CaseEvent::getStartTime);
+        LambdaQueryWrapper<CaseEventEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CaseEventEntity::getCaseId, caseId);
+        wrapper.eq(CaseEventEntity::getDeleted, 0);
+        wrapper.orderByAsc(CaseEventEntity::getStartTime);
         
-        List<CaseEvent> events = eventMapper.selectList(wrapper);
+        List<CaseEventEntity> events = eventMapper.selectList(wrapper);
         
         return events.stream().map(entity -> {
             CaseEventVO vo = new CaseEventVO();
@@ -700,9 +700,9 @@ public class EventServiceImpl implements CaseEventService {
             return false;
         }
         
-        LambdaQueryWrapper<CaseEvent> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CaseEvent::getId, eventId);
-        wrapper.eq(CaseEvent::getDeleted, 0);
+        LambdaQueryWrapper<CaseEventEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CaseEventEntity::getId, eventId);
+        wrapper.eq(CaseEventEntity::getDeleted, 0);
         
         return eventMapper.selectCount(wrapper) > 0;
     }
@@ -711,16 +711,16 @@ public class EventServiceImpl implements CaseEventService {
     public int countEvents(Long caseId, Integer eventType, Integer eventStatus) {
         log.info("统计事件数量: 案件ID={}, 事件类型={}, 状态={}", caseId, eventType, eventStatus);
         
-        LambdaQueryWrapper<CaseEvent> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(CaseEvent::getCaseId, caseId);
-        wrapper.eq(CaseEvent::getDeleted, 0);
+        LambdaQueryWrapper<CaseEventEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CaseEventEntity::getCaseId, caseId);
+        wrapper.eq(CaseEventEntity::getDeleted, 0);
         
         if (eventType != null) {
-            wrapper.eq(CaseEvent::getEventType, eventType);
+            wrapper.eq(CaseEventEntity::getEventType, eventType);
         }
         
         if (eventStatus != null) {
-            wrapper.eq(CaseEvent::getEventStatus, eventStatus);
+            wrapper.eq(CaseEventEntity::getEventStatus, eventStatus);
         }
         
         return eventMapper.selectCount(wrapper).intValue();

@@ -37,7 +37,7 @@ public class SimpleSecurityConfig extends BaseSecurityConfig {
     // 公开路径列表 - 在无数据库模式下，所有路径都允许访问
     private static final String[] PERMIT_ALL_PATHS = {
         "/**", // 允许所有路径，适用于开发环境
-        "/auth/login", "/auth/register", "/auth/refreshToken", 
+        "/api/v1/auth/login", "/api/v1/auth/register", "/api/v1/auth/refreshToken", 
         "/error", "/actuator/**", "/favicon.ico"
     };
     

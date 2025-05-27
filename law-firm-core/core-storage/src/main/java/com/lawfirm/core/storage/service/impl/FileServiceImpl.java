@@ -24,7 +24,7 @@ import com.lawfirm.core.storage.service.support.FileOperator;
 import com.lawfirm.core.storage.service.support.FileUploader;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.storage.dto.file.FileQueryDTO;
-import com.lawfirm.model.storage.dto.file.FileUploadDTO;
+import com.lawfirm.model.storage.dto.file.StorageFileUploadDTO;
 import com.lawfirm.model.storage.entity.file.FileInfo;
 import com.lawfirm.model.storage.entity.file.FileObject;
 import com.lawfirm.model.storage.mapper.FileObjectMapper;
@@ -54,7 +54,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileObjectMapper, FileObjec
     @SimpleCache(key = "'upload_' + #uploadDTO.fileName", timeout = 60)
     @RepeatSubmit(interval = 5, timeUnit = TimeUnit.SECONDS)
     @RequiresPermissions("storage:file:upload")
-    public FileVO upload(FileUploadDTO uploadDTO) {
+    public FileVO upload(StorageFileUploadDTO uploadDTO) {
         try {
             // 使用文件上传器处理上传
             FileObject fileObject = fileUploader.upload(uploadDTO);

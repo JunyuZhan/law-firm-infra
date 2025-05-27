@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import com.lawfirm.auth.utils.SecurityUtils;
-import com.lawfirm.model.auth.constant.AuthConstants;
+import com.lawfirm.auth.constant.AuthApiConstants;
 import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 
 /**
@@ -28,7 +28,7 @@ import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 @Slf4j
 @Tag(name = "用户管理", description = "用户管理接口")
 @RestController("userController")
-@RequestMapping(AuthConstants.Api.USER)
+@RequestMapping(AuthApiConstants.Api.USER)
 @RequiredArgsConstructor
 public class UserController {
     

@@ -71,13 +71,5 @@ public interface FollowUpMapper extends BaseMapper<ClientFollowUp> {
     @Select(ClientSqlConstants.FollowUp.SELECT_REMINDERS)
     List<ClientFollowUp> selectReminders(@Param("remindTime") Date remindTime);
     
-    /**
-     * 根据条件查询跟进记录列表
-     * 显式定义selectList方法解决"Invalid bound statement"问题
-     *
-     * @param queryWrapper 查询条件
-     * @return 跟进记录列表
-     */
-    @Select("SELECT * FROM client_follow_up ${ew.customSqlSegment}")
-    List<ClientFollowUp> selectList(@Param(Constants.WRAPPER) Wrapper<ClientFollowUp> queryWrapper);
+    // 删除重写的selectList方法，使用BaseMapper的默认实现
 } 

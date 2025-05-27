@@ -1,9 +1,9 @@
 package com.lawfirm.model.ai.enums;
 
 /**
- * AI操作类型枚举
+ * AI模块操作类型枚举
  */
-public enum OperationTypeEnum {
+public enum AIOperationTypeEnum {
     
     CLASSIFY("classify", "文档分类"),
     EXTRACT("extract", "信息提取"),
@@ -21,7 +21,7 @@ public enum OperationTypeEnum {
     private final String code;
     private final String desc;
     
-    OperationTypeEnum(String code, String desc) {
+    AIOperationTypeEnum(String code, String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -37,8 +37,8 @@ public enum OperationTypeEnum {
     /**
      * 根据code获取枚举值
      */
-    public static OperationTypeEnum getByCode(String code) {
-        for (OperationTypeEnum item : OperationTypeEnum.values()) {
+    public static AIOperationTypeEnum getByCode(String code) {
+        for (AIOperationTypeEnum item : AIOperationTypeEnum.values()) {
             if (item.getCode().equals(code)) {
                 return item;
             }

@@ -40,4 +40,11 @@ public interface AuthService {
      * @return 是否有效
      */
     boolean validateCaptcha(String captcha, String captchaKey);
+    
+    /**
+     * 生成验证码
+     *
+     * @return 验证码信息（包含验证码key和图片base64编码）
+     */
+    java.util.Map<String, Object> generateCaptcha();
 } 

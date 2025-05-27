@@ -4,10 +4,10 @@ import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 任务状态枚举
+ * 案件任务状态枚举
  */
 @Getter
-public enum TaskStatusEnum implements BaseEnum<Integer> {
+public enum CaseTaskStatusEnum implements BaseEnum<Integer> {
 
     /**
      * 待分配
@@ -62,7 +62,7 @@ public enum TaskStatusEnum implements BaseEnum<Integer> {
     private final Integer value;
     private final String description;
 
-    TaskStatusEnum(Integer value, String description) {
+    CaseTaskStatusEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
@@ -80,11 +80,11 @@ public enum TaskStatusEnum implements BaseEnum<Integer> {
     /**
      * 根据值获取枚举
      */
-    public static TaskStatusEnum valueOf(Integer value) {
+    public static CaseTaskStatusEnum valueOf(Integer value) {
         if (value == null) {
             return null;
         }
-        for (TaskStatusEnum status : values()) {
+        for (CaseTaskStatusEnum status : values()) {
             if (status.value.equals(value)) {
                 return status;
             }
@@ -149,26 +149,26 @@ public enum TaskStatusEnum implements BaseEnum<Integer> {
     /**
      * 获取下一个可能的状态
      */
-    public TaskStatusEnum[] getNextPossibleStatus() {
+    public CaseTaskStatusEnum[] getNextPossibleStatus() {
         switch (this) {
             case PENDING_ASSIGNMENT:
-                return new TaskStatusEnum[]{ASSIGNED, CANCELLED};
+                return new CaseTaskStatusEnum[]{ASSIGNED, CANCELLED};
             case ASSIGNED:
-                return new TaskStatusEnum[]{IN_PROGRESS, SUSPENDED, CANCELLED};
+                return new CaseTaskStatusEnum[]{IN_PROGRESS, SUSPENDED, CANCELLED};
             case IN_PROGRESS:
-                return new TaskStatusEnum[]{PENDING_REVIEW, SUSPENDED, CANCELLED, OVERDUE};
+                return new CaseTaskStatusEnum[]{PENDING_REVIEW, SUSPENDED, CANCELLED, OVERDUE};
             case PENDING_REVIEW:
-                return new TaskStatusEnum[]{IN_REVIEW, CANCELLED};
+                return new CaseTaskStatusEnum[]{IN_REVIEW, CANCELLED};
             case IN_REVIEW:
-                return new TaskStatusEnum[]{NEED_REVISION, COMPLETED, CANCELLED};
+                return new CaseTaskStatusEnum[]{NEED_REVISION, COMPLETED, CANCELLED};
             case NEED_REVISION:
-                return new TaskStatusEnum[]{IN_PROGRESS, CANCELLED};
+                return new CaseTaskStatusEnum[]{IN_PROGRESS, CANCELLED};
             case SUSPENDED:
-                return new TaskStatusEnum[]{IN_PROGRESS, CANCELLED};
+                return new CaseTaskStatusEnum[]{IN_PROGRESS, CANCELLED};
             case OVERDUE:
-                return new TaskStatusEnum[]{IN_PROGRESS, CANCELLED};
+                return new CaseTaskStatusEnum[]{IN_PROGRESS, CANCELLED};
             default:
-                return new TaskStatusEnum[]{};
+                return new CaseTaskStatusEnum[]{};
         }
     }
 

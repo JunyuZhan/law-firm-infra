@@ -6,7 +6,7 @@ import com.lawfirm.common.log.annotation.AuditLog;
 import com.lawfirm.core.storage.service.support.FileOperator;
 import com.lawfirm.model.base.service.impl.BaseServiceImpl;
 import com.lawfirm.model.storage.service.FileService;
-import com.lawfirm.model.storage.dto.file.FileUploadDTO;
+import com.lawfirm.model.storage.dto.file.StorageFileUploadDTO;
 import com.lawfirm.model.storage.vo.FileVO;
 import com.lawfirm.model.system.dto.upgrade.*;
 import com.lawfirm.model.system.entity.upgrade.Patch;
@@ -227,7 +227,7 @@ public class UpgradeServiceImpl extends BaseServiceImpl<UpgradeMapper, Upgrade> 
 
         try {
             // 构建文件上传参数
-            FileUploadDTO uploadDTO = new FileUploadDTO();
+            StorageFileUploadDTO uploadDTO = new StorageFileUploadDTO();
             uploadDTO.setFileName(file.getOriginalFilename());
             uploadDTO.setBucketId(1L); // 使用系统默认的存储桶
             uploadDTO.setDescription("升级补丁文件");

@@ -1,7 +1,7 @@
 package com.lawfirm.model.document.service;
 
-import com.lawfirm.model.document.dto.permission.PermissionCreateDTO;
-import com.lawfirm.model.document.dto.permission.PermissionUpdateDTO;
+import com.lawfirm.model.document.dto.permission.DocumentPermissionCreateDTO;
+import com.lawfirm.model.document.dto.permission.DocumentPermissionUpdateDTO;
 import com.lawfirm.model.document.entity.base.DocumentPermission;
 import com.lawfirm.model.document.enums.DocumentOperationEnum;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface DocumentPermissionService {
      * @param dto 创建DTO
      * @return 创建的权限实体
      */
-    DocumentPermission createPermission(PermissionCreateDTO dto);
+    DocumentPermission createPermission(DocumentPermissionCreateDTO dto);
 
     /**
      * 更新文档权限
@@ -27,7 +27,7 @@ public interface DocumentPermissionService {
      * @param dto 更新DTO
      * @return 更新后的权限实体
      */
-    DocumentPermission updatePermission(Long id, PermissionUpdateDTO dto);
+    DocumentPermission updatePermission(Long id, DocumentPermissionUpdateDTO dto);
 
     /**
      * 删除文档权限

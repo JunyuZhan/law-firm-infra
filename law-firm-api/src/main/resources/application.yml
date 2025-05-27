@@ -197,6 +197,7 @@ server:
 # MyBatis Plus配置
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
+  # 不设置type-aliases-package，完全禁用类型别名自动注册
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     map-underscore-to-camel-case: true
@@ -209,6 +210,8 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: AUTO
+    # 禁用banner，避免不必要的包扫描
+    banner: false
 
 # 跨域配置
 cors:
@@ -308,7 +311,7 @@ law-firm:
       ip-limit-rate: ${IP_LIMIT_RATE:50}
       ip-limit-interval: ${IP_LIMIT_INTERVAL:1}
       ip-limit-paths:
-        - /api/auth/login
+        - /api/v1/auth/login
     # 幂等性配置
     idempotent:
       enabled: ${IDEMPOTENT_ENABLED:true}

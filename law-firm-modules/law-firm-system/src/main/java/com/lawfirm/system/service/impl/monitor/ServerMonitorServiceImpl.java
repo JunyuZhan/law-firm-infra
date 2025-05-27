@@ -181,7 +181,7 @@ public class ServerMonitorServiceImpl extends ServiceImpl<SysServerMonitorMapper
             }
             
             // 检查内存使用率
-            if (monitor.getMemoryUsage().doubleValue() > 80) {
+            if (monitor.getMemoryUsage().doubleValue() > 95) {
                 log.warn("服务器内存使用率超过阈值: {}%, 服务器: {}", 
                     monitor.getMemoryUsage(), monitor.getServerName());
                 

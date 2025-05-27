@@ -25,7 +25,7 @@ import java.time.Duration;
 @Accessors(chain = true)
 @TableName("case_event")
 @Schema(description = "案件事件实体类")
-public class CaseEvent extends ModelBaseEntity {
+public class CaseEventEntity extends ModelBaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -263,7 +263,7 @@ public class CaseEvent extends ModelBaseEntity {
     /**
      * 设置事件类型
      */
-    public CaseEvent setEventTypeEnum(EventTypeEnum eventTypeEnum) {
+    public CaseEventEntity setEventTypeEnum(EventTypeEnum eventTypeEnum) {
         this.eventType = eventTypeEnum != null ? eventTypeEnum.getValue() : null;
         return this;
     }
@@ -278,7 +278,7 @@ public class CaseEvent extends ModelBaseEntity {
     /**
      * 设置事件状态
      */
-    public CaseEvent setEventStatusEnum(EventStatusEnum eventStatusEnum) {
+    public CaseEventEntity setEventStatusEnum(EventStatusEnum eventStatusEnum) {
         this.eventStatus = eventStatusEnum != null ? eventStatusEnum.getValue() : null;
         return this;
     }
@@ -293,7 +293,7 @@ public class CaseEvent extends ModelBaseEntity {
     /**
      * 设置事件优先级
      */
-    public CaseEvent setEventPriorityEnum(EventPriorityEnum eventPriorityEnum) {
+    public CaseEventEntity setEventPriorityEnum(EventPriorityEnum eventPriorityEnum) {
         this.eventPriority = eventPriorityEnum != null ? eventPriorityEnum.getValue() : null;
         return this;
     }
@@ -426,7 +426,7 @@ public class CaseEvent extends ModelBaseEntity {
     /**
      * 添加参与人
      */
-    public CaseEvent addParticipant(Long id, String name) {
+    public CaseEventEntity addParticipant(Long id, String name) {
         if (id == null) {
             return this;
         }
@@ -453,7 +453,7 @@ public class CaseEvent extends ModelBaseEntity {
     /**
      * 移除参与人
      */
-    public CaseEvent removeParticipant(Long id) {
+    public CaseEventEntity removeParticipant(Long id) {
         if (id == null || participantIds == null || participantIds.isEmpty()) {
             return this;
         }

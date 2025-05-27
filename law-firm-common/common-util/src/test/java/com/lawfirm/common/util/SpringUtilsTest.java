@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 class SpringUtilsTest extends BaseUtilTest {
 
     @Autowired
-    private SpringUtils springUtils;
+    private com.lawfirm.common.util.SpringUtils springUtils;
     
     private ApplicationContext mockContext;
     private TestBean testBean;

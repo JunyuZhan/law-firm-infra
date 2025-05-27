@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class PatchQueryDTO extends BaseQuery {
+public class SystemPatchQueryDTO extends BaseQuery {
 
     private static final long serialVersionUID = 1L;
 

@@ -7,7 +7,7 @@ import com.lawfirm.model.workflow.entity.ProcessInstance;
 import com.lawfirm.model.workflow.entity.base.BaseProcess;
 import com.lawfirm.model.workflow.enums.ProcessStatusEnum;
 import com.lawfirm.model.workflow.enums.ProcessTypeEnum;
-import com.lawfirm.model.workflow.enums.TaskPriorityEnum;
+import com.lawfirm.model.workflow.enums.WorkflowTaskPriorityEnum;
 import com.lawfirm.core.workflow.vo.ProcessDefinitionVO;
 import org.flowable.engine.repository.ProcessDefinition;
 import lombok.RequiredArgsConstructor;

@@ -213,6 +213,7 @@ public class ScheduleController {
      */
     @PostMapping("/ai/conflict")
     public org.springframework.http.ResponseEntity<java.util.Map<String, Object>> aiScheduleConflict(@RequestBody java.util.Map<String, Object> body) {
+        @SuppressWarnings("unchecked")
         java.util.List<java.util.Map<String, Object>> schedules = (java.util.List<java.util.Map<String, Object>>) body.get("schedules");
         return org.springframework.http.ResponseEntity.ok(scheduleAIManager.detectConflict(schedules));
     }

@@ -2,7 +2,7 @@ package com.lawfirm.core.workflow.adapter.converter;
 
 import com.lawfirm.model.workflow.dto.task.TaskCreateDTO;
 import com.lawfirm.model.workflow.entity.base.ProcessTask;
-import com.lawfirm.model.workflow.enums.TaskPriorityEnum;
+import com.lawfirm.model.workflow.enums.WorkflowTaskPriorityEnum;
 import com.lawfirm.model.workflow.enums.TaskStatusEnum;
 import com.lawfirm.model.workflow.enums.TaskTypeEnum;
 import com.lawfirm.model.workflow.vo.TaskVO;
@@ -97,7 +97,7 @@ public class TaskConverter {
           .setProcessNo(task.getProcessNo())
           .setHandlerId(task.getHandlerId())
           .setHandlerName(task.getHandlerName())
-          .setPriority(TaskPriorityEnum.getByValue(task.getPriority()))
+          .setPriority(WorkflowTaskPriorityEnum.getByValue(task.getPriority()))
           .setDueDate(task.getDueTime())
           .setResult(task.getResult())
           .setComment(task.getComment());

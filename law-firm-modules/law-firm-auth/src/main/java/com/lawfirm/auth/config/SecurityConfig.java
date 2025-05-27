@@ -75,7 +75,7 @@ public class SecurityConfig extends BaseSecurityConfig {
     
     // 公开路径列表
     private static final String[] PERMIT_ALL_PATHS = {
-        "/auth/login", "/auth/register", "/auth/refreshToken", 
+        "/api/v1/auth/login", "/api/v1/auth/register", "/api/v1/auth/refreshToken", 
         "/error", "/actuator/**", "/favicon.ico"
     };
     
@@ -118,7 +118,7 @@ public class SecurityConfig extends BaseSecurityConfig {
     @Bean("jsonLoginFilter")
     public JsonLoginFilter jsonLoginFilter() {
         log.info("创建JSON登录过滤器");
-        JsonLoginFilter filter = JsonLoginFilter.create("/auth/login", authenticationManager, objectMapper);
+        JsonLoginFilter filter = JsonLoginFilter.create("/api/v1/auth/login", authenticationManager, objectMapper);
         filter.setAuthenticationSuccessHandler(loginSuccessHandler);
         filter.setAuthenticationFailureHandler(loginFailureHandler);
         return filter;

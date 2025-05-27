@@ -2,8 +2,8 @@ package com.lawfirm.model.cases.dto.business;
 
 import com.lawfirm.model.base.dto.BaseDTO;
 import com.lawfirm.model.cases.enums.doc.DocumentSecurityLevelEnum;
-import com.lawfirm.model.cases.enums.doc.DocumentStatusEnum;
-import com.lawfirm.model.cases.enums.doc.DocumentTypeEnum;
+import com.lawfirm.model.cases.enums.doc.CaseDocumentStatusEnum;
+import com.lawfirm.model.cases.enums.doc.CaseDocumentTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -40,12 +40,12 @@ public class CaseDocumentDTO extends BaseDTO {
     /**
      * 文档类型
      */
-    private DocumentTypeEnum documentType;
+    private CaseDocumentTypeEnum documentType;
 
     /**
      * 文档状态
      */
-    private DocumentStatusEnum documentStatus;
+    private CaseDocumentStatusEnum documentStatus;
 
     /**
      * 文档安全级别

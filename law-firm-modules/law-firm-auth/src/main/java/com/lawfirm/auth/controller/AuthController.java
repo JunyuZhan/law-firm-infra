@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import com.lawfirm.model.auth.constant.AuthConstants;
+import com.lawfirm.auth.constant.AuthApiConstants;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,10 +39,11 @@ import java.util.Map;
 @Slf4j
 @Tag(name = "认证管理", description = "认证相关接口")
 @RestController("authController")
-@RequestMapping(AuthConstants.Api.AUTH)
+@RequestMapping(AuthApiConstants.Api.AUTH)
 @RequiredArgsConstructor
 public class AuthController {
     
+    @Qualifier("authServiceImpl")
     private final AuthService authService;
     private final UserService userService;
     
@@ -141,11 +142,15 @@ public class AuthController {
      */
     @Operation(summary = "获取验证码", description = "获取验证码接口")
     @GetMapping("/getCaptcha")
-    public CommonResult<String> getCaptcha() {
-        // 这里需要生成验证码并存储到Redis
-        // 简化处理，直接返回成功
-        log.info("获取验证码");
-        return CommonResult.success("验证码已发送");
+    public CommonResult<Map<String, Object>> getCaptcha() {
+        try {
+            // 生成验证码
+            Map<String, Object> captchaResult = authService.generateCaptcha();
+            return CommonResult.success(captchaResult, "获取验证码成功");
+        } catch (Exception e) {
+            log.error("获取验证码失败", e);
+            return CommonResult.error("获取验证码失败");
+        }
     }
 }
 

@@ -4,10 +4,10 @@ import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 文档状态枚举
+ * 案件文档状态枚举
  */
 @Getter
-public enum DocumentStatusEnum implements BaseEnum<Integer> {
+public enum CaseDocumentStatusEnum implements BaseEnum<Integer> {
 
     /**
      * 草稿
@@ -62,7 +62,7 @@ public enum DocumentStatusEnum implements BaseEnum<Integer> {
     private final Integer value;
     private final String description;
 
-    DocumentStatusEnum(Integer value, String description) {
+    CaseDocumentStatusEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
@@ -80,11 +80,11 @@ public enum DocumentStatusEnum implements BaseEnum<Integer> {
     /**
      * 根据值获取枚举
      */
-    public static DocumentStatusEnum valueOf(Integer value) {
+    public static CaseDocumentStatusEnum valueOf(Integer value) {
         if (value == null) {
             return null;
         }
-        for (DocumentStatusEnum status : values()) {
+        for (CaseDocumentStatusEnum status : values()) {
             if (status.value.equals(value)) {
                 return status;
             }
@@ -144,26 +144,26 @@ public enum DocumentStatusEnum implements BaseEnum<Integer> {
     /**
      * 获取下一个可能的状态
      */
-    public DocumentStatusEnum[] getNextPossibleStatus() {
+    public CaseDocumentStatusEnum[] getNextPossibleStatus() {
         switch (this) {
             case DRAFT:
-                return new DocumentStatusEnum[]{PENDING_REVIEW, VOID};
+                return new CaseDocumentStatusEnum[]{PENDING_REVIEW, VOID};
             case PENDING_REVIEW:
-                return new DocumentStatusEnum[]{IN_REVIEW, VOID};
+                return new CaseDocumentStatusEnum[]{IN_REVIEW, VOID};
             case IN_REVIEW:
-                return new DocumentStatusEnum[]{NEED_REVISION, REVIEWED, VOID};
+                return new CaseDocumentStatusEnum[]{NEED_REVISION, REVIEWED, VOID};
             case NEED_REVISION:
-                return new DocumentStatusEnum[]{PENDING_REVIEW, VOID};
+                return new CaseDocumentStatusEnum[]{PENDING_REVIEW, VOID};
             case REVIEWED:
-                return new DocumentStatusEnum[]{PENDING_SIGNATURE, PENDING_ARCHIVE, VOID};
+                return new CaseDocumentStatusEnum[]{PENDING_SIGNATURE, PENDING_ARCHIVE, VOID};
             case PENDING_SIGNATURE:
-                return new DocumentStatusEnum[]{SIGNED, VOID};
+                return new CaseDocumentStatusEnum[]{SIGNED, VOID};
             case SIGNED:
-                return new DocumentStatusEnum[]{PENDING_ARCHIVE, VOID};
+                return new CaseDocumentStatusEnum[]{PENDING_ARCHIVE, VOID};
             case PENDING_ARCHIVE:
-                return new DocumentStatusEnum[]{ARCHIVED, VOID};
+                return new CaseDocumentStatusEnum[]{ARCHIVED, VOID};
             default:
-                return new DocumentStatusEnum[]{};
+                return new CaseDocumentStatusEnum[]{};
         }
     }
 } 

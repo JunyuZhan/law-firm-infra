@@ -156,10 +156,10 @@ public interface AuthConstants extends BaseConstants {
          * 公共路径前缀
          */
         String[] PUBLIC_PATHS = {
-                "/auth/login",
-                "/auth/refresh",
-                "/auth/captcha",
-                "/auth/password/reset/**",
+                "/api/v1/auth/login",
+                "/api/v1/auth/refresh",
+                "/api/v1/auth/captcha",
+                "/api/v1/auth/password/reset/**",
                 "/doc.html",
                 "/swagger-resources/**",
                 "/v3/api-docs/**",
@@ -388,60 +388,7 @@ public interface AuthConstants extends BaseConstants {
         int PERMISSION_CODE_ALREADY_EXISTS = AUTH_ERROR_BASE + 17;
     }
     
-    /**
-     * API 路径常量
-     */
-    interface Api {
-        /**
-         * API版本前缀
-         */
-        String PREFIX = "/api/v1";
-        
-        /**
-         * 认证API前缀
-         */
-        String AUTH = PREFIX + "/auth";
-        
-        /**
-         * 用户API前缀
-         */
-        String USER = PREFIX + "/users";
-        
-        /**
-         * 角色API前缀
-         */
-        String ROLE = PREFIX + "/roles";
-        
-        /**
-         * 权限API前缀
-         */
-        String PERMISSION = PREFIX + "/permissions";
-        
-        /**
-         * 登录接口路径
-         */
-        String LOGIN = AUTH + "/login";
-        
-        /**
-         * 登出接口路径
-         */
-        String LOGOUT = AUTH + "/logout";
-        
-        /**
-         * 刷新Token接口路径
-         */
-        String REFRESH_TOKEN = AUTH + "/refresh";
-        
-        /**
-         * 获取验证码接口路径
-         */
-        String CAPTCHA = AUTH + "/captcha";
-        
-        /**
-         * 重置密码接口路径
-         */
-        String RESET_PASSWORD = AUTH + "/password/reset";
-    }
+
     
     /**
      * 权限相关常量

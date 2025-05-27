@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
  * 案件状态枚举
  */
 @Getter
-@RequiredArgsConstructor
 public enum CaseStatusEnum {
     
     DRAFT(0, "草稿"),
@@ -23,6 +22,11 @@ public enum CaseStatusEnum {
     @JsonValue
     private final Integer value;
     private final String description;
+
+    CaseStatusEnum(Integer value, String description) {
+        this.value = value;
+        this.description = description;
+    }
 
     /**
      * 根据值获取枚举

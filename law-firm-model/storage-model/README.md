@@ -20,7 +20,7 @@ storage-model/
 │   └── BucketTypeEnum.java    # 存储桶类型
 ├── dto/
 │   ├── file/
-│   │   ├── FileUploadDTO.java  # 文件上传
+│   │   ├── StorageFileUploadDTO.java  # 文件上传
 │   │   └── FileQueryDTO.java   # 文件查询
 │   └── bucket/
 │       ├── BucketCreateDTO.java # 存储桶创建
@@ -80,7 +80,7 @@ storage-model/
    - 定义存储桶类型：如公共桶、私有桶等
 
 ### DTO类
-1. FileUploadDTO
+1. StorageFileUploadDTO
    - 文件上传数据传输对象
    - 包含上传文件所需的必要信息
 
@@ -130,7 +130,7 @@ storage-model/
 private FileService fileService;
 
 // 上传文件
-FileUploadDTO uploadDTO = new FileUploadDTO();
+StorageFileUploadDTO uploadDTO = new StorageFileUploadDTO();
 String fileId = fileService.uploadFile(uploadDTO);
 
 // 下载文件

@@ -22,7 +22,7 @@ public class AIResponseVO implements Serializable {
     @Schema(description = "消息")
     private String message; // 消息
     @Schema(description = "数据")
-    private Map<String, Object> data; // 数据
+    private transient Map<String, Object> data; // 数据
 
     // 构造函数
     public AIResponseVO(String outputData, String status) {

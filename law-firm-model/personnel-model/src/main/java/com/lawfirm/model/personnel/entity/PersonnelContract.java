@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.personnel.constant.PersonnelConstants;
-import com.lawfirm.model.personnel.enums.ContractTypeEnum;
+import com.lawfirm.model.personnel.enums.PersonnelContractTypeEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -43,7 +43,7 @@ public class PersonnelContract extends ModelBaseEntity {
      */
     @NotNull(message = "合同类型不能为空")
     @TableField("type")
-    private ContractTypeEnum type;
+    private PersonnelContractTypeEnum type;
 
     /**
      * 合同名称

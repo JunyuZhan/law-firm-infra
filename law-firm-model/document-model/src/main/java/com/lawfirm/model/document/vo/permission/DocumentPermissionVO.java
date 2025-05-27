@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class PermissionVO extends BaseVO {
+public class DocumentPermissionVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 

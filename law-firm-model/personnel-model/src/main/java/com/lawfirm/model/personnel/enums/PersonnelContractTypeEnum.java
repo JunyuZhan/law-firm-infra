@@ -4,9 +4,9 @@ import com.lawfirm.model.base.enums.BaseEnum;
 import com.lawfirm.model.personnel.constant.PersonnelConstants;
 
 /**
- * 合同类型枚举
+ * 人事合同类型枚举
  */
-public enum ContractTypeEnum implements BaseEnum<Integer> {
+public enum PersonnelContractTypeEnum implements BaseEnum<Integer> {
     
     /**
      * 固定期限
@@ -46,7 +46,7 @@ public enum ContractTypeEnum implements BaseEnum<Integer> {
     private final Integer value;
     private final String description;
 
-    ContractTypeEnum(Integer value, String description) {
+    PersonnelContractTypeEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
@@ -61,11 +61,11 @@ public enum ContractTypeEnum implements BaseEnum<Integer> {
         return description;
     }
 
-    public static ContractTypeEnum valueOf(Integer value) {
+    public static PersonnelContractTypeEnum valueOf(Integer value) {
         if (value == null) {
             return null;
         }
-        for (ContractTypeEnum type : values()) {
+        for (PersonnelContractTypeEnum type : values()) {
             if (type.value.equals(value)) {
                 return type;
             }

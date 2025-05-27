@@ -4,10 +4,10 @@ import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 任务类型枚举
+ * 案件任务类型枚举
  */
 @Getter
-public enum TaskTypeEnum implements BaseEnum<Integer> {
+public enum CaseTaskTypeEnum implements BaseEnum<Integer> {
 
     /**
      * 文书起草
@@ -92,7 +92,7 @@ public enum TaskTypeEnum implements BaseEnum<Integer> {
     private final Integer value;
     private final String description;
 
-    TaskTypeEnum(Integer value, String description) {
+    CaseTaskTypeEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
@@ -110,11 +110,11 @@ public enum TaskTypeEnum implements BaseEnum<Integer> {
     /**
      * 根据值获取枚举
      */
-    public static TaskTypeEnum valueOf(Integer value) {
+    public static CaseTaskTypeEnum valueOf(Integer value) {
         if (value == null) {
             return null;
         }
-        for (TaskTypeEnum type : values()) {
+        for (CaseTaskTypeEnum type : values()) {
             if (type.value.equals(value)) {
                 return type;
             }

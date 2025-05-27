@@ -2,7 +2,7 @@ package com.lawfirm.auth.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
-import com.lawfirm.model.auth.constant.AuthConstants;
+import com.lawfirm.auth.constant.AuthApiConstants;
 import com.lawfirm.model.auth.dto.role.RoleCreateDTO;
 import com.lawfirm.model.auth.dto.role.RoleQueryDTO;
 import com.lawfirm.model.auth.dto.role.RoleUpdateDTO;
@@ -27,7 +27,7 @@ import static com.lawfirm.model.auth.constant.PermissionConstants.*;
 @Slf4j
 @Tag(name = "角色管理", description = "角色管理接口")
 @RestController("roleController")
-@RequestMapping(AuthConstants.Api.ROLE)
+@RequestMapping(AuthApiConstants.Api.ROLE)
 @RequiredArgsConstructor
 public class RoleController {
     

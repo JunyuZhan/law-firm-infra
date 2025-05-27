@@ -22,7 +22,7 @@ spring:
     clean-on-validation-error: true
     clean-disabled: false
 server:
-  port: 8081
+  port: 8185  # 修复端口冲突，System模块测试环境使用8185
   servlet:
     context-path: /
 cors:

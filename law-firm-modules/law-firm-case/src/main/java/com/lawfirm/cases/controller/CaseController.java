@@ -503,9 +503,11 @@ public class CaseController {
     @io.swagger.v3.oas.annotations.Operation(summary = "AI自动生成案件文书（多类型/风格/批量）")
     public org.springframework.http.ResponseEntity<?> aiGenerateLegalDocument(@RequestBody java.util.Map<String, Object> body) {
         String docType = (String) body.get("docType");
+        @SuppressWarnings("unchecked")
         java.util.Map<String, Object> elements = (java.util.Map<String, Object>) body.get("elements");
         String style = (String) body.get("style");
         boolean batch = body.get("batch") != null && (Boolean) body.get("batch");
+        @SuppressWarnings("unchecked")
         java.util.List<java.util.Map<String, Object>> batchList = (java.util.List<java.util.Map<String, Object>>) body.get("batchList");
         return org.springframework.http.ResponseEntity.ok(caseAIManager.generateLegalDocument(docType, elements, style, batch, batchList));
     }
@@ -549,6 +551,7 @@ public class CaseController {
     @io.swagger.v3.oas.annotations.Operation(summary = "AI案件风险评估")
     public org.springframework.http.ResponseEntity<java.util.Map<String, Object>> aiCaseRisk(@RequestBody java.util.Map<String, Object> body) {
         Long caseId = body.get("caseId") != null ? Long.valueOf(body.get("caseId").toString()) : null;
+        @SuppressWarnings("unchecked")
         java.util.Map<String, Object> caseData = (java.util.Map<String, Object>) body.get("caseData");
         return org.springframework.http.ResponseEntity.ok(caseAIManager.getCaseRiskAssessment(caseId, caseData));
     }

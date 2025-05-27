@@ -1,6 +1,6 @@
 package com.lawfirm.core.ai.event;
 
-import com.lawfirm.model.ai.enums.OperationTypeEnum;
+import com.lawfirm.model.ai.enums.AIOperationTypeEnum;
 import org.springframework.context.ApplicationEvent;
 
 import java.io.Serial;
@@ -21,7 +21,7 @@ public class AIEvent extends ApplicationEvent {
     /**
      * 操作类型
      */
-    private final OperationTypeEnum operationType;
+    private final AIOperationTypeEnum operationType;
     
     /**
      * 操作ID
@@ -88,7 +88,7 @@ public class AIEvent extends ApplicationEvent {
      * @param modelId 模型ID
      */
     public AIEvent(Object source, 
-                  OperationTypeEnum operationType,
+                  AIOperationTypeEnum operationType,
                   String operationId,
                   String status,
                   Map<String, Object> result,
@@ -114,7 +114,7 @@ public class AIEvent extends ApplicationEvent {
      * 创建成功事件
      */
     public static AIEvent createSuccessEvent(Object source,
-                                           OperationTypeEnum operationType,
+                                           AIOperationTypeEnum operationType,
                                            String operationId,
                                            Map<String, Object> result,
                                            long duration,
@@ -128,7 +128,7 @@ public class AIEvent extends ApplicationEvent {
      * 创建失败事件
      */
     public static AIEvent createFailedEvent(Object source,
-                                          OperationTypeEnum operationType,
+                                          AIOperationTypeEnum operationType,
                                           String operationId,
                                           String errorMessage,
                                           long duration,
@@ -142,7 +142,7 @@ public class AIEvent extends ApplicationEvent {
      * 创建处理中事件
      */
     public static AIEvent createProcessingEvent(Object source,
-                                              OperationTypeEnum operationType,
+                                              AIOperationTypeEnum operationType,
                                               String operationId,
                                               Map<String, Object> parameters,
                                               String userId,
@@ -151,7 +151,7 @@ public class AIEvent extends ApplicationEvent {
     }
     
     // Getters
-    public OperationTypeEnum getOperationType() {
+    public AIOperationTypeEnum getOperationType() {
         return operationType;
     }
     

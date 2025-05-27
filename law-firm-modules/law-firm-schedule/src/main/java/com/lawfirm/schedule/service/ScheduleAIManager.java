@@ -45,7 +45,9 @@ public class ScheduleAIManager {
         params.put("schedules", schedules);
         req.setParams(params);
         AIResponseVO resp = aiService.process(req);
-        return resp != null && resp.isSuccess() ? (Map<String, Object>) resp.getData().get("conflictResult") : Map.of();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> result = resp != null && resp.isSuccess() ? (Map<String, Object>) resp.getData().get("conflictResult") : Map.of();
+        return result;
     }
     /** 日程智能分类 */
     public Map<String, Double> classify(String content) {
@@ -56,7 +58,9 @@ public class ScheduleAIManager {
         params.put("text", content);
         req.setParams(params);
         AIResponseVO resp = aiService.process(req);
-        return resp != null && resp.isSuccess() ? (Map<String, Double>) resp.getData().get("classification") : Map.of();
+        @SuppressWarnings("unchecked")
+        Map<String, Double> result = resp != null && resp.isSuccess() ? (Map<String, Double>) resp.getData().get("classification") : Map.of();
+        return result;
     }
     /** 日程标签推荐 */
     public List<String> recommendTags(String content, Integer limit) {
@@ -68,7 +72,9 @@ public class ScheduleAIManager {
         params.put("limit", limit != null ? limit : 5);
         req.setParams(params);
         AIResponseVO resp = aiService.process(req);
-        return resp != null && resp.isSuccess() ? (List<String>) resp.getData().get("tags") : List.of();
+        @SuppressWarnings("unchecked")
+        List<String> result = resp != null && resp.isSuccess() ? (List<String>) resp.getData().get("tags") : List.of();
+        return result;
     }
     /** 日程推荐 */
     public List<Map<String, Object>> recommendSchedules(String content, Integer limit) {
@@ -80,7 +86,9 @@ public class ScheduleAIManager {
         params.put("limit", limit != null ? limit : 5);
         req.setParams(params);
         AIResponseVO resp = aiService.process(req);
-        return resp != null && resp.isSuccess() ? (List<Map<String, Object>>) resp.getData().get("schedules") : List.of();
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> result = resp != null && resp.isSuccess() ? (List<Map<String, Object>>) resp.getData().get("schedules") : List.of();
+        return result;
     }
     /** 日程智能问答 */
     public String qa(String question, String context) {

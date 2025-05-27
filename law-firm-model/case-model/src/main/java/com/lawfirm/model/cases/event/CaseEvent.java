@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
  * 所有案件相关事件都应继承此基类
  */
 @Data
-@NoArgsConstructor
 public abstract class CaseEvent implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -61,15 +60,25 @@ public abstract class CaseEvent implements Serializable {
     private String message;
     
     /**
+     * 无参构造函数
+     */
+    public CaseEvent() {
+        this.occurTime = LocalDateTime.now();
+    }
+
+    /**
+     * 带参构造函数
+     */
+    public CaseEvent(Long caseId, String caseNumber) {
+        this();
+        this.caseId = caseId;
+        this.caseNumber = caseNumber;
+    }
+
+    /**
      * 获取事件类型
      * 
      * @return 事件类型
      */
     public abstract String getEventType();
-    
-    public CaseEvent(Long caseId, String caseNumber) {
-        this.caseId = caseId;
-        this.caseNumber = caseNumber;
-        this.occurTime = LocalDateTime.now();
-    }
 } 

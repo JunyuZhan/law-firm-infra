@@ -1,9 +1,9 @@
 package com.lawfirm.model.cases.vo.business;
 
 import com.lawfirm.model.base.vo.BaseVO;
-import com.lawfirm.model.cases.enums.task.TaskPriorityEnum;
-import com.lawfirm.model.cases.enums.task.TaskStatusEnum;
-import com.lawfirm.model.cases.enums.task.TaskTypeEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskPriorityEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskStatusEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -41,17 +41,17 @@ public class CaseTaskVO extends BaseVO {
     /**
      * 任务类型
      */
-    private TaskTypeEnum taskType;
+    private CaseTaskTypeEnum taskType;
 
     /**
      * 任务状态
      */
-    private TaskStatusEnum taskStatus;
+    private CaseTaskStatusEnum taskStatus;
 
     /**
      * 任务优先级
      */
-    private TaskPriorityEnum taskPriority;
+    private CaseTaskPriorityEnum taskPriority;
 
     /**
      * 任务描述
@@ -188,7 +188,7 @@ public class CaseTaskVO extends BaseVO {
      */
     public boolean isCompleted() {
         return this.taskStatus != null && 
-               this.taskStatus == TaskStatusEnum.COMPLETED;
+               this.taskStatus == CaseTaskStatusEnum.COMPLETED;
     }
 
     /**
@@ -196,7 +196,7 @@ public class CaseTaskVO extends BaseVO {
      */
     public boolean isCancelled() {
         return this.taskStatus != null && 
-               this.taskStatus == TaskStatusEnum.CANCELLED;
+               this.taskStatus == CaseTaskStatusEnum.CANCELLED;
     }
 
     /**
@@ -204,7 +204,7 @@ public class CaseTaskVO extends BaseVO {
      */
     public boolean isInProgress() {
         return this.taskStatus != null && 
-               this.taskStatus == TaskStatusEnum.IN_PROGRESS;
+               this.taskStatus == CaseTaskStatusEnum.IN_PROGRESS;
     }
 
     /**
@@ -212,7 +212,7 @@ public class CaseTaskVO extends BaseVO {
      */
     public boolean isPending() {
         return this.taskStatus != null && 
-               this.taskStatus == TaskStatusEnum.PENDING_ASSIGNMENT;
+               this.taskStatus == CaseTaskStatusEnum.PENDING_ASSIGNMENT;
     }
 
     /**

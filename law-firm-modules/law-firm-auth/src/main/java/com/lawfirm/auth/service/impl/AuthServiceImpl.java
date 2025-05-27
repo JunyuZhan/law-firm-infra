@@ -24,9 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -206,5 +204,37 @@ public class AuthServiceImpl implements AuthService {
         
         return captcha.equalsIgnoreCase(storedCaptcha);
     }
+    
+    @Override
+    public Map<String, Object> generateCaptcha() {
+        try {
+            // 生成随机验证码
+            String captchaText = com.lawfirm.auth.utils.CaptchaUtils.generateRandomText();
+            
+            // 生成验证码图片数据URL
+            String captchaDataUrl = com.lawfirm.auth.utils.CaptchaUtils.generateCaptchaDataUrl(captchaText);
+            
+            // 生成验证码key
+            String captchaKey = UUID.randomUUID().toString().replace("-", "");
+            
+            // 存储验证码到Redis，5分钟过期
+            String key = CAPTCHA_KEY_PREFIX + captchaKey;
+            redisTemplate.opsForValue().set(key, captchaText, 5, TimeUnit.MINUTES);
+            
+            // 返回结果
+            Map<String, Object> result = new HashMap<>();
+            result.put("captchaKey", captchaKey);
+            result.put("captchaImage", captchaDataUrl);
+            result.put("expiresIn", 300); // 5分钟
+            
+            log.info("生成验证码成功，key: {}", captchaKey);
+            return result;
+        } catch (Exception e) {
+            log.error("生成验证码失败", e);
+            throw new AuthException("生成验证码失败");
+        }
+    }
+    
+
 }
 

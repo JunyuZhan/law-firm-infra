@@ -191,7 +191,7 @@ public class RateLimitConfig implements WebMvcConfigurer {
         /**
          * 需要进行IP限流的路径
          */
-        private String[] ipLimitPaths = {"/api/auth/login", "/api/auth/register"};
+        private String[] ipLimitPaths = {"/api/v1/auth/login", "/api/v1/auth/register"};
         
         /**
          * 接口限流配置

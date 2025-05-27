@@ -4,10 +4,10 @@ import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 文档分类枚举
+ * 案件文档分类枚举
  */
 @Getter
-public enum DocumentCategoryEnum implements BaseEnum<Integer> {
+public enum CaseDocumentCategoryEnum implements BaseEnum<Integer> {
 
     /**
      * 诉讼文书
@@ -62,7 +62,7 @@ public enum DocumentCategoryEnum implements BaseEnum<Integer> {
     private final Integer value;
     private final String description;
 
-    DocumentCategoryEnum(Integer value, String description) {
+    CaseDocumentCategoryEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
@@ -80,11 +80,11 @@ public enum DocumentCategoryEnum implements BaseEnum<Integer> {
     /**
      * 根据值获取枚举
      */
-    public static DocumentCategoryEnum valueOf(Integer value) {
+    public static CaseDocumentCategoryEnum valueOf(Integer value) {
         if (value == null) {
             return null;
         }
-        for (DocumentCategoryEnum category : values()) {
+        for (CaseDocumentCategoryEnum category : values()) {
             if (category.value.equals(value)) {
                 return category;
             }

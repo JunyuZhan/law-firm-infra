@@ -34,7 +34,7 @@ import java.util.Arrays;
     "com.lawfirm.model.log.mapper",
     "com.lawfirm.model.system.mapper",
     "com.lawfirm.model.search.mapper",
-    "com.lawfirm.model.auth.mapper",
+    "com.lawfirm.model.auth.mapper", 
     "com.lawfirm.model.client.mapper",
     "com.lawfirm.model.contract.mapper",
     "com.lawfirm.model.cases.mapper",

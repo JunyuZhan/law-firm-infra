@@ -52,6 +52,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param userType 用户类型
      * @return 用户列表
      */
+    @Select("SELECT * FROM auth_user WHERE user_type = #{userType} AND deleted = 0")
     List<User> selectByUserType(Integer userType);
     
     /**
@@ -60,6 +61,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param positionId 职位ID
      * @return 用户列表
      */
+    @Select("SELECT * FROM auth_user WHERE position_id = #{positionId} AND deleted = 0")
     List<User> selectByPositionId(Long positionId);
     
     /**
@@ -68,6 +70,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param departmentId 部门ID
      * @return 用户列表
      */
+    @Select("SELECT * FROM auth_user WHERE department_id = #{departmentId} AND deleted = 0")
     List<User> selectByDepartmentId(Long departmentId);
     
     /**
@@ -152,6 +155,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param userId 用户ID
      * @return 权限编码列表
      */
+    @Select(AuthSqlConstants.Permission.SELECT_EMPLOYEE_PERMISSION_CODES)
     List<String> selectUserPermissions(Long userId);
     
     /**
@@ -160,6 +164,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param userId 用户ID
      * @return 权限编码列表
      */
+    @Select(AuthSqlConstants.Permission.SELECT_EMPLOYEE_PERMISSION_CODES)
     List<String> selectPermissionsByUserId(Long userId);
     
     /**

@@ -136,11 +136,7 @@
             <artifactId>commons-csv</artifactId>
         </dependency>
 
-        <!-- 分页插件 -->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-        </dependency>
+        <!-- 分页功能由MyBatis-Plus提供，无需额外插件 -->
 
         <!-- MySQL -->
         <dependency>

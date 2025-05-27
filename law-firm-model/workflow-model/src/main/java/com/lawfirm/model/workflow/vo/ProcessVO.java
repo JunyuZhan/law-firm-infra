@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lawfirm.model.workflow.enums.ProcessStatusEnum;
 import com.lawfirm.model.workflow.enums.ProcessTypeEnum;
-import com.lawfirm.model.workflow.enums.TaskPriorityEnum;
+import com.lawfirm.model.workflow.enums.WorkflowTaskPriorityEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import java.io.Serializable;
@@ -98,9 +98,9 @@ public class ProcessVO implements Serializable {
     
     /**
      * 优先级
-     * @see TaskPriorityEnum
+     * @see WorkflowTaskPriorityEnum
      */
-    private TaskPriorityEnum priority;
+    private WorkflowTaskPriorityEnum priority;
     
     /**
      * 是否允许撤回

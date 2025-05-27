@@ -2,7 +2,7 @@ package com.lawfirm.model.storage.service;
 
 import com.lawfirm.model.base.service.BaseService;
 import com.lawfirm.model.storage.dto.file.FileQueryDTO;
-import com.lawfirm.model.storage.dto.file.FileUploadDTO;
+import com.lawfirm.model.storage.dto.file.StorageFileUploadDTO;
 import com.lawfirm.model.storage.entity.file.FileObject;
 import com.lawfirm.model.storage.vo.FileVO;
 import com.lawfirm.model.storage.vo.PageVO;
@@ -19,7 +19,7 @@ public interface FileService extends BaseService<FileObject> {
      * @param uploadDTO 上传参数
      * @return 文件视图对象
      */
-    FileVO upload(FileUploadDTO uploadDTO);
+    FileVO upload(StorageFileUploadDTO uploadDTO);
     
     /**
      * 上传文件 (通过MultipartFile)

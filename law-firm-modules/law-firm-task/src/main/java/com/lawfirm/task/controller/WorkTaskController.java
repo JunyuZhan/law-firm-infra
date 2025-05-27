@@ -271,6 +271,7 @@ public class WorkTaskController {
     @PostMapping("/ai/summary/batch")
     public org.springframework.http.ResponseEntity<java.util.Map<String, Object>> aiTaskSummaryBatch(@RequestBody java.util.Map<String, Object> body) {
         String content = (String) body.get("content");
+        @SuppressWarnings("unchecked")
         java.util.List<String> modelNames = (java.util.List<String>) body.get("modelNames");
         java.util.Map<String, Object> results = new java.util.concurrent.ConcurrentHashMap<>();
         java.util.List<java.util.concurrent.CompletableFuture<Void>> futures = new java.util.ArrayList<>();
@@ -280,7 +281,8 @@ public class WorkTaskController {
                 results.put(model, summary);
             }));
         }
-        java.util.concurrent.CompletableFuture.allOf(futures.toArray(new java.util.concurrent.CompletableFuture[0])).join();
+        java.util.concurrent.CompletableFuture<Void> allOf = java.util.concurrent.CompletableFuture.allOf(futures.toArray(new java.util.concurrent.CompletableFuture<?>[0]));
+        allOf.join();
         return org.springframework.http.ResponseEntity.ok(results);
     }
 } 

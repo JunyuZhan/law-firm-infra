@@ -28,6 +28,8 @@ import com.lawfirm.model.search.service.SearchService;
 import com.lawfirm.model.workflow.service.ProcessService;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -170,7 +172,7 @@ public class FollowUpServiceImpl extends ServiceImpl<FollowUpMapper, ClientFollo
             }
         }
         
-        followUpPlan.setFollowUpTime(LocalDateTime.now().plusDays(followCycleDays));
+        followUpPlan.setNextFollowTime(Date.from(LocalDateTime.now().plusDays(followCycleDays).atZone(ZoneId.systemDefault()).toInstant()));
         followUpPlan.setContent("常规跟进");
         
         // 保存跟进计划
@@ -235,7 +237,7 @@ public class FollowUpServiceImpl extends ServiceImpl<FollowUpMapper, ClientFollo
             nextFollowUp.setClientId(followUp.getClientId());
             nextFollowUp.setAssigneeId(followUp.getAssigneeId());
             nextFollowUp.setStatus(ClientConstant.FollowUp.STATUS_PENDING);
-            nextFollowUp.setFollowUpTime(nextFollowUpTime);
+            nextFollowUp.setNextFollowTime(Date.from(nextFollowUpTime.atZone(ZoneId.systemDefault()).toInstant()));
             nextFollowUp.setContent(nextFollowUpContent);
             nextFollowUp.setBusinessId(followUp.getBusinessId());
             nextFollowUp.setBusinessType(followUp.getBusinessType());

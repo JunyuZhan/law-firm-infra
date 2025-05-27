@@ -3,9 +3,9 @@ package com.lawfirm.model.cases.entity.business;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
-import com.lawfirm.model.cases.enums.task.TaskPriorityEnum;
-import com.lawfirm.model.cases.enums.task.TaskStatusEnum;
-import com.lawfirm.model.cases.enums.task.TaskTypeEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskPriorityEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskStatusEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -287,14 +287,14 @@ public class CaseTask extends ModelBaseEntity {
     /**
      * 获取任务类型枚举
      */
-    public TaskTypeEnum getTaskTypeEnum() {
-        return TaskTypeEnum.valueOf(this.taskType);
+    public CaseTaskTypeEnum getTaskTypeEnum() {
+        return CaseTaskTypeEnum.valueOf(this.taskType);
     }
 
     /**
      * 设置任务类型
      */
-    public CaseTask setTaskTypeEnum(TaskTypeEnum taskTypeEnum) {
+    public CaseTask setTaskTypeEnum(CaseTaskTypeEnum taskTypeEnum) {
         this.taskType = taskTypeEnum != null ? taskTypeEnum.getValue() : null;
         return this;
     }
@@ -302,14 +302,14 @@ public class CaseTask extends ModelBaseEntity {
     /**
      * 获取任务状态枚举
      */
-    public TaskStatusEnum getTaskStatusEnum() {
-        return TaskStatusEnum.valueOf(this.taskStatus);
+    public CaseTaskStatusEnum getTaskStatusEnum() {
+        return CaseTaskStatusEnum.valueOf(this.taskStatus);
     }
 
     /**
      * 设置任务状态
      */
-    public CaseTask setTaskStatusEnum(TaskStatusEnum taskStatusEnum) {
+    public CaseTask setTaskStatusEnum(CaseTaskStatusEnum taskStatusEnum) {
         this.taskStatus = taskStatusEnum != null ? taskStatusEnum.getValue() : null;
         return this;
     }
@@ -317,14 +317,14 @@ public class CaseTask extends ModelBaseEntity {
     /**
      * 获取任务优先级枚举
      */
-    public TaskPriorityEnum getTaskPriorityEnum() {
-        return TaskPriorityEnum.valueOf(this.taskPriority);
+    public CaseTaskPriorityEnum getTaskPriorityEnum() {
+        return CaseTaskPriorityEnum.valueOf(this.taskPriority);
     }
 
     /**
      * 设置任务优先级
      */
-    public CaseTask setTaskPriorityEnum(TaskPriorityEnum taskPriorityEnum) {
+    public CaseTask setTaskPriorityEnum(CaseTaskPriorityEnum taskPriorityEnum) {
         this.taskPriority = taskPriorityEnum != null ? taskPriorityEnum.getValue() : null;
         return this;
     }
@@ -334,7 +334,7 @@ public class CaseTask extends ModelBaseEntity {
      */
     public boolean isCompleted() {
         return this.taskStatus != null && 
-               this.getTaskStatusEnum() == TaskStatusEnum.COMPLETED;
+               this.getTaskStatusEnum() == CaseTaskStatusEnum.COMPLETED;
     }
 
     /**
@@ -342,7 +342,7 @@ public class CaseTask extends ModelBaseEntity {
      */
     public boolean isCancelled() {
         return this.taskStatus != null && 
-               this.getTaskStatusEnum() == TaskStatusEnum.CANCELLED;
+               this.getTaskStatusEnum() == CaseTaskStatusEnum.CANCELLED;
     }
 
     /**
@@ -350,7 +350,7 @@ public class CaseTask extends ModelBaseEntity {
      */
     public boolean isInProgress() {
         return this.taskStatus != null && 
-               this.getTaskStatusEnum() == TaskStatusEnum.IN_PROGRESS;
+               this.getTaskStatusEnum() == CaseTaskStatusEnum.IN_PROGRESS;
     }
 
     /**
@@ -358,7 +358,7 @@ public class CaseTask extends ModelBaseEntity {
      */
     public boolean isPending() {
         return this.taskStatus != null && 
-               this.getTaskStatusEnum() == TaskStatusEnum.PENDING_ASSIGNMENT;
+               this.getTaskStatusEnum() == CaseTaskStatusEnum.PENDING_ASSIGNMENT;
     }
 
     /**
@@ -435,7 +435,7 @@ public class CaseTask extends ModelBaseEntity {
         
         // 如果进度为100%，自动将状态设为已完成
         if (this.progressPercentage == 100 && !isCompleted()) {
-            setTaskStatusEnum(TaskStatusEnum.COMPLETED);
+            setTaskStatusEnum(CaseTaskStatusEnum.COMPLETED);
             this.completionTime = LocalDateTime.now();
         }
         

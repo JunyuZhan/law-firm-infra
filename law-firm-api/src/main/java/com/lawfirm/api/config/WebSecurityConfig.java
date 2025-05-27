@@ -74,15 +74,15 @@ public class WebSecurityConfig {
      */
     private static final String[] PUBLIC_API_PATHS = {
             // 认证相关API
-            "/api/auth/login",
-            "/api/auth/register",
-            "/api/auth/captcha",
+            "/api/v1/auth/login",
+            "/api/v1/auth/register",
+            "/api/v1/auth/getCaptcha",
             // 健康检查和基本信息API
             "/api/health",
             "/api/version",
             // API文档配置调试端点
             "/api/doc-config"
-            // 注意：其他API路径应以类似"/api/auth/**"方式添加
+            // 注意：其他API路径应以类似"/api/v1/auth/**"方式添加
             // SecurityConstants.PUBLIC_RESOURCE_PATHS 是全局设置，应谨慎合并
     };
 

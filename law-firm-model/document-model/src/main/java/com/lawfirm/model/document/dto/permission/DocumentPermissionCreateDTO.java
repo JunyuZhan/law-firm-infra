@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class PermissionCreateDTO extends BaseDTO {
+public class DocumentPermissionCreateDTO extends BaseDTO {
 
     private static final long serialVersionUID = 1L;
 

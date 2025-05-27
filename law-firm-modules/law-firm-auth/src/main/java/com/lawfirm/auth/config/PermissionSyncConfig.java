@@ -53,6 +53,9 @@ public class PermissionSyncConfig implements ApplicationRunner {
                     permission.setName(code); // 可根据需要设置更友好的名称
                     permission.setType(2); // 2=API权限
                     permission.setStatus(0); // 正常
+                    permission.setSort(0); // 设置排序
+                    permission.setDeleted(0); // 设置未删除
+                    permission.preInsert(); // 调用预插入方法设置时间字段
                     permissionMapper.insert(permission);
                     insertCount++;
                     log.info("自动注册权限点：{}", code);

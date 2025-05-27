@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lawfirm.model.base.entity.ModelBaseEntity;
 import com.lawfirm.model.cases.enums.doc.DocumentSecurityLevelEnum;
-import com.lawfirm.model.cases.enums.doc.DocumentStatusEnum;
-import com.lawfirm.model.cases.enums.doc.DocumentTypeEnum;
+import com.lawfirm.model.cases.enums.doc.CaseDocumentStatusEnum;
+import com.lawfirm.model.cases.enums.doc.CaseDocumentTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -241,14 +241,14 @@ public class CaseDocument extends ModelBaseEntity {
     /**
      * 获取文档类型枚举
      */
-    public DocumentTypeEnum getDocumentTypeEnum() {
-        return DocumentTypeEnum.valueOf(this.documentType);
+    public CaseDocumentTypeEnum getDocumentTypeEnum() {
+        return CaseDocumentTypeEnum.valueOf(this.documentType);
     }
 
     /**
      * 设置文档类型
      */
-    public CaseDocument setDocumentTypeEnum(DocumentTypeEnum documentTypeEnum) {
+    public CaseDocument setDocumentTypeEnum(CaseDocumentTypeEnum documentTypeEnum) {
         this.documentType = documentTypeEnum != null ? documentTypeEnum.getValue() : null;
         return this;
     }
@@ -256,14 +256,14 @@ public class CaseDocument extends ModelBaseEntity {
     /**
      * 获取文档状态枚举
      */
-    public DocumentStatusEnum getDocumentStatusEnum() {
-        return DocumentStatusEnum.valueOf(this.documentStatus);
+    public CaseDocumentStatusEnum getDocumentStatusEnum() {
+        return CaseDocumentStatusEnum.valueOf(this.documentStatus);
     }
 
     /**
      * 设置文档状态
      */
-    public CaseDocument setDocumentStatusEnum(DocumentStatusEnum documentStatusEnum) {
+    public CaseDocument setDocumentStatusEnum(CaseDocumentStatusEnum documentStatusEnum) {
         this.documentStatus = documentStatusEnum != null ? documentStatusEnum.getValue() : null;
         return this;
     }
@@ -288,7 +288,7 @@ public class CaseDocument extends ModelBaseEntity {
      */
     public boolean isDraft() {
         return this.documentStatus != null && 
-               this.getDocumentStatusEnum() == DocumentStatusEnum.DRAFT;
+               this.getDocumentStatusEnum() == CaseDocumentStatusEnum.DRAFT;
     }
 
     /**
@@ -296,7 +296,7 @@ public class CaseDocument extends ModelBaseEntity {
      */
     public boolean isReviewed() {
         return this.documentStatus != null && 
-               this.getDocumentStatusEnum() == DocumentStatusEnum.REVIEWED;
+               this.getDocumentStatusEnum() == CaseDocumentStatusEnum.REVIEWED;
     }
 
     /**
@@ -304,7 +304,7 @@ public class CaseDocument extends ModelBaseEntity {
      */
     public boolean isPublished() {
         return this.documentStatus != null && 
-               this.getDocumentStatusEnum() == DocumentStatusEnum.SIGNED;
+               this.getDocumentStatusEnum() == CaseDocumentStatusEnum.SIGNED;
     }
 
     /**
@@ -312,7 +312,7 @@ public class CaseDocument extends ModelBaseEntity {
      */
     public boolean isDiscarded() {
         return this.documentStatus != null && 
-               this.getDocumentStatusEnum() == DocumentStatusEnum.VOID;
+               this.getDocumentStatusEnum() == CaseDocumentStatusEnum.VOID;
     }
 
     /**

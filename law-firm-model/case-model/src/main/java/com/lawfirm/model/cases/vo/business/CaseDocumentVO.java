@@ -2,8 +2,8 @@ package com.lawfirm.model.cases.vo.business;
 
 import com.lawfirm.model.base.vo.BaseVO;
 import com.lawfirm.model.cases.enums.doc.DocumentSecurityLevelEnum;
-import com.lawfirm.model.cases.enums.doc.DocumentStatusEnum;
-import com.lawfirm.model.cases.enums.doc.DocumentTypeEnum;
+import com.lawfirm.model.cases.enums.doc.CaseDocumentStatusEnum;
+import com.lawfirm.model.cases.enums.doc.CaseDocumentTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -40,12 +40,12 @@ public class CaseDocumentVO extends BaseVO {
     /**
      * 文档类型
      */
-    private DocumentTypeEnum documentType;
+    private CaseDocumentTypeEnum documentType;
 
     /**
      * 文档状态
      */
-    private DocumentStatusEnum documentStatus;
+    private CaseDocumentStatusEnum documentStatus;
 
     /**
      * 文档安全级别
@@ -248,7 +248,7 @@ public class CaseDocumentVO extends BaseVO {
      */
     public boolean isDraft() {
         return this.documentStatus != null && 
-               this.documentStatus == DocumentStatusEnum.DRAFT;
+               this.documentStatus == CaseDocumentStatusEnum.DRAFT;
     }
 
     /**
@@ -256,7 +256,7 @@ public class CaseDocumentVO extends BaseVO {
      */
     public boolean isReviewed() {
         return this.documentStatus != null && 
-               this.documentStatus == DocumentStatusEnum.REVIEWED;
+               this.documentStatus == CaseDocumentStatusEnum.REVIEWED;
     }
 
     /**
@@ -264,7 +264,7 @@ public class CaseDocumentVO extends BaseVO {
      */
     public boolean isPublished() {
         return this.documentStatus != null && 
-               this.documentStatus == DocumentStatusEnum.SIGNED;
+               this.documentStatus == CaseDocumentStatusEnum.SIGNED;
     }
 
     /**
@@ -272,7 +272,7 @@ public class CaseDocumentVO extends BaseVO {
      */
     public boolean isDiscarded() {
         return this.documentStatus != null && 
-               this.documentStatus == DocumentStatusEnum.VOID;
+               this.documentStatus == CaseDocumentStatusEnum.VOID;
     }
 
     /**

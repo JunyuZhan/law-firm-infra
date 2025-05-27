@@ -1,5 +1,6 @@
 package com.lawfirm.auth.utils;
 
+import com.lawfirm.auth.security.details.SecurityUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,18 +38,28 @@ public class SecurityUtils {
      * @return 用户ID
      */
     public static Long getCurrentUserId() {
-        String username = getCurrentUsername();
-        if (username == null) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
             return null;
         }
         
-        // 这里需要根据实际情况从用户服务获取用户ID
-        // 简化处理，假设用户名就是用户ID的字符串形式
-        try {
-            return Long.parseLong(username);
-        } catch (NumberFormatException e) {
-            return null;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof SecurityUserDetails) {
+            return ((SecurityUserDetails) principal).getUserId();
         }
+        
+        // 如果不是SecurityUserDetails，尝试从用户名解析（兼容处理）
+        String username = getCurrentUsername();
+        if (username != null) {
+            try {
+                return Long.parseLong(username);
+            } catch (NumberFormatException e) {
+                // 如果用户名不是数字，返回默认值
+                return 1L;
+            }
+        }
+        
+        return null;
     }
     
     /**
@@ -73,6 +84,24 @@ public class SecurityUtils {
     public static boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && authentication.isAuthenticated();
+    }
+    
+    /**
+     * 获取用户ID（兼容方法）
+     * 
+     * @return 用户ID
+     */
+    public static Long getUserId() {
+        return getCurrentUserId();
+    }
+    
+    /**
+     * 获取用户名（兼容方法）
+     * 
+     * @return 用户名
+     */
+    public static String getUsername() {
+        return getCurrentUsername();
     }
     
     /**

@@ -1,7 +1,7 @@
 package com.lawfirm.document.service.impl;
 
-import com.lawfirm.model.document.dto.permission.PermissionCreateDTO;
-import com.lawfirm.model.document.dto.permission.PermissionUpdateDTO;
+import com.lawfirm.model.document.dto.permission.DocumentPermissionCreateDTO;
+import com.lawfirm.model.document.dto.permission.DocumentPermissionUpdateDTO;
 import com.lawfirm.model.document.entity.base.DocumentPermission;
 import com.lawfirm.model.document.enums.DocumentOperationEnum;
 import com.lawfirm.model.document.service.DocumentPermissionService;
@@ -48,7 +48,7 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
 
     @Override
     @Transactional
-    public DocumentPermission createPermission(PermissionCreateDTO dto) {
+    public DocumentPermission createPermission(DocumentPermissionCreateDTO dto) {
         DocumentPermission permission = new DocumentPermission();
         permission.setId(generateId());
         permission.setDocumentId(dto.getDocumentId());
@@ -76,7 +76,7 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
 
     @Override
     @Transactional
-    public DocumentPermission updatePermission(Long id, PermissionUpdateDTO dto) {
+    public DocumentPermission updatePermission(Long id, DocumentPermissionUpdateDTO dto) {
         DocumentPermission permission = permissionMap.get(id);
         if (permission == null) {
             throw new IllegalArgumentException("Permission not found: " + id);
@@ -144,7 +144,7 @@ public class DocumentPermissionServiceImpl implements DocumentPermissionService 
     @Override
     @Transactional
     public void grantPermission(Long documentId, Long userId, DocumentOperationEnum operation) {
-        PermissionCreateDTO dto = new PermissionCreateDTO();
+        DocumentPermissionCreateDTO dto = new DocumentPermissionCreateDTO();
         dto.setDocumentId(documentId);
         dto.setSubjectId(userId);
         dto.setPermissionType(operation);

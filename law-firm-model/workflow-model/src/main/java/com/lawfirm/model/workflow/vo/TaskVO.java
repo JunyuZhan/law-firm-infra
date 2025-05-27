@@ -1,7 +1,7 @@
 package com.lawfirm.model.workflow.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lawfirm.model.workflow.enums.TaskPriorityEnum;
+import com.lawfirm.model.workflow.enums.WorkflowTaskPriorityEnum;
 import com.lawfirm.model.workflow.enums.TaskStatusEnum;
 import com.lawfirm.model.workflow.enums.TaskTypeEnum;
 import lombok.Data;
@@ -87,9 +87,9 @@ public class TaskVO implements Serializable {
     
     /**
      * 任务优先级
-     * @see TaskPriorityEnum
+     * @see WorkflowTaskPriorityEnum
      */
-    private TaskPriorityEnum priority;
+    private WorkflowTaskPriorityEnum priority;
     
     /**
      * 截止时间

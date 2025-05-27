@@ -15,7 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import com.lawfirm.core.storage.config.StorageProperties;
 import com.lawfirm.core.storage.util.FileTypeUtils;
-import com.lawfirm.model.storage.dto.file.FileUploadDTO;
+import com.lawfirm.model.storage.dto.file.StorageFileUploadDTO;
 import com.lawfirm.model.storage.entity.file.FileInfo;
 import com.lawfirm.model.storage.entity.file.FileObject;
 import com.lawfirm.model.storage.entity.bucket.StorageBucket;
@@ -83,7 +83,7 @@ public class FileUploader {
      * @param uploadDTO 上传DTO
      * @return 文件对象
      */
-    public FileObject upload(FileUploadDTO uploadDTO) throws IOException {
+    public FileObject upload(StorageFileUploadDTO uploadDTO) throws IOException {
         if (uploadDTO == null || !StringUtils.hasText(uploadDTO.getFileName()) || 
                 !StringUtils.hasText(uploadDTO.getContent())) {
             throw new IllegalArgumentException("上传信息不完整");

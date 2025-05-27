@@ -4,10 +4,10 @@ import com.lawfirm.model.base.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 任务优先级枚举
+ * 案件任务优先级枚举
  */
 @Getter
-public enum TaskPriorityEnum implements BaseEnum<Integer> {
+public enum CaseTaskPriorityEnum implements BaseEnum<Integer> {
 
     /**
      * 紧急
@@ -37,7 +37,7 @@ public enum TaskPriorityEnum implements BaseEnum<Integer> {
     private final Integer value;
     private final String description;
 
-    TaskPriorityEnum(Integer value, String description) {
+    CaseTaskPriorityEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
@@ -55,11 +55,11 @@ public enum TaskPriorityEnum implements BaseEnum<Integer> {
     /**
      * 根据值获取枚举
      */
-    public static TaskPriorityEnum valueOf(Integer value) {
+    public static CaseTaskPriorityEnum valueOf(Integer value) {
         if (value == null) {
             return null;
         }
-        for (TaskPriorityEnum priority : values()) {
+        for (CaseTaskPriorityEnum priority : values()) {
             if (priority.value.equals(value)) {
                 return priority;
             }

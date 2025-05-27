@@ -210,16 +210,16 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- MyBatis -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-        </dependency>
-
-        <!-- MyBatis Plus -->
+        <!-- MyBatis Plus (包含MyBatis，无需单独引入) -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+        
+        <!-- MyBatis Plus jsqlparser 支持 (3.5.9+ 需要) -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
         </dependency>
 
         <!-- Mockito依赖 - 用于本地开发环境模拟Redis -->

@@ -2,11 +2,14 @@ package com.lawfirm.auth.security.provider;
 
 import com.lawfirm.auth.exception.AuthException;
 import com.lawfirm.model.auth.dto.auth.TokenDTO;
+import com.lawfirm.model.auth.service.UserService;
+import com.lawfirm.model.auth.vo.UserInfoVO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +32,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component("auth_jwtTokenProvider")
 public class JwtTokenProvider {
+    
+    @Autowired(required = false)
+    private UserService userService;
     
     @Value("${law.firm.security.jwt.secret:HmacSHA256SecretKey}")
     private String jwtSecret;
@@ -178,9 +184,37 @@ public class JwtTokenProvider {
         }
         
         String username = getUsername(refreshToken);
-        // 这里需要从用户服务获取用户权限
-        // 简化处理，假设用户只有一个ROLE_USER权限
-        Collection<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        
+        // 从用户服务获取用户权限
+        Collection<GrantedAuthority> authorities;
+        if (userService != null) {
+            try {
+                // 先通过用户名获取用户实体，再获取用户权限
+                com.lawfirm.model.auth.entity.User user = userService.getByUsername(username);
+                if (user != null) {
+                    UserInfoVO userInfo = userService.getUserInfo(user.getId());
+                    if (userInfo != null && userInfo.getRoles() != null) {
+                        authorities = userInfo.getRoles().stream()
+                                .map(role -> {
+                                    // 获取角色的value字段作为权限
+                                    String roleValue = role.get("value");
+                                    return new SimpleGrantedAuthority("ROLE_" + roleValue);
+                                })
+                                .collect(Collectors.toList());
+                    } else {
+                        authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+                    }
+                } else {
+                    authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+                }
+            } catch (Exception e) {
+                log.warn("获取用户权限失败，使用默认权限: {}", e.getMessage());
+                authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+            }
+        } else {
+            // 兼容处理：如果userService未注入，使用默认权限
+            authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        }
         
         return createToken(username, authorities);
     }

@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
- * 存储类型枚举
+ * 文档存储类型枚举
  */
 @Getter
-public enum StorageTypeEnum {
+public enum DocumentStorageTypeEnum {
 
     /**
      * 本地存储
@@ -52,7 +52,7 @@ public enum StorageTypeEnum {
      */
     private final String name;
 
-    StorageTypeEnum(String code, String name) {
+    DocumentStorageTypeEnum(String code, String name) {
         this.code = code;
         this.name = name;
     }
@@ -60,11 +60,11 @@ public enum StorageTypeEnum {
     /**
      * 根据编码获取枚举
      */
-    public static StorageTypeEnum getByCode(String code) {
+    public static DocumentStorageTypeEnum getByCode(String code) {
         if (code == null) {
             return null;
         }
-        for (StorageTypeEnum type : values()) {
+        for (DocumentStorageTypeEnum type : values()) {
             if (type.getCode().equals(code)) {
                 return type;
             }

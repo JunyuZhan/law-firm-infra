@@ -1,9 +1,9 @@
 package com.lawfirm.model.cases.dto.business;
 
 import com.lawfirm.model.base.dto.BaseDTO;
-import com.lawfirm.model.cases.enums.task.TaskPriorityEnum;
-import com.lawfirm.model.cases.enums.task.TaskStatusEnum;
-import com.lawfirm.model.cases.enums.task.TaskTypeEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskPriorityEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskStatusEnum;
+import com.lawfirm.model.cases.enums.task.CaseTaskTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -38,17 +38,17 @@ public class CaseTaskDTO extends BaseDTO {
     /**
      * 任务类型
      */
-    private TaskTypeEnum taskType;
+    private CaseTaskTypeEnum taskType;
 
     /**
      * 任务状态
      */
-    private TaskStatusEnum taskStatus;
+    private CaseTaskStatusEnum taskStatus;
 
     /**
      * 任务优先级
      */
-    private TaskPriorityEnum taskPriority;
+    private CaseTaskPriorityEnum taskPriority;
 
     /**
      * 任务描述
