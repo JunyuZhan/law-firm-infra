@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.lawfirm.model.auth.service.PermissionService;
+
 /**
  * 认证用户服务实现类
  */
@@ -62,6 +64,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     @Autowired
     @Qualifier("storageFileServiceImpl")
     private FileService fileService;
+    
+    @Autowired
+    private PermissionService permissionService;
     
     /**
      * 获取当前登录用户ID
@@ -259,7 +264,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     
     @Override
     public List<String> getUserPermissions(Long id) {
-        // 简化处理，实际应从数据库查询
+        // 使用权限服务查询用户权限
+        if (permissionService != null) {
+            return permissionService.listPermissionCodesByUserId(id);
+        }
+        // 兜底处理，返回空列表
         return new ArrayList<>();
     }
     

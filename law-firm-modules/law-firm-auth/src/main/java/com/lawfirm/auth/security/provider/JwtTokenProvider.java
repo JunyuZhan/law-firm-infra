@@ -130,7 +130,10 @@ public class JwtTokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
         
-        User principal = new User(username, "", authorities);
+        // 使用Spring Security标准的User对象，确保权限验证正常工作
+        org.springframework.security.core.userdetails.User principal = 
+                new org.springframework.security.core.userdetails.User(username, "", authorities);
+        
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
     

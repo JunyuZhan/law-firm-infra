@@ -36,14 +36,14 @@ public class PaymentPlanController {
 
     @PostMapping
     @Operation(summary = "创建付款计划")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> createPaymentPlan(@Valid @RequestBody PaymentPlan paymentPlan) {
         return CommonResult.success(paymentPlanService.createPaymentPlan(paymentPlan));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新付款计划")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updatePaymentPlan(@PathVariable("id") Long id, 
                                                    @Valid @RequestBody PaymentPlan paymentPlan) {
         paymentPlan.setId(id);
@@ -52,21 +52,21 @@ public class PaymentPlanController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除付款计划")
-    @PreAuthorize(FINANCE_DELETE)
+    @PreAuthorize("hasAuthority('" + FINANCE_DELETE + "')")
     public CommonResult<Boolean> deletePaymentPlan(@PathVariable("id") Long id) {
         return CommonResult.success(paymentPlanService.deletePaymentPlan(id));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取付款计划详情")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<PaymentPlan> getPaymentPlan(@PathVariable("id") Long id) {
         return CommonResult.success(paymentPlanService.getPaymentPlanById(id));
     }
 
     @PutMapping("/{id}/status")
     @Operation(summary = "更新付款计划状态")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updatePaymentPlanStatus(
             @PathVariable("id") Long id,
             @Parameter(description = "状态") @RequestParam PaymentPlanStatusEnum status,
@@ -76,7 +76,7 @@ public class PaymentPlanController {
 
     @PostMapping("/{id}/confirm")
     @Operation(summary = "确认付款")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> confirmPayment(
             @PathVariable("id") Long id,
             @Parameter(description = "实际付款金额") @RequestParam BigDecimal actualAmount,
@@ -88,7 +88,7 @@ public class PaymentPlanController {
 
     @PutMapping("/{id}/cancel")
     @Operation(summary = "取消付款计划")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> cancelPaymentPlan(
             @PathVariable("id") Long id,
             @Parameter(description = "取消原因") @RequestParam String reason) {
@@ -97,7 +97,7 @@ public class PaymentPlanController {
 
     @GetMapping("/list")
     @Operation(summary = "查询付款计划列表")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<PaymentPlan>> listPaymentPlans(
             @Parameter(description = "状态") @RequestParam(required = false) PaymentPlanStatusEnum status,
             @Parameter(description = "合同ID") @RequestParam(required = false) Long contractId,
@@ -108,7 +108,7 @@ public class PaymentPlanController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询付款计划")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<IPage<PaymentPlan>> pagePaymentPlans(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") long size,
@@ -122,14 +122,14 @@ public class PaymentPlanController {
 
     @GetMapping("/contract/{contractId}")
     @Operation(summary = "按合同查询付款计划")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<PaymentPlan>> listPaymentPlansByContract(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(paymentPlanService.listPaymentPlansByContract(contractId));
     }
 
     @GetMapping("/client/{clientId}")
     @Operation(summary = "按客户查询付款计划")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<PaymentPlan>> listPaymentPlansByClient(
             @PathVariable("clientId") Long clientId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -139,7 +139,7 @@ public class PaymentPlanController {
 
     @GetMapping("/sum")
     @Operation(summary = "统计付款计划金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumPaymentPlanAmount(
             @Parameter(description = "状态") @RequestParam(required = false) PaymentPlanStatusEnum status,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -149,7 +149,7 @@ public class PaymentPlanController {
 
     @GetMapping("/sum/contract/{contractId}")
     @Operation(summary = "统计合同付款计划金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumContractPaymentPlanAmount(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "状态") @RequestParam(required = false) PaymentPlanStatusEnum status) {
@@ -158,7 +158,7 @@ public class PaymentPlanController {
 
     @PostMapping("/export")
     @Operation(summary = "导出付款计划数据")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<String> exportPaymentPlans(
             @Parameter(description = "付款计划ID列表") @RequestBody List<Long> paymentPlanIds) {
         return CommonResult.success(paymentPlanService.exportPaymentPlans(paymentPlanIds));

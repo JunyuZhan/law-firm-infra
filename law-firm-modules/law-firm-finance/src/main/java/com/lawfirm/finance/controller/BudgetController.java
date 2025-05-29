@@ -33,14 +33,14 @@ public class BudgetController {
 
     @PostMapping
     @Operation(summary = "创建预算")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> createBudget(@Valid @RequestBody Budget budget) {
         return CommonResult.success(budgetService.createBudget(budget));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新预算")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateBudget(@PathVariable("id") Long id, 
                                           @Valid @RequestBody Budget budget) {
         budget.setId(id);
@@ -49,21 +49,21 @@ public class BudgetController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除预算")
-    @PreAuthorize(FINANCE_DELETE)
+    @PreAuthorize("hasAuthority('" + FINANCE_DELETE + "')")
     public CommonResult<Boolean> deleteBudget(@PathVariable("id") Long id) {
         return CommonResult.success(budgetService.deleteBudget(id));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取预算详情")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<Budget> getBudget(@PathVariable("id") Long id) {
         return CommonResult.success(budgetService.getBudgetById(id));
     }
 
     @PutMapping("/{id}/status")
     @Operation(summary = "更新预算状态")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateBudgetStatus(
             @PathVariable("id") Long id,
             @Parameter(description = "预算状态") @RequestParam BudgetStatusEnum status,
@@ -73,7 +73,7 @@ public class BudgetController {
 
     @PutMapping("/{id}/approve")
     @Operation(summary = "审批预算")
-    @PreAuthorize(FINANCE_APPROVE)
+    @PreAuthorize("hasAuthority('" + FINANCE_APPROVE + "')")
     public CommonResult<Boolean> approveBudget(
             @PathVariable("id") Long id,
             @Parameter(description = "是否通过") @RequestParam boolean approved,
@@ -84,7 +84,7 @@ public class BudgetController {
 
     @PutMapping("/{id}/adjust")
     @Operation(summary = "调整预算")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> adjustBudget(
             @PathVariable("id") Long id,
             @Parameter(description = "调整金额") @RequestParam BigDecimal amount,
@@ -95,7 +95,7 @@ public class BudgetController {
 
     @GetMapping("/list")
     @Operation(summary = "查询预算列表")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Budget>> listBudgets(
             @Parameter(description = "预算状态") @RequestParam(required = false) BudgetStatusEnum status,
             @Parameter(description = "部门ID") @RequestParam(required = false) Long departmentId,
@@ -107,7 +107,7 @@ public class BudgetController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询预算")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<IPage<Budget>> pageBudgets(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") long size,
@@ -122,7 +122,7 @@ public class BudgetController {
 
     @GetMapping("/department/{departmentId}")
     @Operation(summary = "按部门查询预算")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Budget>> listBudgetsByDepartment(
             @PathVariable("departmentId") Long departmentId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -132,7 +132,7 @@ public class BudgetController {
 
     @GetMapping("/cost-center/{costCenterId}")
     @Operation(summary = "按成本中心查询预算")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Budget>> listBudgetsByCostCenter(
             @PathVariable("costCenterId") Long costCenterId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -142,7 +142,7 @@ public class BudgetController {
 
     @GetMapping("/sum")
     @Operation(summary = "统计预算金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumBudgetAmount(
             @Parameter(description = "预算状态") @RequestParam(required = false) BudgetStatusEnum status,
             @Parameter(description = "部门ID") @RequestParam(required = false) Long departmentId,
@@ -154,7 +154,7 @@ public class BudgetController {
 
     @GetMapping("/sum/department/{departmentId}")
     @Operation(summary = "统计部门预算金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumDepartmentBudgetAmount(
             @PathVariable("departmentId") Long departmentId,
             @Parameter(description = "预算状态") @RequestParam(required = false) BudgetStatusEnum status,
@@ -165,7 +165,7 @@ public class BudgetController {
 
     @GetMapping("/sum/cost-center/{costCenterId}")
     @Operation(summary = "统计成本中心预算金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumCostCenterBudgetAmount(
             @PathVariable("costCenterId") Long costCenterId,
             @Parameter(description = "预算状态") @RequestParam(required = false) BudgetStatusEnum status,
@@ -176,7 +176,7 @@ public class BudgetController {
 
     @GetMapping("/export")
     @Operation(summary = "导出预算数据")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<String> exportBudgets(
             @Parameter(description = "预算ID列表") @RequestParam List<Long> budgetIds) {
         return CommonResult.success(budgetService.exportBudgets(budgetIds));

@@ -34,7 +34,7 @@ public class CategoryController extends BaseController {
      * 获取分类树结构
      */
     @Operation(summary = "获取分类树结构")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     @GetMapping("/tree")
     public CommonResult<List<ClientCategory>> tree() {
         return success(categoryService.getCategoryTree());
@@ -44,7 +44,7 @@ public class CategoryController extends BaseController {
      * 获取分类列表（平铺结构）
      */
     @Operation(summary = "获取分类列表")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     @GetMapping("/list")
     public CommonResult<List<ClientCategory>> list() {
         return success(categoryService.list());
@@ -54,7 +54,7 @@ public class CategoryController extends BaseController {
      * 获取分类详情
      */
     @Operation(summary = "获取分类详情")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public CommonResult<ClientCategory> getById(@PathVariable("id") Long id) {
         return success(categoryService.getCategory(id));
@@ -64,7 +64,7 @@ public class CategoryController extends BaseController {
      * 新增分类
      */
     @Operation(summary = "新增分类")
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     @PostMapping
     public CommonResult<Long> add(@Validated @RequestBody ClientCategory category) {
         return success(categoryService.createCategory(category));
@@ -74,7 +74,7 @@ public class CategoryController extends BaseController {
      * 修改分类
      */
     @Operation(summary = "修改分类")
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     @PutMapping
     public CommonResult<Boolean> update(@Validated @RequestBody ClientCategory category) {
         categoryService.updateCategory(category);
@@ -85,7 +85,7 @@ public class CategoryController extends BaseController {
      * 删除分类
      */
     @Operation(summary = "删除分类")
-    @PreAuthorize(CLIENT_DELETE)
+    @PreAuthorize("hasAuthority('" + CLIENT_DELETE + "') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public CommonResult<Boolean> remove(@PathVariable("id") Long id) {
         return success(categoryService.deleteCategory(id));
@@ -95,7 +95,7 @@ public class CategoryController extends BaseController {
      * 获取子分类
      */
     @Operation(summary = "获取子分类列表")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     @GetMapping("/children/{parentId}")
     public CommonResult<List<ClientCategory>> getChildren(@PathVariable("parentId") Long parentId) {
         return success(categoryService.listByParentId(parentId));

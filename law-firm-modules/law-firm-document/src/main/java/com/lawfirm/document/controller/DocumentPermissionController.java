@@ -33,7 +33,7 @@ public class DocumentPermissionController {
         description = "将业务系统中的文档权限同步到文档系统，支持批量设置用户的文档访问权限"
     )
     @PostMapping("/sync")
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public CommonResult<Void> syncBusinessDocumentsPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,
             @Parameter(description = "业务ID") @RequestParam Long businessId,
@@ -47,7 +47,7 @@ public class DocumentPermissionController {
         description = "为指定用户添加文档的访问权限，可以设置不同级别的权限类型（如：只读、编辑等）"
     )
     @PostMapping("/user")
-    @PreAuthorize(DOCUMENT_CREATE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_CREATE + "')")
     public CommonResult<Void> addUserPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,
             @Parameter(description = "业务ID") @RequestParam Long businessId,
@@ -62,7 +62,7 @@ public class DocumentPermissionController {
         description = "移除指定用户对文档的所有访问权限"
     )
     @DeleteMapping("/user")
-    @PreAuthorize(DOCUMENT_DELETE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_DELETE + "')")
     public CommonResult<Void> removeUserPermission(
             @Parameter(description = "业务类型") @RequestParam String businessType,
             @Parameter(description = "业务ID") @RequestParam Long businessId,

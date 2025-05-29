@@ -43,7 +43,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "创建知识文档", description = "创建新的知识文档记录")
     @PostMapping
-    @PreAuthorize(KNOWLEDGE_CREATE)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_CREATE + "')")
     public ResponseEntity<KnowledgeVO> addKnowledge(
             @Parameter(description = "知识文档信息") @RequestBody @Valid KnowledgeDTO knowledgeDTO) {
         Knowledge knowledge = knowledgeConvert.fromDTO(knowledgeDTO);
@@ -60,7 +60,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "更新知识文档", description = "根据ID更新知识文档")
     @PutMapping("/{id}")
-    @PreAuthorize(KNOWLEDGE_EDIT)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_EDIT + "')")
     public ResponseEntity<KnowledgeVO> updateKnowledge(
             @Parameter(description = "知识文档ID") @PathVariable Long id, 
             @Parameter(description = "知识文档信息") @RequestBody @Valid KnowledgeDTO knowledgeDTO) {
@@ -93,7 +93,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "获取知识文档", description = "根据ID获取知识文档详情")
     @GetMapping("/{id}")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<KnowledgeVO> getKnowledge(
             @Parameter(description = "知识文档ID") @PathVariable Long id) {
         Knowledge knowledge = knowledgeService.getById(id);
@@ -108,7 +108,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "删除知识文档", description = "根据ID删除知识文档")
     @DeleteMapping("/{id}")
-    @PreAuthorize(KNOWLEDGE_DELETE)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_DELETE + "')")
     public ResponseEntity<Void> deleteKnowledge(
             @Parameter(description = "知识文档ID") @PathVariable Long id) {
         boolean success = knowledgeService.remove(id);
@@ -120,7 +120,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "获取分类的知识列表", description = "根据分类ID获取知识文档列表")
     @GetMapping("/category/{categoryId}")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<List<KnowledgeVO>> getKnowledgeByCategory(
             @Parameter(description = "分类ID") @PathVariable Long categoryId) {
         List<Knowledge> knowledgeList = knowledgeService.listByCategoryId(categoryId);
@@ -132,7 +132,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "获取标签的知识列表", description = "根据标签ID获取知识文档列表")
     @GetMapping("/tag/{tagId}")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<List<KnowledgeVO>> getKnowledgeByTag(
             @Parameter(description = "标签ID") @PathVariable Long tagId) {
         List<Knowledge> knowledgeList = knowledgeService.listByTagId(tagId);
@@ -144,7 +144,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "搜索知识", description = "根据关键字搜索知识文档")
     @GetMapping("/search")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<List<KnowledgeVO>> searchKnowledge(
             @Parameter(description = "搜索关键字") @RequestParam String keyword) {
         List<Knowledge> knowledgeList = knowledgeService.searchByKeyword(keyword);
@@ -156,7 +156,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "获取最新知识", description = "获取最新发布的知识文档列表")
     @GetMapping("/latest")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<List<KnowledgeVO>> getLatestKnowledge(
             @Parameter(description = "限制数量") @RequestParam(required = false) Integer limit) {
         List<Knowledge> knowledgeList = knowledgeService.listLatest(limit);
@@ -168,7 +168,7 @@ public class KnowledgeController {
      */
     @Operation(summary = "获取相关知识", description = "获取与指定知识相关的其他知识文档")
     @GetMapping("/{id}/related")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<List<KnowledgeVO>> getRelatedKnowledge(
             @Parameter(description = "知识文档ID") @PathVariable Long id, 
             @Parameter(description = "分类ID") @RequestParam Long categoryId,
@@ -182,7 +182,7 @@ public class KnowledgeController {
      */
     @PostMapping("/ai/summary")
     @Operation(summary = "AI智能生成知识文档摘要")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<String> aiKnowledgeSummary(@RequestBody(required = true)  java.util.Map<String, Object> body) {
         String content = (String) body.get("content");
         Integer maxLength = body.get("maxLength") != null ? (Integer) body.get("maxLength") : 200;
@@ -194,7 +194,7 @@ public class KnowledgeController {
      */
     @PostMapping("/ai/tags")
     @Operation(summary = "AI智能推荐知识文档标签")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<List<String>> aiRecommendTags(@RequestBody(required = true) java.util.Map<String, Object> body) {
         String content = (String) body.get("content");
         Integer limit = body.get("limit") != null ? (Integer) body.get("limit") : 5;
@@ -206,7 +206,7 @@ public class KnowledgeController {
      */
     @PostMapping("/ai/classify")
     @Operation(summary = "AI智能知识分类")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<java.util.Map<String, Double>> aiClassify(@RequestBody java.util.Map<String, Object> body) {
         String content = (String) body.get("content");
         return ResponseEntity.ok(knowledgeAIManager.classify(content));
@@ -217,7 +217,7 @@ public class KnowledgeController {
      */
     @PostMapping("/ai/qa")
     @Operation(summary = "AI知识智能问答")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<String> aiQA(@RequestBody java.util.Map<String, Object> body) {
         String question = (String) body.get("question");
         String context = (String) body.get("content");
@@ -229,7 +229,7 @@ public class KnowledgeController {
      */
     @PostMapping("/ai/graph")
     @Operation(summary = "AI知识图谱实体关系抽取")
-    @PreAuthorize(KNOWLEDGE_VIEW)
+    @PreAuthorize("hasAuthority('" + KNOWLEDGE_VIEW + "')")
     public ResponseEntity<java.util.Map<String, Object>> aiGraph(@RequestBody java.util.Map<String, Object> body) {
         String content = (String) body.get("content");
         return ResponseEntity.ok(knowledgeAIManager.extractGraphRelations(content));

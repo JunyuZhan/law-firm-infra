@@ -36,14 +36,14 @@ public class BillingRecordController {
 
     @PostMapping
     @Operation(summary = "创建账单记录")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> createBillingRecord(@Valid @RequestBody BillingRecord billingRecord) {
         return CommonResult.success(billingRecordService.createBillingRecord(billingRecord));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新账单记录")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateBillingRecord(@PathVariable("id") Long id, 
                                                      @Valid @RequestBody BillingRecord billingRecord) {
         billingRecord.setId(id);
@@ -52,21 +52,21 @@ public class BillingRecordController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除账单记录")
-    @PreAuthorize(FINANCE_DELETE)
+    @PreAuthorize("hasAuthority('" + FINANCE_DELETE + "')")
     public CommonResult<Boolean> deleteBillingRecord(@PathVariable("id") Long id) {
         return CommonResult.success(billingRecordService.deleteBillingRecord(id));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取账单记录详情")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BillingRecord> getBillingRecord(@PathVariable("id") Long id) {
         return CommonResult.success(billingRecordService.getBillingRecordById(id));
     }
 
     @PutMapping("/{id}/status")
     @Operation(summary = "更新账单记录状态")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateBillingRecordStatus(
             @PathVariable("id") Long id,
             @Parameter(description = "状态") @RequestParam BillingStatusEnum status,
@@ -76,7 +76,7 @@ public class BillingRecordController {
 
     @PostMapping("/{id}/confirm")
     @Operation(summary = "确认账单")
-    @PreAuthorize(FINANCE_APPROVE)
+    @PreAuthorize("hasAuthority('" + FINANCE_APPROVE + "')")
     public CommonResult<Boolean> confirmBillingRecord(
             @PathVariable("id") Long id,
             @Parameter(description = "操作人ID") @RequestParam Long operatorId,
@@ -86,7 +86,7 @@ public class BillingRecordController {
 
     @PutMapping("/{id}/cancel")
     @Operation(summary = "取消账单")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> cancelBillingRecord(
             @PathVariable("id") Long id,
             @Parameter(description = "取消原因") @RequestParam String reason) {
@@ -95,7 +95,7 @@ public class BillingRecordController {
 
     @GetMapping("/list")
     @Operation(summary = "查询账单记录列表")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<BillingRecord>> listBillingRecords(
             @Parameter(description = "状态") @RequestParam(required = false) BillingStatusEnum status,
             @Parameter(description = "客户ID") @RequestParam(required = false) Long clientId,
@@ -107,7 +107,7 @@ public class BillingRecordController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询账单记录")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<IPage<BillingRecord>> pageBillingRecords(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") long size,
@@ -122,7 +122,7 @@ public class BillingRecordController {
 
     @GetMapping("/client/{clientId}")
     @Operation(summary = "按客户查询账单记录")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<BillingRecord>> listBillingRecordsByClient(
             @PathVariable("clientId") Long clientId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -132,14 +132,14 @@ public class BillingRecordController {
 
     @GetMapping("/case/{caseId}")
     @Operation(summary = "按案件查询账单记录")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<BillingRecord>> listBillingRecordsByCase(@PathVariable("caseId") Long caseId) {
         return CommonResult.success(billingRecordService.listBillingRecordsByCase(caseId));
     }
 
     @GetMapping("/sum")
     @Operation(summary = "统计账单金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumBillingAmount(
             @Parameter(description = "状态") @RequestParam(required = false) BillingStatusEnum status,
             @Parameter(description = "客户ID") @RequestParam(required = false) Long clientId,
@@ -151,7 +151,7 @@ public class BillingRecordController {
 
     @GetMapping("/sum/client/{clientId}")
     @Operation(summary = "统计客户账单金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumClientBillingAmount(
             @PathVariable("clientId") Long clientId,
             @Parameter(description = "状态") @RequestParam(required = false) BillingStatusEnum status,
@@ -162,7 +162,7 @@ public class BillingRecordController {
 
     @GetMapping("/sum/case/{caseId}")
     @Operation(summary = "统计案件账单金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumCaseBillingAmount(
             @PathVariable("caseId") Long caseId,
             @Parameter(description = "状态") @RequestParam(required = false) BillingStatusEnum status) {
@@ -171,7 +171,7 @@ public class BillingRecordController {
 
     @PostMapping("/export")
     @Operation(summary = "导出账单记录数据")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<String> exportBillingRecords(
             @Parameter(description = "账单记录ID列表") @RequestBody List<Long> billingRecordIds) {
         return CommonResult.success(billingRecordService.exportBillingRecords(billingRecordIds));

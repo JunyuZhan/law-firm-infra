@@ -37,14 +37,14 @@ public class ContractFinanceController {
 
     @GetMapping("/{contractId}/finance-info")
     @Operation(summary = "获取合同财务信息")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<ContractFinanceVO> getContractFinanceInfo(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(contractFinanceService.getContractFinanceInfo(contractId));
     }
 
     @PutMapping("/{contractId}/amount")
     @Operation(summary = "更新合同实际金额")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateContractAmount(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "实际金额") @RequestParam BigDecimal actualAmount,
@@ -54,7 +54,7 @@ public class ContractFinanceController {
 
     @PutMapping("/{contractId}/tax-rate")
     @Operation(summary = "更新合同税率")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateContractTaxRate(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "税率") @RequestParam BigDecimal taxRate,
@@ -64,14 +64,14 @@ public class ContractFinanceController {
 
     @GetMapping("/{contractId}/payment-plan")
     @Operation(summary = "获取合同收款计划")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<Object> getContractPaymentPlan(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(contractFinanceService.getContractPaymentPlan(contractId));
     }
 
     @PutMapping("/{contractId}/payment-plan")
     @Operation(summary = "更新合同收款计划")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateContractPaymentPlan(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "计划数据") @RequestBody Object planData) {
@@ -80,14 +80,14 @@ public class ContractFinanceController {
 
     @GetMapping("/{contractId}/invoices")
     @Operation(summary = "获取合同发票列表")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Invoice>> getContractInvoices(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(contractFinanceService.getContractInvoiceObjects(contractId));
     }
 
     @GetMapping("/{contractId}/audit-logs")
     @Operation(summary = "获取合同财务审计记录")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Object>> getContractFinanceAuditLogs(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
@@ -97,14 +97,14 @@ public class ContractFinanceController {
 
     @PostMapping("/{contractId}/export")
     @Operation(summary = "导出合同财务报表")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<String> exportContractFinanceReport(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(contractFinanceService.exportContractFinanceReport(contractId));
     }
 
     @PostMapping("/{contractId}/receivables")
     @Operation(summary = "创建合同应收账款")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> createContractReceivable(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "合同编号") @RequestParam String contractNo,
@@ -115,7 +115,7 @@ public class ContractFinanceController {
 
     @PutMapping("/{contractId}/receivables")
     @Operation(summary = "更新合同应收账款")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateContractReceivable(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "合同编号") @RequestParam String contractNo,
@@ -125,7 +125,7 @@ public class ContractFinanceController {
 
     @PostMapping("/{contractId}/payment-plans")
     @Operation(summary = "创建合同收款计划")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> createPaymentPlan(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "合同编号") @RequestParam String contractNo,
@@ -138,7 +138,7 @@ public class ContractFinanceController {
 
     @PostMapping("/{contractId}/incomes")
     @Operation(summary = "记录合同收款")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> recordContractIncome(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "合同编号") @RequestParam String contractNo,
@@ -150,7 +150,7 @@ public class ContractFinanceController {
 
     @PostMapping("/{contractId}/invoices")
     @Operation(summary = "处理合同发票申请")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> processContractInvoice(
             @PathVariable("contractId") Long contractId,
             @Parameter(description = "合同编号") @RequestParam String contractNo,
@@ -161,28 +161,28 @@ public class ContractFinanceController {
 
     @GetMapping("/{contractId}/receivables")
     @Operation(summary = "获取合同应收账款")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<ReceivableDetailVO>> getContractReceivables(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(contractFinanceService.getContractReceivables(contractId));
     }
 
     @GetMapping("/{contractId}/incomes")
     @Operation(summary = "获取合同收款记录")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Income>> getContractIncomes(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(contractFinanceService.getContractIncomes(contractId));
     }
 
     @GetMapping("/{contractId}/payment-plans")
     @Operation(summary = "获取合同收款计划")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<PaymentPlan>> getContractPaymentPlans(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(contractFinanceService.getContractPaymentPlans(contractId));
     }
 
     @GetMapping("/{contractId}/summary")
     @Operation(summary = "统计合同财务状况")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<ContractFinanceService.ContractFinanceSummary> getContractFinanceSummary(
             @PathVariable("contractId") Long contractId) {
         return CommonResult.success(contractFinanceService.getContractFinanceSummary(contractId));

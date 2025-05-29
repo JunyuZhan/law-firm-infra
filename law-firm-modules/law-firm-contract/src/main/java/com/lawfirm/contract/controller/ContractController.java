@@ -48,7 +48,7 @@ public class ContractController {
         summary = "创建合同",
         description = "创建新的合同记录，包括合同基本信息、合同内容、合同附件等"
     )
-    @PreAuthorize(CONTRACT_CREATE)
+    @PreAuthorize("hasAuthority('" + CONTRACT_CREATE + "')")
     public CommonResult<Long> createContract(
             @Parameter(description = "合同创建参数，包括合同名称、类型、内容等") @RequestBody @Validated ContractCreateDTO createDTO) {
         log.info("创建合同: {}", createDTO.getContractName());
@@ -64,7 +64,7 @@ public class ContractController {
         summary = "更新合同",
         description = "根据ID更新合同信息，支持更新合同基本信息、内容和附件等"
     )
-    @PreAuthorize(CONTRACT_EDIT)
+    @PreAuthorize("hasAuthority('" + CONTRACT_EDIT + "')")
     public CommonResult<Boolean> updateContract(
             @Parameter(description = "合同ID") @PathVariable("id") Long id,
             @Parameter(description = "合同更新参数，包括需要更新的字段") @RequestBody @Validated ContractUpdateDTO updateDTO) {
@@ -82,7 +82,7 @@ public class ContractController {
         summary = "获取合同详情",
         description = "根据ID获取合同的详细信息，包括基本信息、内容、附件、审批状态等"
     )
-    @PreAuthorize(CONTRACT_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_VIEW + "')")
     public CommonResult<ContractDetailVO> getContract(
             @Parameter(description = "合同ID") @PathVariable("id") Long id) {
         log.info("获取合同详情: {}", id);
@@ -99,7 +99,7 @@ public class ContractController {
         summary = "删除合同",
         description = "根据ID删除合同，同时删除关联的附件和审批记录等"
     )
-    @PreAuthorize(CONTRACT_DELETE)
+    @PreAuthorize("hasAuthority('" + CONTRACT_DELETE + "')")
     public CommonResult<Boolean> deleteContract(
             @Parameter(description = "合同ID") @PathVariable("id") Long id) {
         log.info("删除合同: {}", id);
@@ -120,7 +120,7 @@ public class ContractController {
             @Parameter(name = "size", description = "每页记录数", required = true),
             @Parameter(name = "queryDTO", description = "查询参数，包括合同名称、类型、状态等")
     })
-    @PreAuthorize(CONTRACT_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_VIEW + "')")
     public CommonResult<IPage<ContractVO>> getContractPage(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
@@ -139,7 +139,7 @@ public class ContractController {
         summary = "查询合同列表",
         description = "根据条件查询合同列表，不分页，支持按合同名称、类型、状态等条件筛选"
     )
-    @PreAuthorize(CONTRACT_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_VIEW + "')")
     public CommonResult<List<ContractVO>> getContractList(
             @Parameter(description = "查询参数，包括合同名称、类型、状态等") ContractQueryDTO queryDTO) {
         log.info("查询合同列表");

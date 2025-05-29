@@ -38,7 +38,7 @@ public class ClientController extends BaseController {
      */
     @Operation(summary = "分页查询客户列表")
     @GetMapping("/list")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<List<ClientVO>> list(ClientQueryDTO queryDTO) {
         return success(clientService.listClients(queryDTO));
     }
@@ -48,7 +48,7 @@ public class ClientController extends BaseController {
      */
     @Operation(summary = "获取客户详情")
     @GetMapping("/{id}")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<ClientVO> getClientById(@PathVariable("id") Long id) {
         return success(clientService.getClient(id));
     }
@@ -58,7 +58,7 @@ public class ClientController extends BaseController {
      */
     @Operation(summary = "新增客户")
     @PostMapping
-    @PreAuthorize(CLIENT_CREATE)
+    @PreAuthorize("hasAuthority('" + CLIENT_CREATE + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Long> add(@Validated @RequestBody ClientCreateDTO createDTO) {
         return success(clientService.createClient(createDTO));
     }
@@ -68,7 +68,7 @@ public class ClientController extends BaseController {
      */
     @Operation(summary = "修改客户信息")
     @PutMapping
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> update(@Validated @RequestBody ClientUpdateDTO updateDTO) {
         clientService.updateClient(updateDTO);
         return success(true);
@@ -79,7 +79,7 @@ public class ClientController extends BaseController {
      */
     @Operation(summary = "删除客户")
     @DeleteMapping("/{id}")
-    @PreAuthorize(CLIENT_DELETE)
+    @PreAuthorize("hasAuthority('" + CLIENT_DELETE + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> remove(@PathVariable("id") Long id) {
         clientService.deleteClient(id);
         return success(true);
@@ -90,7 +90,7 @@ public class ClientController extends BaseController {
      */
     @Operation(summary = "更新客户状态")
     @PutMapping("/{id}/status/{status}")
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> updateStatus(
             @PathVariable("id") Long id,
             @PathVariable("status") Integer status) {
@@ -103,7 +103,7 @@ public class ClientController extends BaseController {
      */
     @Operation(summary = "更新客户信用等级")
     @PutMapping("/{id}/credit/{creditLevel}")
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> updateCreditLevel(
             @PathVariable("id") Long id,
             @PathVariable("creditLevel") String creditLevel) {

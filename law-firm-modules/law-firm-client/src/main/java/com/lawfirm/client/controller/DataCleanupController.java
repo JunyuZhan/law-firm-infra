@@ -37,7 +37,7 @@ public class DataCleanupController extends BaseController {
      */
     @Operation(summary = "清理临时客户数据")
     @PostMapping("/temporary-clients")
-    @PreAuthorize(CLIENT_CLEANUP_EXECUTE)
+    @PreAuthorize("hasAuthority('" + CLIENT_CLEANUP_EXECUTE + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<String> cleanupTemporaryClients() {
         try {
             dataCleanupTask.cleanupTemporaryClients();
@@ -55,7 +55,7 @@ public class DataCleanupController extends BaseController {
      */
     @Operation(summary = "归档不活跃客户")
     @PostMapping("/inactive-clients")
-    @PreAuthorize(CLIENT_CLEANUP_EXECUTE)
+    @PreAuthorize("hasAuthority('" + CLIENT_CLEANUP_EXECUTE + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<String> archiveInactiveClients() {
         try {
             dataCleanupTask.archiveInactiveClients();
@@ -73,7 +73,7 @@ public class DataCleanupController extends BaseController {
      */
     @Operation(summary = "清理已完成跟进记录")
     @PostMapping("/followups")
-    @PreAuthorize(CLIENT_CLEANUP_EXECUTE)
+    @PreAuthorize("hasAuthority('" + CLIENT_CLEANUP_EXECUTE + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<String> cleanupCompletedFollowUps() {
         try {
             dataCleanupTask.cleanupCompletedFollowUps();
@@ -91,7 +91,7 @@ public class DataCleanupController extends BaseController {
      */
     @Operation(summary = "获取数据清理统计信息")
     @GetMapping("/statistics")
-    @PreAuthorize(CLIENT_CLEANUP_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_CLEANUP_VIEW + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Map<String, Object>> getCleanupStatistics() {
         try {
             Map<String, Object> statistics = new HashMap<>();

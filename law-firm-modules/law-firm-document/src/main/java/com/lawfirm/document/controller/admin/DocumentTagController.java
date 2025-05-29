@@ -36,7 +36,7 @@ public class DocumentTagController {
      */
     @PostMapping
     @Operation(summary = "创建标签")
-    @PreAuthorize(DOCUMENT_CREATE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_CREATE + "')")
     public CommonResult<Long> createTag(@RequestBody @Validated DocumentTag tag) {
         documentTagService.save(tag);
         return CommonResult.success(tag.getId());
@@ -47,7 +47,7 @@ public class DocumentTagController {
      */
     @PutMapping
     @Operation(summary = "更新标签")
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public CommonResult<Void> updateTag(@RequestBody @Validated DocumentTag tag) {
         documentTagService.updateById(tag);
         return CommonResult.success();
@@ -58,7 +58,7 @@ public class DocumentTagController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除标签")
-    @PreAuthorize(DOCUMENT_DELETE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_DELETE + "')")
     public CommonResult<Void> deleteTag(@PathVariable Long id) {
         documentTagService.removeById(id);
         return CommonResult.success();
@@ -69,7 +69,7 @@ public class DocumentTagController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "获取标签详情")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public CommonResult<DocumentTag> getTag(@PathVariable Long id) {
         DocumentTag tag = documentTagService.getById(id);
         return CommonResult.success(tag);
@@ -80,7 +80,7 @@ public class DocumentTagController {
      */
     @GetMapping("/page")
     @Operation(summary = "分页查询标签")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public CommonResult<Page<DocumentTag>> pageTags(
             @Parameter(description = "标签名") @RequestParam(required = false) String tagName,
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
@@ -99,7 +99,7 @@ public class DocumentTagController {
      */
     @GetMapping
     @Operation(summary = "查询所有标签")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public CommonResult<List<DocumentTag>> listTags() {
         List<DocumentTag> tags = documentTagService.list();
         return CommonResult.success(tags);
@@ -110,7 +110,7 @@ public class DocumentTagController {
      */
     @GetMapping("/hot")
     @Operation(summary = "查询热门标签")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public CommonResult<List<DocumentTag>> hotTags(@RequestParam(defaultValue = "10") Integer limit) {
         List<DocumentTag> tags = documentTagService.list(new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<DocumentTag>().orderByDesc("usage_count").last("limit " + limit));
         return CommonResult.success(tags);

@@ -28,28 +28,28 @@ public class EvidenceController {
 
     @Operation(summary = "根据ID获取证据详情", description = "根据证据ID获取证据的详细信息")
     @GetMapping("/{id}")
-    @PreAuthorize(EVIDENCE_VIEW)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_VIEW + "')")
     public EvidenceVO getById(@Parameter(description = "证据ID") @PathVariable Long id) {
         return evidenceService.getEvidence(id);
     }
 
     @Operation(summary = "新增证据", description = "创建新的证据记录")
     @PostMapping
-    @PreAuthorize(EVIDENCE_CREATE)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_CREATE + "')")
     public Long create(@Parameter(description = "证据信息DTO") @RequestBody EvidenceDTO dto) {
         return evidenceService.addEvidence(dto);
     }
 
     @Operation(summary = "根据案件ID获取证据列表", description = "获取指定案件下的所有证据列表")
     @GetMapping("/list/{caseId}")
-    @PreAuthorize(EVIDENCE_VIEW)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_VIEW + "')")
     public List<EvidenceVO> listByCase(@Parameter(description = "案件ID") @PathVariable Long caseId) {
         return evidenceService.listEvidenceByCase(caseId);
     }
 
     @Operation(summary = "AI要素抽取", description = "对证据内容进行AI要素抽取")
     @GetMapping("/{id}/ai-extract")
-    @PreAuthorize(EVIDENCE_VIEW)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_VIEW + "')")
     public Map<String, Object> aiExtract(@Parameter(description = "证据ID") @PathVariable Long id) {
         return evidenceService.extractEvidenceInfo(id);
     }

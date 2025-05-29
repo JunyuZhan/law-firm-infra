@@ -33,7 +33,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "获取所有标签列表")
     @GetMapping("/list")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<List<ClientTag>> list() {
         return success(tagService.listAllTags());
     }
@@ -43,7 +43,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "根据类型获取标签列表")
     @GetMapping("/list/{tagType}")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<List<ClientTag>> listByType(@PathVariable("tagType") String tagType) {
         return success(tagService.listByType(tagType));
     }
@@ -53,7 +53,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "获取标签详情")
     @GetMapping("/{id}")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<ClientTag> getById(@PathVariable("id") Long id) {
         return success(tagService.getTag(id));
     }
@@ -63,7 +63,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "获取客户的标签列表")
     @GetMapping("/client/{clientId}")
-    @PreAuthorize(CLIENT_VIEW)
+    @PreAuthorize("hasAuthority('" + CLIENT_VIEW + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<List<ClientTag>> getClientTags(@PathVariable("clientId") Long clientId) {
         return success(tagService.getClientTags(clientId));
     }
@@ -73,7 +73,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "新增标签")
     @PostMapping
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Long> add(@Validated @RequestBody ClientTag tag) {
         return success(tagService.createTag(tag));
     }
@@ -83,7 +83,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "修改标签")
     @PutMapping
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> update(@Validated @RequestBody ClientTag tag) {
         tagService.updateTag(tag);
         return success(true);
@@ -94,7 +94,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "删除标签")
     @DeleteMapping("/{id}")
-    @PreAuthorize(CLIENT_DELETE)
+    @PreAuthorize("hasAuthority('" + CLIENT_DELETE + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> remove(@PathVariable("id") Long id) {
         return success(tagService.deleteTag(id));
     }
@@ -104,7 +104,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "为客户添加标签")
     @PostMapping("/client/{clientId}/tag/{tagId}")
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> addTagToClient(
             @PathVariable("clientId") Long clientId,
             @PathVariable("tagId") Long tagId) {
@@ -117,7 +117,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "移除客户的标签")
     @DeleteMapping("/client/{clientId}/tag/{tagId}")
-    @PreAuthorize(CLIENT_DELETE)
+    @PreAuthorize("hasAuthority('" + CLIENT_DELETE + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> removeTagFromClient(
             @PathVariable("clientId") Long clientId,
             @PathVariable("tagId") Long tagId) {
@@ -130,7 +130,7 @@ public class TagController extends BaseController {
      */
     @Operation(summary = "设置客户标签")
     @PutMapping("/client/{clientId}/tags")
-    @PreAuthorize(CLIENT_EDIT)
+    @PreAuthorize("hasAuthority('" + CLIENT_EDIT + "') or hasRole('ROLE_ADMIN')")
     public CommonResult<Boolean> setClientTags(
             @PathVariable("clientId") Long clientId,
             @RequestBody List<Long> tagIds) {

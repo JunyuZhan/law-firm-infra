@@ -37,7 +37,7 @@ public class FeeController {
         description = "记录案件相关的收入，包括律师费、咨询费等各类收入"
     )
     @PostMapping("/income")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public Long recordIncome(
             @Parameter(description = "收入记录信息，包括金额、类型、备注等") 
             @RequestBody @Validated CaseFinanceDTO financeDTO) {
@@ -50,7 +50,7 @@ public class FeeController {
         description = "记录案件相关的支出，包括差旅费、文印费等各类支出"
     )
     @PostMapping("/expense")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public Long recordExpense(
             @Parameter(description = "支出记录信息，包括金额、类型、备注等") 
             @RequestBody @Validated CaseFinanceDTO financeDTO) {
@@ -63,7 +63,7 @@ public class FeeController {
         description = "批量记录多条财务信息，支持同时录入多笔收支记录"
     )
     @PostMapping("/batch")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public boolean batchRecordFinance(
             @Parameter(description = "财务记录列表，每条记录包括金额、类型等信息") 
             @RequestBody @Validated List<CaseFinanceDTO> financeDTOs) {
@@ -76,7 +76,7 @@ public class FeeController {
         description = "更新已有的财务记录信息，包括金额、类型、备注等"
     )
     @PutMapping
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public boolean updateFinance(
             @Parameter(description = "更新的财务记录信息") 
             @RequestBody @Validated CaseFinanceDTO financeDTO) {
@@ -89,7 +89,7 @@ public class FeeController {
         description = "删除指定的财务记录，如果记录已被审核或关联其他数据则不允许删除"
     )
     @DeleteMapping("/{financeId}")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public boolean deleteFinance(
             @Parameter(description = "财务记录ID") 
             @PathVariable("financeId") Long financeId) {
@@ -102,7 +102,7 @@ public class FeeController {
         description = "获取指定财务记录的详细信息，包括金额、类型、时间、备注等"
     )
     @GetMapping("/{financeId}")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CaseFinanceVO getFinanceDetail(
             @Parameter(description = "财务记录ID") 
             @PathVariable("financeId") Long financeId) {
@@ -115,7 +115,7 @@ public class FeeController {
         description = "获取指定案件的所有财务记录，包括收入和支出"
     )
     @GetMapping("/cases/{caseId}")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public List<CaseFinanceVO> listCaseFinances(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -128,7 +128,7 @@ public class FeeController {
         description = "分页查询案件的财务记录，支持按类型和时间范围筛选"
     )
     @GetMapping("/cases/{caseId}/page")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public IPage<CaseFinanceVO> pageFinances(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -152,7 +152,7 @@ public class FeeController {
         description = "根据指定时间范围生成案件费用账单，包括收支明细和汇总信息"
     )
     @PostMapping("/cases/{caseId}/bills")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public Long generateBill(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -169,7 +169,7 @@ public class FeeController {
         description = "审核财务记录，可以选择通过或拒绝，需要提供审核意见"
     )
     @PutMapping("/{financeId}/review")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public boolean reviewFinance(
             @Parameter(description = "财务记录ID") 
             @PathVariable("financeId") Long financeId,
@@ -186,7 +186,7 @@ public class FeeController {
         description = "计算指定案件的所有已审核通过的收入总额"
     )
     @GetMapping("/cases/{caseId}/income")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public BigDecimal calculateTotalIncome(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -199,7 +199,7 @@ public class FeeController {
         description = "计算指定案件的所有已审核通过的支出总额"
     )
     @GetMapping("/cases/{caseId}/expense")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public BigDecimal calculateTotalExpense(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -212,7 +212,7 @@ public class FeeController {
         description = "计算指定案件的利润（总收入减去总支出）"
     )
     @GetMapping("/cases/{caseId}/profit")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public BigDecimal calculateProfit(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -225,7 +225,7 @@ public class FeeController {
         description = "设置案件的预算金额，用于费用控制和超支预警"
     )
     @PutMapping("/cases/{caseId}/budget")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public boolean setBudget(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -240,7 +240,7 @@ public class FeeController {
         description = "检查案件的实际支出是否超过预算金额"
     )
     @GetMapping("/cases/{caseId}/budget/overrun")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public boolean checkBudgetOverrun(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -253,7 +253,7 @@ public class FeeController {
         description = "导出指定时间范围内的财务记录，支持多种格式如Excel、PDF等"
     )
     @GetMapping("/cases/{caseId}/export")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public String exportFinanceRecords(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -270,7 +270,7 @@ public class FeeController {
         description = "统计指定案件的财务记录数量，可按类型统计"
     )
     @GetMapping("/cases/{caseId}/count")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public int countFinances(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,

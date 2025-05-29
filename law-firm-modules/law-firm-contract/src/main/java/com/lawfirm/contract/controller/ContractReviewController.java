@@ -43,7 +43,7 @@ public class ContractReviewController {
         summary = "提交审批",
         description = "提交合同审批申请，支持指定审批人、审批类型、审批说明等信息"
     )
-    @PreAuthorize(CONTRACT_REVIEW_CREATE)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_CREATE + "')")
     public CommonResult<Long> submitReview(
             @Parameter(description = "审批申请参数，包括合同ID、审批人、审批说明等") @RequestBody @Validated ContractReviewDTO reviewDTO) {
         log.info("提交合同审批, 合同ID: {}, 审批人: {}", reviewDTO.getContractId(), reviewDTO.getReviewerId());
@@ -59,7 +59,7 @@ public class ContractReviewController {
         summary = "审批通过",
         description = "通过合同审批，可以添加审批意见。审批通过后，合同状态将更新为已通过"
     )
-    @PreAuthorize(CONTRACT_REVIEW_APPROVE)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_APPROVE + "')")
     public CommonResult<Boolean> approveReview(
             @Parameter(description = "审批记录ID") @PathVariable("id") Long id,
             @Parameter(description = "审批意见，可选") @RequestParam(required = false) String comment) {
@@ -76,7 +76,7 @@ public class ContractReviewController {
         summary = "审批拒绝",
         description = "拒绝合同审批，必须添加拒绝原因。审批拒绝后，合同状态将更新为已拒绝"
     )
-    @PreAuthorize(CONTRACT_REVIEW_REJECT)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_REJECT + "')")
     public CommonResult<Boolean> rejectReview(
             @Parameter(description = "审批记录ID") @PathVariable("id") Long id,
             @Parameter(description = "拒绝原因，必填") @RequestParam String comment) {
@@ -93,7 +93,7 @@ public class ContractReviewController {
         summary = "获取审批详情",
         description = "根据ID获取审批记录的详细信息，包括审批状态、审批意见、审批时间等"
     )
-    @PreAuthorize(CONTRACT_REVIEW_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_VIEW + "')")
     public CommonResult<ContractReviewDetailVO> getReview(
             @Parameter(description = "审批记录ID") @PathVariable("id") Long id) {
         log.info("获取审批详情, 审批ID: {}", id);
@@ -109,7 +109,7 @@ public class ContractReviewController {
         summary = "查询合同的审批历史",
         description = "根据合同ID查询该合同的所有审批记录，包括每次审批的状态、意见、时间等"
     )
-    @PreAuthorize(CONTRACT_REVIEW_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_VIEW + "')")
     public CommonResult<List<ContractReviewVO>> getContractReviews(
             @Parameter(description = "合同ID") @PathVariable("contractId") Long contractId) {
         log.info("查询合同的审批历史, 合同ID: {}", contractId);
@@ -130,7 +130,7 @@ public class ContractReviewController {
             @Parameter(name = "size", description = "每页记录数", required = true),
             @Parameter(name = "reviewerId", description = "审批人ID，用于筛选指定审批人的待办项")
     })
-    @PreAuthorize(CONTRACT_REVIEW_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_VIEW + "')")
     public CommonResult<IPage<ContractReviewVO>> getPendingReviewPage(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
@@ -157,7 +157,7 @@ public class ContractReviewController {
             @Parameter(name = "size", description = "每页记录数", required = true),
             @Parameter(name = "reviewerId", description = "审批人ID，用于筛选指定审批人的已办项")
     })
-    @PreAuthorize(CONTRACT_REVIEW_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_VIEW + "')")
     public CommonResult<IPage<ContractReviewVO>> getCompletedReviewPage(
             @RequestParam(defaultValue = "1") long current,
             @RequestParam(defaultValue = "10") long size,
@@ -180,7 +180,7 @@ public class ContractReviewController {
         summary = "撤销审批",
         description = "撤销已提交的审批申请，需要提供撤销原因。仅能撤销未审批的申请"
     )
-    @PreAuthorize(CONTRACT_REVIEW_REVOKE)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_REVOKE + "')")
     public CommonResult<Boolean> revokeReview(
             @Parameter(description = "审批记录ID") @PathVariable("id") Long id,
             @Parameter(description = "撤销原因，必填") @RequestParam String reason) {
@@ -197,7 +197,7 @@ public class ContractReviewController {
         summary = "催办审批",
         description = "对未处理的审批进行催办，系统将通知审批人尽快处理"
     )
-    @PreAuthorize(CONTRACT_REVIEW_URGE)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_URGE + "')")
     public CommonResult<Boolean> urgeReview(
             @Parameter(description = "审批记录ID") @PathVariable("id") Long id) {
         log.info("催办审批, 审批ID: {}", id);
@@ -213,7 +213,7 @@ public class ContractReviewController {
         summary = "转交审批",
         description = "将审批任务转交给其他审批人处理，需要提供转交原因"
     )
-    @PreAuthorize(CONTRACT_REVIEW_TRANSFER)
+    @PreAuthorize("hasAuthority('" + CONTRACT_REVIEW_TRANSFER + "')")
     public CommonResult<Boolean> transferReview(
             @Parameter(description = "审批记录ID") @PathVariable("id") Long id,
             @Parameter(description = "新审批人ID") @RequestParam Long newReviewerId,

@@ -48,7 +48,7 @@ public class ContractTemplateController {
         summary = "创建合同模板",
         description = "创建新的合同模板，包括模板名称、编码、内容、变量定义等信息"
     )
-    @PreAuthorize(CONTRACT_CREATE)
+    @PreAuthorize("hasAuthority('" + CONTRACT_CREATE + "')")
     public CommonResult<Long> createContractTemplate(
             @Parameter(description = "模板创建参数，包括模板名称、编码、内容等") @RequestBody @Validated ContractTemplateCreateDTO createDTO) {
         log.info("创建合同模板: {}", createDTO.getTemplateName());
@@ -64,7 +64,7 @@ public class ContractTemplateController {
         summary = "更新合同模板",
         description = "更新已存在的合同模板信息，支持更新模板名称、内容、变量定义等"
     )
-    @PreAuthorize(CONTRACT_EDIT)
+    @PreAuthorize("hasAuthority('" + CONTRACT_EDIT + "')")
     public CommonResult<Boolean> updateContractTemplate(
             @Parameter(description = "模板ID") @PathVariable("id") Long id,
             @Parameter(description = "模板更新参数，包括需要更新的字段") @RequestBody @Validated ContractTemplateUpdateDTO updateDTO) {
@@ -82,7 +82,7 @@ public class ContractTemplateController {
         summary = "获取合同模板详情",
         description = "根据ID获取合同模板的详细信息，包括模板内容、变量定义、使用状态等"
     )
-    @PreAuthorize(CONTRACT_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_VIEW + "')")
     public CommonResult<ContractTemplateDetailVO> getContractTemplate(
             @Parameter(description = "模板ID") @PathVariable("id") Long id) {
         log.info("获取合同模板详情: {}", id);
@@ -98,7 +98,7 @@ public class ContractTemplateController {
         summary = "删除合同模板",
         description = "根据ID删除合同模板，如果模板已被使用则不允许删除"
     )
-    @PreAuthorize(CONTRACT_DELETE)
+    @PreAuthorize("hasAuthority('" + CONTRACT_DELETE + "')")
     public CommonResult<Boolean> deleteContractTemplate(
             @Parameter(description = "模板ID") @PathVariable("id") Long id) {
         log.info("删除合同模板: {}", id);
@@ -114,7 +114,7 @@ public class ContractTemplateController {
         summary = "分页查询合同模板",
         description = "根据条件分页查询合同模板列表，支持按模板名称、编码、状态等条件筛选"
     )
-    @PreAuthorize(CONTRACT_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_VIEW + "')")
     @Parameters({
             @Parameter(name = "current", description = "当前页码，从1开始", required = true),
             @Parameter(name = "size", description = "每页记录数", required = true),
@@ -138,7 +138,7 @@ public class ContractTemplateController {
         summary = "查询合同模板列表",
         description = "根据条件查询合同模板列表，不分页，支持按模板名称、编码、状态等条件筛选"
     )
-    @PreAuthorize(CONTRACT_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_VIEW + "')")
     public CommonResult<List<ContractTemplateVO>> getContractTemplateList(
             @Parameter(description = "查询参数，包括模板名称、编码、状态等") ContractTemplateQueryDTO queryDTO) {
         log.info("查询合同模板列表");
@@ -154,7 +154,7 @@ public class ContractTemplateController {
         summary = "提取模板变量",
         description = "从模板内容中提取所有变量，返回变量名称和描述的映射关系"
     )
-    @PreAuthorize(CONTRACT_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_VIEW + "')")
     public CommonResult<Map<String, String>> extractTemplateVariables(
             @Parameter(description = "模板内容") @RequestBody String templateContent) {
         log.info("提取模板变量");
@@ -170,7 +170,7 @@ public class ContractTemplateController {
         summary = "验证模板变量",
         description = "验证模板变量是否完整，检查所有必填变量是否都已提供值"
     )
-    @PreAuthorize(CONTRACT_VIEW)
+    @PreAuthorize("hasAuthority('" + CONTRACT_VIEW + "')")
     public CommonResult<Boolean> validateTemplateVariables(
             @Parameter(description = "请求参数，包括模板内容和变量值") @RequestBody Map<String, Object> request) {
         log.info("验证模板变量");
@@ -189,7 +189,7 @@ public class ContractTemplateController {
         summary = "启用合同模板",
         description = "启用指定的合同模板，启用后可以被选择使用"
     )
-    @PreAuthorize(CONTRACT_EDIT)
+    @PreAuthorize("hasAuthority('" + CONTRACT_EDIT + "')")
     public CommonResult<Boolean> enableContractTemplate(
             @Parameter(description = "模板ID") @PathVariable("id") Long id) {
         log.info("启用合同模板: {}", id);
@@ -205,7 +205,7 @@ public class ContractTemplateController {
         summary = "禁用合同模板",
         description = "禁用指定的合同模板，禁用后不能被选择使用"
     )
-    @PreAuthorize(CONTRACT_EDIT)
+    @PreAuthorize("hasAuthority('" + CONTRACT_EDIT + "')")
     public CommonResult<Boolean> disableContractTemplate(
             @Parameter(description = "模板ID") @PathVariable("id") Long id) {
         log.info("禁用合同模板: {}", id);

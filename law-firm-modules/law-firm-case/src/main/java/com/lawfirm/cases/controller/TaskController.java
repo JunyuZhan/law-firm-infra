@@ -35,7 +35,7 @@ public class TaskController {
         description = "创建新的案件任务，包括任务基本信息、关联案件、负责人等"
     )
     @PostMapping
-    @PreAuthorize(TASK_CREATE)
+    @PreAuthorize("hasAuthority('" + TASK_CREATE + "')")
     public Long createTask(
             @Parameter(description = "任务信息，包括任务标题、内容、类型、开始时间、截止时间等") 
             @RequestBody @Validated CaseTaskDTO taskDTO) {
@@ -48,7 +48,7 @@ public class TaskController {
         description = "批量创建多个案件任务，支持同时创建多个相关联的任务"
     )
     @PostMapping("/batch")
-    @PreAuthorize(TASK_CREATE)
+    @PreAuthorize("hasAuthority('" + TASK_CREATE + "')")
     public boolean batchCreateTasks(
             @Parameter(description = "任务信息列表，每个任务包括标题、内容、类型等") 
             @RequestBody @Validated List<CaseTaskDTO> taskDTOs) {
@@ -61,7 +61,7 @@ public class TaskController {
         description = "更新已有任务的信息，包括任务内容、时间、负责人等"
     )
     @PutMapping
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean updateTask(
             @Parameter(description = "更新的任务信息，包括可修改的任务相关字段") 
             @RequestBody @Validated CaseTaskDTO taskDTO) {
@@ -74,7 +74,7 @@ public class TaskController {
         description = "删除指定的任务，如果任务已开始或完成则不允许删除"
     )
     @DeleteMapping("/{taskId}")
-    @PreAuthorize(TASK_DELETE)
+    @PreAuthorize("hasAuthority('" + TASK_DELETE + "')")
     public boolean deleteTask(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId) {
@@ -87,7 +87,7 @@ public class TaskController {
         description = "批量删除多个任务，如果任一任务已开始或完成则不允许删除"
     )
     @DeleteMapping("/batch")
-    @PreAuthorize(TASK_DELETE)
+    @PreAuthorize("hasAuthority('" + TASK_DELETE + "')")
     public boolean batchDeleteTasks(
             @Parameter(description = "任务ID列表") 
             @RequestBody List<Long> taskIds) {
@@ -100,7 +100,7 @@ public class TaskController {
         description = "获取任务的详细信息，包括基本信息、进度、评论等"
     )
     @GetMapping("/{taskId}")
-    @PreAuthorize(TASK_VIEW)
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     public CaseTaskVO getTaskDetail(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId) {
@@ -113,7 +113,7 @@ public class TaskController {
         description = "获取指定案件关联的所有任务列表"
     )
     @GetMapping("/cases/{caseId}")
-    @PreAuthorize(TASK_VIEW)
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     public List<CaseTaskVO> listCaseTasks(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -126,7 +126,7 @@ public class TaskController {
         description = "分页查询案件的任务列表，支持按任务类型和状态筛选"
     )
     @GetMapping("/cases/{caseId}/page")
-    @PreAuthorize(TASK_VIEW)
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     public IPage<CaseTaskVO> pageTasks(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -148,7 +148,7 @@ public class TaskController {
         description = "将任务状态更新为进行中，记录实际开始时间"
     )
     @PostMapping("/{taskId}/start")
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean startTask(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId) {
@@ -161,7 +161,7 @@ public class TaskController {
         description = "暂停正在进行的任务，需要提供暂停原因"
     )
     @PostMapping("/{taskId}/pause")
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean pauseTask(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId,
@@ -176,7 +176,7 @@ public class TaskController {
         description = "恢复已暂停的任务，继续执行任务"
     )
     @PostMapping("/{taskId}/resume")
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean resumeTask(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId) {
@@ -189,7 +189,7 @@ public class TaskController {
         description = "将任务标记为已完成，可以添加完成说明"
     )
     @PostMapping("/{taskId}/complete")
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean completeTask(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId,
@@ -204,7 +204,7 @@ public class TaskController {
         description = "取消未完成的任务，需要提供取消原因"
     )
     @PostMapping("/{taskId}/cancel")
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean cancelTask(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId,
@@ -219,7 +219,7 @@ public class TaskController {
         description = "将任务分配给指定的负责人处理"
     )
     @PostMapping("/{taskId}/assign")
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean assignTask(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId,
@@ -234,7 +234,7 @@ public class TaskController {
         description = "更新任务的完成进度，可以添加进度说明"
     )
     @PutMapping("/{taskId}/progress")
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean updateTaskProgress(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId,
@@ -251,7 +251,7 @@ public class TaskController {
         description = "为任务添加评论信息，用于记录任务相关的讨论和建议"
     )
     @PostMapping("/{taskId}/comments")
-    @PreAuthorize(TASK_COMMENT)
+    @PreAuthorize("hasAuthority('" + TASK_COMMENT + "')")
     public boolean addTaskComment(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId,
@@ -266,7 +266,7 @@ public class TaskController {
         description = "设置任务的优先级，用于任务的排序和重要程度标识"
     )
     @PutMapping("/{taskId}/priority")
-    @PreAuthorize(TASK_EDIT)
+    @PreAuthorize("hasAuthority('" + TASK_EDIT + "')")
     public boolean setTaskPriority(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId,
@@ -281,7 +281,7 @@ public class TaskController {
         description = "检查指定ID的任务是否存在"
     )
     @GetMapping("/{taskId}/exists")
-    @PreAuthorize(TASK_VIEW)
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     public boolean checkTaskExists(
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId) {
@@ -294,7 +294,7 @@ public class TaskController {
         description = "统计指定案件的任务数量，支持按任务类型和状态统计"
     )
     @GetMapping("/cases/{caseId}/count")
-    @PreAuthorize(TASK_VIEW)
+    @PreAuthorize("hasAuthority('" + TASK_VIEW + "')")
     public int countTasks(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,

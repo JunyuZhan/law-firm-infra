@@ -40,7 +40,7 @@ public class ArchiveFileController {
      */
     @PostMapping("/upload/batch")
     @Operation(summary = "批量上传档案文件", description = "批量上传档案文件")
-    @PreAuthorize(ARCHIVE_CREATE)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_CREATE + "')")
     public CommonResult<List<String>> batchUploadArchiveFiles(@RequestBody @Validated List<ArchiveFileCreateDTO> fileCreateDTOList) {
         log.info("批量上传档案文件，数量：{}", fileCreateDTOList.size());
         
@@ -61,7 +61,7 @@ public class ArchiveFileController {
      */
     @GetMapping("/case/{caseId}")
     @Operation(summary = "获取案件相关的档案文件", description = "根据案件ID获取相关的档案文件")
-    @PreAuthorize(ARCHIVE_VIEW)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_VIEW + "')")
     public CommonResult<List<ArchiveFile>> getArchiveFilesByCaseId(@PathVariable String caseId) {
         log.info("获取案件相关的档案文件，caseId：{}", caseId);
         List<ArchiveFile> archiveFiles = archiveService.getArchiveFilesByCaseId(caseId);
@@ -75,7 +75,7 @@ public class ArchiveFileController {
      */
     @PutMapping("/update")
     @Operation(summary = "更新档案文件", description = "更新档案文件信息")
-    @PreAuthorize(ARCHIVE_EDIT)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_EDIT + "')")
     public CommonResult<Boolean> updateArchiveFile(@RequestBody @Validated ArchiveFileUpdateDTO updateDTO) {
         log.info("更新档案文件，fileId：{}", updateDTO.getId());
         
@@ -100,7 +100,7 @@ public class ArchiveFileController {
      */
     @DeleteMapping("/{fileId}")
     @Operation(summary = "删除档案文件", description = "删除档案文件")
-    @PreAuthorize(ARCHIVE_DELETE)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_DELETE + "')")
     public CommonResult<Boolean> deleteArchiveFile(@PathVariable String fileId) {
         log.info("删除档案文件，fileId：{}", fileId);
         boolean result = archiveService.remove(Long.valueOf(fileId));
@@ -112,7 +112,7 @@ public class ArchiveFileController {
      */
     @PutMapping("/{fileId}/status")
     @Operation(summary = "更新档案文件状态", description = "更新档案文件状态")
-    @PreAuthorize(ARCHIVE_EDIT)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_EDIT + "')")
     public CommonResult<Boolean> updateArchiveFileStatus(
             @PathVariable String fileId,
             @RequestParam ArchiveStatusEnum status) {
@@ -128,7 +128,7 @@ public class ArchiveFileController {
      */
     @PutMapping("/batch/update")
     @Operation(summary = "批量更新档案文件", description = "批量更新档案文件信息")
-    @PreAuthorize(ARCHIVE_EDIT)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_EDIT + "')")
     public CommonResult<Boolean> batchUpdateArchiveFiles(@RequestBody List<ArchiveFileUpdateDTO> updateDTOList) {
         log.info("批量更新档案文件，数量：{}", updateDTOList.size());
         
@@ -160,7 +160,7 @@ public class ArchiveFileController {
      */
     @DeleteMapping("/batch")
     @Operation(summary = "批量删除档案文件", description = "批量删除档案文件")
-    @PreAuthorize(ARCHIVE_DELETE)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_DELETE + "')")
     public CommonResult<Boolean> batchDeleteArchiveFiles(@RequestBody List<String> fileIds) {
         log.info("批量删除档案文件，数量：{}", fileIds.size());
         
@@ -178,7 +178,7 @@ public class ArchiveFileController {
      */
     @PostMapping("/borrow")
     @Operation(summary = "借阅档案文件", description = "借阅档案文件")
-    @PreAuthorize(ARCHIVE_EDIT)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_EDIT + "')")
     public CommonResult<Boolean> borrowArchiveFile(
             @Parameter(description = "文件ID") @RequestParam String fileId,
             @Parameter(description = "借阅人ID") @RequestParam String borrowerId,
@@ -194,7 +194,7 @@ public class ArchiveFileController {
      */
     @PostMapping("/return")
     @Operation(summary = "归还档案文件", description = "归还档案文件")
-    @PreAuthorize(ARCHIVE_EDIT)
+    @PreAuthorize("hasAuthority('" + ARCHIVE_EDIT + "')")
     public CommonResult<Boolean> returnArchiveFile(
             @Parameter(description = "文件ID") @RequestParam String fileId) {
         

@@ -24,7 +24,7 @@ public class EvidenceReviewController {
 
     @Operation(summary = "新增证据审核", description = "为指定证据新增审核记录")
     @PostMapping
-    @PreAuthorize(EVIDENCE_CREATE)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_CREATE + "')")
     public Long add(@Parameter(description = "证据ID") @PathVariable Long evidenceId, @Parameter(description = "审核信息DTO") @RequestBody EvidenceReviewDTO dto) {
         dto.setEvidenceId(evidenceId);
         return evidenceReviewService.addReview(dto);
@@ -32,28 +32,28 @@ public class EvidenceReviewController {
 
     @Operation(summary = "更新证据审核", description = "更新指定证据的审核信息")
     @PutMapping
-    @PreAuthorize(EVIDENCE_EDIT)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_EDIT + "')")
     public void update(@Parameter(description = "审核信息DTO") @RequestBody EvidenceReviewDTO dto) {
         evidenceReviewService.updateReview(dto);
     }
 
     @Operation(summary = "删除证据审核", description = "根据审核ID删除证据审核记录")
     @DeleteMapping("/{id}")
-    @PreAuthorize(EVIDENCE_DELETE)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_DELETE + "')")
     public void delete(@Parameter(description = "审核ID") @PathVariable Long id) {
         evidenceReviewService.deleteReview(id);
     }
 
     @Operation(summary = "获取证据审核详情", description = "根据审核ID获取证据审核的详细信息")
     @GetMapping("/{id}")
-    @PreAuthorize(EVIDENCE_VIEW)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_VIEW + "')")
     public EvidenceReviewVO get(@Parameter(description = "审核ID") @PathVariable Long id) {
         return evidenceReviewService.getReview(id);
     }
 
     @Operation(summary = "获取证据所有审核记录", description = "获取指定证据下的所有审核记录列表")
     @GetMapping
-    @PreAuthorize(EVIDENCE_VIEW)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_VIEW + "')")
     public List<EvidenceReviewVO> list(@Parameter(description = "证据ID") @PathVariable Long evidenceId) {
         return evidenceReviewService.listByEvidence(evidenceId);
     }

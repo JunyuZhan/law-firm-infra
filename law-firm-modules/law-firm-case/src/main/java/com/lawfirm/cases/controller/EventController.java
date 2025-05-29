@@ -36,7 +36,7 @@ public class EventController {
         description = "创建新的案件事件，包括事件基本信息、关联案件、参与人等"
     )
     @PostMapping
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public Long createEvent(
             @Parameter(description = "事件信息，包括事件标题、内容、类型、开始时间、结束时间等") 
             @RequestBody @Validated CaseEventDTO eventDTO) {
@@ -49,7 +49,7 @@ public class EventController {
         description = "批量创建多个案件事件，支持同时创建多个相关联的事件"
     )
     @PostMapping("/batch")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean batchCreateEvents(
             @Parameter(description = "事件信息列表，每个事件包括标题、内容、类型等") 
             @RequestBody @Validated List<CaseEventDTO> eventDTOs) {
@@ -62,7 +62,7 @@ public class EventController {
         description = "更新已有事件的信息，包括事件内容、时间、参与人等"
     )
     @PutMapping
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean updateEvent(
             @Parameter(description = "更新的事件信息，包括可修改的事件相关字段") 
             @RequestBody @Validated CaseEventDTO eventDTO) {
@@ -75,7 +75,7 @@ public class EventController {
         description = "删除指定的事件，如果事件已开始或完成则不允许删除"
     )
     @DeleteMapping("/{eventId}")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean deleteEvent(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId) {
@@ -88,7 +88,7 @@ public class EventController {
         description = "批量删除多个事件，如果任一事件已开始或完成则不允许删除"
     )
     @DeleteMapping("/batch")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean batchDeleteEvents(
             @Parameter(description = "事件ID列表") 
             @RequestBody List<Long> eventIds) {
@@ -101,7 +101,7 @@ public class EventController {
         description = "获取事件的详细信息，包括基本信息、参与人、附件等"
     )
     @GetMapping("/{eventId}")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public CaseEventVO getEventDetail(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId) {
@@ -114,7 +114,7 @@ public class EventController {
         description = "获取指定案件关联的所有事件列表"
     )
     @GetMapping("/cases/{caseId}")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public List<CaseEventVO> listCaseEvents(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -127,7 +127,7 @@ public class EventController {
         description = "分页查询案件的事件列表，支持按事件类型和状态筛选"
     )
     @GetMapping("/cases/{caseId}/page")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public IPage<CaseEventVO> pageEvents(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -149,7 +149,7 @@ public class EventController {
         description = "将事件状态更新为进行中，记录实际开始时间"
     )
     @PostMapping("/{eventId}/start")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean startEvent(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId) {
@@ -162,7 +162,7 @@ public class EventController {
         description = "将事件标记为已完成，可以添加完成说明"
     )
     @PostMapping("/{eventId}/complete")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean completeEvent(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId,
@@ -177,7 +177,7 @@ public class EventController {
         description = "取消未完成的事件，需要提供取消原因"
     )
     @PostMapping("/{eventId}/cancel")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean cancelEvent(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId,
@@ -192,7 +192,7 @@ public class EventController {
         description = "为事件添加参与人，支持添加多个参与人"
     )
     @PostMapping("/{eventId}/participants")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean addParticipant(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId,
@@ -207,7 +207,7 @@ public class EventController {
         description = "从事件中移除指定的参与人"
     )
     @DeleteMapping("/{eventId}/participants/{participantId}")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean removeParticipant(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId,
@@ -222,7 +222,7 @@ public class EventController {
         description = "为事件添加相关附件文件"
     )
     @PostMapping("/{eventId}/attachments")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean addAttachment(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId,
@@ -237,7 +237,7 @@ public class EventController {
         description = "移除事件关联的指定附件"
     )
     @DeleteMapping("/{eventId}/attachments/{fileId}")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public boolean removeAttachment(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId,
@@ -252,7 +252,7 @@ public class EventController {
         description = "获取指定用户在指定时间范围内参与的所有事件"
     )
     @GetMapping("/users/{userId}")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public List<CaseEventVO> listUserEvents(
             @Parameter(description = "用户ID") 
             @PathVariable("userId") Long userId,
@@ -269,7 +269,7 @@ public class EventController {
         description = "获取指定用户需要处理的未完成事件列表"
     )
     @GetMapping("/users/{userId}/todo")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public List<CaseEventVO> listUserTodoEvents(
             @Parameter(description = "用户ID") 
             @PathVariable("userId") Long userId) {
@@ -282,7 +282,7 @@ public class EventController {
         description = "按时间顺序获取案件的所有事件，用于展示案件进展时间线"
     )
     @GetMapping("/cases/{caseId}/timeline")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public List<CaseEventVO> getCaseTimeline(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -295,7 +295,7 @@ public class EventController {
         description = "检查指定ID的事件是否存在"
     )
     @GetMapping("/{eventId}/exists")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public boolean checkEventExists(
             @Parameter(description = "事件ID") 
             @PathVariable("eventId") Long eventId) {
@@ -308,7 +308,7 @@ public class EventController {
         description = "统计指定案件的事件数量，支持按事件类型和状态统计"
     )
     @GetMapping("/cases/{caseId}/count")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public int countEvents(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,

@@ -24,7 +24,7 @@ public class EvidenceAttachmentController {
 
     @Operation(summary = "新增证据附件", description = "为指定证据新增附件")
     @PostMapping
-    @PreAuthorize(EVIDENCE_CREATE)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_CREATE + "')")
     public Long add(@Parameter(description = "证据ID") @PathVariable Long evidenceId, @Parameter(description = "附件信息DTO") @RequestBody EvidenceAttachmentDTO dto) {
         dto.setEvidenceId(evidenceId);
         return evidenceAttachmentService.addAttachment(dto);
@@ -32,28 +32,28 @@ public class EvidenceAttachmentController {
 
     @Operation(summary = "更新证据附件", description = "更新指定证据的附件信息")
     @PutMapping
-    @PreAuthorize(EVIDENCE_EDIT)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_EDIT + "')")
     public void update(@Parameter(description = "附件信息DTO") @RequestBody EvidenceAttachmentDTO dto) {
         evidenceAttachmentService.updateAttachment(dto);
     }
 
     @Operation(summary = "删除证据附件", description = "根据附件ID删除证据附件")
     @DeleteMapping("/{id}")
-    @PreAuthorize(EVIDENCE_DELETE)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_DELETE + "')")
     public void delete(@Parameter(description = "附件ID") @PathVariable Long id) {
         evidenceAttachmentService.deleteAttachment(id);
     }
 
     @Operation(summary = "获取证据附件详情", description = "根据附件ID获取证据附件的详细信息")
     @GetMapping("/{id}")
-    @PreAuthorize(EVIDENCE_VIEW)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_VIEW + "')")
     public EvidenceAttachmentVO get(@Parameter(description = "附件ID") @PathVariable Long id) {
         return evidenceAttachmentService.getAttachment(id);
     }
 
     @Operation(summary = "获取证据所有附件", description = "获取指定证据下的所有附件列表")
     @GetMapping
-    @PreAuthorize(EVIDENCE_VIEW)
+    @PreAuthorize("hasAuthority('" + EVIDENCE_VIEW + "')")
     public List<EvidenceAttachmentVO> list(@Parameter(description = "证据ID") @PathVariable Long evidenceId) {
         return evidenceAttachmentService.listByEvidence(evidenceId);
     }

@@ -36,7 +36,7 @@ public class DocumentController {
         description = "上传案件相关的文档，支持多种文档格式，自动提取文档元数据"
     )
     @PostMapping
-    @PreAuthorize(DOCUMENT_CREATE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_CREATE + "')")
     public Long uploadDocument(
             @Parameter(description = "文档信息，包括文档名称、类型、内容等") 
             @RequestBody @Validated CaseDocumentDTO documentDTO) {
@@ -49,7 +49,7 @@ public class DocumentController {
         description = "批量上传多个案件文档，支持多种文档格式，自动提取文档元数据"
     )
     @PostMapping("/batch")
-    @PreAuthorize(DOCUMENT_CREATE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_CREATE + "')")
     public boolean batchUploadDocuments(
             @Parameter(description = "文档信息列表，每个文档包括名称、类型、内容等") 
             @RequestBody @Validated List<CaseDocumentDTO> documentDTOs) {
@@ -62,7 +62,7 @@ public class DocumentController {
         description = "更新已有文档的基本信息，包括文档名称、描述、标签等"
     )
     @PutMapping
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public boolean updateDocument(
             @Parameter(description = "更新的文档信息") 
             @RequestBody @Validated CaseDocumentDTO documentDTO) {
@@ -75,7 +75,7 @@ public class DocumentController {
         description = "删除指定的文档，如果文档已被引用则不允许删除"
     )
     @DeleteMapping("/{documentId}")
-    @PreAuthorize(DOCUMENT_DELETE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_DELETE + "')")
     public boolean deleteDocument(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId) {
@@ -88,7 +88,7 @@ public class DocumentController {
         description = "批量删除多个文档，如果任一文档已被引用则不允许删除"
     )
     @DeleteMapping("/batch")
-    @PreAuthorize(DOCUMENT_DELETE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_DELETE + "')")
     public boolean batchDeleteDocuments(
             @Parameter(description = "文档ID列表") 
             @RequestBody List<Long> documentIds) {
@@ -101,7 +101,7 @@ public class DocumentController {
         description = "获取文档的详细信息，包括基本信息、元数据、标签等"
     )
     @GetMapping("/{documentId}")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public CaseDocumentVO getDocumentDetail(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId) {
@@ -114,7 +114,7 @@ public class DocumentController {
         description = "获取指定案件的所有相关文档列表"
     )
     @GetMapping("/cases/{caseId}")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public List<CaseDocumentVO> listCaseDocuments(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -127,7 +127,7 @@ public class DocumentController {
         description = "分页查询案件的文档列表，支持按文档类型和安全级别筛选"
     )
     @GetMapping("/cases/{caseId}/page")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public IPage<CaseDocumentVO> pageDocuments(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -149,7 +149,7 @@ public class DocumentController {
         description = "下载指定的文档，支持断点续传和文档格式转换"
     )
     @GetMapping("/{documentId}/download")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public ResponseEntity<byte[]> downloadDocument(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId) {
@@ -166,7 +166,7 @@ public class DocumentController {
         description = "在线预览文档内容，支持多种文档格式的在线预览"
     )
     @GetMapping("/{documentId}/preview")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public String previewDocument(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId) {
@@ -179,7 +179,7 @@ public class DocumentController {
         description = "生成文档分享链接，支持设置分享类型和有效期"
     )
     @PostMapping("/{documentId}/share")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public String shareDocument(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId,
@@ -196,7 +196,7 @@ public class DocumentController {
         description = "设置文档的安全级别，用于控制文档的访问权限"
     )
     @PutMapping("/{documentId}/security-level")
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public boolean setSecurityLevel(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId,
@@ -211,7 +211,7 @@ public class DocumentController {
         description = "为文档添加标签，用于文档分类和快速检索"
     )
     @PostMapping("/{documentId}/tags")
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public boolean addDocumentTag(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId,
@@ -226,7 +226,7 @@ public class DocumentController {
         description = "移除文档已有的标签"
     )
     @DeleteMapping("/{documentId}/tags")
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public boolean removeDocumentTag(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId,
@@ -241,7 +241,7 @@ public class DocumentController {
         description = "为文档添加备注信息，记录文档的重要说明"
     )
     @PostMapping("/{documentId}/notes")
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public boolean addDocumentNote(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId,
@@ -256,7 +256,7 @@ public class DocumentController {
         description = "将文档移动到指定的文件夹中"
     )
     @PutMapping("/{documentId}/move")
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public boolean moveDocument(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId,
@@ -271,7 +271,7 @@ public class DocumentController {
         description = "将文档复制到指定的文件夹中，创建文档副本"
     )
     @PostMapping("/{documentId}/copy")
-    @PreAuthorize(DOCUMENT_CREATE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_CREATE + "')")
     public boolean copyDocument(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId,
@@ -286,7 +286,7 @@ public class DocumentController {
         description = "在案件文档目录中创建新的文件夹"
     )
     @PostMapping("/folders")
-    @PreAuthorize(DOCUMENT_CREATE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_CREATE + "')")
     public Long createFolder(
             @Parameter(description = "案件ID") 
             @RequestParam Long caseId,
@@ -303,7 +303,7 @@ public class DocumentController {
         description = "修改文件夹的名称"
     )
     @PutMapping("/folders/{folderId}/rename")
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public boolean renameFolder(
             @Parameter(description = "文件夹ID") 
             @PathVariable("folderId") Long folderId,
@@ -318,7 +318,7 @@ public class DocumentController {
         description = "删除指定的文件夹，如果文件夹不为空则不允许删除"
     )
     @DeleteMapping("/folders/{folderId}")
-    @PreAuthorize(DOCUMENT_DELETE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_DELETE + "')")
     public boolean deleteFolder(
             @Parameter(description = "文件夹ID") 
             @PathVariable("folderId") Long folderId) {
@@ -331,7 +331,7 @@ public class DocumentController {
         description = "获取案件文档的文件夹树形结构"
     )
     @GetMapping("/cases/{caseId}/folder-tree")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public List<CaseDocumentVO> getFolderTree(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -344,7 +344,7 @@ public class DocumentController {
         description = "检查指定ID的文档是否存在"
     )
     @GetMapping("/{documentId}/exists")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public boolean checkDocumentExists(
             @Parameter(description = "文档ID") 
             @PathVariable("documentId") Long documentId) {
@@ -357,7 +357,7 @@ public class DocumentController {
         description = "统计案件的文档数量，支持按文档类型和安全级别统计"
     )
     @GetMapping("/cases/{caseId}/count")
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public int countDocuments(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,

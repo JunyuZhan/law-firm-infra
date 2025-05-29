@@ -42,7 +42,7 @@ public class TeamController {
                 "3. 同一案件中不能存在重复的参与方（相同类型和名称）"
     )
     @PostMapping("/participants")
-    @PreAuthorize(CASE_EDIT)
+    @PreAuthorize("hasAuthority('" + CASE_EDIT + "')")
     public Long addParticipant(
             @Parameter(description = "参与方信息，包括：\n" +
                     "1. 基本信息：参与方类型、名称、证件类型、证件号码等\n" +
@@ -62,7 +62,7 @@ public class TeamController {
                 "注意：任一参与方信息有误都将导致整批次添加失败"
     )
     @PostMapping("/participants/batch")
-    @PreAuthorize(CASE_EDIT)
+    @PreAuthorize("hasAuthority('" + CASE_EDIT + "')")
     public boolean batchAddParticipants(
             @Parameter(description = "参与方信息列表，每个参与方信息需包含完整的基本信息和联系方式") 
             @RequestBody @Validated List<CaseParticipantDTO> participantDTOs) {
@@ -81,7 +81,7 @@ public class TeamController {
                 "3. 更新不能与已有参与方产生重复"
     )
     @PutMapping("/participants")
-    @PreAuthorize(CASE_EDIT)
+    @PreAuthorize("hasAuthority('" + CASE_EDIT + "')")
     public boolean updateParticipant(
             @Parameter(description = "更新的参与方信息，需要包含参与方ID和待更新的字段信息") 
             @RequestBody @Validated CaseParticipantDTO participantDTO) {
@@ -97,7 +97,7 @@ public class TeamController {
                 "3. 删除后相关的历史记录将被保留"
     )
     @DeleteMapping("/participants/{participantId}")
-    @PreAuthorize(CASE_EDIT)
+    @PreAuthorize("hasAuthority('" + CASE_EDIT + "')")
     public boolean deleteParticipant(
             @Parameter(description = "参与方ID") 
             @PathVariable("participantId") Long participantId) {
@@ -113,7 +113,7 @@ public class TeamController {
                 "3. 批量删除前应确认不会影响案件正常推进"
     )
     @DeleteMapping("/participants/batch")
-    @PreAuthorize(CASE_EDIT)
+    @PreAuthorize("hasAuthority('" + CASE_EDIT + "')")
     public boolean batchDeleteParticipants(
             @Parameter(description = "待删除的参与方ID列表") 
             @RequestBody List<Long> participantIds) {
@@ -130,7 +130,7 @@ public class TeamController {
                 "4. 相关记录：文书送达记录、联系记录等"
     )
     @GetMapping("/participants/{participantId}")
-    @PreAuthorize(CASE_VIEW)
+    @PreAuthorize("hasAuthority('" + CASE_VIEW + "')")
     public CaseParticipantVO getParticipantDetail(
             @Parameter(description = "参与方ID") 
             @PathVariable("participantId") Long participantId) {
@@ -147,7 +147,7 @@ public class TeamController {
                 "4. 参与方关联的文书信息"
     )
     @GetMapping("/cases/{caseId}/participants")
-    @PreAuthorize(CASE_VIEW)
+    @PreAuthorize("hasAuthority('" + CASE_VIEW + "')")
     public List<CaseParticipantVO> listCaseParticipants(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {
@@ -164,7 +164,7 @@ public class TeamController {
                 "4. 包含参与方的主要信息和状态"
     )
     @GetMapping("/cases/{caseId}/participants/page")
-    @PreAuthorize(CASE_VIEW)
+    @PreAuthorize("hasAuthority('" + CASE_VIEW + "')")
     public IPage<CaseParticipantVO> pageParticipants(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -188,7 +188,7 @@ public class TeamController {
                 "4. 返回true表示已存在，false表示不存在"
     )
     @GetMapping("/cases/{caseId}/participants/exists")
-    @PreAuthorize(CASE_VIEW)
+    @PreAuthorize("hasAuthority('" + CASE_VIEW + "')")
     public boolean checkParticipantExists(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -210,7 +210,7 @@ public class TeamController {
                 "4. 用于案件信息展示和统计分析"
     )
     @GetMapping("/cases/{caseId}/participants/count")
-    @PreAuthorize(CASE_VIEW)
+    @PreAuthorize("hasAuthority('" + CASE_VIEW + "')")
     public int countParticipants(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId,
@@ -229,7 +229,7 @@ public class TeamController {
                 "4. 负责的具体工作内容"
     )
     @GetMapping("/cases/{caseId}/members")
-    @PreAuthorize(CASE_VIEW)
+    @PreAuthorize("hasAuthority('" + CASE_VIEW + "')")
     public List<CaseTeamMember> getCaseTeamMembers(
             @Parameter(description = "案件ID") 
             @PathVariable("caseId") Long caseId) {

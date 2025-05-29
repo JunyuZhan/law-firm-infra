@@ -37,14 +37,14 @@ public class FeeController {
 
     @PostMapping
     @Operation(summary = "创建费用")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> createFee(@Valid @RequestBody Fee fee) {
         return CommonResult.success(feeService.createFee(fee));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新费用")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateFee(@PathVariable("id") Long id, 
                                            @Valid @RequestBody Fee fee) {
         fee.setId(id);
@@ -53,21 +53,21 @@ public class FeeController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除费用")
-    @PreAuthorize(FINANCE_DELETE)
+    @PreAuthorize("hasAuthority('" + FINANCE_DELETE + "')")
     public CommonResult<Boolean> deleteFee(@PathVariable("id") Long id) {
         return CommonResult.success(feeService.deleteFee(id));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取费用详情")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<Fee> getFee(@PathVariable("id") Long id) {
         return CommonResult.success(feeService.getFeeById(id));
     }
 
     @PutMapping("/{id}/status")
     @Operation(summary = "更新费用状态")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateFeeStatus(
             @PathVariable("id") Long id,
             @Parameter(description = "费用状态") @RequestParam FeeStatusEnum status,
@@ -77,7 +77,7 @@ public class FeeController {
 
     @PutMapping("/{id}/approve")
     @Operation(summary = "审批费用")
-    @PreAuthorize(FINANCE_APPROVE)
+    @PreAuthorize("hasAuthority('" + FINANCE_APPROVE + "')")
     public CommonResult<Boolean> approveFee(
             @PathVariable("id") Long id,
             @Parameter(description = "是否通过") @RequestParam boolean approved,
@@ -88,7 +88,7 @@ public class FeeController {
 
     @PutMapping("/{id}/pay")
     @Operation(summary = "支付费用")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> payFee(
             @PathVariable("id") Long id,
             @Parameter(description = "支付账户ID") @RequestParam Long accountId,
@@ -99,7 +99,7 @@ public class FeeController {
 
     @PutMapping("/{id}/cancel")
     @Operation(summary = "取消费用")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> cancelFee(
             @PathVariable("id") Long id,
             @Parameter(description = "取消原因") @RequestParam String reason) {
@@ -108,7 +108,7 @@ public class FeeController {
 
     @GetMapping("/list")
     @Operation(summary = "查询费用列表")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Fee>> listFees(
             @Parameter(description = "费用类型") @RequestParam(required = false) FeeTypeEnum feeType,
             @Parameter(description = "费用状态") @RequestParam(required = false) FeeStatusEnum status,
@@ -121,7 +121,7 @@ public class FeeController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询费用")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<IPage<Fee>> pageFees(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") long size,
@@ -137,7 +137,7 @@ public class FeeController {
 
     @GetMapping("/department/{departmentId}")
     @Operation(summary = "按部门查询费用")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Fee>> listFeesByDepartment(
             @PathVariable("departmentId") Long departmentId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -147,7 +147,7 @@ public class FeeController {
 
     @GetMapping("/cost-center/{costCenterId}")
     @Operation(summary = "按成本中心查询费用")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Fee>> listFeesByCostCenter(
             @PathVariable("costCenterId") Long costCenterId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -157,14 +157,14 @@ public class FeeController {
 
     @GetMapping("/case/{caseId}")
     @Operation(summary = "按案件查询费用")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Fee>> listFeesByCase(@PathVariable("caseId") Long caseId) {
         return CommonResult.success(feeService.listFeesByCase(caseId));
     }
 
     @GetMapping("/sum")
     @Operation(summary = "统计费用金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumFeeAmount(
             @Parameter(description = "费用类型") @RequestParam(required = false) FeeTypeEnum feeType,
             @Parameter(description = "费用状态") @RequestParam(required = false) FeeStatusEnum status,
@@ -177,7 +177,7 @@ public class FeeController {
 
     @GetMapping("/sum/department/{departmentId}")
     @Operation(summary = "统计部门费用金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumDepartmentFeeAmount(
             @PathVariable("departmentId") Long departmentId,
             @Parameter(description = "费用类型") @RequestParam(required = false) FeeTypeEnum feeType,
@@ -189,7 +189,7 @@ public class FeeController {
 
     @GetMapping("/sum/cost-center/{costCenterId}")
     @Operation(summary = "统计成本中心费用金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumCostCenterFeeAmount(
             @PathVariable("costCenterId") Long costCenterId,
             @Parameter(description = "费用类型") @RequestParam(required = false) FeeTypeEnum feeType,
@@ -201,7 +201,7 @@ public class FeeController {
 
     @GetMapping("/sum/case/{caseId}")
     @Operation(summary = "统计案件费用金额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumCaseFeeAmount(
             @PathVariable("caseId") Long caseId,
             @Parameter(description = "费用类型") @RequestParam(required = false) FeeTypeEnum feeType,
@@ -211,7 +211,7 @@ public class FeeController {
 
     @GetMapping("/export")
     @Operation(summary = "导出费用数据")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<String> exportFees(
             @Parameter(description = "费用ID列表") @RequestParam List<Long> feeIds) {
         return CommonResult.success(feeService.exportFees(feeIds));

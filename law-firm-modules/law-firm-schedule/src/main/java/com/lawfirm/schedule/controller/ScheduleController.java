@@ -44,7 +44,7 @@ public class ScheduleController {
     
     @Operation(summary = "创建日程")
     @PostMapping
-    @PreAuthorize(SCHEDULE_CREATE)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CREATE + "')")
     public CommonResult<Long> createSchedule(@Valid @RequestBody ScheduleDTO scheduleDTO) {
         log.info("创建日程：{}", scheduleDTO.getTitle());
         Long id = scheduleService.createSchedule(scheduleDTO);
@@ -53,7 +53,7 @@ public class ScheduleController {
     
     @Operation(summary = "更新日程")
     @PutMapping("/{id}")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public CommonResult<Boolean> updateSchedule(
             @Parameter(description = "日程ID") @PathVariable Long id,
             @Valid @RequestBody ScheduleDTO scheduleDTO) {
@@ -64,7 +64,7 @@ public class ScheduleController {
     
     @Operation(summary = "获取日程详情")
     @GetMapping("/{id}")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public CommonResult<ScheduleVO> getScheduleDetail(@Parameter(description = "日程ID") @PathVariable Long id) {
         log.info("获取日程详情：{}", id);
         ScheduleVO scheduleVO = scheduleService.getScheduleDetail(id);
@@ -73,7 +73,7 @@ public class ScheduleController {
     
     @Operation(summary = "删除日程")
     @DeleteMapping("/{id}")
-    @PreAuthorize(SCHEDULE_DELETE)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_DELETE + "')")
     public CommonResult<Boolean> deleteSchedule(@Parameter(description = "日程ID") @PathVariable Long id) {
         log.info("删除日程：{}", id);
         boolean success = scheduleService.deleteSchedule(id);
@@ -82,7 +82,7 @@ public class ScheduleController {
     
     @Operation(summary = "批量删除日程")
     @DeleteMapping("/batch")
-    @PreAuthorize(SCHEDULE_DELETE)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_DELETE + "')")
     public CommonResult<Boolean> batchDeleteSchedules(@RequestBody List<Long> ids) {
         log.info("批量删除日程，数量：{}", ids.size());
         boolean success = true;
@@ -94,7 +94,7 @@ public class ScheduleController {
     
     @Operation(summary = "获取用户的日程列表")
     @GetMapping("/list/user/{userId}")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public CommonResult<List<ScheduleVO>> listUserSchedules(
             @Parameter(description = "用户ID") @PathVariable Long userId,
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -107,7 +107,7 @@ public class ScheduleController {
     
     @Operation(summary = "分页查询日程")
     @GetMapping("/page")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public CommonResult<Page<ScheduleVO>> pageSchedules(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -122,7 +122,7 @@ public class ScheduleController {
     
     @Operation(summary = "获取我的日程列表")
     @GetMapping("/list/my")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public CommonResult<List<ScheduleVO>> listMySchedules(
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @Parameter(description = "结束时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
@@ -135,7 +135,7 @@ public class ScheduleController {
     
     @Operation(summary = "检查日程时间冲突")
     @PostMapping("/check-conflict")
-    @PreAuthorize(SCHEDULE_CREATE)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CREATE + "')")
     public CommonResult<Boolean> checkScheduleConflict(@Valid @RequestBody ScheduleDTO scheduleDTO) {
         log.info("检查日程时间冲突：{}", scheduleDTO.getTitle());
         boolean hasConflict = conflictService.checkScheduleConflict(scheduleDTO);
@@ -144,7 +144,7 @@ public class ScheduleController {
     
     @Operation(summary = "复制日程")
     @PostMapping("/{id}/copy")
-    @PreAuthorize(SCHEDULE_CREATE)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_CREATE + "')")
     public CommonResult<Long> copySchedule(
             @Parameter(description = "日程ID") @PathVariable Long id,
             @Parameter(description = "是否复制参与者") @RequestParam(defaultValue = "true") boolean withParticipants,
@@ -174,7 +174,7 @@ public class ScheduleController {
     
     @Operation(summary = "更新日程状态")
     @PutMapping("/{id}/status/{status}")
-    @PreAuthorize(SCHEDULE_EDIT)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_EDIT + "')")
     public CommonResult<Boolean> changeScheduleStatus(
             @Parameter(description = "日程ID") @PathVariable Long id,
             @Parameter(description = "状态") @PathVariable Integer status) {
@@ -185,7 +185,7 @@ public class ScheduleController {
     
     @Operation(summary = "获取共享日程列表")
     @GetMapping("/list/shared")
-    @PreAuthorize(SCHEDULE_VIEW)
+    @PreAuthorize("hasAuthority('" + SCHEDULE_VIEW + "')")
     public CommonResult<List<ScheduleVO>> listSharedSchedules(
             @Parameter(description = "开始时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @Parameter(description = "结束时间") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {

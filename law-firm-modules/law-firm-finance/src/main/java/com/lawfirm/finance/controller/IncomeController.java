@@ -36,14 +36,14 @@ public class IncomeController {
 
     @PostMapping
     @Operation(summary = "记录收入")
-    @PreAuthorize(FINANCE_CREATE)
+    @PreAuthorize("hasAuthority('" + FINANCE_CREATE + "')")
     public CommonResult<Long> recordIncome(@Valid @RequestBody Income income) {
         return CommonResult.success(incomeService.recordIncome(income));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新收入")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> updateIncome(@PathVariable("id") Long id, 
                                               @Valid @RequestBody Income income) {
         income.setId(id);
@@ -52,21 +52,21 @@ public class IncomeController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除收入")
-    @PreAuthorize(FINANCE_DELETE)
+    @PreAuthorize("hasAuthority('" + FINANCE_DELETE + "')")
     public CommonResult<Boolean> deleteIncome(@PathVariable("id") Long id) {
         return CommonResult.success(incomeService.deleteIncome(id));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取收入详情")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<Income> getIncome(@PathVariable("id") Long id) {
         return CommonResult.success(incomeService.getIncomeById(id));
     }
 
     @PutMapping("/{id}/confirm")
     @Operation(summary = "确认收入")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> confirmIncome(
             @PathVariable("id") Long id,
             @Parameter(description = "确认人ID") @RequestParam Long confirmerId,
@@ -76,7 +76,7 @@ public class IncomeController {
 
     @PutMapping("/{id}/cancel")
     @Operation(summary = "取消收入")
-    @PreAuthorize(FINANCE_EDIT)
+    @PreAuthorize("hasAuthority('" + FINANCE_EDIT + "')")
     public CommonResult<Boolean> cancelIncome(
             @PathVariable("id") Long id,
             @Parameter(description = "取消原因") @RequestParam String reason) {
@@ -85,7 +85,7 @@ public class IncomeController {
 
     @GetMapping("/list")
     @Operation(summary = "查询收入列表")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Income>> listIncomes(
             @Parameter(description = "收入类型") @RequestParam(required = false) Integer incomeType,
             @Parameter(description = "合同ID") @RequestParam(required = false) Long contractId,
@@ -96,7 +96,7 @@ public class IncomeController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询收入")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<IPage<Income>> pageIncomes(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") long current,
             @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") long size,
@@ -110,14 +110,14 @@ public class IncomeController {
 
     @GetMapping("/contract/{contractId}")
     @Operation(summary = "按合同查询收入")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Income>> listIncomesByContract(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(incomeService.listIncomesByContract(contractId));
     }
 
     @GetMapping("/client/{clientId}")
     @Operation(summary = "按客户查询收入")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<Income>> listIncomesByClient(
             @PathVariable("clientId") Long clientId,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -127,7 +127,7 @@ public class IncomeController {
 
     @GetMapping("/sum")
     @Operation(summary = "统计收入总额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumIncomeAmount(
             @Parameter(description = "收入类型") @RequestParam(required = false) Integer incomeType,
             @Parameter(description = "开始时间") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
@@ -137,14 +137,14 @@ public class IncomeController {
 
     @GetMapping("/sum/contract/{contractId}")
     @Operation(summary = "统计合同收入总额")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<BigDecimal> sumContractIncomeAmount(@PathVariable("contractId") Long contractId) {
         return CommonResult.success(incomeService.sumContractIncomeAmount(contractId));
     }
 
     @GetMapping("/statistics/month")
     @Operation(summary = "按月统计收入")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<IncomeStat>> statisticIncomeByMonth(
             @Parameter(description = "年份") @RequestParam Integer year,
             @Parameter(description = "月份") @RequestParam(required = false) Integer month) {
@@ -153,7 +153,7 @@ public class IncomeController {
 
     @GetMapping("/statistics/contract")
     @Operation(summary = "按合同统计收入")
-    @PreAuthorize(FINANCE_VIEW)
+    @PreAuthorize("hasAuthority('" + FINANCE_VIEW + "')")
     public CommonResult<List<ContractIncomeStat>> statisticIncomeByContract() {
         return CommonResult.success(incomeService.statisticIncomeByContract());
     }

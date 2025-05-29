@@ -48,7 +48,7 @@ public class DocumentController {
         summary = "创建文档",
         description = "创建新的文档，需要同时上传文档元数据和文件内容。文档元数据包含标题、描述等基本信息，文件支持多种格式"
     )
-    @PreAuthorize(DOCUMENT_CREATE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_CREATE + "')")
     public CommonResult<Long> createDocument(
             @Parameter(description = "文档元数据") @RequestPart("metadata") @Validated DocumentCreateDTO createDTO,
             @Parameter(description = "文档文件") @RequestPart("file") MultipartFile file) throws IOException {
@@ -64,7 +64,7 @@ public class DocumentController {
         summary = "更新文档信息",
         description = "更新已存在文档的元数据信息，包括标题、描述等，但不更新文档内容"
     )
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public CommonResult<Void> updateDocument(
             @Parameter(description = "文档ID") @PathVariable Long id,
             @Parameter(description = "更新参数") @RequestBody @Validated DocumentUpdateDTO updateDTO) {
@@ -80,7 +80,7 @@ public class DocumentController {
         summary = "更新文档内容",
         description = "更新已存在文档的文件内容，不修改文档的元数据信息"
     )
-    @PreAuthorize(DOCUMENT_EDIT)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_EDIT + "')")
     public CommonResult<Void> updateDocumentContent(
             @Parameter(description = "文档ID") @PathVariable Long id,
             @Parameter(description = "文档文件") @RequestPart("file") MultipartFile file) throws IOException {
@@ -96,7 +96,7 @@ public class DocumentController {
         summary = "删除文档",
         description = "根据ID删除单个文档，同时删除文档元数据和文件内容"
     )
-    @PreAuthorize(DOCUMENT_DELETE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_DELETE + "')")
     public CommonResult<Void> deleteDocument(
             @Parameter(description = "文档ID") @PathVariable Long id) {
         documentService.deleteDocument(id);
@@ -111,7 +111,7 @@ public class DocumentController {
         summary = "批量删除文档",
         description = "批量删除多个文档，支持同时删除多个文档的元数据和文件内容"
     )
-    @PreAuthorize(DOCUMENT_DELETE)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_DELETE + "')")
     public CommonResult<Void> deleteDocuments(
             @Parameter(description = "文档ID列表") @RequestBody List<Long> ids) {
         documentService.deleteDocuments(ids);
@@ -126,7 +126,7 @@ public class DocumentController {
         summary = "获取文档详情",
         description = "根据ID获取文档的详细信息，包括文档的元数据，但不包含文件内容"
     )
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public CommonResult<DocumentVO> getDocument(
             @Parameter(description = "文档ID") @PathVariable Long id) {
         DocumentVO document = documentService.getDocumentById(id);
@@ -141,7 +141,7 @@ public class DocumentController {
         summary = "分页查询文档",
         description = "根据查询条件分页获取文档列表，支持按标题、创建时间等条件筛选"
     )
-    @PreAuthorize(DOCUMENT_VIEW)
+    @PreAuthorize("hasAuthority('" + DOCUMENT_VIEW + "')")
     public CommonResult<Page<DocumentVO>> pageDocuments(
             @Parameter(description = "查询参数") DocumentQueryDTO queryDTO,
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
