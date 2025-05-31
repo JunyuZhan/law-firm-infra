@@ -89,6 +89,12 @@ public class ClientFollowUp extends ModelBaseEntity {
     private Long assigneeId;
 
     /**
+     * 跟进状态（0-待跟进，1-已完成，2-已取消）
+     */
+    @TableField("status")
+    private Integer status;
+
+    /**
      * 获取跟进时间（兼容性方法，转换为LocalDateTime）
      * @return 跟进时间
      */

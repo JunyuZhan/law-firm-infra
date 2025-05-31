@@ -175,7 +175,7 @@ law-firm-document/
 │   │   └── aspect/                  # 切面配置
 │   │       ├── LogAspect           # 日志切面
 │   │       ├── CacheAspect         # 缓存切面
-│   │       └── SecurityAspect      # 安全切面
+
 │   ├── convert/                      # 对象转换层（基础转换）
 │   │   ├── DocumentConverter        # 文档转换器
 │   │   ├── TemplateConverter        # 模板转换器

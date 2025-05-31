@@ -86,22 +86,59 @@ knife4j:
 # 生产环境日志级别
 logging:
   level:
-    root: ${LOGGING_LEVEL_ROOT:WARN}
-    com.lawfirm: ${LOGGING_LEVEL_APP:INFO}
-    org.springframework: ${LOGGING_LEVEL_SPRING:WARN}
-    com.baomidou.mybatisplus: ${LOGGING_LEVEL_MYBATIS:WARN}
+    root: WARN
+    com.lawfirm: INFO
+    org.springframework: WARN
+    org.springframework.security: INFO
+    com.baomidou.mybatisplus: WARN
+    org.flywaydb: INFO
   file:
     # 生产环境保留更多日志历史
     max-history: ${LOG_FILE_MAX_HISTORY:90}
     total-size-cap: ${LOG_FILE_TOTAL_SIZE_CAP:10GB}
 
-# 生产环境禁用MyBatis Plus详细日志
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
-
-# 生产环境安全配置
+# 生产环境权限系统配置
 law-firm:
+  permission:
+    # 生产环境严格启用权限验证
+    validate: ${PERMISSION_VALIDATE:true}
+    cache:
+      # 生产环境启用缓存并使用较长的过期时间提升性能
+      enabled: ${PERMISSION_CACHE_ENABLED:true}
+      ttl: ${PERMISSION_CACHE_TTL:7200}  # 2小时
+      max-size: ${PERMISSION_CACHE_MAX_SIZE:20000}
+    management:
+      # 生产环境启用权限管理功能
+      enabled: ${PERMISSION_MANAGEMENT_ENABLED:true}
+  
+  # 生产环境OnlyOffice配置
+  onlyoffice:
+    enabled: ${ONLYOFFICE_ENABLED:true}
+    url: ${ONLYOFFICE_URL:http://onlyoffice:80}  # 生产环境使用内部服务名
+    secret: ${ONLYOFFICE_SECRET:lawfirm-onlyoffice-jwt-secret-prod-2024}
+    header: ${ONLYOFFICE_HEADER:Authorization}
+    callback-url: ${ONLYOFFICE_CALLBACK_URL:http://api:8080/api/v1/documents/onlyoffice/callback}
+    max-file-size: ${ONLYOFFICE_MAX_FILE_SIZE:104857600}  # 100MB
+    edit-timeout: ${ONLYOFFICE_EDIT_TIMEOUT:120}  # 120分钟
+    supported-formats:
+      - doc
+      - docx
+      - odt
+      - rtf
+      - txt
+      - xls
+      - xlsx
+      - ods
+      - csv
+      - ppt
+      - pptx
+      - odp
+      - pdf  # 生产环境支持PDF查看
+    co-edit:
+      enabled: ${ONLYOFFICE_COEDIT_ENABLED:true}
+      max-users: ${ONLYOFFICE_COEDIT_MAX_USERS:20}  # 生产环境支持更多用户
+      auto-save-interval: ${ONLYOFFICE_COEDIT_AUTO_SAVE_INTERVAL:30}
+  
   security:
     jwt:
       # 生产环境更长的令牌有效期
@@ -112,8 +149,6 @@ law-firm:
     # 生产环境启用所有安全措施
     disable:
       csrf: false
-      xss-filter: false
-  
   # 生产环境启用所有核心模块
   core:
     workflow:
@@ -137,4 +172,9 @@ law-firm:
   common:
     data:
       system-database: ${SYSTEM_DATABASE:law_firm}
-      module-init-enabled: true 
+      module-init-enabled: true
+
+# 生产环境禁用MyBatis Plus详细日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl

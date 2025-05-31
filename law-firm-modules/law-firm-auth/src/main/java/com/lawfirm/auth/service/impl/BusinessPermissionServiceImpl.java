@@ -13,6 +13,8 @@ import com.lawfirm.model.auth.service.RoleService;
 import com.lawfirm.model.auth.service.TeamPermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,7 @@ import java.util.List;
  * 业务权限服务实现类
  */
 @Slf4j
-@Service
+@Service("businessPermissionService")
 @RequiredArgsConstructor
 public class BusinessPermissionServiceImpl implements BusinessPermissionService {
 
@@ -33,20 +35,33 @@ public class BusinessPermissionServiceImpl implements BusinessPermissionService 
     private final PermissionMapper permissionMapper;
     
     @Override
+    @Cacheable(value = "userPermissions", key = "#userId + ':' + #businessType + ':' + #businessId + ':' + #operation", 
+               cacheManager = "permissionCacheManager", unless = "#result == false")
     public boolean checkPermission(Long userId, String businessType, Long businessId, String operation) {
+        log.debug("检查用户权限: userId={}, businessType={}, businessId={}, operation={}", 
+                 userId, businessType, businessId, operation);
+        
         // 1. 检查用户角色权限
         if (checkRolePermission(userId, businessType, operation)) {
+            log.debug("用户{}通过角色权限检查", userId);
             return true;
         }
         
         // 2. 检查用户团队权限
         if (checkTeamPermission(userId, businessType, businessId, operation)) {
+            log.debug("用户{}通过团队权限检查", userId);
             return true;
         }
         
         // 3. 检查用户临时权限
         String permissionCode = buildPermissionCode(businessType, operation);
-        return permissionRequestService.hasTemporaryPermission(userId, permissionCode, businessType, businessId);
+        boolean hasTemporary = permissionRequestService.hasTemporaryPermission(userId, permissionCode, businessType, businessId);
+        if (hasTemporary) {
+            log.debug("用户{}通过临时权限检查", userId);
+        } else {
+            log.debug("用户{}权限检查失败", userId);
+        }
+        return hasTemporary;
     }
 
     @Override
@@ -83,28 +98,41 @@ public class BusinessPermissionServiceImpl implements BusinessPermissionService 
     }
 
     @Override
+    @Cacheable(value = "dataScopes", key = "#userId + ':' + #businessType + ':' + #businessId", 
+               cacheManager = "permissionCacheManager")
     public int getUserDataScope(Long userId, String businessType, Long businessId) {
+        log.debug("获取用户数据范围: userId={}, businessType={}, businessId={}", 
+                 userId, businessType, businessId);
+        
         // 1. 先检查用户是否有全所范围的权限
         if (hasGlobalScope(userId)) {
+            log.debug("用户{}具有全所数据范围权限", userId);
             return Permission.DATA_SCOPE_GLOBAL;
         }
         
         // 2. 再检查用户是否有团队范围的权限
         if (hasTeamScope(userId, businessType, businessId)) {
+            log.debug("用户{}具有团队数据范围权限", userId);
             return Permission.DATA_SCOPE_TEAM;
         }
         
         // 3. 默认只有个人范围
+        log.debug("用户{}只有个人数据范围权限", userId);
         return Permission.DATA_SCOPE_PERSONAL;
     }
     
     /**
      * 检查用户角色权限
      */
+    @Cacheable(value = "rolePermissions", key = "#userId + ':' + #businessType + ':' + #operation", 
+               cacheManager = "permissionCacheManager")
     private boolean checkRolePermission(Long userId, String businessType, String operation) {
         String permissionCode = buildPermissionCode(businessType, operation);
         List<String> userPermissions = permissionService.listPermissionCodesByUserId(userId);
-        return userPermissions.contains(permissionCode);
+        boolean hasPermission = userPermissions.contains(permissionCode);
+        log.debug("用户{}角色权限检查结果: permissionCode={}, hasPermission={}", 
+                 userId, permissionCode, hasPermission);
+        return hasPermission;
     }
     
     /**
@@ -174,4 +202,4 @@ public class BusinessPermissionServiceImpl implements BusinessPermissionService 
         
         return false;
     }
-} 
+}

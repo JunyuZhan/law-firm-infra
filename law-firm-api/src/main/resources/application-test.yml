@@ -64,6 +64,24 @@ law-firm:
       csrf: true
       xss-filter: true
   
+  # 测试环境OnlyOffice配置
+  onlyoffice:
+    enabled: ${ONLYOFFICE_ENABLED:false}  # 测试环境默认禁用
+    url: ${ONLYOFFICE_URL:http://localhost:8088}
+    secret: ${ONLYOFFICE_SECRET:lawfirm-onlyoffice-jwt-secret-test}
+    header: ${ONLYOFFICE_HEADER:Authorization}
+    callback-url: ${ONLYOFFICE_CALLBACK_URL:http://localhost:8180/api/v1/documents/onlyoffice/callback}
+    max-file-size: ${ONLYOFFICE_MAX_FILE_SIZE:10485760}  # 10MB (测试环境限制)
+    edit-timeout: ${ONLYOFFICE_EDIT_TIMEOUT:30}  # 30分钟
+    supported-formats:
+      - docx  # 测试环境只支持主要格式
+      - xlsx
+      - pptx
+    co-edit:
+      enabled: ${ONLYOFFICE_COEDIT_ENABLED:false}  # 测试环境禁用协同编辑
+      max-users: ${ONLYOFFICE_COEDIT_MAX_USERS:2}
+      auto-save-interval: ${ONLYOFFICE_COEDIT_AUTO_SAVE_INTERVAL:60}
+  
   # 测试环境核心模块配置
   core:
     workflow:
@@ -76,7 +94,20 @@ law-firm:
       searchEngineType: database
       index-path: ./indices-test
     audit:
-      enabled: true 
+      enabled: true
+  
+  # 测试环境权限系统配置
+  permission:
+    # 测试环境可选择性启用权限验证
+    validate: ${PERMISSION_VALIDATE:false}
+    cache:
+      # 测试环境启用缓存但使用很短的过期时间便于测试
+      enabled: ${PERMISSION_CACHE_ENABLED:true}
+      ttl: ${PERMISSION_CACHE_TTL:300}  # 5分钟
+      max-size: ${PERMISSION_CACHE_MAX_SIZE:1000}
+    management:
+      # 测试环境启用权限管理功能便于测试
+      enabled: ${PERMISSION_MANAGEMENT_ENABLED:true} 
 
 # 测试环境API文档配置
 springdoc:

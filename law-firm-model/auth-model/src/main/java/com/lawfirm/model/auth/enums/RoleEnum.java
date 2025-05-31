@@ -60,4 +60,19 @@ public enum RoleEnum {
         }
         return false;
     }
-} 
+
+    /**
+     * 根据代码获取角色枚举
+     */
+    public static RoleEnum getByCode(String code) {
+        if (code == null) {
+            return null;
+        }
+        for (RoleEnum role : values()) {
+            if (role.code.equals(code)) {
+                return role;
+            }
+        }
+        return null;
+    }
+}

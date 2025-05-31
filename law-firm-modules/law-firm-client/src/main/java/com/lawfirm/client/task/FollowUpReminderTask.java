@@ -1,6 +1,7 @@
 package com.lawfirm.client.task;
 
 import com.lawfirm.client.service.impl.FollowUpServiceImpl;
+import com.lawfirm.client.service.ClientMessageService;
 import com.lawfirm.client.constant.ClientModuleConstant;
 import com.lawfirm.model.client.entity.follow.ClientFollowUp;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,9 @@ import java.util.Map;
 public class FollowUpReminderTask {
 
     private final FollowUpServiceImpl followUpService;
+    private final ClientMessageService clientMessageService;
+    
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 每天早上9点检查当天需要跟进的客户，发送提醒
@@ -107,12 +112,16 @@ public class FollowUpReminderTask {
             Map<Long, List<ClientFollowUp>> groupByHandler = weeklyFollowUps.stream()
                 .filter(f -> f.getAssigneeId() != null)
                 .collect(java.util.stream.Collectors.groupingBy(ClientFollowUp::getAssigneeId));
+            
             for (Map.Entry<Long, List<ClientFollowUp>> entry : groupByHandler.entrySet()) {
                 Long handlerId = entry.getKey();
                 List<ClientFollowUp> handlerFollowUps = entry.getValue();
-                // 这里只做日志，实际可调用消息服务批量提醒
-                log.info("发送周计划提醒，负责人ID: {}，任务数: {}", handlerId, handlerFollowUps.size());
-                // sendWeeklyPlanReminder(handlerId, handlerFollowUps); // 可扩展
+                
+                try {
+                    sendWeeklyPlanReminder(handlerId, handlerFollowUps);
+                } catch (Exception e) {
+                    log.error("发送周计划提醒失败，负责人ID: {}", handlerId, e);
+                }
             }
         } catch (Exception e) {
             log.error("执行周计划跟进提醒任务失败", e);
@@ -164,10 +173,18 @@ public class FollowUpReminderTask {
      * @param followUp 跟进记录
      */
     private void sendReminder(ClientFollowUp followUp) {
-        // 示例：发送系统消息
-        log.info("发送跟进提醒，跟进ID: {}，客户ID: {}，计划时间: {}", 
-                followUp.getId(), followUp.getClientId(), followUp.getNextFollowTime());
-        // 实际可调用消息推送服务，如MessageService.sendSystemMessage(...)
+        LocalDateTime followUpTime = followUp.getNextFollowTime().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        
+        // 使用ClientMessageService发送提醒
+        clientMessageService.sendFollowUpReminder(
+            followUp.getId(),
+            followUp.getClientId(),
+            getClientName(followUp.getClientId()),
+            followUp.getAssigneeId(),
+            followUpTime
+        );
     }
     
     /**
@@ -176,10 +193,18 @@ public class FollowUpReminderTask {
      * @param followUp 跟进记录
      */
     private void sendUrgentReminder(ClientFollowUp followUp) {
-        // 示例：发送系统消息并高亮紧急
-        log.info("发送紧急跟进提醒，跟进ID: {}，客户ID: {}，计划时间: {} [紧急]", 
-                followUp.getId(), followUp.getClientId(), followUp.getNextFollowTime());
-        // 实际可调用消息推送服务，并设置紧急标记
+        LocalDateTime followUpTime = followUp.getNextFollowTime().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        
+        // 使用ClientMessageService发送紧急提醒
+        clientMessageService.sendUrgentFollowUpReminder(
+            followUp.getId(),
+            followUp.getClientId(),
+            getClientName(followUp.getClientId()),
+            followUp.getAssigneeId(),
+            followUpTime
+        );
     }
     
     /**
@@ -192,8 +217,50 @@ public class FollowUpReminderTask {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
         long hoursOverdue = java.time.Duration.between(followUpTime, LocalDateTime.now()).toHours();
-        log.info("发送超期跟进提醒，跟进ID: {}，客户ID: {}，计划时间: {}，已超期: {} 小时 [超期]", 
-                followUp.getId(), followUp.getClientId(), followUp.getNextFollowTime(), hoursOverdue);
-        // 实际可调用消息推送服务，并设置超期标记
+        
+        // 使用ClientMessageService发送超期提醒
+        clientMessageService.sendOverdueFollowUpReminder(
+            followUp.getId(),
+            followUp.getClientId(),
+            getClientName(followUp.getClientId()),
+            followUp.getAssigneeId(),
+            followUpTime,
+            hoursOverdue
+        );
+    }
+    
+    /**
+     * 发送周计划提醒
+     * 
+     * @param handlerId 负责人ID
+     * @param followUps 跟进任务列表
+     */
+    private void sendWeeklyPlanReminder(Long handlerId, List<ClientFollowUp> followUps) {
+        StringBuilder content = new StringBuilder("您本周有 ");
+        content.append(followUps.size()).append(" 个客户需要跟进：\n");
+        
+        for (ClientFollowUp followUp : followUps) {
+            LocalDateTime followUpTime = followUp.getNextFollowTime().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            content.append("- ").append(getClientName(followUp.getClientId()))
+                   .append("（").append(followUpTime.format(DATE_TIME_FORMATTER)).append("）\n");
+        }
+        
+        // 使用ClientMessageService发送批量通知
+        clientMessageService.sendBatchClientNotification(
+            java.util.Arrays.asList(handlerId),
+            "本周客户跟进计划",
+            content.toString(),
+            null
+        );
+    }
+    
+    /**
+     * 获取客户名称（简化实现，实际应该调用客户服务）
+     */
+    private String getClientName(Long clientId) {
+        // 这里简化处理，实际应该调用客户服务获取客户名称
+        return "客户" + clientId;
     }
 } 

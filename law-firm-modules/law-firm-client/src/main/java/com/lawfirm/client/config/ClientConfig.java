@@ -68,7 +68,7 @@ public class ClientConfig {
      * 注入core层消息发送服务
      */
     @Bean(name = "clientMessageSender")
-    public MessageSender clientMessageSender(@Qualifier("coreMessageSender") MessageSender messageSender) {
+    public MessageSender clientMessageSender(@Qualifier("messageSender") MessageSender messageSender) {
         return messageSender;
     }
 

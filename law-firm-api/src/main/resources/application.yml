@@ -34,6 +34,8 @@ spring:
       - analysis  # 分析功能
       - archive   # 档案管理
       - evidence  # 证据管理
+      - onlyoffice
+      - storage
   # 主要配置保留在这里，让应用启动时便于查看
   main:
     allow-bean-definition-overriding: true
@@ -281,6 +283,35 @@ knife4j:
 
 # 系统参数配置
 law-firm:
+  # 系统基础配置
+  system:
+    name: "法律事务所管理系统"
+    version: "1.0.0"
+    description: "专业的法律事务所综合管理平台"
+    # 系统管理员邮箱
+    admin-email: ${ADMIN_EMAIL:admin@lawfirm.com}
+    # 系统时区
+    timezone: ${SYSTEM_TIMEZONE:Asia/Shanghai}
+    # 系统语言
+    locale: ${SYSTEM_LOCALE:zh_CN}
+  
+  # 权限系统配置
+  permission:
+    # 启用权限验证
+    validate: ${PERMISSION_VALIDATE:true}
+    # 权限缓存配置
+    cache:
+      enabled: ${PERMISSION_CACHE_ENABLED:true}
+      # 缓存管理器名称
+      manager: permissionCacheManager
+      # 缓存过期时间（秒）
+      ttl: ${PERMISSION_CACHE_TTL:3600}
+      # 最大缓存条目数
+      max-size: ${PERMISSION_CACHE_MAX_SIZE:10000}
+    # 权限管理功能
+    management:
+      enabled: ${PERMISSION_MANAGEMENT_ENABLED:true}
+  
   # 安全配置
   security:
     jwt:
@@ -331,6 +362,9 @@ law-firm:
   # 核心模块配置
   core:
     audit:
+      enabled: true
+    # AI模块配置
+    ai:
       enabled: true
   
   # 搜索服务配置
@@ -394,3 +428,90 @@ management:
       enabled: false
     rabbit:
       enabled: false
+
+---
+# OnlyOffice配置
+spring:
+  config:
+    activate:
+      on-profile: onlyoffice
+
+lawfirm:
+  onlyoffice:
+    # 启用OnlyOffice (默认禁用，由环境配置覆盖)
+    enabled: ${ONLYOFFICE_ENABLED:false}
+    # OnlyOffice服务器地址
+    url: ${ONLYOFFICE_URL:http://localhost:8088}
+    # JWT密钥 (生产环境必须修改)
+    secret: ${ONLYOFFICE_SECRET:your-jwt-secret-key}
+    # JWT头部
+    header: ${ONLYOFFICE_HEADER:Authorization}
+    # 回调URL (用于文档保存通知)
+    callback-url: ${ONLYOFFICE_CALLBACK_URL:http://localhost:8080/api/v1/documents/onlyoffice/callback}
+    # 文档最大大小(默认50MB)
+    max-file-size: ${ONLYOFFICE_MAX_FILE_SIZE:52428800}
+    # 编辑超时时间(分钟)
+    edit-timeout: ${ONLYOFFICE_EDIT_TIMEOUT:60}
+    # 支持的文档格式
+    supported-formats:
+      - doc
+      - docx
+      - odt
+      - rtf
+      - txt
+      - xls
+      - xlsx
+      - ods
+      - csv
+      - ppt
+      - pptx
+      - odp
+    # 协同编辑配置
+    co-edit:
+      enabled: ${ONLYOFFICE_COEDIT_ENABLED:true}
+      max-users: ${ONLYOFFICE_COEDIT_MAX_USERS:10}
+      auto-save-interval: ${ONLYOFFICE_COEDIT_AUTO_SAVE_INTERVAL:30}
+    # 安全配置
+    security:
+      # 文档访问权限检查
+      check-permissions: ${ONLYOFFICE_SECURITY_CHECK_PERMISSIONS:true}
+      # 允许的域名(用于CORS)
+      allowed-domains: ${ONLYOFFICE_SECURITY_ALLOWED_DOMAINS:localhost,127.0.0.1}
+      # IP白名单
+      ip-whitelist: ${ONLYOFFICE_SECURITY_IP_WHITELIST:}
+    # 性能配置
+    performance:
+      # 并发编辑限制
+      max-concurrent-edits: ${ONLYOFFICE_PERFORMANCE_MAX_CONCURRENT_EDITS:50}
+      # 文档缓存时间(秒)
+      cache-timeout: ${ONLYOFFICE_PERFORMANCE_CACHE_TIMEOUT:1800}
+
+---
+# 文档管理配置
+spring:
+  config:
+    activate:
+      on-profile: document
+
+lawfirm:
+  document:
+    # 文档编辑器类型: RICHTEXT, ONLYOFFICE, HYBRID
+    editor-type: ${DOCUMENT_EDITOR_TYPE:ONLYOFFICE}
+    # 默认编辑模式
+    default-edit-mode: ${DOCUMENT_DEFAULT_EDIT_MODE:online}
+    # 文档缓存配置
+    cache:
+      enabled: true
+      ttl: 3600  # 1小时
+    # 文档预览配置
+    preview:
+      enabled: true
+      formats: [pdf, jpg, png]
+    # 文档转换配置
+    conversion:
+      enabled: true
+      formats:
+        word-to-pdf: true
+        excel-to-pdf: true
+        ppt-to-pdf: true
+        html-to-pdf: true

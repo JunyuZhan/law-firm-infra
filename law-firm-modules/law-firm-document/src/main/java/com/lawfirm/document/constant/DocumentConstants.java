@@ -43,4 +43,19 @@ public final class DocumentConstants {
      * 文档标签API路径前缀
      */
     public static final String API_TAG_PREFIX = "/api/v1/document-tags";
+    
+    /**
+     * OnlyOffice在线编辑API路径前缀
+     */
+    public static final String API_ONLYOFFICE_PREFIX = "/api/v1/documents/onlyoffice";
+    
+    /**
+     * OnlyOffice回调API路径
+     */
+    public static final String API_ONLYOFFICE_CALLBACK = API_ONLYOFFICE_PREFIX + "/callback";
+    
+    /**
+     * OnlyOffice文档下载API路径
+     */
+    public static final String API_ONLYOFFICE_DOWNLOAD = API_ONLYOFFICE_PREFIX + "/download";
 } 

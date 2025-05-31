@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Import({
     SecurityConfig.class,
     AuthMybatisConfig.class,
+    PermissionMatrixCacheConfig.class,
 })
 @ComponentScan(basePackages = "com.lawfirm.auth")
 public class AuthAutoConfiguration {
@@ -35,4 +36,4 @@ public class AuthAutoConfiguration {
     }
 
     // AuthServiceImpl已通过@Service注解被组件扫描注册，无需在此重复定义
-} 
+}

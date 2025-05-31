@@ -1,7 +1,7 @@
 package com.lawfirm.system.controller.monitor;
 
 import com.lawfirm.common.core.api.CommonResult;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.system.entity.monitor.SysServerMonitor;
 import com.lawfirm.system.constant.SystemConstants;
@@ -37,7 +37,7 @@ public class ServerMonitorController extends BaseController {
         description = "获取所有服务器的监控数据列表"
     )
     @GetMapping
-    @RequiresPermissions("system:monitor:server")
+    @PreAuthorize("hasAuthority('system:monitor:server')")
     public CommonResult<List<SysServerMonitor>> getServerList() {
         log.info("获取服务器监控列表");
         List<SysServerMonitor> serverList = serverMonitorService.getServerList();
@@ -52,7 +52,7 @@ public class ServerMonitorController extends BaseController {
         description = "获取指定服务器的最新监控数据"
     )
     @GetMapping("/{serverIp}")
-    @RequiresPermissions("system:monitor:server")
+    @PreAuthorize("hasAuthority('system:monitor:server')")
     public CommonResult<SysServerMonitor> getLatestServerInfo(
             @Parameter(description = "服务器IP") @PathVariable String serverIp) {
         log.info("获取服务器最新监控数据: serverIp={}", serverIp);
@@ -68,7 +68,7 @@ public class ServerMonitorController extends BaseController {
         description = "手动触发服务器监控数据收集"
     )
     @PostMapping("/collect")
-    @RequiresPermissions("system:monitor:server:collect")
+    @PreAuthorize("hasAuthority('system:monitor:server:collect')")
     public CommonResult<Boolean> collectServerMetrics() {
         log.info("触发服务器监控数据收集");
         try {
@@ -79,4 +79,4 @@ public class ServerMonitorController extends BaseController {
             return success(false);
         }
     }
-} 
+}

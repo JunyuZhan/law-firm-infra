@@ -3,9 +3,11 @@ package com.lawfirm.core.message.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.beans.factory.annotation.Qualifier;
 import com.lawfirm.common.security.context.SecurityContextHolder;
 import com.lawfirm.core.message.handler.template.BaseMessageHandler;
 import com.lawfirm.core.message.service.MessageManager;
+import com.lawfirm.core.message.service.MessageSender;
 import com.lawfirm.core.message.service.strategy.RoutingStrategy;
 import com.lawfirm.core.message.utils.MessageLogUtils;
 import com.lawfirm.model.message.entity.base.BaseMessage;
@@ -27,7 +29,8 @@ public class MessageManagerImpl implements MessageManager {
     private RoutingStrategy routingStrategy;
 
     @Autowired
-    private MessageSenderImpl messageSender;
+    @Qualifier("messageSender")
+    private MessageSender messageSender;
 
     @Autowired
     private MessageService messageService;

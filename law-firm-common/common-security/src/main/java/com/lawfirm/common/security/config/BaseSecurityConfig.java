@@ -27,6 +27,7 @@ public class BaseSecurityConfig {
      * 使用BCrypt算法进行密码加密
      */
     @Bean("commonPasswordEncoder")
+    @ConditionalOnMissingBean(name = {"passwordEncoder", "authPasswordEncoder"})
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

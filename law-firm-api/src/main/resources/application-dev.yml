@@ -98,11 +98,104 @@ logging:
     org.springframework: INFO
     org.springframework.security: DEBUG
     org.springframework.cache: INFO
-    com.baomidou.mybatisplus: INFO
-    org.flywaydb: INFO
+    com.baomidou.mybatisplus: DEBUG
+    org.flywaydb: DEBUG
     # API文档相关日志配置已移除
     org.apache.ibatis: INFO
     org.mybatis.spring: INFO
+
+# 开发环境权限系统配置
+law-firm:
+  permission:
+    # 开发环境可选择性启用权限验证
+    validate: ${PERMISSION_VALIDATE:false}
+    cache:
+      # 开发环境启用缓存但使用较短的过期时间便于调试
+      enabled: ${PERMISSION_CACHE_ENABLED:true}
+      ttl: ${PERMISSION_CACHE_TTL:600}  # 10分钟
+      max-size: ${PERMISSION_CACHE_MAX_SIZE:5000}
+    management:
+      # 开发环境启用权限管理功能便于测试
+      enabled: ${PERMISSION_MANAGEMENT_ENABLED:true}
+  
+  # 开发环境安全配置
+  security:
+    # 开发环境可以保留模拟用户，但在预发布环境禁用
+    mock-user:
+      enabled: true
+      username: admin
+      role: ROLE_ADMIN
+    # 启用安全限制，与生产环境保持一致
+    disable:
+      csrf: false
+      xss-filter: true
+    # 开发环境启用密码解密（可选配置）
+    db-password:
+      enabled: false
+      secret-key: DevSecretKey
+  
+  # 开发环境核心模块配置 - 确保所有模块都启用
+  core:
+    workflow:
+      enabled: true
+    storage:
+      enabled: true
+      manager-class: com.lawfirm.core.storage.manager.DefaultStorageManager
+      local:
+        root-path: ./storage
+    search:
+      enabled: true
+      searchEngineType: database
+      index-path: ./indices
+    audit:
+      enabled: true
+      
+  # 开发环境日志模块配置
+  common:
+    log:
+      enabled: true
+      method-log: true
+      log-request-params: true
+      executor:
+        bean-name: taskExecutor
+      
+    # 开发环境数据库配置
+    data:
+      enabled: true
+      module-init-enabled: true
+      system-database: ${spring.database.name}
+      # 数据库监控
+      monitoring:
+        enabled: true
+        performance:
+          enabled: true
+
+  # 开发环境OnlyOffice配置
+  onlyoffice:
+    enabled: ${ONLYOFFICE_ENABLED:true}
+    url: ${ONLYOFFICE_URL:http://localhost:8088}
+    secret: ${ONLYOFFICE_SECRET:lawfirm-onlyoffice-jwt-secret-dev}
+    header: ${ONLYOFFICE_HEADER:Authorization}
+    callback-url: ${ONLYOFFICE_CALLBACK_URL:http://localhost:8080/api/v1/documents/onlyoffice/callback}
+    max-file-size: ${ONLYOFFICE_MAX_FILE_SIZE:52428800}  # 50MB
+    edit-timeout: ${ONLYOFFICE_EDIT_TIMEOUT:60}  # 60分钟
+    supported-formats:
+      - doc
+      - docx
+      - odt
+      - rtf
+      - txt
+      - xls
+      - xlsx
+      - ods
+      - csv
+      - ppt
+      - pptx
+      - odp
+    co-edit:
+      enabled: ${ONLYOFFICE_COEDIT_ENABLED:true}
+      max-users: ${ONLYOFFICE_COEDIT_MAX_USERS:5}  # 开发环境限制用户数
+      auto-save-interval: ${ONLYOFFICE_COEDIT_AUTO_SAVE_INTERVAL:30}  # 30秒
 
 # 健康检查配置 - 启用必要的检查
 management:
@@ -155,56 +248,3 @@ mybatis-plus:
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
-
-# 开发环境安全配置
-"law-firm":
-  security:
-    # 开发环境可以保留模拟用户，但在预发布环境禁用
-    "mock-user":
-      enabled: true
-      username: admin
-      role: ROLE_ADMIN
-    # 启用安全限制，与生产环境保持一致
-    disable:
-      csrf: false
-      "xss-filter": true
-    # 开发环境启用密码解密（可选配置）
-    "db-password":
-      enabled: false
-      "secret-key": DevSecretKey
-  
-  # 开发环境核心模块配置 - 确保所有模块都启用
-  core:
-    workflow:
-      enabled: true
-    storage:
-      enabled: true
-      manager-class: com.lawfirm.core.storage.manager.DefaultStorageManager
-      local:
-        root-path: ./storage
-    search:
-      enabled: true
-      searchEngineType: database
-      "index-path": ./indices
-    audit:
-      enabled: true
-      
-  # 开发环境日志模块配置
-  common:
-    log:
-      enabled: true
-      method-log: true
-      log-request-params: true
-      executor:
-        bean-name: taskExecutor
-      
-    # 开发环境数据库配置
-    data:
-      enabled: true
-      "module-init-enabled": true
-      "system-database": ${spring.database.name}
-      # 数据库监控
-      monitoring:
-        enabled: true
-        performance:
-          enabled: true

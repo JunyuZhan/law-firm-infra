@@ -3,7 +3,7 @@ package com.lawfirm.system.controller.monitor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.log.annotation.Log;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.log.dto.BaseLogDTO;
 import com.lawfirm.model.log.dto.LogExportDTO;
@@ -44,7 +44,7 @@ public class LogController extends BaseController {
         description = "根据条件分页查询系统日志"
     )
     @GetMapping("/page")
-    @RequiresPermissions("system:log:query")
+    @PreAuthorize("hasAuthority('system:log:query')")
     public CommonResult<Page<BaseLogDTO>> page(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer current,
             @Parameter(description = "每页记录数") @RequestParam(defaultValue = "10") Integer size,
@@ -62,7 +62,7 @@ public class LogController extends BaseController {
         description = "根据日志ID获取详细信息"
     )
     @GetMapping("/{id}")
-    @RequiresPermissions("system:log:query")
+    @PreAuthorize("hasAuthority('system:log:query')")
     public CommonResult<BaseLogDTO> getById(
             @Parameter(description = "日志ID") @PathVariable Long id) {
         log.info("获取日志详情: id={}", id);
@@ -78,7 +78,7 @@ public class LogController extends BaseController {
         description = "获取系统日志的统计数据，如总数、类型分布等"
     )
     @GetMapping("/stats")
-    @RequiresPermissions("system:log:stats")
+    @PreAuthorize("hasAuthority('system:log:stats')")
     public CommonResult<LogStatVO> getLogStats(@Valid LogQueryDTO queryDTO) {
         log.info("获取日志统计信息: queryDTO={}", queryDTO);
         LogStatVO statVO = logAnalysisService.getLogStats(queryDTO);
@@ -93,7 +93,7 @@ public class LogController extends BaseController {
         description = "获取指定天数内的日志趋势数据"
     )
     @GetMapping("/trend")
-    @RequiresPermissions("system:log:stats")
+    @PreAuthorize("hasAuthority('system:log:stats')")
     public CommonResult<LogStatVO> getLogTrend(
             @Parameter(description = "统计天数") @RequestParam(defaultValue = "7") Integer days) {
         log.info("获取日志趋势: days={}", days);
@@ -109,7 +109,7 @@ public class LogController extends BaseController {
         description = "获取系统异常日志的分析数据"
     )
     @GetMapping("/error/analysis")
-    @RequiresPermissions("system:log:stats")
+    @PreAuthorize("hasAuthority('system:log:stats')")
     public CommonResult<LogStatVO> getErrorLogAnalysis(@Valid LogQueryDTO queryDTO) {
         log.info("获取异常日志分析: queryDTO={}", queryDTO);
         LogStatVO analysisVO = logAnalysisService.getErrorLogAnalysis(queryDTO);
@@ -124,7 +124,7 @@ public class LogController extends BaseController {
         description = "获取用户操作行为的分析数据"
     )
     @GetMapping("/user/analysis")
-    @RequiresPermissions("system:log:stats")
+    @PreAuthorize("hasAuthority('system:log:stats')")
     public CommonResult<LogStatVO> getUserOperationAnalysis(@Valid LogQueryDTO queryDTO) {
         log.info("获取用户操作分析: queryDTO={}", queryDTO);
         LogStatVO analysisVO = logAnalysisService.getUserOperationAnalysis(queryDTO);
@@ -139,7 +139,7 @@ public class LogController extends BaseController {
         description = "根据条件导出系统日志"
     )
     @PostMapping("/export")
-    @RequiresPermissions("system:log:export")
+    @PreAuthorize("hasAuthority('system:log:export')")
     @Log(title = "导出日志")
     public CommonResult<String> exportLogs(@Valid @RequestBody LogExportDTO exportDTO) {
         log.info("导出日志: exportDTO={}", exportDTO);
@@ -155,7 +155,7 @@ public class LogController extends BaseController {
         description = "清理指定天数之前的系统日志"
     )
     @DeleteMapping("/clean")
-    @RequiresPermissions("system:log:clean")
+    @PreAuthorize("hasAuthority('system:log:clean')")
     @Log(title = "清理过期日志")
     public CommonResult<Integer> cleanExpiredLogs(
             @Parameter(description = "保留天数") @RequestParam(defaultValue = "30") Integer days) {
@@ -163,4 +163,4 @@ public class LogController extends BaseController {
         Integer count = logService.cleanExpiredLogs(days);
         return success(count);
     }
-} 
+}

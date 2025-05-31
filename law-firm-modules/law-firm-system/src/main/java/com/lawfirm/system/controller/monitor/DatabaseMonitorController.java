@@ -1,7 +1,7 @@
 package com.lawfirm.system.controller.monitor;
 
 import com.lawfirm.common.core.api.CommonResult;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.system.entity.monitor.SysDbMonitor;
 import com.lawfirm.system.constant.SystemConstants;
@@ -37,7 +37,7 @@ public class DatabaseMonitorController extends BaseController {
         description = "获取系统中所有数据库的监控数据列表"
     )
     @GetMapping
-    @RequiresPermissions("system:monitor:db")
+    @PreAuthorize("hasAuthority('system:monitor:db')")
     public CommonResult<List<SysDbMonitor>> getDbList() {
         log.info("获取数据库监控列表");
         List<SysDbMonitor> dbList = dbMonitorService.getDbList();
@@ -52,7 +52,7 @@ public class DatabaseMonitorController extends BaseController {
         description = "获取指定数据库的最新监控数据"
     )
     @GetMapping("/{dbName}")
-    @RequiresPermissions("system:monitor:db")
+    @PreAuthorize("hasAuthority('system:monitor:db')")
     public CommonResult<SysDbMonitor> getLatestDbInfo(
             @Parameter(description = "数据库名称") @PathVariable String dbName) {
         log.info("获取数据库最新监控数据: dbName={}", dbName);
@@ -68,7 +68,7 @@ public class DatabaseMonitorController extends BaseController {
         description = "获取系统中性能较差的数据库列表"
     )
     @GetMapping("/poor-performance")
-    @RequiresPermissions("system:monitor:db")
+    @PreAuthorize("hasAuthority('system:monitor:db')")
     public CommonResult<List<String>> getPoorPerformanceDatabases() {
         log.info("获取性能较差的数据库列表");
         List<String> poorPerformanceDbs = dbMonitorService.getPoorPerformanceDatabases();
@@ -83,7 +83,7 @@ public class DatabaseMonitorController extends BaseController {
         description = "手动触发数据库监控数据收集"
     )
     @PostMapping("/collect")
-    @RequiresPermissions("system:monitor:db:collect")
+    @PreAuthorize("hasAuthority('system:monitor:db:collect')")
     public CommonResult<Boolean> collectDbMetrics() {
         log.info("触发数据库监控数据收集");
         try {
@@ -94,4 +94,4 @@ public class DatabaseMonitorController extends BaseController {
             return success(false);
         }
     }
-} 
+}

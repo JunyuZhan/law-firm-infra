@@ -20,6 +20,9 @@ public interface PermissionConstants {
     String SYS_PERMISSION_UPDATE = "sys:permission:update";
     String SYS_PERMISSION_DELETE = "sys:permission:delete";
     String SYS_PERMISSION_READ = "sys:permission:read";
+    String SYS_PERMISSION_VIEW = "sys:permission:view";
+    String SYS_PERMISSION_CACHE_CLEAR = "sys:permission:cache:clear";
+    String SYS_PERMISSION_CACHE_MANAGE = "sys:permission:cache:manage";
 
     // 案件模块
     String CASE_CREATE = "case:create";
@@ -265,5 +268,42 @@ public interface PermissionConstants {
     String CLIENT_CLEANUP_EXECUTE = "client:cleanup:execute";
     String CLIENT_CLEANUP_VIEW = "client:cleanup:view";
 
+    // =================== 补充缺失的权限点定义 ===================
+    
+    // 模块级别权限点（顶级权限）
+    String AUTH = "auth";                          // 认证模块
+    String SYSTEM = "system";                      // 系统模块  
+    String CLIENT = "client";                      // 客户模块
+    String PERSONNEL = "personnel";                // 人事模块
+    String ORGANIZATION = "organization";          // 组织模块
+    
+    // 认证模块权限点
+    String AUTH_ROLE = "auth:role";                // 角色管理
+    String AUTH_USER = "auth:user";                // 用户管理
+    String AUTH_PERMISSION = "auth:permission";    // 权限管理
+    String AUTH_PERMISSION_REQUEST = "auth:permission:request";  // 权限申请
+    String AUTH_LOGIN_HISTORY = "auth:login:history";           // 登录历史
+    
+    // 系统模块权限点
+    String SYSTEM_USER = "system:user";            // 系统用户管理
+    String SYSTEM_ROLE = "system:role";            // 系统角色管理  
+    String SYSTEM_PERMISSION = "system:permission"; // 系统权限管理
+    String SYSTEM_MONITOR = "system:monitor";      // 系统监控
+    String SYSTEM_MONITOR_CONFIG = "system:monitor:config";  // 监控配置
+    String SYSTEM_MONITOR_ALERT = "system:monitor:alert";    // 监控告警
+    String SYSTEM_UPGRADE = "system:upgrade";      // 系统升级
+    String SYSTEM_UPGRADE_VERSION = "system:upgrade:version"; // 版本升级
+    String SYSTEM_UPGRADE_PATCH = "system:upgrade:patch";     // 补丁升级
+    
+    // 人事模块权限点
+    String PERSONNEL_LAWYER = "personnel:lawyer";        // 律师管理
+    String PERSONNEL_EMPLOYEE = "personnel:employee";    // 员工管理
+    String PERSONNEL_CONTRACT = "personnel:contract";    // 人事合同
+    
+    // 组织模块权限点
+    String ORGANIZATION_DEPARTMENT = "organization:department";  // 部门管理
+    String ORGANIZATION_POSITION = "organization:position";      // 职位管理
+    String ORGANIZATION_TEAM = "organization:team";              // 团队管理
+
     // ...如有新模块/操作，按此规范补充
-} 
+}

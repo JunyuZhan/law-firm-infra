@@ -1,11 +1,13 @@
 package com.lawfirm.knowledge.config;
 
 import com.lawfirm.core.message.service.MessageTemplateService;
+import com.lawfirm.knowledge.service.MessageIntegrationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,16 @@ public class KnowledgeMessageServiceConfig {
                 log.info("知识库邮件消息发送，模板: {}, 接收者数量: {}", templateCode, receiverIds.size());
             }
         };
+    }
+    
+    /**
+     * 知识库消息集成服务别名
+     * 提供正确的Bean名称供KnowledgeServiceImpl注入
+     */
+    @Bean("knowledgeMessageService")
+    public MessageIntegrationService knowledgeMessageService(
+            @Qualifier("knowledgeMessageIntegrationService") MessageIntegrationService messageIntegrationService) {
+        return messageIntegrationService;
     }
     
     /**

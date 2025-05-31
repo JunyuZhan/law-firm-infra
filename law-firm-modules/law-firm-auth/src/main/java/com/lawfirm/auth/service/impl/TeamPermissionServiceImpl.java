@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * 团队权限服务实现类
  */
 @Slf4j
-@Service
+@Service("teamPermissionService")
 @RequiredArgsConstructor
 public class TeamPermissionServiceImpl extends ServiceImpl<TeamPermissionMapper, TeamPermission> implements TeamPermissionService {
 
@@ -312,4 +312,4 @@ public class TeamPermissionServiceImpl extends ServiceImpl<TeamPermissionMapper,
         BeanUtils.copyProperties(permission, vo);
         return vo;
     }
-} 
+}

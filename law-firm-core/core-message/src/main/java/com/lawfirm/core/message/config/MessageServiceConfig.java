@@ -18,6 +18,10 @@ import java.util.Map;
  * <p>
  * 提供消息发送、消息模板和通知等相关服务实现
  * </p>
+ * <p>
+ * 注意：通知服务（EmailNotificationServiceImpl等）已通过@Service注解自动注册，
+ * 无需在此重复定义Bean以避免冲突
+ * </p>
  */
 @Slf4j
 @Configuration

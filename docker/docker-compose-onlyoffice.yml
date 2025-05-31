@@ -1,0 +1,290 @@
+services:
+  # 继承原有服务配置
+  # API服务 - 添加OnlyOffice依赖
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: law-firm-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # ... 原有环境变量 ...
+      
+      # OnlyOffice配置
+      - ONLYOFFICE_ENABLED=true
+      - ONLYOFFICE_URL=http://onlyoffice:80
+      - ONLYOFFICE_SECRET=your-jwt-secret-key
+      - ONLYOFFICE_HEADER=Authorization
+      
+      # 文档服务配置
+      - DOCUMENT_EDIT_ENABLED=true
+      - DOCUMENT_EDIT_TYPE=ONLYOFFICE
+      - DOCUMENT_CALLBACK_URL=http://api:8080/api/v1/documents/callback
+      
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      onlyoffice:
+        condition: service_healthy
+    volumes:
+      - app_logs:/app/logs
+      - app_storage:/app/storage
+      - app_lucene:/app/lucene
+    networks:
+      - law-firm-network
+
+  # OnlyOffice Document Server
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    container_name: law-onlyoffice
+    restart: always
+    ports:
+      - "8088:80"  # OnlyOffice端口
+      - "8443:443" # HTTPS端口
+    environment:
+      # JWT密钥配置
+      - JWT_ENABLED=true
+      - JWT_SECRET=your-jwt-secret-key
+      - JWT_HEADER=Authorization
+      
+      # 数据库配置（OnlyOffice内部使用）
+      - DB_TYPE=postgres
+      - DB_HOST=onlyoffice-postgres
+      - DB_PORT=5432
+      - DB_NAME=onlyoffice
+      - DB_USER=onlyoffice
+      - DB_PWD=onlyoffice_password
+      
+      # RabbitMQ配置（OnlyOffice内部使用）
+      - AMQP_URI=amqp://guest:guest@onlyoffice-rabbitmq
+      
+      # Redis配置（OnlyOffice内部使用）
+      - REDIS_SERVER_HOST=onlyoffice-redis
+      - REDIS_SERVER_PORT=6379
+      
+      # 文档存储配置
+      - DOCUMENT_SERVER_STORAGE_TYPE=s3
+      - DOCUMENT_SERVER_STORAGE_S3_ENDPOINT=http://minio:9000
+      - DOCUMENT_SERVER_STORAGE_S3_ACCESS_KEY=minioadmin
+      - DOCUMENT_SERVER_STORAGE_S3_SECRET_KEY=minioadmin
+      - DOCUMENT_SERVER_STORAGE_S3_BUCKET=law-firm-docs
+      
+    volumes:
+      - onlyoffice_data:/var/www/onlyoffice/Data
+      - onlyoffice_log:/var/log/onlyoffice
+      - onlyoffice_fonts:/usr/share/fonts/truetype/custom
+    networks:
+      - law-firm-network
+    depends_on:
+      onlyoffice-postgres:
+        condition: service_healthy
+      onlyoffice-redis:
+        condition: service_healthy
+      onlyoffice-rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  # OnlyOffice PostgreSQL数据库
+  onlyoffice-postgres:
+    image: postgres:13
+    container_name: law-onlyoffice-postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=onlyoffice
+      - POSTGRES_USER=onlyoffice
+      - POSTGRES_PASSWORD=onlyoffice_password
+      - TZ=Asia/Shanghai
+    volumes:
+      - onlyoffice_postgres_data:/var/lib/postgresql/data
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onlyoffice"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+  # OnlyOffice Redis
+  onlyoffice-redis:
+    image: redis:7.0
+    container_name: law-onlyoffice-redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - onlyoffice_redis_data:/data
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # OnlyOffice RabbitMQ
+  onlyoffice-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: law-onlyoffice-rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - onlyoffice_rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # 继承原有的其他服务
+  mysql:
+    image: mysql:8.0
+    container_name: law-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=lawfirm_default
+      - MYSQL_DATABASE=law_firm
+      - TZ=Asia/Shanghai
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-plawfirm_default"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7.0
+    container_name: law-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  minio:
+    image: minio/minio
+    container_name: law-minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: law-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - law-firm-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# 网络
+networks:
+  law-firm-network:
+    driver: bridge
+
+# 数据卷
+volumes:
+  # 原有卷
+  mysql_data:
+  redis_data:
+  minio_data:
+  rabbitmq_data:
+  app_logs:
+  app_storage:
+  app_lucene:
+  
+  # OnlyOffice相关卷
+  onlyoffice_data:              # OnlyOffice数据
+  onlyoffice_log:               # OnlyOffice日志
+  onlyoffice_fonts:             # OnlyOffice字体
+  onlyoffice_postgres_data:     # OnlyOffice PostgreSQL数据
+  onlyoffice_redis_data:        # OnlyOffice Redis数据
+  onlyoffice_rabbitmq_data:     # OnlyOffice RabbitMQ数据 

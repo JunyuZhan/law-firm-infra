@@ -1,7 +1,7 @@
 package com.lawfirm.system.controller.monitor;
 
 import com.lawfirm.common.core.api.CommonResult;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.system.entity.monitor.SysAppMonitor;
 import com.lawfirm.system.constant.SystemConstants;
@@ -37,7 +37,7 @@ public class ApplicationMonitorController extends BaseController {
         description = "获取系统中所有应用的监控数据列表"
     )
     @GetMapping
-    @RequiresPermissions("system:monitor:app")
+    @PreAuthorize("hasAuthority('system:monitor:app')")
     public CommonResult<List<SysAppMonitor>> getAppList() {
         log.info("获取应用监控列表");
         List<SysAppMonitor> appList = appMonitorService.getAppList();
@@ -52,7 +52,7 @@ public class ApplicationMonitorController extends BaseController {
         description = "获取指定应用的最新监控数据"
     )
     @GetMapping("/{appName}")
-    @RequiresPermissions("system:monitor:app")
+    @PreAuthorize("hasAuthority('system:monitor:app')")
     public CommonResult<SysAppMonitor> getLatestAppInfo(
             @Parameter(description = "应用名称") @PathVariable String appName,
             @Parameter(description = "实例ID") @RequestParam(required = false) String instanceId) {
@@ -69,7 +69,7 @@ public class ApplicationMonitorController extends BaseController {
         description = "手动触发应用监控数据收集"
     )
     @PostMapping("/collect")
-    @RequiresPermissions("system:monitor:app:collect")
+    @PreAuthorize("hasAuthority('system:monitor:app:collect')")
     public CommonResult<Boolean> collectAppMetrics() {
         log.info("触发应用监控数据收集");
         try {
@@ -80,4 +80,4 @@ public class ApplicationMonitorController extends BaseController {
             return success(false);
         }
     }
-} 
+}

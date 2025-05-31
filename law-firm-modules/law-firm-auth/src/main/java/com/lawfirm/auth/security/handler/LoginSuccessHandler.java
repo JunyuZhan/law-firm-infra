@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  * 重构后不再依赖AuthService，直接使用JwtTokenProvider生成token
  */
 @Slf4j
-@Component
+@Component("loginSuccessHandler")
 @ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "true", matchIfMissing = true)
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     
@@ -116,4 +116,4 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 默认返回1L，实际项目中应该根据用户名查询用户ID
         return 1L;
     }
-} 
+}

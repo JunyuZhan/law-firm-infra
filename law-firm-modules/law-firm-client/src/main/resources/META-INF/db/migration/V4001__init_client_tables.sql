@@ -227,6 +227,7 @@ CREATE TABLE IF NOT EXISTS client_follow_up (
   remind_time DATETIME COMMENT '提醒时间',
   remind_type VARCHAR(20) COMMENT '提醒方式（邮件、短信等）',
   assignee_id BIGINT COMMENT '负责人ID',
+  status INTEGER DEFAULT 0 COMMENT '跟进状态（0-待跟进，1-已完成，2-已取消）',
   version INTEGER DEFAULT 0 COMMENT '版本号',
   deleted INTEGER DEFAULT 0 COMMENT '删除标记（0-正常，1-删除）',
   create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -239,7 +240,8 @@ CREATE TABLE IF NOT EXISTS client_follow_up (
   KEY idx_business_id (business_id, business_type),
   KEY idx_follow_up_type (follow_up_type),
   KEY idx_next_follow_time (next_follow_time),
-  KEY idx_assignee_id (assignee_id)
+  KEY idx_assignee_id (assignee_id),
+  KEY idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户跟进记录表';
 
 -- case_party表（案件当事人表）

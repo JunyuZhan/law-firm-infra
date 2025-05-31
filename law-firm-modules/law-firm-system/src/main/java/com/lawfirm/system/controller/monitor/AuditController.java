@@ -3,7 +3,7 @@ package com.lawfirm.system.controller.monitor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.log.annotation.Log;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.log.dto.AuditLogDTO;
 import com.lawfirm.model.log.dto.AuditRecordDTO;
@@ -48,7 +48,7 @@ public class AuditController extends BaseController {
         description = "根据条件分页查询系统审计日志"
     )
     @GetMapping("/page")
-    @RequiresPermissions("system:audit:query")
+    @PreAuthorize("hasAuthority('system:audit:query')")
     public CommonResult<Page<AuditLogDTO>> page(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer current,
             @Parameter(description = "每页记录数") @RequestParam(defaultValue = "10") Integer size,
@@ -68,7 +68,7 @@ public class AuditController extends BaseController {
         description = "根据审计日志ID获取详细信息"
     )
     @GetMapping("/{id}")
-    @RequiresPermissions("system:audit:query")
+    @PreAuthorize("hasAuthority('system:audit:query')")
     public CommonResult<AuditLogDTO> getById(
             @Parameter(description = "审计日志ID") @PathVariable Long id) {
         log.info("获取审计日志详情: id={}", id);
@@ -84,7 +84,7 @@ public class AuditController extends BaseController {
         description = "查询特定业务对象的审计记录"
     )
     @GetMapping("/records")
-    @RequiresPermissions("system:audit:query")
+    @PreAuthorize("hasAuthority('system:audit:query')")
     public CommonResult<List<AuditRecordDTO>> getAuditRecords(
             @Parameter(description = "目标ID") @RequestParam Long targetId,
             @Parameter(description = "目标类型") @RequestParam String targetType) {
@@ -101,7 +101,7 @@ public class AuditController extends BaseController {
         description = "根据审计记录ID获取详细信息"
     )
     @GetMapping("/records/{id}")
-    @RequiresPermissions("system:audit:query")
+    @PreAuthorize("hasAuthority('system:audit:query')")
     public CommonResult<AuditRecordDTO> getRecordById(
             @Parameter(description = "审计记录ID") @PathVariable Long id) {
         log.info("获取审计记录详情: id={}", id);
@@ -117,7 +117,7 @@ public class AuditController extends BaseController {
         description = "根据条件导出系统审计日志"
     )
     @PostMapping("/export")
-    @RequiresPermissions("system:audit:export")
+    @PreAuthorize("hasAuthority('system:audit:export')")
     @Log(title = "导出审计日志")
     public CommonResult<String> exportAuditLogs(@Valid @RequestBody AuditLogQuery query) {
         log.info("导出审计日志: query={}", query);
@@ -126,4 +126,4 @@ public class AuditController extends BaseController {
         // 临时返回结果，实际实现应当调用相应的导出服务
         return success("审计日志导出功能待实现");
     }
-} 
+}

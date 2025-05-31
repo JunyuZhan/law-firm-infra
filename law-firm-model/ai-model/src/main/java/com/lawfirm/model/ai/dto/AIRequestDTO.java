@@ -23,6 +23,12 @@ public class AIRequestDTO implements Serializable {
     private String modelName; // 模型名称
     @Schema(description = "请求参数")
     private transient Map<String, Object> params; // 请求参数
+    
+    // 新增字段以支持CoreAIServiceImpl
+    @Schema(description = "请求内容")
+    private String content; // 请求内容
+    @Schema(description = "请求类型")
+    private String requestType; // 请求类型
 
     // 构造函数
     public AIRequestDTO(String inputData, String modelVersion) {
@@ -73,5 +79,22 @@ public class AIRequestDTO implements Serializable {
 
     public void setParams(Map<String, Object> params) {
         this.params = params;
+    }
+    
+    // 新增字段的getter/setter方法
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
     }
 } 

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.log.annotation.Log;
 import com.lawfirm.model.log.enums.BusinessTypeEnum;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.system.dto.dict.DictCreateDTO;
 import com.lawfirm.model.system.dto.dict.DictUpdateDTO;
@@ -43,7 +43,7 @@ public class DictController extends BaseController {
         description = "分页获取字典列表，支持按字典名称、编码、类型等条件筛选"
     )
     @GetMapping("/list")
-    @RequiresPermissions("system:dict:list")
+    @PreAuthorize("hasAuthority('system:dict:list')")
     public CommonResult<Page<DictVO>> list(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页条数") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -69,7 +69,7 @@ public class DictController extends BaseController {
         description = "根据字典ID获取字典的详细信息，包括字典项列表"
     )
     @GetMapping("/{id}")
-    @RequiresPermissions("system:dict:query")
+    @PreAuthorize("hasAuthority('system:dict:query')")
     public CommonResult<DictVO> getInfo(@Parameter(description = "字典ID") @PathVariable Long id) {
         DictVO dict = dictService.getDictById(id);
         return success(dict);
@@ -109,7 +109,7 @@ public class DictController extends BaseController {
         description = "获取系统中所有的字典数据，包括字典项列表"
     )
     @GetMapping("/all")
-    @RequiresPermissions("system:dict:list")
+    @PreAuthorize("hasAuthority('system:dict:list')")
     public CommonResult<List<DictVO>> getAllDicts() {
         List<DictVO> dicts = dictService.listAllDicts();
         return success(dicts);
@@ -123,7 +123,7 @@ public class DictController extends BaseController {
         description = "创建新的字典数据，包括字典的基本信息"
     )
     @PostMapping
-    @RequiresPermissions("system:dict:add")
+    @PreAuthorize("hasAuthority('system:dict:add')")
     @Log(title = "字典管理", businessType = "INSERT")
     public CommonResult<Long> add(@Valid @RequestBody DictCreateDTO dict) {
         Long id = dictService.createDict(dict);
@@ -138,7 +138,7 @@ public class DictController extends BaseController {
         description = "更新已存在的字典信息，包括字典的基本信息"
     )
     @PutMapping("/{id}")
-    @RequiresPermissions("system:dict:edit")
+    @PreAuthorize("hasAuthority('system:dict:edit')")
     @Log(title = "字典管理", businessType = "UPDATE")
     public CommonResult<Void> edit(
             @Parameter(description = "字典ID") @PathVariable Long id,
@@ -155,7 +155,7 @@ public class DictController extends BaseController {
         description = "根据ID删除单个字典，同时删除关联的字典项"
     )
     @DeleteMapping("/{id}")
-    @RequiresPermissions("system:dict:remove")
+    @PreAuthorize("hasAuthority('system:dict:remove')")
     @Log(title = "字典管理", businessType = "DELETE")
     public CommonResult<Void> remove(@Parameter(description = "字典ID") @PathVariable Long id) {
         dictService.deleteDict(id);
@@ -170,7 +170,7 @@ public class DictController extends BaseController {
         description = "批量删除多个字典，同时删除关联的字典项"
     )
     @DeleteMapping("/batch")
-    @RequiresPermissions("system:dict:remove")
+    @PreAuthorize("hasAuthority('system:dict:remove')")
     @Log(title = "字典管理", businessType = "DELETE")
     public CommonResult<Void> batchRemove(@Parameter(description = "字典ID列表") @RequestBody List<Long> ids) {
         dictService.deleteDicts(ids);
@@ -185,10 +185,10 @@ public class DictController extends BaseController {
         description = "刷新系统中的字典缓存数据，确保数据的实时性"
     )
     @PostMapping("/refreshCache")
-    @RequiresPermissions("system:dict:refresh")
+    @PreAuthorize("hasAuthority('system:dict:refresh')")
     @Log(title = "字典管理", businessType = "CLEAN")
     public CommonResult<Void> refreshCache() {
         dictService.refreshCache();
         return success();
     }
-} 
+}

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * 用于检查用户对特定模块的操作权限和数据范围
  */
 @Slf4j
-@Service
+@Service("permissionChecker")
 @RequiredArgsConstructor
 public class PermissionCheckerImpl implements PermissionChecker {
 
@@ -258,4 +258,4 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
         return roleMapper.selectList(rQueryWrapper);
     }
-} 
+}

@@ -16,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class WebConfig implements WebMvcConfigurer {
      * 供各模块使用的标准HTTP客户端
      */
     @Bean(name = "commonRestTemplate")
+    @Primary
     @ConditionalOnMissingBean(name = "commonRestTemplate")
     public RestTemplate restTemplate() {
         return new RestTemplate();

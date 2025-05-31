@@ -45,6 +45,16 @@ public final class AuthApiConstants {
         public static final String PERMISSION = PREFIX + "/permissions";
         
         /**
+         * 权限矩阵API前缀
+         */
+        public static final String PERMISSION_MATRIX = PREFIX + "/permission-matrix";
+        
+        /**
+         * 权限管理API前缀
+         */
+        public static final String PERMISSION_MANAGEMENT = PREFIX + "/auth/permission-management";
+        
+        /**
          * 登录接口路径
          */
         public static final String LOGIN = AUTH + "/login";
@@ -113,4 +123,4 @@ public final class AuthApiConstants {
         public static final String AUDIT_TYPE_ROLE = "role";
         public static final String AUDIT_TYPE_PERMISSION = "permission";
     }
-} 
+}

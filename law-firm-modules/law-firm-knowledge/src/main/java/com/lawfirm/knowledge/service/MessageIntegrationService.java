@@ -19,7 +19,7 @@ import java.util.Map;
  * 示例如何集成core-message模块
  */
 @Slf4j
-@Service("knowledgeMessageService")
+@Service("knowledgeMessageIntegrationService")
 public class MessageIntegrationService {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

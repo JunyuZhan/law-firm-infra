@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Value;
 import com.lawfirm.core.message.service.MessageSender;
 import com.lawfirm.model.message.entity.base.BaseMessage;
 import com.lawfirm.model.message.enums.MessageTypeEnum;
+import com.lawfirm.task.service.TaskMessageService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,11 +70,21 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
     private RestTemplate restTemplate;
 
     /**
+     * 任务消息服务（新的统一消息服务）
+     */
+    @Autowired
+    private TaskMessageService taskMessageService;
+
+    /**
      * 通知服务（如无外部实现，这里简单定义内部类模拟）
+     * @deprecated 使用TaskMessageService替代
      */
     @Autowired(required = false)
     private NotificationService notificationService;
 
+    /**
+     * @deprecated 使用TaskMessageService替代
+     */
     @Autowired(required = false)
     @Qualifier("taskMessageSender")
     private MessageSender messageSender;
@@ -794,129 +805,41 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      * 发送任务创建通知
      */
     public void sendTaskCreatedNotification(Long taskId, String taskName, Long assigneeId, Map<String, Object> variables) {
-        boolean sent = false;
-        if (messageSender != null && assigneeId != null) {
-            BaseMessage message = new BaseMessage();
-            message.setTitle("新任务分配：" + taskName);
-            message.setContent("您有新任务，请及时处理。");
-            message.setReceiverId(assigneeId);
-            message.setBusinessId(taskId);
-            message.setType(MessageTypeEnum.NOTICE);
-            messageSender.send(message);
-            sent = true;
-        }
-        if (!sent && notificationService != null && assigneeId != null) {
-            notificationService.send("task_created", assigneeId, "新任务分配：" + taskName, "您有新任务，请及时处理。", variables);
-        }
-        log.info("[通知] 任务创建: taskId={}, taskName={}, assigneeId={}", taskId, taskName, assigneeId);
+        taskMessageService.sendTaskCreatedNotification(taskId, taskName, assigneeId, variables);
     }
 
     /**
      * 发送任务分配通知
      */
     public void sendTaskAssignedNotification(Long taskId, String taskName, Long assigneeId, Long oldAssigneeId, Map<String, Object> variables) {
-        boolean sent = false;
-        if (messageSender != null && assigneeId != null) {
-            BaseMessage message = new BaseMessage();
-            message.setTitle("任务分配：" + taskName);
-            message.setContent("您被分配了新任务。");
-            message.setReceiverId(assigneeId);
-            message.setBusinessId(taskId);
-            message.setType(MessageTypeEnum.NOTICE);
-            messageSender.send(message);
-            sent = true;
-        }
-        if (!sent && notificationService != null && assigneeId != null) {
-            notificationService.send("task_assigned", assigneeId, "任务分配：" + taskName, "您被分配了新任务。", variables);
-        }
-        if (notificationService != null && oldAssigneeId != null && !Objects.equals(assigneeId, oldAssigneeId)) {
-            notificationService.send("task_unassigned", oldAssigneeId, "任务变更：" + taskName, "您已被移出该任务。", variables);
-        }
-        log.info("[通知] 任务分配: taskId={}, taskName={}, assigneeId={}, oldAssigneeId={}", taskId, taskName, assigneeId, oldAssigneeId);
+        taskMessageService.sendTaskAssignedNotification(taskId, taskName, assigneeId, oldAssigneeId, variables);
     }
 
     /**
      * 发送任务完成通知
      */
     public void sendTaskCompletedNotification(Long taskId, String taskName, Long assigneeId, Map<String, Object> variables) {
-        boolean sent = false;
-        if (messageSender != null && assigneeId != null) {
-            BaseMessage message = new BaseMessage();
-            message.setTitle("任务完成：" + taskName);
-            message.setContent("您的任务已完成。");
-            message.setReceiverId(assigneeId);
-            message.setBusinessId(taskId);
-            message.setType(MessageTypeEnum.NOTICE);
-            messageSender.send(message);
-            sent = true;
-        }
-        if (!sent && notificationService != null && assigneeId != null) {
-            notificationService.send("task_completed", assigneeId, "任务完成：" + taskName, "您的任务已完成。", variables);
-        }
-        log.info("[通知] 任务完成: taskId={}, taskName={}, assigneeId={}", taskId, taskName, assigneeId);
+        taskMessageService.sendTaskCompletedNotification(taskId, taskName, assigneeId, variables);
     }
 
     /**
      * 发送任务截止提醒
      */
     public void sendTaskDueReminder(Long taskId, String taskName, Long assigneeId, LocalDateTime dueDate) {
-        boolean sent = false;
-        if (messageSender != null && assigneeId != null) {
-            BaseMessage message = new BaseMessage();
-            message.setTitle("任务截止提醒：" + taskName);
-            message.setContent("您的任务即将截止，截止时间：" + dueDate);
-            message.setReceiverId(assigneeId);
-            message.setBusinessId(taskId);
-            message.setType(MessageTypeEnum.NOTICE);
-            messageSender.send(message);
-            sent = true;
-        }
-        if (!sent && notificationService != null && assigneeId != null) {
-            notificationService.send("task_due_reminder", assigneeId, "任务截止提醒：" + taskName, "您的任务即将截止，截止时间：" + dueDate, null);
-        }
-        log.info("[通知] 任务截止提醒: taskId={}, taskName={}, assigneeId={}, dueDate={}", taskId, taskName, assigneeId, dueDate);
+        taskMessageService.sendTaskDueReminder(taskId, taskName, assigneeId, dueDate);
     }
 
     /**
-     * 发送任务超时提醒
+     * 发送任务超时通知
      */
     public void sendTaskOverdueNotification(Long taskId, String taskName, Long assigneeId, LocalDateTime dueDate) {
-        boolean sent = false;
-        if (messageSender != null && assigneeId != null) {
-            BaseMessage message = new BaseMessage();
-            message.setTitle("任务超时提醒：" + taskName);
-            message.setContent("您的任务已超时，截止时间：" + dueDate);
-            message.setReceiverId(assigneeId);
-            message.setBusinessId(taskId);
-            message.setType(MessageTypeEnum.NOTICE);
-            messageSender.send(message);
-            sent = true;
-        }
-        if (!sent && notificationService != null && assigneeId != null) {
-            notificationService.send("task_overdue", assigneeId, "任务超时提醒：" + taskName, "您的任务已超时，截止时间：" + dueDate, null);
-        }
-        log.info("[通知] 任务超时提醒: taskId={}, taskName={}, assigneeId={}, dueDate={}", taskId, taskName, assigneeId, dueDate);
+        taskMessageService.sendTaskOverdueNotification(taskId, taskName, assigneeId, dueDate);
     }
 
     /**
-     * 批量发送任务通知
+     * 发送批量任务通知
      */
     public void sendBatchTaskNotification(List<Long> recipientIds, String subject, String content, Map<String, Object> variables) {
-        boolean sent = false;
-        if (messageSender != null && recipientIds != null && !recipientIds.isEmpty()) {
-            for (Long userId : recipientIds) {
-                BaseMessage message = new BaseMessage();
-                message.setTitle(subject);
-                message.setContent(content);
-                message.setReceiverId(userId);
-                message.setType(MessageTypeEnum.NOTICE);
-                messageSender.send(message);
-            }
-            sent = true;
-        }
-        if (!sent && notificationService != null && recipientIds != null && !recipientIds.isEmpty()) {
-            notificationService.sendBatch("task_batch", recipientIds, subject, content, variables);
-        }
-        log.info("[通知] 批量任务通知: subject={}, recipients={}", subject, recipientIds);
+        taskMessageService.sendBatchTaskNotification(recipientIds, subject, content, variables);
     }
 } 

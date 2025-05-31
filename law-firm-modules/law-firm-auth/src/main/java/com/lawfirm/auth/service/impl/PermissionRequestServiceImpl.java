@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * 权限申请服务实现类
  */
 @Slf4j
-@Service
+@Service("permissionRequestService")
 @RequiredArgsConstructor
 public class PermissionRequestServiceImpl extends ServiceImpl<PermissionRequestMapper, PermissionRequest> implements PermissionRequestService {
 
@@ -227,4 +227,4 @@ public class PermissionRequestServiceImpl extends ServiceImpl<PermissionRequestM
         
         return vo;
     }
-} 
+}

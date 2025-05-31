@@ -2,7 +2,7 @@ package com.lawfirm.system.controller.monitor;
 
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.log.annotation.Log;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.system.dto.monitor.MonitorAlertDTO;
 import com.lawfirm.model.system.dto.monitor.MonitorQueryDTO;
@@ -46,7 +46,7 @@ public class AlertController extends BaseController {
         description = "根据条件查询系统告警列表"
     )
     @GetMapping
-    @RequiresPermissions("system:alert:query")
+    @PreAuthorize("hasAuthority('system:alert:query')")
     public CommonResult<List<MonitorAlertDTO>> getAlerts(
             @Valid MonitorQueryDTO queryDTO) {
         log.info("获取告警列表: queryDTO={}", queryDTO);
@@ -62,7 +62,7 @@ public class AlertController extends BaseController {
         description = "发送系统告警信息"
     )
     @PostMapping
-    @RequiresPermissions("system:alert:create")
+    @PreAuthorize("hasAuthority('system:alert:create')")
     @Log(title = "发送告警")
     public CommonResult<String> sendAlert(
             @Parameter(description = "告警类型") @RequestParam String type,
@@ -81,7 +81,7 @@ public class AlertController extends BaseController {
         description = "发送数据库相关的告警信息"
     )
     @PostMapping("/database")
-    @RequiresPermissions("system:alert:create")
+    @PreAuthorize("hasAuthority('system:alert:create')")
     @Log(title = "发送数据库告警")
     public CommonResult<String> sendDbAlert(
             @Parameter(description = "数据库名称") @RequestParam String dbName,
@@ -100,7 +100,7 @@ public class AlertController extends BaseController {
         description = "发送服务器相关的告警信息"
     )
     @PostMapping("/server")
-    @RequiresPermissions("system:alert:create")
+    @PreAuthorize("hasAuthority('system:alert:create')")
     @Log(title = "发送服务器告警")
     public CommonResult<String> sendServerAlert(
             @Parameter(description = "服务器名称") @RequestParam String serverName,
@@ -119,7 +119,7 @@ public class AlertController extends BaseController {
         description = "处理指定的系统告警"
     )
     @PutMapping("/{alertId}/handle")
-    @RequiresPermissions("system:alert:handle")
+    @PreAuthorize("hasAuthority('system:alert:handle')")
     @Log(title = "处理告警")
     public CommonResult<Boolean> handleAlert(
             @Parameter(description = "告警ID") @PathVariable String alertId,
@@ -138,7 +138,7 @@ public class AlertController extends BaseController {
         description = "关闭指定的系统告警"
     )
     @PutMapping("/{alertId}/close")
-    @RequiresPermissions("system:alert:close")
+    @PreAuthorize("hasAuthority('system:alert:close')")
     @Log(title = "关闭告警")
     public CommonResult<Boolean> closeAlert(
             @Parameter(description = "告警ID") @PathVariable String alertId) {
@@ -146,4 +146,4 @@ public class AlertController extends BaseController {
         boolean success = alertService.closeAlert(alertId);
         return success(success);
     }
-} 
+}

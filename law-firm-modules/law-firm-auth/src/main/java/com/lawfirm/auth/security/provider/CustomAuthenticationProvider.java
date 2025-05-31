@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * 自定义认证提供者
  */
 @Slf4j
-@Component
+@Component("customAuthenticationProvider")
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     
@@ -71,4 +71,4 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> authentication) {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
-} 
+}

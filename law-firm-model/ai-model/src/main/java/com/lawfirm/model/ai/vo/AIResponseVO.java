@@ -23,6 +23,12 @@ public class AIResponseVO implements Serializable {
     private String message; // 消息
     @Schema(description = "数据")
     private transient Map<String, Object> data; // 数据
+    
+    // 新增字段以支持CoreAIServiceImpl
+    @Schema(description = "响应内容")
+    private String content; // 响应内容
+    @Schema(description = "时间戳")
+    private Long timestamp; // 时间戳
 
     // 构造函数
     public AIResponseVO(String outputData, String status) {
@@ -73,5 +79,22 @@ public class AIResponseVO implements Serializable {
 
     public void setData(Map<String, Object> data) {
         this.data = data;
+    }
+    
+    // 新增字段的getter/setter方法
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 } 

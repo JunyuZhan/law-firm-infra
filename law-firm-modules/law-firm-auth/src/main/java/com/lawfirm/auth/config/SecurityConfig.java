@@ -173,10 +173,5 @@ public class SecurityConfig extends BaseSecurityConfig {
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .build();
     }
-
-    @Bean("commonPasswordEncoder")
-    public PasswordEncoder commonPasswordEncoder() {
-        return passwordEncoder();
-    }
 }
 

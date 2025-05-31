@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
  * 登出处理器
  */
 @Slf4j
-@Component
+@Component("authLogoutHandler")
 public class LogoutHandler implements LogoutSuccessHandler {
     
     private final ObjectMapper objectMapper;

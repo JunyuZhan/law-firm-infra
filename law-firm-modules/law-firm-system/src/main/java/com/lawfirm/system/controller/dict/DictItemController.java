@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.log.annotation.Log;
 import com.lawfirm.model.log.enums.BusinessTypeEnum;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.model.system.dto.dict.DictItemCreateDTO;
 import com.lawfirm.model.system.dto.dict.DictItemUpdateDTO;
@@ -43,7 +43,7 @@ public class DictItemController extends BaseController {
         description = "分页获取字典项列表，支持按字典ID、标签、值等条件筛选"
     )
     @GetMapping("/list")
-    @RequiresPermissions("system:dict:list")
+    @PreAuthorize("hasAuthority('system:dict:list')")
     public CommonResult<Page<DictItemVO>> list(
             @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @Parameter(description = "每页条数") @RequestParam(defaultValue = "10") Integer pageSize,
@@ -69,7 +69,7 @@ public class DictItemController extends BaseController {
         description = "根据字典项ID获取字典项的详细信息"
     )
     @GetMapping("/{id}")
-    @RequiresPermissions("system:dict:query")
+    @PreAuthorize("hasAuthority('system:dict:query')")
     public CommonResult<DictItemVO> getInfo(@Parameter(description = "字典项ID") @PathVariable Long id) {
         DictItemVO dictItem = dictItemService.getDictItemById(id);
         return success(dictItem);
@@ -96,7 +96,7 @@ public class DictItemController extends BaseController {
         description = "创建新的字典项数据，包括标签、值、排序等信息"
     )
     @PostMapping
-    @RequiresPermissions("system:dict:add")
+    @PreAuthorize("hasAuthority('system:dict:add')")
     @Log(title = "字典项管理", businessType = "INSERT")
     public CommonResult<Long> add(@Valid @RequestBody DictItemCreateDTO dictItem) {
         Long id = dictItemService.createDictItem(dictItem);
@@ -111,7 +111,7 @@ public class DictItemController extends BaseController {
         description = "更新已存在的字典项信息，包括标签、值、排序等"
     )
     @PutMapping("/{id}")
-    @RequiresPermissions("system:dict:edit")
+    @PreAuthorize("hasAuthority('system:dict:edit')")
     @Log(title = "字典项管理", businessType = "UPDATE")
     public CommonResult<Void> edit(
             @Parameter(description = "字典项ID") @PathVariable Long id,
@@ -128,7 +128,7 @@ public class DictItemController extends BaseController {
         description = "根据ID删除单个字典项"
     )
     @DeleteMapping("/{id}")
-    @RequiresPermissions("system:dict:remove")
+    @PreAuthorize("hasAuthority('system:dict:remove')")
     @Log(title = "字典项管理", businessType = "DELETE")
     public CommonResult<Void> remove(@Parameter(description = "字典项ID") @PathVariable Long id) {
         dictItemService.deleteDictItem(id);
@@ -143,10 +143,10 @@ public class DictItemController extends BaseController {
         description = "批量删除多个字典项"
     )
     @DeleteMapping("/batch")
-    @RequiresPermissions("system:dict:remove")
+    @PreAuthorize("hasAuthority('system:dict:remove')")
     @Log(title = "字典项管理", businessType = "DELETE")
     public CommonResult<Void> batchRemove(@Parameter(description = "字典项ID列表") @RequestBody List<Long> ids) {
         dictItemService.deleteDictItems(ids);
         return success();
     }
-} 
+}

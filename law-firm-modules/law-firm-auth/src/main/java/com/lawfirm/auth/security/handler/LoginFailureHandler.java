@@ -24,7 +24,7 @@ import java.io.IOException;
  * 登录失败处理器
  */
 @Slf4j
-@Component
+@Component("loginFailureHandler")
 @ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "true", matchIfMissing = true)
 public class LoginFailureHandler implements AuthenticationFailureHandler {
     
@@ -101,4 +101,4 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
             return "登录失败: " + exception.getMessage();
         }
     }
-} 
+}

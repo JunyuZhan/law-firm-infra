@@ -4,7 +4,7 @@ import com.lawfirm.common.core.api.CommonResult;
 import com.lawfirm.common.util.DatabaseBackupUtil;
 import com.lawfirm.model.base.controller.BaseController;
 import com.lawfirm.common.log.annotation.Log;
-import com.lawfirm.common.security.annotation.RequiresPermissions;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class DatabaseBackupController extends BaseController {
         description = "创建数据库备份文件并提供下载"
     )
     @GetMapping("/backup")
-    @RequiresPermissions("system:database:backup")
+    @PreAuthorize("hasAuthority('system:database:backup')")
     @Log(title = "数据库备份", businessType = "EXPORT")
     public ResponseEntity<FileSystemResource> backupDatabase() {
         try {
@@ -77,4 +77,4 @@ public class DatabaseBackupController extends BaseController {
             throw new RuntimeException("数据库备份失败", e);
         }
     }
-} 
+}

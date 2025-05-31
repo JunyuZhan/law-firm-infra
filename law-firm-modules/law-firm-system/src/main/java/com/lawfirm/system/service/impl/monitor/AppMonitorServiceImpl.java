@@ -62,8 +62,10 @@ public class AppMonitorServiceImpl extends ServiceImpl<SysAppMonitorMapper, SysA
             
             // 收集线程数据
             ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-            monitor.setJvmThreads(threadBean.getThreadCount());
-            monitor.setThreadActiveCount(threadBean.getThreadCount());
+            int currentThreadCount = threadBean.getThreadCount();
+            monitor.setThreadCount(currentThreadCount);
+            monitor.setJvmThreads(currentThreadCount);
+            monitor.setThreadActiveCount(currentThreadCount);
             monitor.setThreadPeakCount(threadBean.getPeakThreadCount());
             
             // 收集GC数据

@@ -31,7 +31,7 @@ import java.io.IOException;
  * 同时处理登录成功和失败
  */
 @Slf4j
-@Component
+@Component("simpleLoginHandler")
 @ConditionalOnProperty(name = "law-firm.database.enabled", havingValue = "false", matchIfMissing = false)
 public class SimpleLoginHandler implements AuthenticationSuccessHandler, AuthenticationFailureHandler {
     
@@ -92,4 +92,4 @@ public class SimpleLoginHandler implements AuthenticationSuccessHandler, Authent
             CommonResult.error(HttpStatus.UNAUTHORIZED.value(), errorMessage)
         ));
     }
-} 
+}
