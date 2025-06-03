@@ -57,6 +57,12 @@ spring:
         max-size: 10
         queue-capacity: 100
         thread-name-prefix: app-task-
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 # 开发环境服务器配置
 server:
@@ -248,3 +254,23 @@ mybatis-plus:
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
+
+# OCR配置
+ocr:
+  # 百度OCR配置
+  baidu:
+    app-id: ${BAIDU_OCR_APP_ID:your_app_id}
+    api-key: ${BAIDU_OCR_API_KEY:your_api_key}
+    secret-key: ${BAIDU_OCR_SECRET_KEY:your_secret_key}
+  
+  # 腾讯OCR配置
+  tencent:
+    secret-id: ${TENCENT_OCR_SECRET_ID:your_secret_id}
+    secret-key: ${TENCENT_OCR_SECRET_KEY:your_secret_key}
+    region: ${TENCENT_OCR_REGION:ap-beijing}
+  
+  # 阿里云OCR配置
+  aliyun:
+    access-key-id: ${ALIYUN_OCR_ACCESS_KEY_ID:your_access_key_id}
+    access-key-secret: ${ALIYUN_OCR_ACCESS_KEY_SECRET:your_access_key_secret}
+    endpoint: ${ALIYUN_OCR_ENDPOINT:ocr.cn-shanghai.aliyuncs.com}

@@ -82,6 +82,13 @@
         <lucene.version>9.8.0</lucene.version>
 
         <ik-analyzer.version>8.5.0</ik-analyzer.version>
+        
+        <!-- OCR相关依赖版本 -->
+        <tess4j.version>5.9.0</tess4j.version>
+        <baidu-aip.version>4.16.18</baidu-aip.version>
+        <tencent-ocr.version>3.1.852</tencent-ocr.version>
+        <opencv.version>4.8.0-1.5.9</opencv.version>
+        
         <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
     </properties>
 
@@ -970,6 +977,28 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+
+            <!-- OCR识别相关依赖 -->
+            <dependency>
+                <groupId>net.sourceforge.tess4j</groupId>
+                <artifactId>tess4j</artifactId>
+                <version>${tess4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baidu.aip</groupId>
+                <artifactId>java-sdk</artifactId>
+                <version>${baidu-aip.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tencentcloudapi</groupId>
+                <artifactId>tencentcloud-sdk-java</artifactId>
+                <version>${tencent-ocr.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>opencv-platform</artifactId>
+                <version>${opencv.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
