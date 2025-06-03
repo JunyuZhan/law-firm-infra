@@ -40,12 +40,6 @@ spring:
           max-idle: 50
           min-idle: 10
   
-  # 生产环境文件上传配置
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
-  
   # 生产环境仅执行迁移，不清空数据库
   flyway:
     enabled: true

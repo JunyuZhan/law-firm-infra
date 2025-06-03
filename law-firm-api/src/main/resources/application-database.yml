@@ -1,0 +1,120 @@
+# 统一数据库配置
+# 本配置文件统一管理数据库相关配置，确保一致性
+spring:
+  config:
+    activate:
+      on-profile: database
+
+# 数据库版本管理规划
+# 基线版本分配：
+# 0-999: 系统核心表
+# 1000-1999: 系统管理模块
+# 2000-2999: 认证授权模块  
+# 3000-3999: 客户管理模块
+# 4000-4999: 案件管理模块
+# 5000-5999: 合同管理模块
+# 6000-6999: 文档管理模块
+# 7000-7999: 财务管理模块
+# 8000-8999: 知识管理模块
+# 9000-9999: 任务管理模块
+# 10000-10999: 日程管理模块
+# 11000-11999: 人员管理模块
+# 12000-12999: 分析模块
+# 13000-13999: 档案管理模块
+# 14000-14999: 证据管理模块
+
+# 律师事务所数据库配置
+lawfirm:
+  database:
+    # 数据库版本管理配置
+    flyway:
+      # 模块版本基线分配
+      baselines:
+        core: 0
+        system: 1000
+        auth: 2000
+        client: 3000
+        case: 4000
+        contract: 5000
+        document: 6000
+        finance: 7000
+        knowledge: 8000
+        task: 9000
+        schedule: 10000
+        personnel: 11000
+        analysis: 12000
+        archive: 13000
+        evidence: 14000
+      
+      # 统一Flyway配置
+      common:
+        enabled: true
+        baseline-on-migrate: true
+        validate-on-migrate: true
+        out-of-order: true
+        encoding: UTF-8
+        # 忽略缺失迁移
+        ignore-missing-migrations: true
+        # 忽略被忽略迁移
+        ignore-ignored-migrations: true
+        # 清理时保护
+        clean-disabled: ${FLYWAY_CLEAN_DISABLED:true}
+    
+    # 数据库连接池统一配置
+    hikari:
+      # 通用配置
+      common:
+        auto-commit: true
+        connection-test-query: "SELECT 1"
+        validation-timeout: 10000
+        leak-detection-threshold: 60000
+        register-mbeans: true
+        connection-init-sql: "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+      
+      # 环境特定配置
+      environments:
+        dev:
+          minimum-idle: 5
+          maximum-pool-size: 20
+          idle-timeout: 30000
+          max-lifetime: 1800000
+          connection-timeout: 30000
+        test:
+          minimum-idle: 2
+          maximum-pool-size: 10
+          idle-timeout: 30000
+          max-lifetime: 1800000
+          connection-timeout: 30000
+        prod:
+          minimum-idle: 20
+          maximum-pool-size: 100
+          idle-timeout: 60000
+          max-lifetime: 1800000
+          connection-timeout: 30000
+    
+    # 数据库监控配置
+    monitoring:
+      enabled: ${DATABASE_MONITORING_ENABLED:true}
+      # 慢查询监控
+      slow-query:
+        enabled: ${DATABASE_SLOW_QUERY_ENABLED:true}
+        threshold: ${DATABASE_SLOW_QUERY_THRESHOLD:2000} # 2秒
+      # 连接池监控
+      pool-monitoring:
+        enabled: ${DATABASE_POOL_MONITORING_ENABLED:true}
+        alert-threshold: ${DATABASE_POOL_ALERT_THRESHOLD:80} # 80%使用率告警
+      # 死锁监控
+      deadlock-monitoring:
+        enabled: ${DATABASE_DEADLOCK_MONITORING_ENABLED:true}
+    
+    # 数据库备份配置
+    backup:
+      enabled: ${DATABASE_BACKUP_ENABLED:false}
+      # 备份策略
+      strategy: ${DATABASE_BACKUP_STRATEGY:incremental}
+      # 备份保留天数
+      retention-days: ${DATABASE_BACKUP_RETENTION:30}
+      # 备份路径
+      path: ${DATABASE_BACKUP_PATH:/data/backup/database}
+      # 备份时间
+      schedule: ${DATABASE_BACKUP_SCHEDULE:0 2 * * *} # 每天凌晨2点 

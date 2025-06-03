@@ -20,6 +20,8 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev}
     # 引入各业务模块配置，避免重复配置
     include:
+      - database  # 数据库配置
+      - security  # 安全配置
       - system    # 系统管理
       - auth      # 认证授权
       - client    # 客户管理
@@ -138,12 +140,6 @@ spring:
         max-size: 10
         queue-capacity: 100
         thread-name-prefix: law-firm-task-
-  # 文件上传配置
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 100MB
-      max-request-size: 100MB
   # Flyway数据库迁移配置
   flyway:
     enabled: true
@@ -154,6 +150,8 @@ spring:
     out-of-order: true
     validate-on-migrate: true
     auto-migrate: true
+    locations: 
+      - classpath:META-INF/db/migration
   output:
     ansi:
       enabled: always

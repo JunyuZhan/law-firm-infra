@@ -1,0 +1,208 @@
+# 统一存储配置
+# 本配置文件统一管理所有存储相关配置，避免各模块配置分散
+spring:
+  config:
+    activate:
+      on-profile: storage
+  
+  # 文件上传配置 - 统一管理
+  servlet:
+    multipart:
+      enabled: true
+      # 最大文件大小，与全局存储配置保持一致
+      max-file-size: ${STORAGE_MAX_FILE_SIZE:100MB}
+      # 最大请求大小
+      max-request-size: ${STORAGE_MAX_REQUEST_SIZE:100MB}
+      # 文件大小阈值，超过该大小将写入磁盘
+      file-size-threshold: ${STORAGE_FILE_SIZE_THRESHOLD:0}
+      # 临时文件存储位置
+      location: ${STORAGE_TEMP_PATH:${user.home}/.law-firm/temp}
+
+# 律师事务所存储配置
+lawfirm:
+  storage:
+    # 全局存储配置
+    global:
+      # 默认存储类型: LOCAL, MINIO, ALIYUN_OSS, TENCENT_COS
+      default-type: ${STORAGE_DEFAULT_TYPE:MINIO}
+      # 默认存储桶
+      default-bucket: ${STORAGE_DEFAULT_BUCKET:law-firm-default}
+      # 最大文件大小 (100MB)
+      max-file-size: ${STORAGE_MAX_FILE_SIZE:104857600}
+      # 分片大小 (5MB)
+      chunk-size: ${STORAGE_CHUNK_SIZE:5242880}
+      # 临时文件路径
+      temp-path: ${STORAGE_TEMP_PATH:${user.home}/.law-firm/temp}
+      # 允许的文件类型
+      allowed-types: ${STORAGE_ALLOWED_TYPES:*}
+      # 禁止的文件类型
+      denied-types: ${STORAGE_DENIED_TYPES:exe,bat,sh,dll,com,scr}
+
+    # 本地存储配置
+    local:
+      enabled: ${STORAGE_LOCAL_ENABLED:true}
+      base-path: ${STORAGE_LOCAL_BASE_PATH:${user.home}/.law-firm/storage}
+      url-prefix: ${STORAGE_LOCAL_URL_PREFIX:http://localhost:8080/api/files}
+
+    # MinIO对象存储配置
+    minio:
+      enabled: ${STORAGE_MINIO_ENABLED:true}
+      endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+      access-key: ${MINIO_ACCESS_KEY:minioadmin}
+      secret-key: ${MINIO_SECRET_KEY:minioadmin}
+      use-ssl: ${MINIO_USE_SSL:false}
+      
+    # 阿里云OSS配置
+    aliyun-oss:
+      enabled: ${STORAGE_ALIYUN_OSS_ENABLED:false}
+      endpoint: ${ALIYUN_OSS_ENDPOINT:oss-cn-beijing.aliyuncs.com}
+      access-key: ${ALIYUN_OSS_ACCESS_KEY:}
+      secret-key: ${ALIYUN_OSS_SECRET_KEY:}
+      
+    # 腾讯云COS配置
+    tencent-cos:
+      enabled: ${STORAGE_TENCENT_COS_ENABLED:false}
+      region: ${TENCENT_COS_REGION:ap-beijing}
+      app-id: ${TENCENT_COS_APP_ID:}
+      secret-id: ${TENCENT_COS_SECRET_ID:}
+      secret-key: ${TENCENT_COS_SECRET_KEY:}
+
+    # 业务模块存储桶配置
+    buckets:
+      # 案件文档存储桶
+      case-documents:
+        name: ${STORAGE_BUCKET_CASE:law-firm-case}
+        type: ${STORAGE_BUCKET_CASE_TYPE:${lawfirm.storage.global.default-type}}
+        path: "/case/documents"
+        max-size: ${STORAGE_BUCKET_CASE_MAX_SIZE:10737418240} # 10GB
+        
+      # 客户文档存储桶
+      client-documents:
+        name: ${STORAGE_BUCKET_CLIENT:law-firm-client}
+        type: ${STORAGE_BUCKET_CLIENT_TYPE:${lawfirm.storage.global.default-type}}
+        path: "/client/documents"
+        max-size: ${STORAGE_BUCKET_CLIENT_MAX_SIZE:5368709120} # 5GB
+        
+      # 合同模板存储桶
+      contract-templates:
+        name: ${STORAGE_BUCKET_CONTRACT:law-firm-contract}
+        type: ${STORAGE_BUCKET_CONTRACT_TYPE:${lawfirm.storage.global.default-type}}
+        path: "/contract/templates"
+        max-size: ${STORAGE_BUCKET_CONTRACT_MAX_SIZE:2147483648} # 2GB
+        
+      # 知识库存储桶
+      knowledge-base:
+        name: ${STORAGE_BUCKET_KNOWLEDGE:law-firm-knowledge}
+        type: ${STORAGE_BUCKET_KNOWLEDGE_TYPE:${lawfirm.storage.global.default-type}}
+        path: "/knowledge/files"
+        max-size: ${STORAGE_BUCKET_KNOWLEDGE_MAX_SIZE:21474836480} # 20GB
+        
+      # 任务附件存储桶
+      task-attachments:
+        name: ${STORAGE_BUCKET_TASK:law-firm-task}
+        type: ${STORAGE_BUCKET_TASK_TYPE:${lawfirm.storage.global.default-type}}
+        path: "/task/attachments"
+        max-size: ${STORAGE_BUCKET_TASK_MAX_SIZE:5368709120} # 5GB
+        
+      # 财务报表存储桶
+      finance-reports:
+        name: ${STORAGE_BUCKET_FINANCE:law-firm-finance}
+        type: ${STORAGE_BUCKET_FINANCE_TYPE:${lawfirm.storage.global.default-type}}
+        path: "/finance/reports"
+        max-size: ${STORAGE_BUCKET_FINANCE_MAX_SIZE:3221225472} # 3GB
+        
+      # 证据文件存储桶
+      evidence-files:
+        name: ${STORAGE_BUCKET_EVIDENCE:law-firm-evidence}
+        type: ${STORAGE_BUCKET_EVIDENCE_TYPE:${lawfirm.storage.global.default-type}}
+        path: "/evidence/files"
+        max-size: ${STORAGE_BUCKET_EVIDENCE_MAX_SIZE:10737418240} # 10GB
+        
+      # 档案文件存储桶
+      archive-files:
+        name: ${STORAGE_BUCKET_ARCHIVE:law-firm-archive}
+        type: ${STORAGE_BUCKET_ARCHIVE_TYPE:${lawfirm.storage.global.default-type}}
+        path: "/archive/files"
+        max-size: ${STORAGE_BUCKET_ARCHIVE_MAX_SIZE:53687091200} # 50GB
+
+    # 文档模块存储配置
+    document:
+      # 文档存储配置
+      storage:
+        # 默认存储类型：继承全局配置
+        default-type: ${DOCUMENT_STORAGE_TYPE:${lawfirm.storage.global.default-type}}
+        # 本地存储路径
+        local-path: ${DOCUMENT_LOCAL_PATH:${user.home}/lawfirm/document}
+        # 临时文件存储路径
+        temp-path: ${DOCUMENT_TEMP_PATH:${lawfirm.storage.global.temp-path}/document}
+        # 文件访问基础URL
+        base-url: ${DOCUMENT_BASE_URL:/api/document/file}
+        # 预览文件访问URL
+        preview-url: ${DOCUMENT_PREVIEW_URL:/api/document/preview}
+        # 允许的文件类型（覆盖全局配置）
+        allowed-types: ${DOCUMENT_ALLOWED_TYPES:doc,docx,pdf,txt,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,zip,rar}
+        # 最大文件大小（字节）- 与全局配置保持一致
+        max-size: ${DOCUMENT_MAX_SIZE:${lawfirm.storage.global.max-file-size}}
+
+      # 文档预览配置
+      preview:
+        # 是否启用水印
+        watermark-enabled: ${DOCUMENT_WATERMARK_ENABLED:true}
+        # 水印文字
+        watermark-text: ${DOCUMENT_WATERMARK_TEXT:预览版本，仅供查看}
+        # 是否启用文件格式转换
+        convert-enabled: ${DOCUMENT_CONVERT_ENABLED:true}
+        # 支持预览的文件类型
+        supported-types: ${DOCUMENT_PREVIEW_TYPES:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,jpg,jpeg,png,gif}
+
+      # 文档版本控制
+      version:
+        # 是否启用版本控制
+        enabled: ${DOCUMENT_VERSION_ENABLED:true}
+        # 最大保留版本数
+        max-count: ${DOCUMENT_VERSION_MAX_COUNT:10}
+
+      # 文档分享配置
+      share:
+        # 默认过期时间（小时）
+        default-expire-hours: ${DOCUMENT_SHARE_EXPIRE:24}
+        # 最大过期时间（小时）
+        max-expire-hours: ${DOCUMENT_SHARE_MAX_EXPIRE:720}
+        # 是否启用密码保护
+        password-protection: ${DOCUMENT_SHARE_PASSWORD:true}
+
+    # 性能和监控配置
+    monitoring:
+      # 启用存储监控
+      enabled: ${STORAGE_MONITORING_ENABLED:true}
+      # 监控数据收集间隔(秒)
+      collect-interval: ${STORAGE_MONITORING_INTERVAL:300}
+      # 存储使用率告警阈值(百分比)
+      usage-alert-threshold: ${STORAGE_USAGE_ALERT_THRESHOLD:80}
+      # 性能测试文件大小(字节)
+      performance-test-size: ${STORAGE_PERFORMANCE_TEST_SIZE:1048576} # 1MB
+      
+    # 清理任务配置
+    cleanup:
+      # 启用自动清理
+      enabled: ${STORAGE_CLEANUP_ENABLED:true}
+      # 临时文件过期时间(小时)
+      temp-file-expire-hours: ${STORAGE_TEMP_FILE_EXPIRE:24}
+      # 清理任务执行时间(Cron表达式)
+      schedule: ${STORAGE_CLEANUP_SCHEDULE:0 0 2 * * ?} # 每天凌晨2点 
+
+    # 存储相关定时任务配置
+    scheduling:
+      enabled: ${STORAGE_SCHEDULING_ENABLED:true}
+      # 清理临时文件 - 每天凌晨2点执行
+      cleanup-temp-files: ${STORAGE_CLEANUP_TEMP:0 0 2 * * ?}
+      # 计算存储空间使用情况 - 每天凌晨3点执行
+      calculate-storage-usage: ${STORAGE_USAGE_CALC:0 0 3 * * ?}
+      # 重建文档索引 - 每周日凌晨1点执行
+      rebuild-document-index: ${STORAGE_REBUILD_INDEX:0 0 1 ? * SUN}
+      # 优化搜索索引 - 每天凌晨4点执行
+      optimize-search-index: ${STORAGE_OPTIMIZE_INDEX:0 0 4 * * ?}
+      # 清理过期文档 - 每天凌晨5点执行
+      cleanup-expired-documents: ${STORAGE_CLEANUP_EXPIRED:0 0 5 * * ?}
+      # 清理操作日志 - 每月1日凌晨6点执行
+      cleanup-operation-logs: ${STORAGE_CLEANUP_LOGS:0 0 6 1 * ?} 

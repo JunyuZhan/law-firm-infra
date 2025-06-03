@@ -79,12 +79,14 @@ public class WorkTaskServiceImpl extends BaseServiceImpl<WorkTaskMapper, WorkTas
      * 通知服务（如无外部实现，这里简单定义内部类模拟）
      * @deprecated 使用TaskMessageService替代
      */
+    @Deprecated
     @Autowired(required = false)
     private NotificationService notificationService;
 
     /**
      * @deprecated 使用TaskMessageService替代
      */
+    @Deprecated
     @Autowired(required = false)
     @Qualifier("taskMessageSender")
     private MessageSender messageSender;

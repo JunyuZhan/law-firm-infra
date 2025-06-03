@@ -162,6 +162,7 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
             if (cache != null) {
                 Object nativeCache = cache.getNativeCache();
                 if (nativeCache instanceof ConcurrentMap) {
+                    @SuppressWarnings("unchecked")
                     ConcurrentMap<?, ?> map = (ConcurrentMap<?, ?>) nativeCache;
                     stats.append(String.format("- %s: %d 条记录\n", cacheName, map.size()));
                 } else {
@@ -190,6 +191,7 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
         
         Object nativeCache = cache.getNativeCache();
         if (nativeCache instanceof ConcurrentMap) {
+            @SuppressWarnings("unchecked")
             ConcurrentMap<Object, Object> map = (ConcurrentMap<Object, Object>) nativeCache;
             
             // 找到所有匹配的键并删除

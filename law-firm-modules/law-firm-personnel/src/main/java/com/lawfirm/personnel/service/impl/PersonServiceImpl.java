@@ -405,11 +405,6 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<Object> listObjs() {
-        return new ArrayList<>();
-    }
-
-    @Override
     public <V> List<V> listObjs(Function<? super Object, V> mapper) {
         return new ArrayList<>();
     }
@@ -437,5 +432,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public boolean saveBatch(Collection<Person> entityList, int batchSize) {
         return saveBatch(entityList);
+    }
+
+    @Override
+    public <E> List<E> listObjs() {
+        return new ArrayList<>();
     }
 } 
