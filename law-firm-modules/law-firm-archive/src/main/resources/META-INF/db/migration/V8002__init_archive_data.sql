@@ -35,141 +35,141 @@ INSERT INTO sys_dict_type (dict_name, dict_type, status, create_by, create_time,
 
 -- 档案类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '案件档案', '1', 'archive_type', '', 'primary', 'Y', 1, 'system', NOW(), '案件相关档案'),
-(2, '合同档案', '2', 'archive_type', '', 'success', 'N', 1, 'system', NOW(), '合同相关档案'),
-(3, '文档档案', '3', 'archive_type', '', 'info', 'N', 1, 'system', NOW(), '普通文档档案'),
-(4, '行政档案', '4', 'archive_type', '', 'warning', 'N', 1, 'system', NOW(), '行政相关档案'),
-(5, '财务档案', '5', 'archive_type', '', 'danger', 'N', 1, 'system', NOW(), '财务相关档案');
+(1, '案件档案', '1', 'archive_type', '', 'primary', 1, 1, 'system', NOW(), '案件相关档案'),
+(2, '合同档案', '2', 'archive_type', '', 'success', 0, 1, 'system', NOW(), '合同相关档案'),
+(3, '文档档案', '3', 'archive_type', '', 'info', 0, 1, 'system', NOW(), '普通文档档案'),
+(4, '行政档案', '4', 'archive_type', '', 'warning', 0, 1, 'system', NOW(), '行政相关档案'),
+(5, '财务档案', '5', 'archive_type', '', 'danger', 0, 1, 'system', NOW(), '财务相关档案');
 
 -- 档案状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '在库', '1', 'archive_status', '', 'success', 'Y', 1, 'system', NOW(), '档案在库状态'),
-(2, '借出', '2', 'archive_status', '', 'warning', 'N', 1, 'system', NOW(), '档案借出状态'),
-(3, '遗失', '3', 'archive_status', '', 'danger', 'N', 1, 'system', NOW(), '档案遗失状态'),
-(4, '损坏', '4', 'archive_status', '', 'danger', 'N', 1, 'system', NOW(), '档案损坏状态'),
-(5, '已销毁', '5', 'archive_status', '', 'info', 'N', 1, 'system', NOW(), '档案已销毁状态');
+(1, '在库', '1', 'archive_status', '', 'success', 1, 1, 'system', NOW(), '档案在库状态'),
+(2, '借出', '2', 'archive_status', '', 'warning', 0, 1, 'system', NOW(), '档案借出状态'),
+(3, '遗失', '3', 'archive_status', '', 'danger', 0, 1, 'system', NOW(), '档案遗失状态'),
+(4, '损坏', '4', 'archive_status', '', 'danger', 0, 1, 'system', NOW(), '档案损坏状态'),
+(5, '已销毁', '5', 'archive_status', '', 'info', 0, 1, 'system', NOW(), '档案已销毁状态');
 
 -- 档案密级
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '普通', '1', 'archive_level', '', 'info', 'Y', 1, 'system', NOW(), '普通密级'),
-(2, '内部', '2', 'archive_level', '', 'primary', 'N', 1, 'system', NOW(), '内部密级'),
-(3, '机密', '3', 'archive_level', '', 'warning', 'N', 1, 'system', NOW(), '机密密级'),
-(4, '绝密', '4', 'archive_level', '', 'danger', 'N', 1, 'system', NOW(), '绝密密级');
+(1, '普通', '1', 'archive_level', '', 'info', 1, 1, 'system', NOW(), '普通密级'),
+(2, '内部', '2', 'archive_level', '', 'primary', 0, 1, 'system', NOW(), '内部密级'),
+(3, '机密', '3', 'archive_level', '', 'warning', 0, 1, 'system', NOW(), '机密密级'),
+(4, '绝密', '4', 'archive_level', '', 'danger', 0, 1, 'system', NOW(), '绝密密级');
 
 -- 保管期限
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '3年', '1', 'retention_period', '', 'info', 'N', 1, 'system', NOW(), '保管3年'),
-(2, '5年', '2', 'retention_period', '', 'primary', 'Y', 1, 'system', NOW(), '保管5年'),
-(3, '10年', '3', 'retention_period', '', 'success', 'N', 1, 'system', NOW(), '保管10年'),
-(4, '30年', '4', 'retention_period', '', 'warning', 'N', 1, 'system', NOW(), '保管30年'),
-(5, '永久', '5', 'retention_period', '', 'danger', 'N', 1, 'system', NOW(), '永久保管');
+(1, '3年', '1', 'retention_period', '', 'info', 0, 1, 'system', NOW(), '保管3年'),
+(2, '5年', '2', 'retention_period', '', 'primary', 1, 1, 'system', NOW(), '保管5年'),
+(3, '10年', '3', 'retention_period', '', 'success', 0, 1, 'system', NOW(), '保管10年'),
+(4, '30年', '4', 'retention_period', '', 'warning', 0, 1, 'system', NOW(), '保管30年'),
+(5, '永久', '5', 'retention_period', '', 'danger', 0, 1, 'system', NOW(), '永久保管');
 
 -- 存储位置类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '楼层', '1', 'location_type', '', 'primary', 'N', 1, 'system', NOW(), '楼层位置'),
-(2, '区域', '2', 'location_type', '', 'success', 'N', 1, 'system', NOW(), '区域位置'),
-(3, '档案柜', '3', 'location_type', '', 'info', 'Y', 1, 'system', NOW(), '档案柜位置'),
-(4, '层板', '4', 'location_type', '', 'warning', 'N', 1, 'system', NOW(), '层板位置'),
-(5, '位置', '5', 'location_type', '', 'dark', 'N', 1, 'system', NOW(), '具体位置');
+(1, '楼层', '1', 'location_type', '', 'primary', 0, 1, 'system', NOW(), '楼层位置'),
+(2, '区域', '2', 'location_type', '', 'success', 0, 1, 'system', NOW(), '区域位置'),
+(3, '档案柜', '3', 'location_type', '', 'info', 1, 1, 'system', NOW(), '档案柜位置'),
+(4, '层板', '4', 'location_type', '', 'warning', 0, 1, 'system', NOW(), '层板位置'),
+(5, '位置', '5', 'location_type', '', 'dark', 0, 1, 'system', NOW(), '具体位置');
 
 -- 文件类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '原件', '1', 'file_type', '', 'danger', 'Y', 1, 'system', NOW(), '原始文件'),
-(2, '复印件', '2', 'file_type', '', 'warning', 'N', 1, 'system', NOW(), '复印文件'),
-(3, '扫描件', '3', 'file_type', '', 'info', 'N', 1, 'system', NOW(), '扫描文件'),
-(4, '电子件', '4', 'file_type', '', 'success', 'N', 1, 'system', NOW(), '电子文件');
+(1, '原件', '1', 'file_type', '', 'danger', 1, 1, 'system', NOW(), '原始文件'),
+(2, '复印件', '2', 'file_type', '', 'warning', 0, 1, 'system', NOW(), '复印文件'),
+(3, '扫描件', '3', 'file_type', '', 'info', 0, 1, 'system', NOW(), '扫描文件'),
+(4, '电子件', '4', 'file_type', '', 'success', 0, 1, 'system', NOW(), '电子文件');
 
 -- 文件状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '完好', '1', 'file_condition', '', 'success', 'Y', 1, 'system', NOW(), '文件完好'),
-(2, '轻微损坏', '2', 'file_condition', '', 'warning', 'N', 1, 'system', NOW(), '文件轻微损坏'),
-(3, '严重损坏', '3', 'file_condition', '', 'danger', 'N', 1, 'system', NOW(), '文件严重损坏'),
-(4, '无法使用', '4', 'file_condition', '', 'dark', 'N', 1, 'system', NOW(), '文件无法使用');
+(1, '完好', '1', 'file_condition', '', 'success', 1, 1, 'system', NOW(), '文件完好'),
+(2, '轻微损坏', '2', 'file_condition', '', 'warning', 0, 1, 'system', NOW(), '文件轻微损坏'),
+(3, '严重损坏', '3', 'file_condition', '', 'danger', 0, 1, 'system', NOW(), '文件严重损坏'),
+(4, '无法使用', '4', 'file_condition', '', 'dark', 0, 1, 'system', NOW(), '文件无法使用');
 
 -- 标签类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '业务标签', '1', 'label_type', '', 'primary', 'Y', 1, 'system', NOW(), '业务相关标签'),
-(2, '状态标签', '2', 'label_type', '', 'info', 'N', 1, 'system', NOW(), '状态相关标签'),
-(3, '优先级标签', '3', 'label_type', '', 'warning', 'N', 1, 'system', NOW(), '优先级标签'),
-(4, '自定义标签', '4', 'label_type', '', 'success', 'N', 1, 'system', NOW(), '自定义标签');
+(1, '业务标签', '1', 'label_type', '', 'primary', 1, 1, 'system', NOW(), '业务相关标签'),
+(2, '状态标签', '2', 'label_type', '', 'info', 0, 1, 'system', NOW(), '状态相关标签'),
+(3, '优先级标签', '3', 'label_type', '', 'warning', 0, 1, 'system', NOW(), '优先级标签'),
+(4, '自定义标签', '4', 'label_type', '', 'success', 0, 1, 'system', NOW(), '自定义标签');
 
 -- 借阅目的
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '业务办理', '1', 'borrow_purpose', '', 'primary', 'Y', 1, 'system', NOW(), '业务办理目的'),
-(2, '研究学习', '2', 'borrow_purpose', '', 'success', 'N', 1, 'system', NOW(), '研究学习目的'),
-(3, '审计检查', '3', 'borrow_purpose', '', 'warning', 'N', 1, 'system', NOW(), '审计检查目的'),
-(4, '其他', '4', 'borrow_purpose', '', 'info', 'N', 1, 'system', NOW(), '其他目的');
+(1, '业务办理', '1', 'borrow_purpose', '', 'primary', 1, 1, 'system', NOW(), '业务办理目的'),
+(2, '研究学习', '2', 'borrow_purpose', '', 'success', 0, 1, 'system', NOW(), '研究学习目的'),
+(3, '审计检查', '3', 'borrow_purpose', '', 'warning', 0, 1, 'system', NOW(), '审计检查目的'),
+(4, '其他', '4', 'borrow_purpose', '', 'info', 0, 1, 'system', NOW(), '其他目的');
 
 -- 借阅类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '普通借阅', '1', 'borrow_type', '', 'primary', 'Y', 1, 'system', NOW(), '普通借阅'),
-(2, '紧急借阅', '2', 'borrow_type', '', 'danger', 'N', 1, 'system', NOW(), '紧急借阅'),
-(3, '外借', '3', 'borrow_type', '', 'warning', 'N', 1, 'system', NOW(), '外借档案');
+(1, '普通借阅', '1', 'borrow_type', '', 'primary', 1, 1, 'system', NOW(), '普通借阅'),
+(2, '紧急借阅', '2', 'borrow_type', '', 'danger', 0, 1, 'system', NOW(), '紧急借阅'),
+(3, '外借', '3', 'borrow_type', '', 'warning', 0, 1, 'system', NOW(), '外借档案');
 
 -- 借阅状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '申请中', '1', 'borrow_status', '', 'info', 'Y', 1, 'system', NOW(), '借阅申请中'),
-(2, '已批准', '2', 'borrow_status', '', 'success', 'N', 1, 'system', NOW(), '借阅已批准'),
-(3, '已借出', '3', 'borrow_status', '', 'primary', 'N', 1, 'system', NOW(), '档案已借出'),
-(4, '已归还', '4', 'borrow_status', '', 'default', 'N', 1, 'system', NOW(), '档案已归还'),
-(5, '已拒绝', '5', 'borrow_status', '', 'danger', 'N', 1, 'system', NOW(), '借阅已拒绝'),
-(6, '已超期', '6', 'borrow_status', '', 'warning', 'N', 1, 'system', NOW(), '借阅已超期');
+(1, '申请中', '1', 'borrow_status', '', 'info', 1, 1, 'system', NOW(), '借阅申请中'),
+(2, '已批准', '2', 'borrow_status', '', 'success', 0, 1, 'system', NOW(), '借阅已批准'),
+(3, '已借出', '3', 'borrow_status', '', 'primary', 0, 1, 'system', NOW(), '档案已借出'),
+(4, '已归还', '4', 'borrow_status', '', 'default', 0, 1, 'system', NOW(), '档案已归还'),
+(5, '已拒绝', '5', 'borrow_status', '', 'danger', 0, 1, 'system', NOW(), '借阅已拒绝'),
+(6, '已超期', '6', 'borrow_status', '', 'warning', 0, 1, 'system', NOW(), '借阅已超期');
 
 -- 审批结果
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '待审批', '1', 'approval_result', '', 'warning', 'Y', 1, 'system', NOW(), '待审批'),
-(2, '同意', '2', 'approval_result', '', 'success', 'N', 1, 'system', NOW(), '同意审批'),
-(3, '拒绝', '3', 'approval_result', '', 'danger', 'N', 1, 'system', NOW(), '拒绝审批');
+(1, '待审批', '1', 'approval_result', '', 'warning', 1, 1, 'system', NOW(), '待审批'),
+(2, '同意', '2', 'approval_result', '', 'success', 0, 1, 'system', NOW(), '同意审批'),
+(3, '拒绝', '3', 'approval_result', '', 'danger', 0, 1, 'system', NOW(), '拒绝审批');
 
 -- 归还状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '完好', '1', 'archive_condition', '', 'success', 'Y', 1, 'system', NOW(), '档案完好'),
-(2, '轻微损坏', '2', 'archive_condition', '', 'warning', 'N', 1, 'system', NOW(), '档案轻微损坏'),
-(3, '严重损坏', '3', 'archive_condition', '', 'danger', 'N', 1, 'system', NOW(), '档案严重损坏'),
-(4, '遗失', '4', 'archive_condition', '', 'dark', 'N', 1, 'system', NOW(), '档案遗失');
+(1, '完好', '1', 'archive_condition', '', 'success', 1, 1, 'system', NOW(), '档案完好'),
+(2, '轻微损坏', '2', 'archive_condition', '', 'warning', 0, 1, 'system', NOW(), '档案轻微损坏'),
+(3, '严重损坏', '3', 'archive_condition', '', 'danger', 0, 1, 'system', NOW(), '档案严重损坏'),
+(4, '遗失', '4', 'archive_condition', '', 'dark', 0, 1, 'system', NOW(), '档案遗失');
 
 -- 操作类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '创建', '1', 'archive_operation_type', '', 'success', 'Y', 1, 'system', NOW(), '创建档案'),
-(2, '查看', '2', 'archive_operation_type', '', 'info', 'N', 1, 'system', NOW(), '查看档案'),
-(3, '编辑', '3', 'archive_operation_type', '', 'warning', 'N', 1, 'system', NOW(), '编辑档案'),
-(4, '删除', '4', 'archive_operation_type', '', 'danger', 'N', 1, 'system', NOW(), '删除档案'),
-(5, '借阅', '5', 'archive_operation_type', '', 'primary', 'N', 1, 'system', NOW(), '借阅档案'),
-(6, '归还', '6', 'archive_operation_type', '', 'default', 'N', 1, 'system', NOW(), '归还档案'),
-(7, '盘点', '7', 'archive_operation_type', '', 'dark', 'N', 1, 'system', NOW(), '盘点档案'),
-(8, '销毁', '8', 'archive_operation_type', '', 'secondary', 'N', 1, 'system', NOW(), '销毁档案');
+(1, '创建', '1', 'archive_operation_type', '', 'success', 1, 1, 'system', NOW(), '创建档案'),
+(2, '查看', '2', 'archive_operation_type', '', 'info', 0, 1, 'system', NOW(), '查看档案'),
+(3, '编辑', '3', 'archive_operation_type', '', 'warning', 0, 1, 'system', NOW(), '编辑档案'),
+(4, '删除', '4', 'archive_operation_type', '', 'danger', 0, 1, 'system', NOW(), '删除档案'),
+(5, '借阅', '5', 'archive_operation_type', '', 'primary', 0, 1, 'system', NOW(), '借阅档案'),
+(6, '归还', '6', 'archive_operation_type', '', 'default', 0, 1, 'system', NOW(), '归还档案'),
+(7, '盘点', '7', 'archive_operation_type', '', 'dark', 0, 1, 'system', NOW(), '盘点档案'),
+(8, '销毁', '8', 'archive_operation_type', '', 'secondary', 0, 1, 'system', NOW(), '销毁档案');
 
 -- 盘点类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '全面盘点', '1', 'inventory_type', '', 'primary', 'Y', 1, 'system', NOW(), '全面盘点'),
-(2, '抽样盘点', '2', 'inventory_type', '', 'info', 'N', 1, 'system', NOW(), '抽样盘点'),
-(3, '专项盘点', '3', 'inventory_type', '', 'warning', 'N', 1, 'system', NOW(), '专项盘点');
+(1, '全面盘点', '1', 'inventory_type', '', 'primary', 1, 1, 'system', NOW(), '全面盘点'),
+(2, '抽样盘点', '2', 'inventory_type', '', 'info', 0, 1, 'system', NOW(), '抽样盘点'),
+(3, '专项盘点', '3', 'inventory_type', '', 'warning', 0, 1, 'system', NOW(), '专项盘点');
 
 -- 盘点状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '进行中', '1', 'inventory_status', '', 'warning', 'Y', 1, 'system', NOW(), '盘点进行中'),
-(2, '已完成', '2', 'inventory_status', '', 'success', 'N', 1, 'system', NOW(), '盘点已完成'),
-(3, '已暂停', '3', 'inventory_status', '', 'info', 'N', 1, 'system', NOW(), '盘点已暂停');
+(1, '进行中', '1', 'inventory_status', '', 'warning', 1, 1, 'system', NOW(), '盘点进行中'),
+(2, '已完成', '2', 'inventory_status', '', 'success', 0, 1, 'system', NOW(), '盘点已完成'),
+(3, '已暂停', '3', 'inventory_status', '', 'info', 0, 1, 'system', NOW(), '盘点已暂停');
 
 -- 销毁原因
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '超期', '1', 'destroy_reason', '', 'warning', 'Y', 1, 'system', NOW(), '保管期超期'),
-(2, '损坏', '2', 'destroy_reason', '', 'danger', 'N', 1, 'system', NOW(), '档案损坏'),
-(3, '法定要求', '3', 'destroy_reason', '', 'primary', 'N', 1, 'system', NOW(), '法定要求销毁'),
-(4, '其他', '4', 'destroy_reason', '', 'info', 'N', 1, 'system', NOW(), '其他原因');
+(1, '超期', '1', 'destroy_reason', '', 'warning', 1, 1, 'system', NOW(), '保管期超期'),
+(2, '损坏', '2', 'destroy_reason', '', 'danger', 0, 1, 'system', NOW(), '档案损坏'),
+(3, '法定要求', '3', 'destroy_reason', '', 'primary', 0, 1, 'system', NOW(), '法定要求销毁'),
+(4, '其他', '4', 'destroy_reason', '', 'info', 0, 1, 'system', NOW(), '其他原因');
 
 -- 销毁方式
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '粉碎', '1', 'destroy_method', '', 'primary', 'Y', 1, 'system', NOW(), '粉碎销毁'),
-(2, '焚烧', '2', 'destroy_method', '', 'danger', 'N', 1, 'system', NOW(), '焚烧销毁'),
-(3, '其他', '3', 'destroy_method', '', 'info', 'N', 1, 'system', NOW(), '其他方式');
+(1, '粉碎', '1', 'destroy_method', '', 'primary', 1, 1, 'system', NOW(), '粉碎销毁'),
+(2, '焚烧', '2', 'destroy_method', '', 'danger', 0, 1, 'system', NOW(), '焚烧销毁'),
+(3, '其他', '3', 'destroy_method', '', 'info', 0, 1, 'system', NOW(), '其他方式');
 
 -- 销毁状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '申请中', '1', 'destroy_status', '', 'warning', 'Y', 1, 'system', NOW(), '销毁申请中'),
-(2, '已批准', '2', 'destroy_status', '', 'success', 'N', 1, 'system', NOW(), '销毁已批准'),
-(3, '已销毁', '3', 'destroy_status', '', 'info', 'N', 1, 'system', NOW(), '已销毁'),
-(4, '已拒绝', '4', 'destroy_status', '', 'danger', 'N', 1, 'system', NOW(), '销毁已拒绝');
+(1, '申请中', '1', 'destroy_status', '', 'warning', 1, 1, 'system', NOW(), '销毁申请中'),
+(2, '已批准', '2', 'destroy_status', '', 'success', 0, 1, 'system', NOW(), '销毁已批准'),
+(3, '已销毁', '3', 'destroy_status', '', 'info', 0, 1, 'system', NOW(), '已销毁'),
+(4, '已拒绝', '4', 'destroy_status', '', 'danger', 0, 1, 'system', NOW(), '销毁已拒绝');
 
 -- ======================= 档案分类初始化 =======================
 

@@ -33,7 +33,7 @@ CREATE TABLE message_base (
     priority TINYINT DEFAULT 2 COMMENT '优先级(1-低,2-中,3-高)',
     need_confirm TINYINT DEFAULT 0 COMMENT '是否需要确认(0-否,1-是)',
     confirm_time DATETIME COMMENT '确认时间',
-    message_config TEXT COMMENT '消息配置(JSON格式)',
+    message_config JSON COMMENT '消息配置(JSON格式)',
     business_id BIGINT COMMENT '关联业务ID',
     business_type VARCHAR(50) COMMENT '关联业务类型',
     contains_sensitive_data TINYINT DEFAULT 0 COMMENT '是否包含敏感数据(0-否,1-是)',

@@ -9,7 +9,7 @@ SET NAMES utf8mb4;
 
 -- ======================= 系统字典类型 =======================
 
--- 任务管理相关字典类型
+-- 任务管理相关字典类型  
 INSERT INTO sys_dict_type (dict_name, dict_type, status, create_by, create_time, remark) VALUES
 ('任务类型', 'task_type', 1, 'system', NOW(), '任务类型字典'),
 ('任务优先级', 'task_priority', 1, 'system', NOW(), '任务优先级字典'),
@@ -20,11 +20,9 @@ INSERT INTO sys_dict_type (dict_name, dict_type, status, create_by, create_time,
 ('参与角色', 'participant_role', 1, 'system', NOW(), '任务参与角色字典'),
 ('权限级别', 'permission_level', 1, 'system', NOW(), '任务权限级别字典'),
 ('工作类型', 'work_type', 1, 'system', NOW(), '工作类型字典'),
-('模板类型', 'template_type', 1, 'system', NOW(), '任务模板类型字典'),
 ('标签类型', 'tag_type', 1, 'system', NOW(), '任务标签类型字典'),
 ('附件类型', 'attachment_type', 1, 'system', NOW(), '任务附件类型字典'),
 ('内容类型', 'content_type', 1, 'system', NOW(), '任务内容类型字典'),
-('存储类型', 'storage_type', 1, 'system', NOW(), '存储类型字典'),
 ('统计类型', 'stat_type', 1, 'system', NOW(), '统计类型字典'),
 ('加入方式', 'join_type', 1, 'system', NOW(), '参与者加入方式字典');
 
@@ -32,115 +30,103 @@ INSERT INTO sys_dict_type (dict_name, dict_type, status, create_by, create_time,
 
 -- 任务类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '法律事务', '1', 'task_type', '', 'primary', 'Y', 1, 'system', NOW(), '法律相关任务'),
-(2, '行政事务', '2', 'task_type', '', 'success', 'N', 1, 'system', NOW(), '行政管理任务'),
-(3, '客户服务', '3', 'task_type', '', 'info', 'N', 1, 'system', NOW(), '客户服务任务'),
-(4, '财务管理', '4', 'task_type', '', 'warning', 'N', 1, 'system', NOW(), '财务相关任务'),
-(5, '日常事务', '5', 'task_type', '', 'secondary', 'N', 1, 'system', NOW(), '日常工作任务');
+(1, '法律事务', '1', 'task_type', '', 'primary', 1, 1, 'system', NOW(), '法律相关任务'),
+(2, '行政事务', '2', 'task_type', '', 'success', 0, 1, 'system', NOW(), '行政管理任务'),
+(3, '客户服务', '3', 'task_type', '', 'info', 0, 1, 'system', NOW(), '客户服务任务'),
+(4, '财务管理', '4', 'task_type', '', 'warning', 0, 1, 'system', NOW(), '财务相关任务'),
+(5, '日常事务', '5', 'task_type', '', 'secondary', 0, 1, 'system', NOW(), '日常工作任务');
 
 -- 任务优先级
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '低', '1', 'task_priority', '', 'success', 'N', 1, 'system', NOW(), '低优先级'),
-(2, '中', '2', 'task_priority', '', 'primary', 'Y', 1, 'system', NOW(), '中等优先级'),
-(3, '高', '3', 'task_priority', '', 'warning', 'N', 1, 'system', NOW(), '高优先级'),
-(4, '紧急', '4', 'task_priority', '', 'danger', 'N', 1, 'system', NOW(), '紧急优先级');
+(1, '低', '1', 'task_priority', '', 'success', 0, 1, 'system', NOW(), '低优先级'),
+(2, '中', '2', 'task_priority', '', 'primary', 1, 1, 'system', NOW(), '中等优先级'),
+(3, '高', '3', 'task_priority', '', 'warning', 0, 1, 'system', NOW(), '高优先级'),
+(4, '紧急', '4', 'task_priority', '', 'danger', 0, 1, 'system', NOW(), '紧急优先级');
 
 -- 任务状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '草稿', '1', 'task_status', '', 'secondary', 'Y', 1, 'system', NOW(), '草稿状态'),
-(2, '待分配', '2', 'task_status', '', 'info', 'N', 1, 'system', NOW(), '待分配状态'),
-(3, '进行中', '3', 'task_status', '', 'primary', 'N', 1, 'system', NOW(), '进行中状态'),
-(4, '已完成', '4', 'task_status', '', 'success', 'N', 1, 'system', NOW(), '已完成状态'),
-(5, '已暂停', '5', 'task_status', '', 'warning', 'N', 1, 'system', NOW(), '已暂停状态'),
-(6, '已取消', '6', 'task_status', '', 'danger', 'N', 1, 'system', NOW(), '已取消状态');
+(1, '草稿', '1', 'task_status', '', 'secondary', 1, 1, 'system', NOW(), '草稿状态'),
+(2, '待分配', '2', 'task_status', '', 'info', 0, 1, 'system', NOW(), '待分配状态'),
+(3, '进行中', '3', 'task_status', '', 'primary', 0, 1, 'system', NOW(), '进行中状态'),
+(4, '已完成', '4', 'task_status', '', 'success', 0, 1, 'system', NOW(), '已完成状态'),
+(5, '已暂停', '5', 'task_status', '', 'warning', 0, 1, 'system', NOW(), '已暂停状态'),
+(6, '已取消', '6', 'task_status', '', 'danger', 0, 1, 'system', NOW(), '已取消状态');
 
 -- 难度等级
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '简单', '1', 'difficulty_level', '', 'success', 'N', 1, 'system', NOW(), '简单任务'),
-(2, '中等', '2', 'difficulty_level', '', 'primary', 'Y', 1, 'system', NOW(), '中等难度'),
-(3, '困难', '3', 'difficulty_level', '', 'warning', 'N', 1, 'system', NOW(), '困难任务'),
-(4, '专家', '4', 'difficulty_level', '', 'danger', 'N', 1, 'system', NOW(), '专家级任务');
+(1, '简单', '1', 'difficulty_level', '', 'success', 0, 1, 'system', NOW(), '简单任务'),
+(2, '中等', '2', 'difficulty_level', '', 'primary', 1, 1, 'system', NOW(), '中等难度'),
+(3, '困难', '3', 'difficulty_level', '', 'warning', 0, 1, 'system', NOW(), '困难任务'),
+(4, '专家', '4', 'difficulty_level', '', 'danger', 0, 1, 'system', NOW(), '专家级任务');
 
 -- 重要程度
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '低', '1', 'importance_level', '', 'success', 'N', 1, 'system', NOW(), '低重要性'),
-(2, '中', '2', 'importance_level', '', 'primary', 'Y', 1, 'system', NOW(), '中等重要'),
-(3, '高', '3', 'importance_level', '', 'warning', 'N', 1, 'system', NOW(), '高重要性'),
-(4, '关键', '4', 'importance_level', '', 'danger', 'N', 1, 'system', NOW(), '关键重要');
+(1, '低', '1', 'importance_level', '', 'success', 0, 1, 'system', NOW(), '低重要性'),
+(2, '中', '2', 'importance_level', '', 'primary', 1, 1, 'system', NOW(), '中等重要'),
+(3, '高', '3', 'importance_level', '', 'warning', 0, 1, 'system', NOW(), '高重要性'),
+(4, '关键', '4', 'importance_level', '', 'danger', 0, 1, 'system', NOW(), '关键重要');
 
 -- 紧急程度
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '低', '1', 'urgency_level', '', 'success', 'N', 1, 'system', NOW(), '低紧急度'),
-(2, '中', '2', 'urgency_level', '', 'primary', 'Y', 1, 'system', NOW(), '中等紧急'),
-(3, '高', '3', 'urgency_level', '', 'warning', 'N', 1, 'system', NOW(), '高紧急度'),
-(4, '紧急', '4', 'urgency_level', '', 'danger', 'N', 1, 'system', NOW(), '紧急处理');
+(1, '低', '1', 'urgency_level', '', 'success', 0, 1, 'system', NOW(), '低紧急度'),
+(2, '中', '2', 'urgency_level', '', 'primary', 1, 1, 'system', NOW(), '中等紧急'),
+(3, '高', '3', 'urgency_level', '', 'warning', 0, 1, 'system', NOW(), '高紧急度'),
+(4, '紧急', '4', 'urgency_level', '', 'danger', 0, 1, 'system', NOW(), '紧急处理');
 
 -- 参与角色
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '创建者', '1', 'participant_role', '', 'primary', 'N', 1, 'system', NOW(), '任务创建者'),
-(2, '负责人', '2', 'participant_role', '', 'success', 'Y', 1, 'system', NOW(), '任务负责人'),
-(3, '参与者', '3', 'participant_role', '', 'info', 'N', 1, 'system', NOW(), '任务参与者'),
-(4, '观察者', '4', 'participant_role', '', 'secondary', 'N', 1, 'system', NOW(), '任务观察者');
+(1, '创建者', '1', 'participant_role', '', 'primary', 0, 1, 'system', NOW(), '任务创建者'),
+(2, '负责人', '2', 'participant_role', '', 'success', 1, 1, 'system', NOW(), '任务负责人'),
+(3, '参与者', '3', 'participant_role', '', 'info', 0, 1, 'system', NOW(), '任务参与者'),
+(4, '观察者', '4', 'participant_role', '', 'secondary', 0, 1, 'system', NOW(), '任务观察者');
 
 -- 权限级别
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '只读', '1', 'permission_level', '', 'info', 'Y', 1, 'system', NOW(), '只读权限'),
-(2, '编辑', '2', 'permission_level', '', 'primary', 'N', 1, 'system', NOW(), '编辑权限'),
-(3, '管理', '3', 'permission_level', '', 'warning', 'N', 1, 'system', NOW(), '管理权限');
+(1, '只读', '1', 'permission_level', '', 'info', 1, 1, 'system', NOW(), '只读权限'),
+(2, '编辑', '2', 'permission_level', '', 'primary', 0, 1, 'system', NOW(), '编辑权限'),
+(3, '管理', '3', 'permission_level', '', 'warning', 0, 1, 'system', NOW(), '管理权限');
 
 -- 工作类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '开发', '1', 'work_type', '', 'primary', 'N', 1, 'system', NOW(), '开发工作'),
-(2, '测试', '2', 'work_type', '', 'success', 'N', 1, 'system', NOW(), '测试工作'),
-(3, '文档', '3', 'work_type', '', 'info', 'N', 1, 'system', NOW(), '文档编写'),
-(4, '会议', '4', 'work_type', '', 'warning', 'Y', 1, 'system', NOW(), '会议讨论'),
-(5, '其他', '5', 'work_type', '', 'secondary', 'N', 1, 'system', NOW(), '其他工作');
-
--- 模板类型
-INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '任务模板', '1', 'template_type', '', 'primary', 'Y', 1, 'system', NOW(), '通用任务模板'),
-(2, '流程模板', '2', 'template_type', '', 'success', 'N', 1, 'system', NOW(), '工作流程模板'),
-(3, '检查清单', '3', 'template_type', '', 'info', 'N', 1, 'system', NOW(), '检查清单模板');
+(1, '开发', '1', 'work_type', '', 'primary', 0, 1, 'system', NOW(), '开发工作'),
+(2, '测试', '2', 'work_type', '', 'success', 0, 1, 'system', NOW(), '测试工作'),
+(3, '文档', '3', 'work_type', '', 'info', 0, 1, 'system', NOW(), '文档编写'),
+(4, '会议', '4', 'work_type', '', 'warning', 1, 1, 'system', NOW(), '会议讨论'),
+(5, '其他', '5', 'work_type', '', 'secondary', 0, 1, 'system', NOW(), '其他工作');
 
 -- 标签类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '优先级', '1', 'tag_type', '', 'danger', 'N', 1, 'system', NOW(), '优先级相关标签'),
-(2, '业务', '2', 'tag_type', '', 'primary', 'Y', 1, 'system', NOW(), '业务类型标签'),
-(3, '状态', '3', 'tag_type', '', 'success', 'N', 1, 'system', NOW(), '状态相关标签'),
-(4, '属性', '4', 'tag_type', '', 'info', 'N', 1, 'system', NOW(), '属性特征标签');
+(1, '优先级', '1', 'tag_type', '', 'danger', 0, 1, 'system', NOW(), '优先级相关标签'),
+(2, '业务', '2', 'tag_type', '', 'primary', 1, 1, 'system', NOW(), '业务类型标签'),
+(3, '状态', '3', 'tag_type', '', 'success', 0, 1, 'system', NOW(), '状态相关标签'),
+(4, '属性', '4', 'tag_type', '', 'info', 0, 1, 'system', NOW(), '属性特征标签');
 
 -- 附件类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '需求文档', '1', 'attachment_type', '', 'primary', 'Y', 1, 'system', NOW(), '需求说明文档'),
-(2, '设计图', '2', 'attachment_type', '', 'success', 'N', 1, 'system', NOW(), '设计图纸'),
-(3, '参考资料', '3', 'attachment_type', '', 'info', 'N', 1, 'system', NOW(), '参考资料'),
-(4, '其他', '4', 'attachment_type', '', 'secondary', 'N', 1, 'system', NOW(), '其他附件');
+(1, '需求文档', '1', 'attachment_type', '', 'primary', 1, 1, 'system', NOW(), '需求说明文档'),
+(2, '设计图', '2', 'attachment_type', '', 'success', 0, 1, 'system', NOW(), '设计图纸'),
+(3, '参考资料', '3', 'attachment_type', '', 'info', 0, 1, 'system', NOW(), '参考资料'),
+(4, '其他', '4', 'attachment_type', '', 'secondary', 0, 1, 'system', NOW(), '其他附件');
 
 -- 内容类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '主要内容', '1', 'content_type', '', 'primary', 'Y', 1, 'system', NOW(), '任务主要内容'),
-(2, '需求说明', '2', 'content_type', '', 'success', 'N', 1, 'system', NOW(), '需求详细说明'),
-(3, '验收标准', '3', 'content_type', '', 'warning', 'N', 1, 'system', NOW(), '验收标准'),
-(4, '操作指南', '4', 'content_type', '', 'info', 'N', 1, 'system', NOW(), '操作指导');
-
--- 存储类型
-INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '本地存储', '1', 'storage_type', '', 'primary', 'Y', 1, 'system', NOW(), '本地文件系统'),
-(2, '云存储', '2', 'storage_type', '', 'success', 'N', 1, 'system', NOW(), '云端存储'),
-(3, '第三方存储', '3', 'storage_type', '', 'info', 'N', 1, 'system', NOW(), '第三方存储服务');
+(1, '主要内容', '1', 'content_type', '', 'primary', 1, 1, 'system', NOW(), '任务主要内容'),
+(2, '需求说明', '2', 'content_type', '', 'success', 0, 1, 'system', NOW(), '需求详细说明'),
+(3, '验收标准', '3', 'content_type', '', 'warning', 0, 1, 'system', NOW(), '验收标准'),
+(4, '操作指南', '4', 'content_type', '', 'info', 0, 1, 'system', NOW(), '操作指导');
 
 -- 统计类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '日统计', '1', 'stat_type', '', 'primary', 'Y', 1, 'system', NOW(), '按日统计'),
-(2, '周统计', '2', 'stat_type', '', 'success', 'N', 1, 'system', NOW(), '按周统计'),
-(3, '月统计', '3', 'stat_type', '', 'info', 'N', 1, 'system', NOW(), '按月统计'),
-(4, '年统计', '4', 'stat_type', '', 'warning', 'N', 1, 'system', NOW(), '按年统计');
+(1, '日统计', '1', 'stat_type', '', 'primary', 1, 1, 'system', NOW(), '按日统计'),
+(2, '周统计', '2', 'stat_type', '', 'success', 0, 1, 'system', NOW(), '按周统计'),
+(3, '月统计', '3', 'stat_type', '', 'info', 0, 1, 'system', NOW(), '按月统计'),
+(4, '年统计', '4', 'stat_type', '', 'warning', 0, 1, 'system', NOW(), '按年统计');
 
 -- 加入方式
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '邀请', '1', 'join_type', '', 'success', 'Y', 1, 'system', NOW(), '受邀加入'),
-(2, '申请', '2', 'join_type', '', 'primary', 'N', 1, 'system', NOW(), '主动申请'),
-(3, '指派', '3', 'join_type', '', 'warning', 'N', 1, 'system', NOW(), '管理员指派');
+(1, '邀请', '1', 'join_type', '', 'success', 1, 1, 'system', NOW(), '受邀加入'),
+(2, '申请', '2', 'join_type', '', 'primary', 0, 1, 'system', NOW(), '主动申请'),
+(3, '指派', '3', 'join_type', '', 'warning', 0, 1, 'system', NOW(), '管理员指派');
 
 -- ======================= 任务分类数据 =======================
 

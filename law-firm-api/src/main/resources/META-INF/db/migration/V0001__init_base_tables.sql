@@ -182,7 +182,7 @@ CREATE TABLE storage_bucket (
     is_default TINYINT DEFAULT 0 COMMENT '是否默认(0-否,1-是)',
     is_public TINYINT DEFAULT 0 COMMENT '是否公开(0-否,1-是)',
     max_file_size BIGINT DEFAULT 104857600 COMMENT '最大文件大小(字节)',
-    allowed_extensions TEXT COMMENT '允许的文件扩展名(JSON格式)',
+    allowed_extensions JSON COMMENT '允许的文件扩展名(JSON格式)',
     sort INT DEFAULT 0 COMMENT '排序号',
     status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
     version INT DEFAULT 0 COMMENT '乐观锁版本号',

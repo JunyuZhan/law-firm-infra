@@ -4,6 +4,20 @@ spring:
   config:
     activate:
       on-profile: database
+  # Flyway配置
+  flyway:
+    # 是否允许迁移失败后继续启动应用（默认false，即失败时终止启动）
+    allow-failure: ${FLYWAY_ALLOW_FAILURE:false}
+    # 标准Spring Boot Flyway配置
+    enabled: ${FLYWAY_ENABLED:true}
+    baseline-on-migrate: true
+    baseline-version: "1000"
+    validate-on-migrate: true
+    out-of-order: true
+    locations: classpath:META-INF/db/migration
+    encoding: UTF-8
+    # 迁移失败时的处理策略
+    fail-on-missing-locations: true
 
 # 数据库版本管理规划
 # 基线版本分配：

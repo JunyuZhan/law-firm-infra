@@ -40,6 +40,9 @@ public class FlywayConfig {
             return null;
         }
 
+        // 获取是否允许迁移失败后继续启动的配置，默认false（即失败时终止启动）
+        boolean allowFailure = environment.getProperty("spring.flyway.allow-failure", Boolean.class, false);
+
         try {
             // 只配置API模块的迁移脚本位置
             Flyway flyway = Flyway.configure()
@@ -62,8 +65,14 @@ public class FlywayConfig {
             return flyway;
         } catch (Exception e) {
             log.error("API模块的数据库迁移失败: {}", e.getMessage(), e);
-            log.warn("迁移失败，但允许应用继续启动");
-            return null;
+            
+            if (allowFailure) {
+                log.warn("迁移失败，但允许应用继续启动");
+                return null;
+            } else {
+                log.error("迁移失败，应用启动终止");
+                throw new RuntimeException("数据库迁移失败，应用启动终止", e);
+            }
         }
     }
 } 

@@ -10,9 +10,9 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- ======================= 日程基础管理表 =======================
 
--- schedule_schedule表（日程主表）
-DROP TABLE IF EXISTS schedule_schedule;
-CREATE TABLE schedule_schedule (
+-- schedule_info表（日程主表）
+DROP TABLE IF EXISTS schedule_info;
+CREATE TABLE schedule_info (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '日程ID',
     tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
     schedule_number VARCHAR(50) NOT NULL COMMENT '日程编号',
@@ -102,8 +102,105 @@ CREATE TABLE schedule_content (
     INDEX idx_sort_order (sort_order),
     INDEX idx_status (status),
     
-    CONSTRAINT fk_schedule_content_schedule FOREIGN KEY (schedule_id) REFERENCES schedule_schedule(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日程内容详情表'; 
+    CONSTRAINT fk_schedule_content_schedule FOREIGN KEY (schedule_id) REFERENCES schedule_info(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日程内容详情表';
+
+-- schedule_calendar表（日历表）
+DROP TABLE IF EXISTS schedule_calendar;
+CREATE TABLE schedule_calendar (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '日历ID',
+    tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
+    calendar_name VARCHAR(100) NOT NULL COMMENT '日历名称',
+    calendar_code VARCHAR(50) NOT NULL COMMENT '日历代码',
+    calendar_type TINYINT DEFAULT 1 COMMENT '日历类型(1-个人,2-团队,3-公共,4-外部,5-假期)',
+    owner_id BIGINT COMMENT '所有者ID',
+    color VARCHAR(7) DEFAULT '#4285F4' COMMENT '日历颜色',
+    is_default TINYINT DEFAULT 0 COMMENT '是否默认日历(0-否,1-是)',
+    is_public TINYINT DEFAULT 0 COMMENT '是否公开(0-否,1-是)',
+    description VARCHAR(500) COMMENT '日历描述',
+    timezone VARCHAR(50) DEFAULT 'Asia/Shanghai' COMMENT '时区',
+    status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
+    version INT DEFAULT 0 COMMENT '乐观锁版本号',
+    deleted TINYINT DEFAULT 0 COMMENT '删除标记(0-正常,1-删除)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    create_by VARCHAR(50) COMMENT '创建人',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    update_by VARCHAR(50) COMMENT '更新人',
+    remark VARCHAR(255) COMMENT '备注',
+    
+    UNIQUE KEY uk_tenant_calendar_code (tenant_id, calendar_code),
+    INDEX idx_tenant_id (tenant_id),
+    INDEX idx_calendar_name (calendar_name),
+    INDEX idx_calendar_type (calendar_type),
+    INDEX idx_owner_id (owner_id),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日历表';
+
+-- schedule_meeting_room表（会议室表）
+DROP TABLE IF EXISTS schedule_meeting_room;
+CREATE TABLE schedule_meeting_room (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '会议室ID',
+    tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
+    room_name VARCHAR(100) NOT NULL COMMENT '会议室名称',
+    room_code VARCHAR(50) NOT NULL COMMENT '会议室编码',
+    room_location VARCHAR(200) COMMENT '会议室位置',
+    capacity INT DEFAULT 0 COMMENT '容纳人数',
+    floor VARCHAR(20) COMMENT '楼层',
+    building VARCHAR(50) COMMENT '建筑物',
+    has_projector TINYINT DEFAULT 0 COMMENT '是否有投影仪(0-否,1-是)',
+    has_video_conf TINYINT DEFAULT 0 COMMENT '是否有视频会议(0-否,1-是)',
+    has_whiteboard TINYINT DEFAULT 0 COMMENT '是否有白板(0-否,1-是)',
+    room_status TINYINT DEFAULT 1 COMMENT '会议室状态(0-维护中,1-可用,2-占用)',
+    contact_person VARCHAR(50) COMMENT '联系人',
+    contact_phone VARCHAR(20) COMMENT '联系电话',
+    booking_advance_hours INT DEFAULT 24 COMMENT '预订提前小时数',
+    max_booking_hours INT DEFAULT 8 COMMENT '最大预订小时数',
+    status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
+    version INT DEFAULT 0 COMMENT '乐观锁版本号',
+    deleted TINYINT DEFAULT 0 COMMENT '删除标记(0-正常,1-删除)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    create_by VARCHAR(50) COMMENT '创建人',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    update_by VARCHAR(50) COMMENT '更新人',
+    remark VARCHAR(255) COMMENT '备注',
+    
+    UNIQUE KEY uk_tenant_room_code (tenant_id, room_code),
+    INDEX idx_tenant_id (tenant_id),
+    INDEX idx_room_name (room_name),
+    INDEX idx_capacity (capacity),
+    INDEX idx_room_status (room_status),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='会议室表';
+
+-- schedule_room_equipment表（会议室设备表）
+DROP TABLE IF EXISTS schedule_room_equipment;
+CREATE TABLE schedule_room_equipment (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '设备ID',
+    tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
+    room_id BIGINT NOT NULL COMMENT '会议室ID',
+    equipment_name VARCHAR(100) NOT NULL COMMENT '设备名称',
+    equipment_type TINYINT DEFAULT 1 COMMENT '设备类型(1-投影仪,2-音响,3-话筒,4-白板,5-电脑,6-电视,7-其他)',
+    equipment_model VARCHAR(100) COMMENT '设备型号',
+    purchase_date DATE COMMENT '购买日期',
+    equipment_status TINYINT DEFAULT 1 COMMENT '设备状态(0-故障,1-正常,2-维护中)',
+    status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
+    version INT DEFAULT 0 COMMENT '乐观锁版本号',
+    deleted TINYINT DEFAULT 0 COMMENT '删除标记(0-正常,1-删除)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    create_by VARCHAR(50) COMMENT '创建人',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    update_by VARCHAR(50) COMMENT '更新人',
+    remark VARCHAR(255) COMMENT '备注',
+    
+    INDEX idx_tenant_id (tenant_id),
+    INDEX idx_room_id (room_id),
+    INDEX idx_equipment_name (equipment_name),
+    INDEX idx_equipment_type (equipment_type),
+    INDEX idx_equipment_status (equipment_status),
+    INDEX idx_status (status),
+    
+    CONSTRAINT fk_room_equipment_room FOREIGN KEY (room_id) REFERENCES schedule_meeting_room(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='会议室设备表'; 
 
 -- 恢复外键约束
 SET FOREIGN_KEY_CHECKS = 1; 

@@ -42,191 +42,191 @@ INSERT INTO sys_dict_type (dict_name, dict_type, status, create_by, create_time,
 
 -- 分析任务类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '业务分析', '1', 'analysis_task_type', '', 'primary', 'Y', 1, 'system', NOW(), '业务数据分析'),
-(2, '财务分析', '2', 'analysis_task_type', '', 'success', 'N', 1, 'system', NOW(), '财务数据分析'),
-(3, '客户分析', '3', 'analysis_task_type', '', 'info', 'N', 1, 'system', NOW(), '客户行为分析'),
-(4, '案件分析', '4', 'analysis_task_type', '', 'warning', 'N', 1, 'system', NOW(), '案件效率分析'),
-(5, '绩效分析', '5', 'analysis_task_type', '', 'danger', 'N', 1, 'system', NOW(), '绩效评估分析');
+(1, '业务分析', '1', 'analysis_task_type', '', 'primary', 1, 1, 'system', NOW(), '业务数据分析'),
+(2, '财务分析', '2', 'analysis_task_type', '', 'success', 0, 1, 'system', NOW(), '财务数据分析'),
+(3, '客户分析', '3', 'analysis_task_type', '', 'info', 0, 1, 'system', NOW(), '客户行为分析'),
+(4, '案件分析', '4', 'analysis_task_type', '', 'warning', 0, 1, 'system', NOW(), '案件效率分析'),
+(5, '绩效分析', '5', 'analysis_task_type', '', 'danger', 0, 1, 'system', NOW(), '绩效评估分析');
 
 -- 分析类别
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '统计分析', '1', 'analysis_category', '', 'primary', 'Y', 1, 'system', NOW(), '基础统计分析'),
-(2, '趋势分析', '2', 'analysis_category', '', 'success', 'N', 1, 'system', NOW(), '趋势变化分析'),
-(3, '对比分析', '3', 'analysis_category', '', 'info', 'N', 1, 'system', NOW(), '对比分析'),
-(4, '预测分析', '4', 'analysis_category', '', 'warning', 'N', 1, 'system', NOW(), '预测性分析');
+(1, '统计分析', '1', 'analysis_category', '', 'primary', 1, 1, 'system', NOW(), '基础统计分析'),
+(2, '趋势分析', '2', 'analysis_category', '', 'success', 0, 1, 'system', NOW(), '趋势变化分析'),
+(3, '对比分析', '3', 'analysis_category', '', 'info', 0, 1, 'system', NOW(), '对比分析'),
+(4, '预测分析', '4', 'analysis_category', '', 'warning', 0, 1, 'system', NOW(), '预测性分析');
 
 -- 任务状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '待执行', '1', 'analysis_task_status', '', 'secondary', 'Y', 1, 'system', NOW(), '等待执行'),
-(2, '执行中', '2', 'analysis_task_status', '', 'primary', 'N', 1, 'system', NOW(), '正在执行'),
-(3, '已完成', '3', 'analysis_task_status', '', 'success', 'N', 1, 'system', NOW(), '执行完成'),
-(4, '失败', '4', 'analysis_task_status', '', 'danger', 'N', 1, 'system', NOW(), '执行失败'),
-(5, '已暂停', '5', 'analysis_task_status', '', 'warning', 'N', 1, 'system', NOW(), '暂停执行'),
-(6, '已取消', '6', 'analysis_task_status', '', 'dark', 'N', 1, 'system', NOW(), '取消执行');
+(1, '待执行', '1', 'analysis_task_status', '', 'secondary', 1, 1, 'system', NOW(), '等待执行'),
+(2, '执行中', '2', 'analysis_task_status', '', 'primary', 0, 1, 'system', NOW(), '正在执行'),
+(3, '已完成', '3', 'analysis_task_status', '', 'success', 0, 1, 'system', NOW(), '执行完成'),
+(4, '失败', '4', 'analysis_task_status', '', 'danger', 0, 1, 'system', NOW(), '执行失败'),
+(5, '已暂停', '5', 'analysis_task_status', '', 'warning', 0, 1, 'system', NOW(), '暂停执行'),
+(6, '已取消', '6', 'analysis_task_status', '', 'dark', 0, 1, 'system', NOW(), '取消执行');
 
 -- 任务优先级
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '低', '1', 'analysis_priority', '', 'success', 'N', 1, 'system', NOW(), '低优先级'),
-(2, '中', '2', 'analysis_priority', '', 'primary', 'Y', 1, 'system', NOW(), '中等优先级'),
-(3, '高', '3', 'analysis_priority', '', 'warning', 'N', 1, 'system', NOW(), '高优先级'),
-(4, '紧急', '4', 'analysis_priority', '', 'danger', 'N', 1, 'system', NOW(), '紧急优先级');
+(1, '低', '1', 'analysis_priority', '', 'success', 0, 1, 'system', NOW(), '低优先级'),
+(2, '中', '2', 'analysis_priority', '', 'primary', 1, 1, 'system', NOW(), '中等优先级'),
+(3, '高', '3', 'analysis_priority', '', 'warning', 0, 1, 'system', NOW(), '高优先级'),
+(4, '紧急', '4', 'analysis_priority', '', 'danger', 0, 1, 'system', NOW(), '紧急优先级');
 
 -- 调度类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '定时调度', '1', 'schedule_type', '', 'primary', 'Y', 1, 'system', NOW(), '定时执行'),
-(2, '周期调度', '2', 'schedule_type', '', 'success', 'N', 1, 'system', NOW(), '周期性执行'),
-(3, '条件触发', '3', 'schedule_type', '', 'info', 'N', 1, 'system', NOW(), '条件触发执行');
+(1, '定时调度', '1', 'schedule_type', '', 'primary', 1, 1, 'system', NOW(), '定时执行'),
+(2, '周期调度', '2', 'schedule_type', '', 'success', 0, 1, 'system', NOW(), '周期性执行'),
+(3, '条件触发', '3', 'schedule_type', '', 'info', 0, 1, 'system', NOW(), '条件触发执行');
 
 -- 结果类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '统计数据', '1', 'result_type', '', 'primary', 'Y', 1, 'system', NOW(), '统计汇总数据'),
-(2, '图表数据', '2', 'result_type', '', 'success', 'N', 1, 'system', NOW(), '图表展示数据'),
-(3, '报表数据', '3', 'result_type', '', 'info', 'N', 1, 'system', NOW(), '报表格式数据'),
-(4, '原始数据', '4', 'result_type', '', 'warning', 'N', 1, 'system', NOW(), '原始明细数据');
+(1, '统计数据', '1', 'result_type', '', 'primary', 1, 1, 'system', NOW(), '统计汇总数据'),
+(2, '图表数据', '2', 'result_type', '', 'success', 0, 1, 'system', NOW(), '图表展示数据'),
+(3, '报表数据', '3', 'result_type', '', 'info', 0, 1, 'system', NOW(), '报表格式数据'),
+(4, '原始数据', '4', 'result_type', '', 'warning', 0, 1, 'system', NOW(), '原始明细数据');
 
 -- 结果格式
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, 'JSON', '1', 'result_format', '', 'primary', 'Y', 1, 'system', NOW(), 'JSON格式'),
-(2, 'XML', '2', 'result_format', '', 'success', 'N', 1, 'system', NOW(), 'XML格式'),
-(3, 'CSV', '3', 'result_format', '', 'info', 'N', 1, 'system', NOW(), 'CSV格式'),
-(4, 'Excel', '4', 'result_format', '', 'warning', 'N', 1, 'system', NOW(), 'Excel格式');
+(1, 'JSON', '1', 'result_format', '', 'primary', 1, 1, 'system', NOW(), 'JSON格式'),
+(2, 'XML', '2', 'result_format', '', 'success', 0, 1, 'system', NOW(), 'XML格式'),
+(3, 'CSV', '3', 'result_format', '', 'info', 0, 1, 'system', NOW(), 'CSV格式'),
+(4, 'Excel', '4', 'result_format', '', 'warning', 0, 1, 'system', NOW(), 'Excel格式');
 
 -- 指标类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '数量指标', '1', 'indicator_type', '', 'primary', 'Y', 1, 'system', NOW(), '数量统计指标'),
-(2, '质量指标', '2', 'indicator_type', '', 'success', 'N', 1, 'system', NOW(), '质量评价指标'),
-(3, '效率指标', '3', 'indicator_type', '', 'info', 'N', 1, 'system', NOW(), '效率评估指标'),
-(4, '财务指标', '4', 'indicator_type', '', 'warning', 'N', 1, 'system', NOW(), '财务分析指标'),
-(5, '风险指标', '5', 'indicator_type', '', 'danger', 'N', 1, 'system', NOW(), '风险评估指标');
+(1, '数量指标', '1', 'indicator_type', '', 'primary', 1, 1, 'system', NOW(), '数量统计指标'),
+(2, '质量指标', '2', 'indicator_type', '', 'success', 0, 1, 'system', NOW(), '质量评价指标'),
+(3, '效率指标', '3', 'indicator_type', '', 'info', 0, 1, 'system', NOW(), '效率评估指标'),
+(4, '财务指标', '4', 'indicator_type', '', 'warning', 0, 1, 'system', NOW(), '财务分析指标'),
+(5, '风险指标', '5', 'indicator_type', '', 'danger', 0, 1, 'system', NOW(), '风险评估指标');
 
 -- 数据类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '整数', '1', 'data_type', '', 'primary', 'Y', 1, 'system', NOW(), '整数类型'),
-(2, '小数', '2', 'data_type', '', 'success', 'N', 1, 'system', NOW(), '小数类型'),
-(3, '百分比', '3', 'data_type', '', 'info', 'N', 1, 'system', NOW(), '百分比类型'),
-(4, '金额', '4', 'data_type', '', 'warning', 'N', 1, 'system', NOW(), '金额类型'),
-(5, '文本', '5', 'data_type', '', 'secondary', 'N', 1, 'system', NOW(), '文本类型');
+(1, '整数', '1', 'data_type', '', 'primary', 1, 1, 'system', NOW(), '整数类型'),
+(2, '小数', '2', 'data_type', '', 'success', 0, 1, 'system', NOW(), '小数类型'),
+(3, '百分比', '3', 'data_type', '', 'info', 0, 1, 'system', NOW(), '百分比类型'),
+(4, '金额', '4', 'data_type', '', 'warning', 0, 1, 'system', NOW(), '金额类型'),
+(5, '文本', '5', 'data_type', '', 'secondary', 0, 1, 'system', NOW(), '文本类型');
 
 -- 聚合类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '求和', '1', 'aggregation_type', '', 'primary', 'Y', 1, 'system', NOW(), '求和聚合'),
-(2, '平均', '2', 'aggregation_type', '', 'success', 'N', 1, 'system', NOW(), '平均值聚合'),
-(3, '最大值', '3', 'aggregation_type', '', 'info', 'N', 1, 'system', NOW(), '最大值聚合'),
-(4, '最小值', '4', 'aggregation_type', '', 'warning', 'N', 1, 'system', NOW(), '最小值聚合'),
-(5, '计数', '5', 'aggregation_type', '', 'secondary', 'N', 1, 'system', NOW(), '计数聚合');
+(1, '求和', '1', 'aggregation_type', '', 'primary', 1, 1, 'system', NOW(), '求和聚合'),
+(2, '平均', '2', 'aggregation_type', '', 'success', 0, 1, 'system', NOW(), '平均值聚合'),
+(3, '最大值', '3', 'aggregation_type', '', 'info', 0, 1, 'system', NOW(), '最大值聚合'),
+(4, '最小值', '4', 'aggregation_type', '', 'warning', 0, 1, 'system', NOW(), '最小值聚合'),
+(5, '计数', '5', 'aggregation_type', '', 'secondary', 0, 1, 'system', NOW(), '计数聚合');
 
 -- 时间粒度
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '天', '1', 'time_granularity', '', 'primary', 'Y', 1, 'system', NOW(), '按天统计'),
-(2, '周', '2', 'time_granularity', '', 'success', 'N', 1, 'system', NOW(), '按周统计'),
-(3, '月', '3', 'time_granularity', '', 'info', 'N', 1, 'system', NOW(), '按月统计'),
-(4, '季度', '4', 'time_granularity', '', 'warning', 'N', 1, 'system', NOW(), '按季度统计'),
-(5, '年', '5', 'time_granularity', '', 'secondary', 'N', 1, 'system', NOW(), '按年统计');
+(1, '天', '1', 'time_granularity', '', 'primary', 1, 1, 'system', NOW(), '按天统计'),
+(2, '周', '2', 'time_granularity', '', 'success', 0, 1, 'system', NOW(), '按周统计'),
+(3, '月', '3', 'time_granularity', '', 'info', 0, 1, 'system', NOW(), '按月统计'),
+(4, '季度', '4', 'time_granularity', '', 'warning', 0, 1, 'system', NOW(), '按季度统计'),
+(5, '年', '5', 'time_granularity', '', 'secondary', 0, 1, 'system', NOW(), '按年统计');
 
 -- 维度类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '时间维度', '1', 'dimension_type', '', 'primary', 'Y', 1, 'system', NOW(), '时间相关维度'),
-(2, '组织维度', '2', 'dimension_type', '', 'success', 'N', 1, 'system', NOW(), '组织结构维度'),
-(3, '业务维度', '3', 'dimension_type', '', 'info', 'N', 1, 'system', NOW(), '业务类型维度'),
-(4, '地域维度', '4', 'dimension_type', '', 'warning', 'N', 1, 'system', NOW(), '地理位置维度'),
-(5, '客户维度', '5', 'dimension_type', '', 'secondary', 'N', 1, 'system', NOW(), '客户分类维度');
+(1, '时间维度', '1', 'dimension_type', '', 'primary', 1, 1, 'system', NOW(), '时间相关维度'),
+(2, '组织维度', '2', 'dimension_type', '', 'success', 0, 1, 'system', NOW(), '组织结构维度'),
+(3, '业务维度', '3', 'dimension_type', '', 'info', 0, 1, 'system', NOW(), '业务类型维度'),
+(4, '地域维度', '4', 'dimension_type', '', 'warning', 0, 1, 'system', NOW(), '地理位置维度'),
+(5, '客户维度', '5', 'dimension_type', '', 'secondary', 0, 1, 'system', NOW(), '客户分类维度');
 
 -- 公式类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '数学公式', '1', 'formula_type', '', 'primary', 'Y', 1, 'system', NOW(), '数学计算公式'),
-(2, 'SQL查询', '2', 'formula_type', '', 'success', 'N', 1, 'system', NOW(), 'SQL查询语句'),
-(3, '脚本函数', '3', 'formula_type', '', 'info', 'N', 1, 'system', NOW(), '脚本函数');
+(1, '数学公式', '1', 'formula_type', '', 'primary', 1, 1, 'system', NOW(), '数学计算公式'),
+(2, 'SQL查询', '2', 'formula_type', '', 'success', 0, 1, 'system', NOW(), 'SQL查询语句'),
+(3, '脚本函数', '3', 'formula_type', '', 'info', 0, 1, 'system', NOW(), '脚本函数');
 
 -- 复杂度级别
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '简单', '1', 'complexity_level', '', 'success', 'Y', 1, 'system', NOW(), '简单级别'),
-(2, '中等', '2', 'complexity_level', '', 'primary', 'N', 1, 'system', NOW(), '中等级别'),
-(3, '复杂', '3', 'complexity_level', '', 'warning', 'N', 1, 'system', NOW(), '复杂级别');
+(1, '简单', '1', 'complexity_level', '', 'success', 1, 1, 'system', NOW(), '简单级别'),
+(2, '中等', '2', 'complexity_level', '', 'primary', 0, 1, 'system', NOW(), '中等级别'),
+(3, '复杂', '3', 'complexity_level', '', 'warning', 0, 1, 'system', NOW(), '复杂级别');
 
 -- 报表类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '定期报表', '1', 'report_type', '', 'primary', 'Y', 1, 'system', NOW(), '定期生成报表'),
-(2, '专题报表', '2', 'report_type', '', 'success', 'N', 1, 'system', NOW(), '专题分析报表'),
-(3, '实时报表', '3', 'report_type', '', 'info', 'N', 1, 'system', NOW(), '实时监控报表'),
-(4, '自定义报表', '4', 'report_type', '', 'warning', 'N', 1, 'system', NOW(), '自定义报表');
+(1, '定期报表', '1', 'report_type', '', 'primary', 1, 1, 'system', NOW(), '定期生成报表'),
+(2, '专题报表', '2', 'report_type', '', 'success', 0, 1, 'system', NOW(), '专题分析报表'),
+(3, '实时报表', '3', 'report_type', '', 'info', 0, 1, 'system', NOW(), '实时监控报表'),
+(4, '自定义报表', '4', 'report_type', '', 'warning', 0, 1, 'system', NOW(), '自定义报表');
 
 -- 图表类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '柱状图', '1', 'chart_type', '', 'primary', 'Y', 1, 'system', NOW(), '柱状图表'),
-(2, '折线图', '2', 'chart_type', '', 'success', 'N', 1, 'system', NOW(), '折线图表'),
-(3, '饼图', '3', 'chart_type', '', 'info', 'N', 1, 'system', NOW(), '饼图表'),
-(4, '散点图', '4', 'chart_type', '', 'warning', 'N', 1, 'system', NOW(), '散点图表'),
-(5, '热力图', '5', 'chart_type', '', 'danger', 'N', 1, 'system', NOW(), '热力图表'),
-(6, '雷达图', '6', 'chart_type', '', 'secondary', 'N', 1, 'system', NOW(), '雷达图表');
+(1, '柱状图', '1', 'chart_type', '', 'primary', 1, 1, 'system', NOW(), '柱状图表'),
+(2, '折线图', '2', 'chart_type', '', 'success', 0, 1, 'system', NOW(), '折线图表'),
+(3, '饼图', '3', 'chart_type', '', 'info', 0, 1, 'system', NOW(), '饼图表'),
+(4, '散点图', '4', 'chart_type', '', 'warning', 0, 1, 'system', NOW(), '散点图表'),
+(5, '热力图', '5', 'chart_type', '', 'danger', 0, 1, 'system', NOW(), '热力图表'),
+(6, '雷达图', '6', 'chart_type', '', 'secondary', 0, 1, 'system', NOW(), '雷达图表');
 
 -- 图表库
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, 'ECharts', '1', 'chart_library', '', 'primary', 'Y', 1, 'system', NOW(), 'ECharts图表库'),
-(2, 'D3', '2', 'chart_library', '', 'success', 'N', 1, 'system', NOW(), 'D3图表库'),
-(3, 'Highcharts', '3', 'chart_library', '', 'info', 'N', 1, 'system', NOW(), 'Highcharts图表库'),
-(4, 'Chart.js', '4', 'chart_library', '', 'warning', 'N', 1, 'system', NOW(), 'Chart.js图表库');
+(1, 'ECharts', '1', 'chart_library', '', 'primary', 1, 1, 'system', NOW(), 'ECharts图表库'),
+(2, 'D3', '2', 'chart_library', '', 'success', 0, 1, 'system', NOW(), 'D3图表库'),
+(3, 'Highcharts', '3', 'chart_library', '', 'info', 0, 1, 'system', NOW(), 'Highcharts图表库'),
+(4, 'Chart.js', '4', 'chart_library', '', 'warning', 0, 1, 'system', NOW(), 'Chart.js图表库');
 
 -- 布局类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '网格布局', '1', 'layout_type', '', 'primary', 'Y', 1, 'system', NOW(), '网格式布局'),
-(2, '自由布局', '2', 'layout_type', '', 'success', 'N', 1, 'system', NOW(), '自由拖拽布局'),
-(3, '模板布局', '3', 'layout_type', '', 'info', 'N', 1, 'system', NOW(), '预定义模板布局');
+(1, '网格布局', '1', 'layout_type', '', 'primary', 1, 1, 'system', NOW(), '网格式布局'),
+(2, '自由布局', '2', 'layout_type', '', 'success', 0, 1, 'system', NOW(), '自由拖拽布局'),
+(3, '模板布局', '3', 'layout_type', '', 'info', 0, 1, 'system', NOW(), '预定义模板布局');
 
 -- 数据源类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, 'MySQL', '1', 'datasource_type', '', 'primary', 'Y', 1, 'system', NOW(), 'MySQL数据库'),
-(2, 'PostgreSQL', '2', 'datasource_type', '', 'success', 'N', 1, 'system', NOW(), 'PostgreSQL数据库'),
-(3, 'Redis', '3', 'datasource_type', '', 'info', 'N', 1, 'system', NOW(), 'Redis缓存'),
-(4, 'Elasticsearch', '4', 'datasource_type', '', 'warning', 'N', 1, 'system', NOW(), 'Elasticsearch搜索'),
-(5, 'API', '5', 'datasource_type', '', 'danger', 'N', 1, 'system', NOW(), 'API接口'),
-(6, '文件', '6', 'datasource_type', '', 'secondary', 'N', 1, 'system', NOW(), '文件数据源');
+(1, 'MySQL', '1', 'datasource_type', '', 'primary', 1, 1, 'system', NOW(), 'MySQL数据库'),
+(2, 'PostgreSQL', '2', 'datasource_type', '', 'success', 0, 1, 'system', NOW(), 'PostgreSQL数据库'),
+(3, 'Redis', '3', 'datasource_type', '', 'info', 0, 1, 'system', NOW(), 'Redis缓存'),
+(4, 'Elasticsearch', '4', 'datasource_type', '', 'warning', 0, 1, 'system', NOW(), 'Elasticsearch搜索'),
+(5, 'API', '5', 'datasource_type', '', 'danger', 0, 1, 'system', NOW(), 'API接口'),
+(6, '文件', '6', 'datasource_type', '', 'secondary', 0, 1, 'system', NOW(), '文件数据源');
 
 -- 连接状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(0, '未测试', '0', 'connection_status', '', 'secondary', 'Y', 1, 'system', NOW(), '未进行连接测试'),
-(1, '正常', '1', 'connection_status', '', 'success', 'N', 1, 'system', NOW(), '连接正常'),
-(2, '异常', '2', 'connection_status', '', 'danger', 'N', 1, 'system', NOW(), '连接异常');
+(0, '未测试', '0', 'connection_status', '', 'secondary', 1, 1, 'system', NOW(), '未进行连接测试'),
+(1, '正常', '1', 'connection_status', '', 'success', 0, 1, 'system', NOW(), '连接正常'),
+(2, '异常', '2', 'connection_status', '', 'danger', 0, 1, 'system', NOW(), '连接异常');
 
 -- 数据集类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '数据表', '1', 'dataset_type', '', 'primary', 'Y', 1, 'system', NOW(), '数据库表'),
-(2, '视图', '2', 'dataset_type', '', 'success', 'N', 1, 'system', NOW(), '数据库视图'),
-(3, '查询', '3', 'dataset_type', '', 'info', 'N', 1, 'system', NOW(), 'SQL查询'),
-(4, 'API', '4', 'dataset_type', '', 'warning', 'N', 1, 'system', NOW(), 'API接口'),
-(5, '文件', '5', 'dataset_type', '', 'secondary', 'N', 1, 'system', NOW(), '文件数据');
+(1, '数据表', '1', 'dataset_type', '', 'primary', 1, 1, 'system', NOW(), '数据库表'),
+(2, '视图', '2', 'dataset_type', '', 'success', 0, 1, 'system', NOW(), '数据库视图'),
+(3, '查询', '3', 'dataset_type', '', 'info', 0, 1, 'system', NOW(), 'SQL查询'),
+(4, 'API', '4', 'dataset_type', '', 'warning', 0, 1, 'system', NOW(), 'API接口'),
+(5, '文件', '5', 'dataset_type', '', 'secondary', 0, 1, 'system', NOW(), '文件数据');
 
 -- 刷新模式
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '实时', '1', 'refresh_mode', '', 'success', 'Y', 1, 'system', NOW(), '实时刷新'),
-(2, '定时', '2', 'refresh_mode', '', 'primary', 'N', 1, 'system', NOW(), '定时刷新'),
-(3, '手动', '3', 'refresh_mode', '', 'warning', 'N', 1, 'system', NOW(), '手动刷新');
+(1, '实时', '1', 'refresh_mode', '', 'success', 1, 1, 'system', NOW(), '实时刷新'),
+(2, '定时', '2', 'refresh_mode', '', 'primary', 0, 1, 'system', NOW(), '定时刷新'),
+(3, '手动', '3', 'refresh_mode', '', 'warning', 0, 1, 'system', NOW(), '手动刷新');
 
 -- 缓存类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '查询结果', '1', 'cache_type', '', 'primary', 'Y', 1, 'system', NOW(), '查询结果缓存'),
-(2, '图表数据', '2', 'cache_type', '', 'success', 'N', 1, 'system', NOW(), '图表数据缓存'),
-(3, '报表数据', '3', 'cache_type', '', 'info', 'N', 1, 'system', NOW(), '报表数据缓存'),
-(4, '计算结果', '4', 'cache_type', '', 'warning', 'N', 1, 'system', NOW(), '计算结果缓存');
+(1, '查询结果', '1', 'cache_type', '', 'primary', 1, 1, 'system', NOW(), '查询结果缓存'),
+(2, '图表数据', '2', 'cache_type', '', 'success', 0, 1, 'system', NOW(), '图表数据缓存'),
+(3, '报表数据', '3', 'cache_type', '', 'info', 0, 1, 'system', NOW(), '报表数据缓存'),
+(4, '计算结果', '4', 'cache_type', '', 'warning', 0, 1, 'system', NOW(), '计算结果缓存');
 
 -- 压缩类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(0, '无压缩', '0', 'compression_type', '', 'secondary', 'Y', 1, 'system', NOW(), '不压缩'),
-(1, 'GZIP', '1', 'compression_type', '', 'primary', 'N', 1, 'system', NOW(), 'GZIP压缩'),
-(2, 'LZ4', '2', 'compression_type', '', 'success', 'N', 1, 'system', NOW(), 'LZ4压缩');
+(0, '无压缩', '0', 'compression_type', '', 'secondary', 1, 1, 'system', NOW(), '不压缩'),
+(1, 'GZIP', '1', 'compression_type', '', 'primary', 0, 1, 'system', NOW(), 'GZIP压缩'),
+(2, 'LZ4', '2', 'compression_type', '', 'success', 0, 1, 'system', NOW(), 'LZ4压缩');
 
 -- 模板类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '任务模板', '1', 'template_type', '', 'primary', 'Y', 1, 'system', NOW(), '分析任务模板'),
-(2, '报表模板', '2', 'template_type', '', 'success', 'N', 1, 'system', NOW(), '报表配置模板'),
-(3, '图表模板', '3', 'template_type', '', 'info', 'N', 1, 'system', NOW(), '图表配置模板'),
-(4, '仪表盘模板', '4', 'template_type', '', 'warning', 'N', 1, 'system', NOW(), '仪表盘配置模板');
+(1, '任务模板', '1', 'template_type', '', 'primary', 1, 1, 'system', NOW(), '分析任务模板'),
+(2, '报表模板', '2', 'template_type', '', 'success', 0, 1, 'system', NOW(), '报表配置模板'),
+(3, '图表模板', '3', 'template_type', '', 'info', 0, 1, 'system', NOW(), '图表配置模板'),
+(4, '仪表盘模板', '4', 'template_type', '', 'warning', 0, 1, 'system', NOW(), '仪表盘配置模板');
 
 -- 执行状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '成功', '1', 'execution_status', '', 'success', 'Y', 1, 'system', NOW(), '执行成功'),
-(2, '失败', '2', 'execution_status', '', 'danger', 'N', 1, 'system', NOW(), '执行失败'),
-(3, '超时', '3', 'execution_status', '', 'warning', 'N', 1, 'system', NOW(), '执行超时'),
-(4, '取消', '4', 'execution_status', '', 'secondary', 'N', 1, 'system', NOW(), '执行取消');
+(1, '成功', '1', 'execution_status', '', 'success', 1, 1, 'system', NOW(), '执行成功'),
+(2, '失败', '2', 'execution_status', '', 'danger', 0, 1, 'system', NOW(), '执行失败'),
+(3, '超时', '3', 'execution_status', '', 'warning', 0, 1, 'system', NOW(), '执行超时'),
+(4, '取消', '4', 'execution_status', '', 'secondary', 0, 1, 'system', NOW(), '执行取消');
 
 -- ======================= 分析维度数据 =======================
 

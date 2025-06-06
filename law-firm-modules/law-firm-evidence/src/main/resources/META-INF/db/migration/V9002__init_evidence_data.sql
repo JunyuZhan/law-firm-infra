@@ -27,82 +27,82 @@ INSERT INTO sys_dict_type (dict_name, dict_type, status, create_by, create_time,
 
 -- 证据类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '书证', '1', 'evidence_type', '', 'primary', 'Y', 1, 'system', NOW(), '书面证据'),
-(2, '物证', '2', 'evidence_type', '', 'success', 'N', 1, 'system', NOW(), '实物证据'),
-(3, '证人证言', '3', 'evidence_type', '', 'info', 'N', 1, 'system', NOW(), '证人提供的证言'),
-(4, '视听资料', '4', 'evidence_type', '', 'warning', 'N', 1, 'system', NOW(), '音视频等资料'),
-(5, '电子数据', '5', 'evidence_type', '', 'danger', 'N', 1, 'system', NOW(), '电子形式的数据');
+(1, '书证', '1', 'evidence_type', '', 'primary', 1, 1, 'system', NOW(), '书面证据'),
+(2, '物证', '2', 'evidence_type', '', 'success', 0, 1, 'system', NOW(), '实物证据'),
+(3, '证人证言', '3', 'evidence_type', '', 'info', 0, 1, 'system', NOW(), '证人提供的证言'),
+(4, '视听资料', '4', 'evidence_type', '', 'warning', 0, 1, 'system', NOW(), '音视频等资料'),
+(5, '电子数据', '5', 'evidence_type', '', 'danger', 0, 1, 'system', NOW(), '电子形式的数据');
 
 -- 证据性质
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '直接证据', '1', 'evidence_nature', '', 'primary', 'Y', 1, 'system', NOW(), '能够直接证明案件主要事实的证据'),
-(2, '间接证据', '2', 'evidence_nature', '', 'info', 'N', 1, 'system', NOW(), '不能单独直接证明案件主要事实的证据'),
-(3, '原始证据', '3', 'evidence_nature', '', 'success', 'N', 1, 'system', NOW(), '直接来源于案件事实的第一手资料'),
-(4, '传来证据', '4', 'evidence_nature', '', 'warning', 'N', 1, 'system', NOW(), '经过转述或复制的证据');
+(1, '直接证据', '1', 'evidence_nature', '', 'primary', 1, 1, 'system', NOW(), '能够直接证明案件主要事实的证据'),
+(2, '间接证据', '2', 'evidence_nature', '', 'info', 0, 1, 'system', NOW(), '不能单独直接证明案件主要事实的证据'),
+(3, '原始证据', '3', 'evidence_nature', '', 'success', 0, 1, 'system', NOW(), '直接来源于案件事实的第一手资料'),
+(4, '传来证据', '4', 'evidence_nature', '', 'warning', 0, 1, 'system', NOW(), '经过转述或复制的证据');
 
 -- 证据来源
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '当事人提供', '1', 'evidence_source', '', 'primary', 'Y', 1, 'system', NOW(), '由当事人主动提供'),
-(2, '法院调取', '2', 'evidence_source', '', 'success', 'N', 1, 'system', NOW(), '由法院依职权调取'),
-(3, '律师调查', '3', 'evidence_source', '', 'info', 'N', 1, 'system', NOW(), '律师调查收集'),
-(4, '公安移送', '4', 'evidence_source', '', 'warning', 'N', 1, 'system', NOW(), '公安机关移送'),
-(5, '其他途径', '5', 'evidence_source', '', 'dark', 'N', 1, 'system', NOW(), '其他合法途径获得');
+(1, '当事人提供', '1', 'evidence_source', '', 'primary', 1, 1, 'system', NOW(), '由当事人主动提供'),
+(2, '法院调取', '2', 'evidence_source', '', 'success', 0, 1, 'system', NOW(), '由法院依职权调取'),
+(3, '律师调查', '3', 'evidence_source', '', 'info', 0, 1, 'system', NOW(), '律师调查收集'),
+(4, '公安移送', '4', 'evidence_source', '', 'warning', 0, 1, 'system', NOW(), '公安机关移送'),
+(5, '其他途径', '5', 'evidence_source', '', 'dark', 0, 1, 'system', NOW(), '其他合法途径获得');
 
 -- 证据状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '收集中', '1', 'evidence_status', '', 'warning', 'Y', 1, 'system', NOW(), '证据收集中'),
-(2, '已收集', '2', 'evidence_status', '', 'info', 'N', 1, 'system', NOW(), '证据已收集'),
-(3, '已质证', '3', 'evidence_status', '', 'primary', 'N', 1, 'system', NOW(), '证据已质证'),
-(4, '已认定', '4', 'evidence_status', '', 'success', 'N', 1, 'system', NOW(), '证据已被法院认定'),
-(5, '已归档', '5', 'evidence_status', '', 'default', 'N', 1, 'system', NOW(), '证据已归档');
+(1, '收集中', '1', 'evidence_status', '', 'warning', 1, 1, 'system', NOW(), '证据收集中'),
+(2, '已收集', '2', 'evidence_status', '', 'info', 0, 1, 'system', NOW(), '证据已收集'),
+(3, '已质证', '3', 'evidence_status', '', 'primary', 0, 1, 'system', NOW(), '证据已质证'),
+(4, '已认定', '4', 'evidence_status', '', 'success', 0, 1, 'system', NOW(), '证据已被法院认定'),
+(5, '已归档', '5', 'evidence_status', '', 'default', 0, 1, 'system', NOW(), '证据已归档');
 
 -- 证明力等级
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '强', '1', 'proof_level', '', 'danger', 'N', 1, 'system', NOW(), '证明力强'),
-(2, '较强', '2', 'proof_level', '', 'warning', 'N', 1, 'system', NOW(), '证明力较强'),
-(3, '一般', '3', 'proof_level', '', 'primary', 'Y', 1, 'system', NOW(), '证明力一般'),
-(4, '较弱', '4', 'proof_level', '', 'info', 'N', 1, 'system', NOW(), '证明力较弱'),
-(5, '弱', '5', 'proof_level', '', 'secondary', 'N', 1, 'system', NOW(), '证明力弱');
+(1, '强', '1', 'proof_level', '', 'danger', 0, 1, 'system', NOW(), '证明力强'),
+(2, '较强', '2', 'proof_level', '', 'warning', 0, 1, 'system', NOW(), '证明力较强'),
+(3, '一般', '3', 'proof_level', '', 'primary', 1, 1, 'system', NOW(), '证明力一般'),
+(4, '较弱', '4', 'proof_level', '', 'info', 0, 1, 'system', NOW(), '证明力较弱'),
+(5, '弱', '5', 'proof_level', '', 'secondary', 0, 1, 'system', NOW(), '证明力弱');
 
 -- 质证人类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '对方当事人', '1', 'challenger_type', '', 'primary', 'Y', 1, 'system', NOW(), '对方当事人'),
-(2, '对方律师', '2', 'challenger_type', '', 'info', 'N', 1, 'system', NOW(), '对方律师'),
-(3, '第三人', '3', 'challenger_type', '', 'warning', 'N', 1, 'system', NOW(), '第三人'),
-(4, '其他', '4', 'challenger_type', '', 'dark', 'N', 1, 'system', NOW(), '其他质证人');
+(1, '对方当事人', '1', 'challenger_type', '', 'primary', 1, 1, 'system', NOW(), '对方当事人'),
+(2, '对方律师', '2', 'challenger_type', '', 'info', 0, 1, 'system', NOW(), '对方律师'),
+(3, '第三人', '3', 'challenger_type', '', 'warning', 0, 1, 'system', NOW(), '第三人'),
+(4, '其他', '4', 'challenger_type', '', 'dark', 0, 1, 'system', NOW(), '其他质证人');
 
 -- 质证结果
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '有效', '1', 'challenge_result', '', 'success', 'N', 1, 'system', NOW(), '证据有效'),
-(2, '无效', '2', 'challenge_result', '', 'danger', 'N', 1, 'system', NOW(), '证据无效'),
-(3, '部分有效', '3', 'challenge_result', '', 'warning', 'N', 1, 'system', NOW(), '证据部分有效'),
-(4, '待定', '4', 'challenge_result', '', 'info', 'Y', 1, 'system', NOW(), '质证结果待定');
+(1, '有效', '1', 'challenge_result', '', 'success', 0, 1, 'system', NOW(), '证据有效'),
+(2, '无效', '2', 'challenge_result', '', 'danger', 0, 1, 'system', NOW(), '证据无效'),
+(3, '部分有效', '3', 'challenge_result', '', 'warning', 0, 1, 'system', NOW(), '证据部分有效'),
+(4, '待定', '4', 'challenge_result', '', 'info', 1, 1, 'system', NOW(), '质证结果待定');
 
 -- 认证结果
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '有效', '1', 'authentication_result', '', 'success', 'N', 1, 'system', NOW(), '认证有效'),
-(2, '无效', '2', 'authentication_result', '', 'danger', 'N', 1, 'system', NOW(), '认证无效'),
-(3, '部分有效', '3', 'authentication_result', '', 'warning', 'N', 1, 'system', NOW(), '部分有效');
+(1, '有效', '1', 'authentication_result', '', 'success', 0, 1, 'system', NOW(), '认证有效'),
+(2, '无效', '2', 'authentication_result', '', 'danger', 0, 1, 'system', NOW(), '认证无效'),
+(3, '部分有效', '3', 'authentication_result', '', 'warning', 0, 1, 'system', NOW(), '部分有效');
 
 -- 保全类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '诉前保全', '1', 'preservation_type', '', 'primary', 'Y', 1, 'system', NOW(), '诉讼前保全'),
-(2, '诉中保全', '2', 'preservation_type', '', 'success', 'N', 1, 'system', NOW(), '诉讼中保全'),
-(3, '执行保全', '3', 'preservation_type', '', 'warning', 'N', 1, 'system', NOW(), '执行程序中保全');
+(1, '诉前保全', '1', 'preservation_type', '', 'primary', 1, 1, 'system', NOW(), '诉讼前保全'),
+(2, '诉中保全', '2', 'preservation_type', '', 'success', 0, 1, 'system', NOW(), '诉讼中保全'),
+(3, '执行保全', '3', 'preservation_type', '', 'warning', 0, 1, 'system', NOW(), '执行程序中保全');
 
 -- 保全方式
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '查封', '1', 'preservation_method', '', 'primary', 'Y', 1, 'system', NOW(), '查封保全'),
-(2, '扣押', '2', 'preservation_method', '', 'warning', 'N', 1, 'system', NOW(), '扣押保全'),
-(3, '冻结', '3', 'preservation_method', '', 'info', 'N', 1, 'system', NOW(), '冻结保全'),
-(4, '其他', '4', 'preservation_method', '', 'dark', 'N', 1, 'system', NOW(), '其他保全方式');
+(1, '查封', '1', 'preservation_method', '', 'primary', 1, 1, 'system', NOW(), '查封保全'),
+(2, '扣押', '2', 'preservation_method', '', 'warning', 0, 1, 'system', NOW(), '扣押保全'),
+(3, '冻结', '3', 'preservation_method', '', 'info', 0, 1, 'system', NOW(), '冻结保全'),
+(4, '其他', '4', 'preservation_method', '', 'dark', 0, 1, 'system', NOW(), '其他保全方式');
 
 -- 保全状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '申请中', '1', 'preservation_status', '', 'warning', 'Y', 1, 'system', NOW(), '保全申请中'),
-(2, '已保全', '2', 'preservation_status', '', 'success', 'N', 1, 'system', NOW(), '已执行保全'),
-(3, '已解除', '3', 'preservation_status', '', 'info', 'N', 1, 'system', NOW(), '保全已解除'),
-(4, '已失效', '4', 'preservation_status', '', 'danger', 'N', 1, 'system', NOW(), '保全已失效');
+(1, '申请中', '1', 'preservation_status', '', 'warning', 1, 1, 'system', NOW(), '保全申请中'),
+(2, '已保全', '2', 'preservation_status', '', 'success', 0, 1, 'system', NOW(), '已执行保全'),
+(3, '已解除', '3', 'preservation_status', '', 'info', 0, 1, 'system', NOW(), '保全已解除'),
+(4, '已失效', '4', 'preservation_status', '', 'danger', 0, 1, 'system', NOW(), '保全已失效');
 
 -- ======================= 证据分类初始化 =======================
 

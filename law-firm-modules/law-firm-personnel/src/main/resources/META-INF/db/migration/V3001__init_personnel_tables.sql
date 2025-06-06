@@ -1,8 +1,8 @@
--- Personnel模块表结构初始化
 -- 版本: V3001
--- 模块: personnel
--- 创建时间: 2023-07-01
--- 说明: 重新设计人事模块表结构，拆分超大表，统一规范
+-- 模块: 人员管理模块 (V3000-V3999)
+-- 创建时间: 2023-06-01
+-- 说明: 人员管理功能的完整表结构定义
+-- 包括：组织架构、人员信息、员工管理、律师管理、教育经历、工作经历、合同管理等
 
 -- 设置字符集和数据库选项
 SET NAMES utf8mb4;
@@ -318,10 +318,10 @@ CREATE TABLE per_lawyer (
     issuing_authority VARCHAR(100) COMMENT '颁发机构',
     practice_years INT COMMENT '执业年限',
     lawyer_level TINYINT COMMENT '律师等级(1-初级,2-中级,3-高级,4-资深)',
-    practice_areas TEXT COMMENT '执业领域(JSON格式)',
+    practice_areas JSON COMMENT '执业领域(JSON格式)',
     expertise TEXT COMMENT '专长领域',
     language_skills VARCHAR(255) COMMENT '语言技能',
-    professional_certificates TEXT COMMENT '专业证书(JSON格式)',
+    professional_certificates JSON COMMENT '专业证书(JSON格式)',
     bar_association VARCHAR(100) COMMENT '律师协会',
     is_partner TINYINT DEFAULT 0 COMMENT '是否合伙人(0-否,1-是)',
     partner_date DATE COMMENT '成为合伙人日期',
@@ -370,7 +370,7 @@ CREATE TABLE per_education_experience (
     ranking INT COMMENT '专业排名',
     thesis_title VARCHAR(255) COMMENT '论文题目',
     advisor VARCHAR(50) COMMENT '导师姓名',
-    honors TEXT COMMENT '荣誉奖项(JSON格式)',
+    honors JSON COMMENT '荣誉奖项(JSON格式)',
     is_highest TINYINT DEFAULT 0 COMMENT '是否最高学历(0-否,1-是)',
     certificate_number VARCHAR(100) COMMENT '学历证书编号',
     status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
@@ -448,7 +448,7 @@ CREATE TABLE per_contract (
     basic_salary DECIMAL(12,2) COMMENT '基本工资',
     performance_salary DECIMAL(12,2) COMMENT '绩效工资',
     allowance DECIMAL(12,2) COMMENT '津贴补助',
-    benefits TEXT COMMENT '福利待遇(JSON格式)',
+    benefits JSON COMMENT '福利待遇(JSON格式)',
     work_hours VARCHAR(50) COMMENT '工作时间',
     work_location VARCHAR(100) COMMENT '工作地点',
     contract_status TINYINT DEFAULT 1 COMMENT '合同状态(1-生效,2-到期,3-解除,4-中止)',

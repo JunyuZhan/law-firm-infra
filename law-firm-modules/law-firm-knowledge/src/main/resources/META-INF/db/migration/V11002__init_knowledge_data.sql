@@ -32,118 +32,118 @@ INSERT INTO sys_dict_type (dict_name, dict_type, status, create_by, create_time,
 
 -- 知识类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '法律法规', '1', 'knowledge_type', '', 'primary', 'Y', 1, 'system', NOW(), '法律法规类知识'),
-(2, '案例分析', '2', 'knowledge_type', '', 'success', 'N', 1, 'system', NOW(), '案例分析类知识'),
-(3, '合同范本', '3', 'knowledge_type', '', 'info', 'N', 1, 'system', NOW(), '合同范本类知识'),
-(4, '法律文书', '4', 'knowledge_type', '', 'warning', 'N', 1, 'system', NOW(), '法律文书类知识'),
-(5, '法律研究', '5', 'knowledge_type', '', 'dark', 'N', 1, 'system', NOW(), '法律研究类知识'),
-(6, '业务知识', '6', 'knowledge_type', '', 'secondary', 'N', 1, 'system', NOW(), '业务知识类知识'),
-(7, '管理制度', '7', 'knowledge_type', '', 'danger', 'N', 1, 'system', NOW(), '管理制度类知识');
+(1, '法律法规', '1', 'knowledge_type', '', 'primary', 1, 1, 'system', NOW(), '法律法规类知识'),
+(2, '案例分析', '2', 'knowledge_type', '', 'success', 0, 1, 'system', NOW(), '案例分析类知识'),
+(3, '合同范本', '3', 'knowledge_type', '', 'info', 0, 1, 'system', NOW(), '合同范本类知识'),
+(4, '法律文书', '4', 'knowledge_type', '', 'warning', 0, 1, 'system', NOW(), '法律文书类知识'),
+(5, '法律研究', '5', 'knowledge_type', '', 'dark', 0, 1, 'system', NOW(), '法律研究类知识'),
+(6, '业务知识', '6', 'knowledge_type', '', 'secondary', 0, 1, 'system', NOW(), '业务知识类知识'),
+(7, '管理制度', '7', 'knowledge_type', '', 'danger', 0, 1, 'system', NOW(), '管理制度类知识');
 
 -- 内容类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '文本', '1', 'knowledge_content_type', '', 'primary', 'Y', 1, 'system', NOW(), '纯文本内容'),
-(2, '富文本', '2', 'knowledge_content_type', '', 'success', 'N', 1, 'system', NOW(), '富文本内容'),
-(3, 'Markdown', '3', 'knowledge_content_type', '', 'info', 'N', 1, 'system', NOW(), 'Markdown格式'),
-(4, 'PDF', '4', 'knowledge_content_type', '', 'warning', 'N', 1, 'system', NOW(), 'PDF文档'),
-(5, 'Word', '5', 'knowledge_content_type', '', 'dark', 'N', 1, 'system', NOW(), 'Word文档'),
-(6, 'PPT', '6', 'knowledge_content_type', '', 'secondary', 'N', 1, 'system', NOW(), 'PPT演示文稿'),
-(7, '视频', '7', 'knowledge_content_type', '', 'danger', 'N', 1, 'system', NOW(), '视频内容'),
-(8, '音频', '8', 'knowledge_content_type', '', 'light', 'N', 1, 'system', NOW(), '音频内容');
+(1, '文本', '1', 'knowledge_content_type', '', 'primary', 1, 1, 'system', NOW(), '纯文本内容'),
+(2, '富文本', '2', 'knowledge_content_type', '', 'success', 0, 1, 'system', NOW(), '富文本内容'),
+(3, 'Markdown', '3', 'knowledge_content_type', '', 'info', 0, 1, 'system', NOW(), 'Markdown格式'),
+(4, 'PDF', '4', 'knowledge_content_type', '', 'warning', 0, 1, 'system', NOW(), 'PDF文档'),
+(5, 'Word', '5', 'knowledge_content_type', '', 'dark', 0, 1, 'system', NOW(), 'Word文档'),
+(6, 'PPT', '6', 'knowledge_content_type', '', 'secondary', 0, 1, 'system', NOW(), 'PPT演示文稿'),
+(7, '视频', '7', 'knowledge_content_type', '', 'danger', 0, 1, 'system', NOW(), '视频内容'),
+(8, '音频', '8', 'knowledge_content_type', '', 'light', 0, 1, 'system', NOW(), '音频内容');
 
 -- 文档状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '草稿', '1', 'knowledge_document_status', '', 'secondary', 'Y', 1, 'system', NOW(), '文档草稿状态'),
-(2, '待审核', '2', 'knowledge_document_status', '', 'warning', 'N', 1, 'system', NOW(), '文档待审核状态'),
-(3, '已发布', '3', 'knowledge_document_status', '', 'success', 'N', 1, 'system', NOW(), '文档已发布状态'),
-(4, '已归档', '4', 'knowledge_document_status', '', 'info', 'N', 1, 'system', NOW(), '文档已归档状态'),
-(5, '已下架', '5', 'knowledge_document_status', '', 'danger', 'N', 1, 'system', NOW(), '文档已下架状态');
+(1, '草稿', '1', 'knowledge_document_status', '', 'secondary', 1, 1, 'system', NOW(), '文档草稿状态'),
+(2, '待审核', '2', 'knowledge_document_status', '', 'warning', 0, 1, 'system', NOW(), '文档待审核状态'),
+(3, '已发布', '3', 'knowledge_document_status', '', 'success', 0, 1, 'system', NOW(), '文档已发布状态'),
+(4, '已归档', '4', 'knowledge_document_status', '', 'info', 0, 1, 'system', NOW(), '文档已归档状态'),
+(5, '已下架', '5', 'knowledge_document_status', '', 'danger', 0, 1, 'system', NOW(), '文档已下架状态');
 
 -- 可见性
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '公开', '1', 'knowledge_visibility', '', 'success', 'Y', 1, 'system', NOW(), '所有人可见'),
-(2, '部门', '2', 'knowledge_visibility', '', 'primary', 'N', 1, 'system', NOW(), '部门内可见'),
-(3, '岗位', '3', 'knowledge_visibility', '', 'info', 'N', 1, 'system', NOW(), '特定岗位可见'),
-(4, '私有', '4', 'knowledge_visibility', '', 'warning', 'N', 1, 'system', NOW(), '仅创建者可见');
+(1, '公开', '1', 'knowledge_visibility', '', 'success', 1, 1, 'system', NOW(), '所有人可见'),
+(2, '部门', '2', 'knowledge_visibility', '', 'primary', 0, 1, 'system', NOW(), '部门内可见'),
+(3, '岗位', '3', 'knowledge_visibility', '', 'info', 0, 1, 'system', NOW(), '特定岗位可见'),
+(4, '私有', '4', 'knowledge_visibility', '', 'warning', 0, 1, 'system', NOW(), '仅创建者可见');
 
 -- 难度等级
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '入门', '1', 'knowledge_difficulty_level', '', 'success', 'Y', 1, 'system', NOW(), '入门级别'),
-(2, '初级', '2', 'knowledge_difficulty_level', '', 'primary', 'N', 1, 'system', NOW(), '初级级别'),
-(3, '中级', '3', 'knowledge_difficulty_level', '', 'info', 'N', 1, 'system', NOW(), '中级级别'),
-(4, '高级', '4', 'knowledge_difficulty_level', '', 'warning', 'N', 1, 'system', NOW(), '高级级别'),
-(5, '专家', '5', 'knowledge_difficulty_level', '', 'danger', 'N', 1, 'system', NOW(), '专家级别');
+(1, '入门', '1', 'knowledge_difficulty_level', '', 'success', 1, 1, 'system', NOW(), '入门级别'),
+(2, '初级', '2', 'knowledge_difficulty_level', '', 'primary', 0, 1, 'system', NOW(), '初级级别'),
+(3, '中级', '3', 'knowledge_difficulty_level', '', 'info', 0, 1, 'system', NOW(), '中级级别'),
+(4, '高级', '4', 'knowledge_difficulty_level', '', 'warning', 0, 1, 'system', NOW(), '高级级别'),
+(5, '专家', '5', 'knowledge_difficulty_level', '', 'danger', 0, 1, 'system', NOW(), '专家级别');
 
 -- 重要程度
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '一般', '1', 'knowledge_importance_level', '', 'secondary', 'Y', 1, 'system', NOW(), '一般重要'),
-(2, '重要', '2', 'knowledge_importance_level', '', 'primary', 'N', 1, 'system', NOW(), '重要'),
-(3, '核心', '3', 'knowledge_importance_level', '', 'info', 'N', 1, 'system', NOW(), '核心重要'),
-(4, '关键', '4', 'knowledge_importance_level', '', 'warning', 'N', 1, 'system', NOW(), '关键重要'),
-(5, '战略', '5', 'knowledge_importance_level', '', 'danger', 'N', 1, 'system', NOW(), '战略重要');
+(1, '一般', '1', 'knowledge_importance_level', '', 'secondary', 1, 1, 'system', NOW(), '一般重要'),
+(2, '重要', '2', 'knowledge_importance_level', '', 'primary', 0, 1, 'system', NOW(), '重要'),
+(3, '核心', '3', 'knowledge_importance_level', '', 'info', 0, 1, 'system', NOW(), '核心重要'),
+(4, '关键', '4', 'knowledge_importance_level', '', 'warning', 0, 1, 'system', NOW(), '关键重要'),
+(5, '战略', '5', 'knowledge_importance_level', '', 'danger', 0, 1, 'system', NOW(), '战略重要');
 
 -- 来源类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '原创', '1', 'knowledge_source_type', '', 'primary', 'Y', 1, 'system', NOW(), '原创内容'),
-(2, '整理', '2', 'knowledge_source_type', '', 'success', 'N', 1, 'system', NOW(), '整理内容'),
-(3, '转载', '3', 'knowledge_source_type', '', 'info', 'N', 1, 'system', NOW(), '转载内容'),
-(4, '翻译', '4', 'knowledge_source_type', '', 'warning', 'N', 1, 'system', NOW(), '翻译内容');
+(1, '原创', '1', 'knowledge_source_type', '', 'primary', 1, 1, 'system', NOW(), '原创内容'),
+(2, '整理', '2', 'knowledge_source_type', '', 'success', 0, 1, 'system', NOW(), '整理内容'),
+(3, '转载', '3', 'knowledge_source_type', '', 'info', 0, 1, 'system', NOW(), '转载内容'),
+(4, '翻译', '4', 'knowledge_source_type', '', 'warning', 0, 1, 'system', NOW(), '翻译内容');
 
 -- 标签类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '法律领域', '1', 'knowledge_tag_type', '', 'primary', 'Y', 1, 'system', NOW(), '法律领域标签'),
-(2, '业务类型', '2', 'knowledge_tag_type', '', 'success', 'N', 1, 'system', NOW(), '业务类型标签'),
-(3, '重要程度', '3', 'knowledge_tag_type', '', 'info', 'N', 1, 'system', NOW(), '重要程度标签'),
-(4, '适用范围', '4', 'knowledge_tag_type', '', 'warning', 'N', 1, 'system', NOW(), '适用范围标签'),
-(5, '自定义', '5', 'knowledge_tag_type', '', 'dark', 'N', 1, 'system', NOW(), '自定义标签');
+(1, '法律领域', '1', 'knowledge_tag_type', '', 'primary', 1, 1, 'system', NOW(), '法律领域标签'),
+(2, '业务类型', '2', 'knowledge_tag_type', '', 'success', 0, 1, 'system', NOW(), '业务类型标签'),
+(3, '重要程度', '3', 'knowledge_tag_type', '', 'info', 0, 1, 'system', NOW(), '重要程度标签'),
+(4, '适用范围', '4', 'knowledge_tag_type', '', 'warning', 0, 1, 'system', NOW(), '适用范围标签'),
+(5, '自定义', '5', 'knowledge_tag_type', '', 'dark', 0, 1, 'system', NOW(), '自定义标签');
 
 -- 关联类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '主标签', '1', 'knowledge_relation_type', '', 'primary', 'Y', 1, 'system', NOW(), '主要标签'),
-(2, '辅助标签', '2', 'knowledge_relation_type', '', 'secondary', 'N', 1, 'system', NOW(), '辅助标签'),
-(3, '自动标签', '3', 'knowledge_relation_type', '', 'info', 'N', 1, 'system', NOW(), '自动标签');
+(1, '主标签', '1', 'knowledge_relation_type', '', 'primary', 1, 1, 'system', NOW(), '主要标签'),
+(2, '辅助标签', '2', 'knowledge_relation_type', '', 'secondary', 0, 1, 'system', NOW(), '辅助标签'),
+(3, '自动标签', '3', 'knowledge_relation_type', '', 'info', 0, 1, 'system', NOW(), '自动标签');
 
 -- 评论状态
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '正常', '1', 'knowledge_comment_status', '', 'success', 'Y', 1, 'system', NOW(), '评论正常状态'),
-(2, '待审核', '2', 'knowledge_comment_status', '', 'warning', 'N', 1, 'system', NOW(), '评论待审核状态'),
-(3, '已屏蔽', '3', 'knowledge_comment_status', '', 'danger', 'N', 1, 'system', NOW(), '评论已屏蔽状态'),
-(4, '已删除', '4', 'knowledge_comment_status', '', 'dark', 'N', 1, 'system', NOW(), '评论已删除状态');
+(1, '正常', '1', 'knowledge_comment_status', '', 'success', 1, 1, 'system', NOW(), '评论正常状态'),
+(2, '待审核', '2', 'knowledge_comment_status', '', 'warning', 0, 1, 'system', NOW(), '评论待审核状态'),
+(3, '已屏蔽', '3', 'knowledge_comment_status', '', 'danger', 0, 1, 'system', NOW(), '评论已屏蔽状态'),
+(4, '已删除', '4', 'knowledge_comment_status', '', 'dark', 0, 1, 'system', NOW(), '评论已删除状态');
 
 -- 收藏类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '个人收藏', '1', 'knowledge_favorite_type', '', 'primary', 'Y', 1, 'system', NOW(), '个人收藏'),
-(2, '共享收藏', '2', 'knowledge_favorite_type', '', 'success', 'N', 1, 'system', NOW(), '共享收藏');
+(1, '个人收藏', '1', 'knowledge_favorite_type', '', 'primary', 1, 1, 'system', NOW(), '个人收藏'),
+(2, '共享收藏', '2', 'knowledge_favorite_type', '', 'success', 0, 1, 'system', NOW(), '共享收藏');
 
 -- 优先级
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '一般', '1', 'knowledge_priority', '', 'secondary', 'Y', 1, 'system', NOW(), '一般优先级'),
-(2, '重要', '2', 'knowledge_priority', '', 'primary', 'N', 1, 'system', NOW(), '重要优先级'),
-(3, '紧急', '3', 'knowledge_priority', '', 'danger', 'N', 1, 'system', NOW(), '紧急优先级');
+(1, '一般', '1', 'knowledge_priority', '', 'secondary', 1, 1, 'system', NOW(), '一般优先级'),
+(2, '重要', '2', 'knowledge_priority', '', 'primary', 0, 1, 'system', NOW(), '重要优先级'),
+(3, '紧急', '3', 'knowledge_priority', '', 'danger', 0, 1, 'system', NOW(), '紧急优先级');
 
 -- 点赞类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '点赞', '1', 'knowledge_like_type', '', 'success', 'Y', 1, 'system', NOW(), '点赞'),
-(2, '点踩', '2', 'knowledge_like_type', '', 'danger', 'N', 1, 'system', NOW(), '点踩');
+(1, '点赞', '1', 'knowledge_like_type', '', 'success', 1, 1, 'system', NOW(), '点赞'),
+(2, '点踩', '2', 'knowledge_like_type', '', 'danger', 0, 1, 'system', NOW(), '点踩');
 
 -- 浏览来源
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '直接访问', '1', 'knowledge_view_source', '', 'primary', 'Y', 1, 'system', NOW(), '直接访问'),
-(2, '搜索', '2', 'knowledge_view_source', '', 'success', 'N', 1, 'system', NOW(), '搜索访问'),
-(3, '推荐', '3', 'knowledge_view_source', '', 'info', 'N', 1, 'system', NOW(), '推荐访问'),
-(4, '分享', '4', 'knowledge_view_source', '', 'warning', 'N', 1, 'system', NOW(), '分享访问');
+(1, '直接访问', '1', 'knowledge_view_source', '', 'primary', 1, 1, 'system', NOW(), '直接访问'),
+(2, '搜索', '2', 'knowledge_view_source', '', 'success', 0, 1, 'system', NOW(), '搜索访问'),
+(3, '推荐', '3', 'knowledge_view_source', '', 'info', 0, 1, 'system', NOW(), '推荐访问'),
+(4, '分享', '4', 'knowledge_view_source', '', 'warning', 0, 1, 'system', NOW(), '分享访问');
 
 -- 设备类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, 'PC', '1', 'knowledge_device_type', '', 'primary', 'Y', 1, 'system', NOW(), 'PC端'),
-(2, '移动端', '2', 'knowledge_device_type', '', 'success', 'N', 1, 'system', NOW(), '移动端'),
-(3, '平板', '3', 'knowledge_device_type', '', 'info', 'N', 1, 'system', NOW(), '平板端');
+(1, 'PC', '1', 'knowledge_device_type', '', 'primary', 1, 1, 'system', NOW(), 'PC端'),
+(2, '移动端', '2', 'knowledge_device_type', '', 'success', 0, 1, 'system', NOW(), '移动端'),
+(3, '平板', '3', 'knowledge_device_type', '', 'info', 0, 1, 'system', NOW(), '平板端');
 
 -- 存储类型
 INSERT INTO sys_dict_data (dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, remark) VALUES
-(1, '本地', '1', 'knowledge_storage_type', '', 'primary', 'Y', 1, 'system', NOW(), '本地存储'),
-(2, 'OSS', '2', 'knowledge_storage_type', '', 'success', 'N', 1, 'system', NOW(), '对象存储'),
-(3, 'CDN', '3', 'knowledge_storage_type', '', 'info', 'N', 1, 'system', NOW(), 'CDN存储');
+(1, '本地', '1', 'knowledge_storage_type', '', 'primary', 1, 1, 'system', NOW(), '本地存储'),
+(2, 'OSS', '2', 'knowledge_storage_type', '', 'success', 0, 1, 'system', NOW(), '对象存储'),
+(3, 'CDN', '3', 'knowledge_storage_type', '', 'info', 0, 1, 'system', NOW(), 'CDN存储');
 
 -- ======================= 知识分类数据 =======================
 

@@ -8,11 +8,11 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- ======================= 任务基础管理表 =======================
+-- ======================= 任务管理表 =======================
 
--- task_task表（任务主表）
-DROP TABLE IF EXISTS task_task;
-CREATE TABLE task_task (
+-- task_info表（任务基础信息表）
+DROP TABLE IF EXISTS task_info;
+CREATE TABLE task_info (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '任务ID',
     tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
     task_number VARCHAR(50) NOT NULL COMMENT '任务编号',
@@ -41,7 +41,7 @@ CREATE TABLE task_task (
     template_id BIGINT COMMENT '来源模板ID',
     is_template TINYINT DEFAULT 0 COMMENT '是否模板(0-否,1-是)',
     is_recurring TINYINT DEFAULT 0 COMMENT '是否重复任务(0-否,1-是)',
-    recurrence_rule TEXT COMMENT '重复规则(JSON格式)',
+    recurrence_rule JSON COMMENT '重复规则(JSON格式)',
     estimated_hours DECIMAL(8,2) DEFAULT 0 COMMENT '预估工时(小时)',
     actual_hours DECIMAL(8,2) DEFAULT 0 COMMENT '实际工时(小时)',
     progress_percentage DECIMAL(5,2) DEFAULT 0 COMMENT '完成进度(0-100)',
@@ -105,7 +105,7 @@ CREATE TABLE task_content (
     acceptance_criteria JSON COMMENT '验收标准(JSON格式)',
     operation_guide JSON COMMENT '操作指南(JSON格式)',
     resources JSON COMMENT '资源信息(JSON格式)',
-    references JSON COMMENT '参考资料(JSON格式)',
+    `references` JSON COMMENT '参考资料(JSON格式)',
     sort_order INT DEFAULT 0 COMMENT '排序序号',
     status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
     version INT DEFAULT 0 COMMENT '乐观锁版本号',
@@ -122,7 +122,7 @@ CREATE TABLE task_content (
     INDEX idx_sort_order (sort_order),
     INDEX idx_status (status),
     
-    CONSTRAINT fk_task_content_task FOREIGN KEY (task_id) REFERENCES task_task(id) ON DELETE CASCADE
+    CONSTRAINT fk_task_content_task FOREIGN KEY (task_id) REFERENCES task_info(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务内容详情表';
 
 -- task_attachment表（任务附件表）
@@ -163,7 +163,7 @@ CREATE TABLE task_attachment (
     INDEX idx_upload_time (upload_time),
     INDEX idx_status (status),
     
-    CONSTRAINT fk_task_attachment_task FOREIGN KEY (task_id) REFERENCES task_task(id) ON DELETE CASCADE
+    CONSTRAINT fk_task_attachment_task FOREIGN KEY (task_id) REFERENCES task_info(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务附件表';
 
 -- ======================= 分类标签管理表 =======================
@@ -255,7 +255,7 @@ CREATE TABLE task_tag_relation (
     INDEX idx_tag_id (tag_id),
     INDEX idx_relation_type (relation_type),
     
-    CONSTRAINT fk_task_tag_relation_task FOREIGN KEY (task_id) REFERENCES task_task(id) ON DELETE CASCADE,
+    CONSTRAINT fk_task_tag_relation_task FOREIGN KEY (task_id) REFERENCES task_info(id) ON DELETE CASCADE,
     CONSTRAINT fk_task_tag_relation_tag FOREIGN KEY (tag_id) REFERENCES task_tag(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务标签关联表';
 
@@ -294,7 +294,7 @@ CREATE TABLE task_participant (
     INDEX idx_join_time (join_time),
     INDEX idx_status (status),
     
-    CONSTRAINT fk_task_participant_task FOREIGN KEY (task_id) REFERENCES task_task(id) ON DELETE CASCADE
+    CONSTRAINT fk_task_participant_task FOREIGN KEY (task_id) REFERENCES task_info(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务参与者表';
 
 -- ======================= 进度管理表 =======================
@@ -336,7 +336,7 @@ CREATE TABLE task_progress (
     INDEX idx_is_milestone (is_milestone),
     INDEX idx_status (status),
     
-    CONSTRAINT fk_task_progress_task FOREIGN KEY (task_id) REFERENCES task_task(id) ON DELETE CASCADE
+    CONSTRAINT fk_task_progress_task FOREIGN KEY (task_id) REFERENCES task_info(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务进度记录表';
 
 -- ======================= 互动管理表 =======================
@@ -379,7 +379,7 @@ CREATE TABLE task_comment (
     INDEX idx_create_time (create_time),
     INDEX idx_status (status),
     
-    CONSTRAINT fk_task_comment_task FOREIGN KEY (task_id) REFERENCES task_task(id) ON DELETE CASCADE
+    CONSTRAINT fk_task_comment_task FOREIGN KEY (task_id) REFERENCES task_info(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务评论表';
 
 -- ======================= 时间管理表 =======================
@@ -422,7 +422,7 @@ CREATE TABLE task_time_log (
     INDEX idx_log_type (log_type),
     INDEX idx_status (status),
     
-    CONSTRAINT fk_task_time_log_task FOREIGN KEY (task_id) REFERENCES task_task(id) ON DELETE CASCADE
+    CONSTRAINT fk_task_time_log_task FOREIGN KEY (task_id) REFERENCES task_info(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务工时记录表';
 
 -- ======================= 模板管理表 =======================

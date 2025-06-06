@@ -608,4 +608,22 @@ CREATE TABLE document_operation_log (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文档操作日志表';
 
 -- 恢复外键约束
-SET FOREIGN_KEY_CHECKS = 1; 
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ======================= 文档模块字典类型初始化 =======================
+
+-- 插入文档模块相关的字典类型
+INSERT INTO sys_dict_type (tenant_id, dict_name, dict_type, status, create_by, create_time, remark) VALUES
+('000000', '文档状态', 'doc_status', 1, 'system', NOW(), '文档状态列表'),
+('000000', '文档安全级别', 'doc_security_level', 1, 'system', NOW(), '文档安全级别列表'),
+('000000', '文档访问级别', 'doc_access_level', 1, 'system', NOW(), '文档访问级别列表'),
+('000000', '文档存储类型', 'doc_storage_type', 1, 'system', NOW(), '文档存储类型列表'),
+('000000', '文档内容类型', 'doc_content_type', 1, 'system', NOW(), '文档内容类型列表'),
+('000000', '文档分享类型', 'doc_share_type', 1, 'system', NOW(), '文档分享类型列表'),
+('000000', '文档分享范围', 'doc_share_scope', 1, 'system', NOW(), '文档分享范围列表'),
+('000000', '文档模板类型', 'doc_template_type', 1, 'system', NOW(), '文档模板类型列表'),
+('000000', '文档审核类型', 'doc_review_type', 1, 'system', NOW(), '文档审核类型列表'),
+('000000', '文档审核阶段', 'doc_review_stage', 1, 'system', NOW(), '文档审核阶段列表'),
+('000000', '文档审核状态', 'doc_review_status', 1, 'system', NOW(), '文档审核状态列表'),
+('000000', '文档操作类型', 'doc_operation_type', 1, 'system', NOW(), '文档操作类型列表'),
+('000000', '文档变更类型', 'doc_change_type', 1, 'system', NOW(), '文档变更类型列表'); 

@@ -10,158 +10,158 @@ SET NAMES utf8mb4;
 
 -- ======================= 字典类型初始化 =======================
 
-INSERT INTO sys_dict_type (tenant_id, tenant_code, dict_name, dict_type, status, create_time, create_by, remark)
+INSERT INTO sys_dict_type (tenant_id, dict_name, dict_type, status, create_time, create_by, remark)
 VALUES
-(NULL, NULL, '合同类型', 'contract_type', 1, NOW(), 'system', '合同类型字典'),
-(NULL, NULL, '合同状态', 'contract_status', 1, NOW(), 'system', '合同状态字典'),
-(NULL, NULL, '收费类型', 'contract_fee_type', 1, NOW(), 'system', '合同收费类型字典'),
-(NULL, NULL, '收费方式', 'contract_fee_category', 1, NOW(), 'system', '合同收费方式字典'),
-(NULL, NULL, '付款状态', 'contract_payment_status', 1, NOW(), 'system', '合同付款状态字典'),
-(NULL, NULL, '团队角色', 'contract_team_role', 1, NOW(), 'system', '合同团队角色字典'),
-(NULL, NULL, '条款类型', 'contract_clause_type', 1, NOW(), 'system', '合同条款类型字典'),
-(NULL, NULL, '审核类型', 'contract_review_type', 1, NOW(), 'system', '合同审核类型字典'),
-(NULL, NULL, '审核状态', 'contract_review_status', 1, NOW(), 'system', '合同审核状态字典'),
-(NULL, NULL, '审批状态', 'contract_approval_status', 1, NOW(), 'system', '合同审批状态字典'),
-(NULL, NULL, '里程碑类型', 'contract_milestone_type', 1, NOW(), 'system', '合同里程碑类型字典'),
-(NULL, NULL, '里程碑状态', 'contract_milestone_status', 1, NOW(), 'system', '合同里程碑状态字典'),
-(NULL, NULL, '变更类型', 'contract_change_type', 1, NOW(), 'system', '合同变更类型字典'),
-(NULL, NULL, '变更状态', 'contract_change_status', 1, NOW(), 'system', '合同变更状态字典'),
-(NULL, NULL, '冲突类型', 'contract_conflict_type', 1, NOW(), 'system', '合同冲突类型字典'),
-(NULL, NULL, '冲突级别', 'contract_conflict_level', 1, NOW(), 'system', '合同冲突级别字典'),
-(NULL, NULL, '冲突状态', 'contract_conflict_status', 1, NOW(), 'system', '合同冲突状态字典'),
-(NULL, NULL, '保密级别', 'contract_confidentiality_level', 1, NOW(), 'system', '合同保密级别字典'),
-(NULL, NULL, '附件类型', 'contract_attachment_type', 1, NOW(), 'system', '合同附件类型字典'),
-(NULL, NULL, '计费周期', 'contract_billing_cycle', 1, NOW(), 'system', '合同计费周期字典')
+(0, '合同类型', 'contract_type', 1, NOW(), 'system', '合同类型字典'),
+(0, '合同状态', 'contract_status', 1, NOW(), 'system', '合同状态字典'),
+(0, '收费类型', 'contract_fee_type', 1, NOW(), 'system', '合同收费类型字典'),
+(0, '收费方式', 'contract_fee_category', 1, NOW(), 'system', '合同收费方式字典'),
+(0, '付款状态', 'contract_payment_status', 1, NOW(), 'system', '合同付款状态字典'),
+(0, '团队角色', 'contract_team_role', 1, NOW(), 'system', '合同团队角色字典'),
+(0, '条款类型', 'contract_clause_type', 1, NOW(), 'system', '合同条款类型字典'),
+(0, '审核类型', 'contract_review_type', 1, NOW(), 'system', '合同审核类型字典'),
+(0, '审核状态', 'contract_review_status', 1, NOW(), 'system', '合同审核状态字典'),
+(0, '审批状态', 'contract_approval_status', 1, NOW(), 'system', '合同审批状态字典'),
+(0, '里程碑类型', 'contract_milestone_type', 1, NOW(), 'system', '合同里程碑类型字典'),
+(0, '里程碑状态', 'contract_milestone_status', 1, NOW(), 'system', '合同里程碑状态字典'),
+(0, '变更类型', 'contract_change_type', 1, NOW(), 'system', '合同变更类型字典'),
+(0, '变更状态', 'contract_change_status', 1, NOW(), 'system', '合同变更状态字典'),
+(0, '冲突类型', 'contract_conflict_type', 1, NOW(), 'system', '合同冲突类型字典'),
+(0, '冲突级别', 'contract_conflict_level', 1, NOW(), 'system', '合同冲突级别字典'),
+(0, '冲突状态', 'contract_conflict_status', 1, NOW(), 'system', '合同冲突状态字典'),
+(0, '保密级别', 'contract_confidentiality_level', 1, NOW(), 'system', '合同保密级别字典'),
+(0, '附件类型', 'contract_attachment_type', 1, NOW(), 'system', '合同附件类型字典'),
+(0, '计费周期', 'contract_billing_cycle', 1, NOW(), 'system', '合同计费周期字典')
 ON DUPLICATE KEY UPDATE update_time = NOW();
 
 -- ======================= 字典数据初始化 =======================
 
-INSERT INTO sys_dict_data (tenant_id, tenant_code, dict_type, dict_label, dict_value, dict_sort, status, create_time, create_by, remark)
+INSERT INTO sys_dict_data (tenant_id, dict_type, dict_label, dict_value, dict_sort, status, create_time, create_by, remark)
 VALUES 
 -- 合同类型
-(NULL, NULL, 'contract_type', '委托代理', '1', 1, 1, NOW(), 'system', '合同类型 - 委托代理'),
-(NULL, NULL, 'contract_type', '法律顾问', '2', 2, 1, NOW(), 'system', '合同类型 - 法律顾问'),
-(NULL, NULL, 'contract_type', '专项服务', '3', 3, 1, NOW(), 'system', '合同类型 - 专项服务'),
-(NULL, NULL, 'contract_type', '其他', '4', 4, 1, NOW(), 'system', '合同类型 - 其他'),
+(0, 'contract_type', '委托代理', '1', 1, 1, NOW(), 'system', '合同类型 - 委托代理'),
+(0, 'contract_type', '法律顾问', '2', 2, 1, NOW(), 'system', '合同类型 - 法律顾问'),
+(0, 'contract_type', '专项服务', '3', 3, 1, NOW(), 'system', '合同类型 - 专项服务'),
+(0, 'contract_type', '其他', '4', 4, 1, NOW(), 'system', '合同类型 - 其他'),
 
 -- 合同状态
-(NULL, NULL, 'contract_status', '草稿', '1', 1, 1, NOW(), 'system', '合同状态 - 草稿'),
-(NULL, NULL, 'contract_status', '待审核', '2', 2, 1, NOW(), 'system', '合同状态 - 待审核'),
-(NULL, NULL, 'contract_status', '已审核', '3', 3, 1, NOW(), 'system', '合同状态 - 已审核'),
-(NULL, NULL, 'contract_status', '已签署', '4', 4, 1, NOW(), 'system', '合同状态 - 已签署'),
-(NULL, NULL, 'contract_status', '执行中', '5', 5, 1, NOW(), 'system', '合同状态 - 执行中'),
-(NULL, NULL, 'contract_status', '已完成', '6', 6, 1, NOW(), 'system', '合同状态 - 已完成'),
-(NULL, NULL, 'contract_status', '已终止', '7', 7, 1, NOW(), 'system', '合同状态 - 已终止'),
+(0, 'contract_status', '草稿', '1', 1, 1, NOW(), 'system', '合同状态 - 草稿'),
+(0, 'contract_status', '待审核', '2', 2, 1, NOW(), 'system', '合同状态 - 待审核'),
+(0, 'contract_status', '已审核', '3', 3, 1, NOW(), 'system', '合同状态 - 已审核'),
+(0, 'contract_status', '已签署', '4', 4, 1, NOW(), 'system', '合同状态 - 已签署'),
+(0, 'contract_status', '执行中', '5', 5, 1, NOW(), 'system', '合同状态 - 执行中'),
+(0, 'contract_status', '已完成', '6', 6, 1, NOW(), 'system', '合同状态 - 已完成'),
+(0, 'contract_status', '已终止', '7', 7, 1, NOW(), 'system', '合同状态 - 已终止'),
 
 -- 收费类型
-(NULL, NULL, 'contract_fee_type', '律师费', '1', 1, 1, NOW(), 'system', '收费类型 - 律师费'),
-(NULL, NULL, 'contract_fee_type', '诉讼费', '2', 2, 1, NOW(), 'system', '收费类型 - 诉讼费'),
-(NULL, NULL, 'contract_fee_type', '差旅费', '3', 3, 1, NOW(), 'system', '收费类型 - 差旅费'),
-(NULL, NULL, 'contract_fee_type', '其他费用', '4', 4, 1, NOW(), 'system', '收费类型 - 其他费用'),
+(0, 'contract_fee_type', '律师费', '1', 1, 1, NOW(), 'system', '收费类型 - 律师费'),
+(0, 'contract_fee_type', '诉讼费', '2', 2, 1, NOW(), 'system', '收费类型 - 诉讼费'),
+(0, 'contract_fee_type', '差旅费', '3', 3, 1, NOW(), 'system', '收费类型 - 差旅费'),
+(0, 'contract_fee_type', '其他费用', '4', 4, 1, NOW(), 'system', '收费类型 - 其他费用'),
 
 -- 收费方式
-(NULL, NULL, 'contract_fee_category', '固定费用', '1', 1, 1, NOW(), 'system', '收费方式 - 固定费用'),
-(NULL, NULL, 'contract_fee_category', '按小时', '2', 2, 1, NOW(), 'system', '收费方式 - 按小时'),
-(NULL, NULL, 'contract_fee_category', '按比例', '3', 3, 1, NOW(), 'system', '收费方式 - 按比例'),
-(NULL, NULL, 'contract_fee_category', '风险代理', '4', 4, 1, NOW(), 'system', '收费方式 - 风险代理'),
+(0, 'contract_fee_category', '固定费用', '1', 1, 1, NOW(), 'system', '收费方式 - 固定费用'),
+(0, 'contract_fee_category', '按小时', '2', 2, 1, NOW(), 'system', '收费方式 - 按小时'),
+(0, 'contract_fee_category', '按比例', '3', 3, 1, NOW(), 'system', '收费方式 - 按比例'),
+(0, 'contract_fee_category', '风险代理', '4', 4, 1, NOW(), 'system', '收费方式 - 风险代理'),
 
 -- 付款状态
-(NULL, NULL, 'contract_payment_status', '未支付', '1', 1, 1, NOW(), 'system', '付款状态 - 未支付'),
-(NULL, NULL, 'contract_payment_status', '部分支付', '2', 2, 1, NOW(), 'system', '付款状态 - 部分支付'),
-(NULL, NULL, 'contract_payment_status', '已支付', '3', 3, 1, NOW(), 'system', '付款状态 - 已支付'),
-(NULL, NULL, 'contract_payment_status', '已退款', '4', 4, 1, NOW(), 'system', '付款状态 - 已退款'),
+(0, 'contract_payment_status', '未支付', '1', 1, 1, NOW(), 'system', '付款状态 - 未支付'),
+(0, 'contract_payment_status', '部分支付', '2', 2, 1, NOW(), 'system', '付款状态 - 部分支付'),
+(0, 'contract_payment_status', '已支付', '3', 3, 1, NOW(), 'system', '付款状态 - 已支付'),
+(0, 'contract_payment_status', '已退款', '4', 4, 1, NOW(), 'system', '付款状态 - 已退款'),
 
 -- 团队角色
-(NULL, NULL, 'contract_team_role', '主办律师', '1', 1, 1, NOW(), 'system', '团队角色 - 主办律师'),
-(NULL, NULL, 'contract_team_role', '协办律师', '2', 2, 1, NOW(), 'system', '团队角色 - 协办律师'),
-(NULL, NULL, 'contract_team_role', '律师助理', '3', 3, 1, NOW(), 'system', '团队角色 - 律师助理'),
-(NULL, NULL, 'contract_team_role', '实习生', '4', 4, 1, NOW(), 'system', '团队角色 - 实习生'),
+(0, 'contract_team_role', '主办律师', '1', 1, 1, NOW(), 'system', '团队角色 - 主办律师'),
+(0, 'contract_team_role', '协办律师', '2', 2, 1, NOW(), 'system', '团队角色 - 协办律师'),
+(0, 'contract_team_role', '律师助理', '3', 3, 1, NOW(), 'system', '团队角色 - 律师助理'),
+(0, 'contract_team_role', '实习生', '4', 4, 1, NOW(), 'system', '团队角色 - 实习生'),
 
 -- 条款类型
-(NULL, NULL, 'contract_clause_type', '标准条款', '1', 1, 1, NOW(), 'system', '条款类型 - 标准条款'),
-(NULL, NULL, 'contract_clause_type', '特殊条款', '2', 2, 1, NOW(), 'system', '条款类型 - 特殊条款'),
-(NULL, NULL, 'contract_clause_type', '补充条款', '3', 3, 1, NOW(), 'system', '条款类型 - 补充条款'),
+(0, 'contract_clause_type', '标准条款', '1', 1, 1, NOW(), 'system', '条款类型 - 标准条款'),
+(0, 'contract_clause_type', '特殊条款', '2', 2, 1, NOW(), 'system', '条款类型 - 特殊条款'),
+(0, 'contract_clause_type', '补充条款', '3', 3, 1, NOW(), 'system', '条款类型 - 补充条款'),
 
 -- 审核类型
-(NULL, NULL, 'contract_review_type', '内容审核', '1', 1, 1, NOW(), 'system', '审核类型 - 内容审核'),
-(NULL, NULL, 'contract_review_type', '法务审核', '2', 2, 1, NOW(), 'system', '审核类型 - 法务审核'),
-(NULL, NULL, 'contract_review_type', '财务审核', '3', 3, 1, NOW(), 'system', '审核类型 - 财务审核'),
-(NULL, NULL, 'contract_review_type', '管理审核', '4', 4, 1, NOW(), 'system', '审核类型 - 管理审核'),
+(0, 'contract_review_type', '内容审核', '1', 1, 1, NOW(), 'system', '审核类型 - 内容审核'),
+(0, 'contract_review_type', '法务审核', '2', 2, 1, NOW(), 'system', '审核类型 - 法务审核'),
+(0, 'contract_review_type', '财务审核', '3', 3, 1, NOW(), 'system', '审核类型 - 财务审核'),
+(0, 'contract_review_type', '管理审核', '4', 4, 1, NOW(), 'system', '审核类型 - 管理审核'),
 
 -- 审核状态
-(NULL, NULL, 'contract_review_status', '待审核', '1', 1, 1, NOW(), 'system', '审核状态 - 待审核'),
-(NULL, NULL, 'contract_review_status', '审核通过', '2', 2, 1, NOW(), 'system', '审核状态 - 审核通过'),
-(NULL, NULL, 'contract_review_status', '审核拒绝', '3', 3, 1, NOW(), 'system', '审核状态 - 审核拒绝'),
-(NULL, NULL, 'contract_review_status', '需要修改', '4', 4, 1, NOW(), 'system', '审核状态 - 需要修改'),
+(0, 'contract_review_status', '待审核', '1', 1, 1, NOW(), 'system', '审核状态 - 待审核'),
+(0, 'contract_review_status', '审核通过', '2', 2, 1, NOW(), 'system', '审核状态 - 审核通过'),
+(0, 'contract_review_status', '审核拒绝', '3', 3, 1, NOW(), 'system', '审核状态 - 审核拒绝'),
+(0, 'contract_review_status', '需要修改', '4', 4, 1, NOW(), 'system', '审核状态 - 需要修改'),
 
 -- 审批状态
-(NULL, NULL, 'contract_approval_status', '待审批', '1', 1, 1, NOW(), 'system', '审批状态 - 待审批'),
-(NULL, NULL, 'contract_approval_status', '审批通过', '2', 2, 1, NOW(), 'system', '审批状态 - 审批通过'),
-(NULL, NULL, 'contract_approval_status', '审批拒绝', '3', 3, 1, NOW(), 'system', '审批状态 - 审批拒绝'),
-(NULL, NULL, 'contract_approval_status', '已撤回', '4', 4, 1, NOW(), 'system', '审批状态 - 已撤回'),
+(0, 'contract_approval_status', '待审批', '1', 1, 1, NOW(), 'system', '审批状态 - 待审批'),
+(0, 'contract_approval_status', '审批通过', '2', 2, 1, NOW(), 'system', '审批状态 - 审批通过'),
+(0, 'contract_approval_status', '审批拒绝', '3', 3, 1, NOW(), 'system', '审批状态 - 审批拒绝'),
+(0, 'contract_approval_status', '已撤回', '4', 4, 1, NOW(), 'system', '审批状态 - 已撤回'),
 
 -- 里程碑类型
-(NULL, NULL, 'contract_milestone_type', '开始节点', '1', 1, 1, NOW(), 'system', '里程碑类型 - 开始节点'),
-(NULL, NULL, 'contract_milestone_type', '过程节点', '2', 2, 1, NOW(), 'system', '里程碑类型 - 过程节点'),
-(NULL, NULL, 'contract_milestone_type', '结束节点', '3', 3, 1, NOW(), 'system', '里程碑类型 - 结束节点'),
+(0, 'contract_milestone_type', '开始节点', '1', 1, 1, NOW(), 'system', '里程碑类型 - 开始节点'),
+(0, 'contract_milestone_type', '过程节点', '2', 2, 1, NOW(), 'system', '里程碑类型 - 过程节点'),
+(0, 'contract_milestone_type', '结束节点', '3', 3, 1, NOW(), 'system', '里程碑类型 - 结束节点'),
 
 -- 里程碑状态
-(NULL, NULL, 'contract_milestone_status', '未开始', '1', 1, 1, NOW(), 'system', '里程碑状态 - 未开始'),
-(NULL, NULL, 'contract_milestone_status', '进行中', '2', 2, 1, NOW(), 'system', '里程碑状态 - 进行中'),
-(NULL, NULL, 'contract_milestone_status', '已完成', '3', 3, 1, NOW(), 'system', '里程碑状态 - 已完成'),
-(NULL, NULL, 'contract_milestone_status', '已延期', '4', 4, 1, NOW(), 'system', '里程碑状态 - 已延期'),
-(NULL, NULL, 'contract_milestone_status', '已跳过', '5', 5, 1, NOW(), 'system', '里程碑状态 - 已跳过'),
+(0, 'contract_milestone_status', '未开始', '1', 1, 1, NOW(), 'system', '里程碑状态 - 未开始'),
+(0, 'contract_milestone_status', '进行中', '2', 2, 1, NOW(), 'system', '里程碑状态 - 进行中'),
+(0, 'contract_milestone_status', '已完成', '3', 3, 1, NOW(), 'system', '里程碑状态 - 已完成'),
+(0, 'contract_milestone_status', '已延期', '4', 4, 1, NOW(), 'system', '里程碑状态 - 已延期'),
+(0, 'contract_milestone_status', '已跳过', '5', 5, 1, NOW(), 'system', '里程碑状态 - 已跳过'),
 
 -- 变更类型
-(NULL, NULL, 'contract_change_type', '金额变更', '1', 1, 1, NOW(), 'system', '变更类型 - 金额变更'),
-(NULL, NULL, 'contract_change_type', '期限变更', '2', 2, 1, NOW(), 'system', '变更类型 - 期限变更'),
-(NULL, NULL, 'contract_change_type', '条款变更', '3', 3, 1, NOW(), 'system', '变更类型 - 条款变更'),
-(NULL, NULL, 'contract_change_type', '团队变更', '4', 4, 1, NOW(), 'system', '变更类型 - 团队变更'),
-(NULL, NULL, 'contract_change_type', '其他', '5', 5, 1, NOW(), 'system', '变更类型 - 其他'),
+(0, 'contract_change_type', '金额变更', '1', 1, 1, NOW(), 'system', '变更类型 - 金额变更'),
+(0, 'contract_change_type', '期限变更', '2', 2, 1, NOW(), 'system', '变更类型 - 期限变更'),
+(0, 'contract_change_type', '条款变更', '3', 3, 1, NOW(), 'system', '变更类型 - 条款变更'),
+(0, 'contract_change_type', '团队变更', '4', 4, 1, NOW(), 'system', '变更类型 - 团队变更'),
+(0, 'contract_change_type', '其他', '5', 5, 1, NOW(), 'system', '变更类型 - 其他'),
 
 -- 变更状态
-(NULL, NULL, 'contract_change_status', '草稿', '1', 1, 1, NOW(), 'system', '变更状态 - 草稿'),
-(NULL, NULL, 'contract_change_status', '待审核', '2', 2, 1, NOW(), 'system', '变更状态 - 待审核'),
-(NULL, NULL, 'contract_change_status', '已审核', '3', 3, 1, NOW(), 'system', '变更状态 - 已审核'),
-(NULL, NULL, 'contract_change_status', '已生效', '4', 4, 1, NOW(), 'system', '变更状态 - 已生效'),
-(NULL, NULL, 'contract_change_status', '已拒绝', '5', 5, 1, NOW(), 'system', '变更状态 - 已拒绝'),
+(0, 'contract_change_status', '草稿', '1', 1, 1, NOW(), 'system', '变更状态 - 草稿'),
+(0, 'contract_change_status', '待审核', '2', 2, 1, NOW(), 'system', '变更状态 - 待审核'),
+(0, 'contract_change_status', '已审核', '3', 3, 1, NOW(), 'system', '变更状态 - 已审核'),
+(0, 'contract_change_status', '已生效', '4', 4, 1, NOW(), 'system', '变更状态 - 已生效'),
+(0, 'contract_change_status', '已拒绝', '5', 5, 1, NOW(), 'system', '变更状态 - 已拒绝'),
 
 -- 冲突类型
-(NULL, NULL, 'contract_conflict_type', '利益冲突', '1', 1, 1, NOW(), 'system', '冲突类型 - 利益冲突'),
-(NULL, NULL, 'contract_conflict_type', '时间冲突', '2', 2, 1, NOW(), 'system', '冲突类型 - 时间冲突'),
-(NULL, NULL, 'contract_conflict_type', '资源冲突', '3', 3, 1, NOW(), 'system', '冲突类型 - 资源冲突'),
-(NULL, NULL, 'contract_conflict_type', '条款冲突', '4', 4, 1, NOW(), 'system', '冲突类型 - 条款冲突'),
-(NULL, NULL, 'contract_conflict_type', '其他', '5', 5, 1, NOW(), 'system', '冲突类型 - 其他'),
+(0, 'contract_conflict_type', '利益冲突', '1', 1, 1, NOW(), 'system', '冲突类型 - 利益冲突'),
+(0, 'contract_conflict_type', '时间冲突', '2', 2, 1, NOW(), 'system', '冲突类型 - 时间冲突'),
+(0, 'contract_conflict_type', '资源冲突', '3', 3, 1, NOW(), 'system', '冲突类型 - 资源冲突'),
+(0, 'contract_conflict_type', '条款冲突', '4', 4, 1, NOW(), 'system', '冲突类型 - 条款冲突'),
+(0, 'contract_conflict_type', '其他', '5', 5, 1, NOW(), 'system', '冲突类型 - 其他'),
 
 -- 冲突级别
-(NULL, NULL, 'contract_conflict_level', '低', '1', 1, 1, NOW(), 'system', '冲突级别 - 低'),
-(NULL, NULL, 'contract_conflict_level', '中', '2', 2, 1, NOW(), 'system', '冲突级别 - 中'),
-(NULL, NULL, 'contract_conflict_level', '高', '3', 3, 1, NOW(), 'system', '冲突级别 - 高'),
-(NULL, NULL, 'contract_conflict_level', '严重', '4', 4, 1, NOW(), 'system', '冲突级别 - 严重'),
+(0, 'contract_conflict_level', '低', '1', 1, 1, NOW(), 'system', '冲突级别 - 低'),
+(0, 'contract_conflict_level', '中', '2', 2, 1, NOW(), 'system', '冲突级别 - 中'),
+(0, 'contract_conflict_level', '高', '3', 3, 1, NOW(), 'system', '冲突级别 - 高'),
+(0, 'contract_conflict_level', '严重', '4', 4, 1, NOW(), 'system', '冲突级别 - 严重'),
 
 -- 冲突状态
-(NULL, NULL, 'contract_conflict_status', '待处理', '1', 1, 1, NOW(), 'system', '冲突状态 - 待处理'),
-(NULL, NULL, 'contract_conflict_status', '处理中', '2', 2, 1, NOW(), 'system', '冲突状态 - 处理中'),
-(NULL, NULL, 'contract_conflict_status', '已解决', '3', 3, 1, NOW(), 'system', '冲突状态 - 已解决'),
-(NULL, NULL, 'contract_conflict_status', '已忽略', '4', 4, 1, NOW(), 'system', '冲突状态 - 已忽略'),
+(0, 'contract_conflict_status', '待处理', '1', 1, 1, NOW(), 'system', '冲突状态 - 待处理'),
+(0, 'contract_conflict_status', '处理中', '2', 2, 1, NOW(), 'system', '冲突状态 - 处理中'),
+(0, 'contract_conflict_status', '已解决', '3', 3, 1, NOW(), 'system', '冲突状态 - 已解决'),
+(0, 'contract_conflict_status', '已忽略', '4', 4, 1, NOW(), 'system', '冲突状态 - 已忽略'),
 
 -- 保密级别
-(NULL, NULL, 'contract_confidentiality_level', '公开', '1', 1, 1, NOW(), 'system', '保密级别 - 公开'),
-(NULL, NULL, 'contract_confidentiality_level', '内部', '2', 2, 1, NOW(), 'system', '保密级别 - 内部'),
-(NULL, NULL, 'contract_confidentiality_level', '机密', '3', 3, 1, NOW(), 'system', '保密级别 - 机密'),
-(NULL, NULL, 'contract_confidentiality_level', '绝密', '4', 4, 1, NOW(), 'system', '保密级别 - 绝密'),
+(0, 'contract_confidentiality_level', '公开', '1', 1, 1, NOW(), 'system', '保密级别 - 公开'),
+(0, 'contract_confidentiality_level', '内部', '2', 2, 1, NOW(), 'system', '保密级别 - 内部'),
+(0, 'contract_confidentiality_level', '机密', '3', 3, 1, NOW(), 'system', '保密级别 - 机密'),
+(0, 'contract_confidentiality_level', '绝密', '4', 4, 1, NOW(), 'system', '保密级别 - 绝密'),
 
 -- 附件类型
-(NULL, NULL, 'contract_attachment_type', '合同文本', '1', 1, 1, NOW(), 'system', '附件类型 - 合同文本'),
-(NULL, NULL, 'contract_attachment_type', '签署页', '2', 2, 1, NOW(), 'system', '附件类型 - 签署页'),
-(NULL, NULL, 'contract_attachment_type', '补充协议', '3', 3, 1, NOW(), 'system', '附件类型 - 补充协议'),
-(NULL, NULL, 'contract_attachment_type', '其他', '4', 4, 1, NOW(), 'system', '附件类型 - 其他'),
+(0, 'contract_attachment_type', '合同文本', '1', 1, 1, NOW(), 'system', '附件类型 - 合同文本'),
+(0, 'contract_attachment_type', '签署页', '2', 2, 1, NOW(), 'system', '附件类型 - 签署页'),
+(0, 'contract_attachment_type', '补充协议', '3', 3, 1, NOW(), 'system', '附件类型 - 补充协议'),
+(0, 'contract_attachment_type', '其他', '4', 4, 1, NOW(), 'system', '附件类型 - 其他'),
 
 -- 计费周期
-(NULL, NULL, 'contract_billing_cycle', '一次性', '1', 1, 1, NOW(), 'system', '计费周期 - 一次性'),
-(NULL, NULL, 'contract_billing_cycle', '按月', '2', 2, 1, NOW(), 'system', '计费周期 - 按月'),
-(NULL, NULL, 'contract_billing_cycle', '按季', '3', 3, 1, NOW(), 'system', '计费周期 - 按季'),
-(NULL, NULL, 'contract_billing_cycle', '按年', '4', 4, 1, NOW(), 'system', '计费周期 - 按年')
+(0, 'contract_billing_cycle', '一次性', '1', 1, 1, NOW(), 'system', '计费周期 - 一次性'),
+(0, 'contract_billing_cycle', '按月', '2', 2, 1, NOW(), 'system', '计费周期 - 按月'),
+(0, 'contract_billing_cycle', '按季', '3', 3, 1, NOW(), 'system', '计费周期 - 按季'),
+(0, 'contract_billing_cycle', '按年', '4', 4, 1, NOW(), 'system', '计费周期 - 按年')
 ON DUPLICATE KEY UPDATE update_time = NOW();
 
 -- ======================= 合同模板初始化 =======================
