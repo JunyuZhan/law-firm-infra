@@ -1,17 +1,17 @@
 package com.lawfirm.personnel.config;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import lombok.Data;
 
 /**
  * 人事模块配置类
+ * 注意：Mapper扫描已在主应用LawFirmApiApplication中统一配置
+ * 此处不再重复配置，避免Bean重复定义警告
  */
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "law-firm.personnel")
-@MapperScan(basePackages = "com.lawfirm.model.personnel.mapper")
 public class PersonnelConfig {
     
     /**

@@ -19,7 +19,8 @@ import lombok.extern.slf4j.Slf4j;
     RetryConfig.class,
     MessageServiceConfig.class,
     MessageFacadeConfig.class,
-    WebSocketConfig.class  // 添加WebSocket配置
+    WebSocketConfig.class,  // 添加WebSocket配置
+    RocketMQAutoConfiguration.class  // 添加RocketMQ自动配置
 })
 @PropertySource(value = "classpath:default-message-config.properties", ignoreResourceNotFound = true)
 @ConditionalOnProperty(prefix = "message", name = "enabled", havingValue = "true", matchIfMissing = true)

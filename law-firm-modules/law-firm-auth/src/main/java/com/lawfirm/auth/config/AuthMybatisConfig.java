@@ -1,14 +1,13 @@
 package com.lawfirm.auth.config;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Auth模块MyBatis-Plus配置类
- * 使用注解方式，无需XML映射文件
+ * 注意：Mapper扫描已在主应用LawFirmApiApplication中统一配置
+ * 此处不再重复配置，避免Bean重复定义警告
  */
 @Configuration("authMybatisConfig")
-@MapperScan(basePackages = "com.lawfirm.model.auth.mapper")
 public class AuthMybatisConfig {
-    // 使用默认的MyBatis-Plus配置，支持注解和BaseMapper
+    // Mapper扫描由主应用统一处理，避免重复定义
 } 

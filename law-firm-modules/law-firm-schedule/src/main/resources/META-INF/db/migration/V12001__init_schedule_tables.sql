@@ -10,9 +10,9 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- ======================= 日程基础管理表 =======================
 
--- schedule_info表（日程主表）
-DROP TABLE IF EXISTS schedule_info;
-CREATE TABLE schedule_info (
+-- schedule_schedule表（日程主表）
+DROP TABLE IF EXISTS schedule_schedule;
+CREATE TABLE schedule_schedule (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '日程ID',
     tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
     schedule_number VARCHAR(50) NOT NULL COMMENT '日程编号',
@@ -102,7 +102,7 @@ CREATE TABLE schedule_content (
     INDEX idx_sort_order (sort_order),
     INDEX idx_status (status),
     
-    CONSTRAINT fk_schedule_content_schedule FOREIGN KEY (schedule_id) REFERENCES schedule_info(id) ON DELETE CASCADE
+    CONSTRAINT fk_schedule_content_schedule FOREIGN KEY (schedule_id) REFERENCES schedule_schedule(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日程内容详情表';
 
 -- schedule_calendar表（日历表）
@@ -201,6 +201,120 @@ CREATE TABLE schedule_room_equipment (
     
     CONSTRAINT fk_room_equipment_room FOREIGN KEY (room_id) REFERENCES schedule_meeting_room(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='会议室设备表'; 
+
+-- schedule_meeting_room_booking表（会议室预订表）
+DROP TABLE IF EXISTS schedule_meeting_room_booking;
+CREATE TABLE schedule_meeting_room_booking (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '预订ID',
+    tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
+    tenant_code VARCHAR(50) COMMENT '租户编码',
+    meeting_room_id BIGINT NOT NULL COMMENT '会议室ID',
+    schedule_id BIGINT COMMENT '关联的日程ID',
+    user_id BIGINT NOT NULL COMMENT '预订人ID',
+    title VARCHAR(200) NOT NULL COMMENT '会议标题',
+    description TEXT COMMENT '会议描述',
+    start_time DATETIME NOT NULL COMMENT '开始时间',
+    end_time DATETIME NOT NULL COMMENT '结束时间',
+    booking_type TINYINT DEFAULT 1 COMMENT '预订类型(1-常规会议,2-培训,3-活动,4-其他)',
+    booking_status TINYINT DEFAULT 1 COMMENT '预订状态(1-待审核,2-已确认,3-已取消,4-已完成)',
+    attendees_count INT DEFAULT 0 COMMENT '参与人数',
+    remarks VARCHAR(500) COMMENT '预订备注',
+    status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
+    version INT DEFAULT 0 COMMENT '乐观锁版本号',
+    sort INT DEFAULT 0 COMMENT '排序号',
+    deleted TINYINT DEFAULT 0 COMMENT '删除标记(0-正常,1-删除)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    create_by VARCHAR(50) COMMENT '创建人',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    update_by VARCHAR(50) COMMENT '更新人',
+    remark VARCHAR(255) COMMENT '备注',
+    
+    INDEX idx_tenant_id (tenant_id),
+    INDEX idx_meeting_room_id (meeting_room_id),
+    INDEX idx_schedule_id (schedule_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_start_time (start_time),
+    INDEX idx_end_time (end_time),
+    INDEX idx_booking_status (booking_status),
+    INDEX idx_status (status),
+    
+    CONSTRAINT fk_room_booking_room FOREIGN KEY (meeting_room_id) REFERENCES schedule_meeting_room(id) ON DELETE CASCADE,
+    CONSTRAINT fk_room_booking_schedule FOREIGN KEY (schedule_id) REFERENCES schedule_schedule(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='会议室预订表';
+
+-- schedule_participant表（日程参与者表）
+DROP TABLE IF EXISTS schedule_participant;
+CREATE TABLE schedule_participant (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '参与者ID',
+    tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
+    tenant_code VARCHAR(50) COMMENT '租户编码',
+    schedule_id BIGINT NOT NULL COMMENT '日程ID',
+    user_id BIGINT NOT NULL COMMENT '用户ID',
+    user_name VARCHAR(50) COMMENT '用户姓名',
+    user_email VARCHAR(100) COMMENT '用户邮箱',
+    participant_type TINYINT DEFAULT 1 COMMENT '参与者类型(1-必须参与,2-可选参与,3-仅通知)',
+    response_status TINYINT DEFAULT 1 COMMENT '响应状态(1-待回复,2-已接受,3-已拒绝,4-待定)',
+    response_time DATETIME COMMENT '响应时间',
+    response_note VARCHAR(500) COMMENT '响应备注',
+    is_organizer TINYINT DEFAULT 0 COMMENT '是否组织者(0-否,1-是)',
+    notification_sent TINYINT DEFAULT 0 COMMENT '是否已发送通知(0-否,1-是)',
+    status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
+    version INT DEFAULT 0 COMMENT '乐观锁版本号',
+    sort INT DEFAULT 0 COMMENT '排序号',
+    deleted TINYINT DEFAULT 0 COMMENT '删除标记(0-正常,1-删除)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    create_by VARCHAR(50) COMMENT '创建人',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    update_by VARCHAR(50) COMMENT '更新人',
+    remark VARCHAR(255) COMMENT '备注',
+    
+    UNIQUE KEY uk_schedule_user (tenant_id, schedule_id, user_id),
+    INDEX idx_tenant_id (tenant_id),
+    INDEX idx_schedule_id (schedule_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_participant_type (participant_type),
+    INDEX idx_response_status (response_status),
+    INDEX idx_status (status),
+    
+    CONSTRAINT fk_schedule_participant_schedule FOREIGN KEY (schedule_id) REFERENCES schedule_schedule(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日程参与者表';
+
+-- schedule_reminder表（日程提醒表）
+DROP TABLE IF EXISTS schedule_reminder;
+CREATE TABLE schedule_reminder (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '提醒ID',
+    tenant_id BIGINT DEFAULT 0 COMMENT '租户ID',
+    tenant_code VARCHAR(50) COMMENT '租户编码',
+    schedule_id BIGINT NOT NULL COMMENT '日程ID',
+    user_id BIGINT NOT NULL COMMENT '用户ID',
+    reminder_type TINYINT DEFAULT 1 COMMENT '提醒类型(1-邮件,2-短信,3-系统通知,4-弹窗)',
+    reminder_time DATETIME NOT NULL COMMENT '提醒时间',
+    advance_minutes INT DEFAULT 15 COMMENT '提前分钟数',
+    is_sent TINYINT DEFAULT 0 COMMENT '是否已发送(0-否,1-是)',
+    send_time DATETIME COMMENT '发送时间',
+    send_result VARCHAR(500) COMMENT '发送结果',
+    retry_count INT DEFAULT 0 COMMENT '重试次数',
+    max_retry INT DEFAULT 3 COMMENT '最大重试次数',
+    status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-正常)',
+    version INT DEFAULT 0 COMMENT '乐观锁版本号',
+    sort INT DEFAULT 0 COMMENT '排序号',
+    deleted TINYINT DEFAULT 0 COMMENT '删除标记(0-正常,1-删除)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    create_by VARCHAR(50) COMMENT '创建人',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    update_by VARCHAR(50) COMMENT '更新人',
+    remark VARCHAR(255) COMMENT '备注',
+    
+    INDEX idx_tenant_id (tenant_id),
+    INDEX idx_schedule_id (schedule_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_reminder_time (reminder_time),
+    INDEX idx_reminder_type (reminder_type),
+    INDEX idx_is_sent (is_sent),
+    INDEX idx_status (status),
+    
+    CONSTRAINT fk_schedule_reminder_schedule FOREIGN KEY (schedule_id) REFERENCES schedule_schedule(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日程提醒表';
 
 -- 恢复外键约束
 SET FOREIGN_KEY_CHECKS = 1; 

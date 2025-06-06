@@ -43,7 +43,7 @@ public class AuthSqlConstants {
          * 根据手机号查询用户
          */
         public static final String SELECT_BY_PHONE = 
-                "SELECT * FROM auth_user WHERE phone = #{phone} AND deleted = 0";
+                "SELECT * FROM auth_user WHERE mobile = #{phone} AND deleted = 0";
                 
         /**
          * 根据邮箱查询用户

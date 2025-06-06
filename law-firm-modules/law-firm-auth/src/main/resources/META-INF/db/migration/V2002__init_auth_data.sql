@@ -10,7 +10,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- 创建初始管理员用户（密码：admin123）
 INSERT INTO auth_user (id, tenant_id, username, password, email, mobile, real_name, status, create_time, create_by, remark)
-SELECT 1, 0, 'admin', '$2y$10$x5Swziktu3TehpBImdvV3uJLtt9.zlHyP4qOYY6o8n6gDUhqhTpxy', 'admin@lawfirm.com', '13800000000', '系统管理员', 1, NOW(), 'system', '系统内置管理员'
+SELECT 1, 0, 'admin', '$2a$10$N.zmdr9k7uOCQb376NoU6eTnh5g1dIh4iTpGPKlDkqIl.2LWQNX6K', 'admin@lawfirm.com', '13800000000', '系统管理员', 1, NOW(), 'system', '系统内置管理员'
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM auth_user WHERE username = 'admin');
 

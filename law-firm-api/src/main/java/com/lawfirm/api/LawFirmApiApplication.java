@@ -28,25 +28,8 @@ import java.util.Arrays;
  */
 @Slf4j
 @MapperScan({
-    "com.lawfirm.model.personnel.mapper",
-    "com.lawfirm.model.task.mapper",
-    "com.lawfirm.model.document.mapper",
-    "com.lawfirm.model.log.mapper",
-    "com.lawfirm.model.system.mapper",
-    "com.lawfirm.model.search.mapper",
-    "com.lawfirm.model.auth.mapper", 
-    "com.lawfirm.model.client.mapper",
-    "com.lawfirm.model.contract.mapper",
-    "com.lawfirm.model.cases.mapper",
-    "com.lawfirm.model.finance.mapper",
-    "com.lawfirm.model.knowledge.mapper",
-    "com.lawfirm.model.schedule.mapper",
-    "com.lawfirm.model.organization.mapper",
-    "com.lawfirm.model.archive.mapper",
-    "com.lawfirm.model.storage.mapper",
-    "com.lawfirm.model.workflow.mapper",
-    "com.lawfirm.model.message.mapper",
-    "com.lawfirm.model.ai.mapper"
+    // 使用通配符统一扫描，避免重复定义
+    "com.lawfirm.model.**.mapper"
 })
 @SpringBootApplication(
     scanBasePackages = {
