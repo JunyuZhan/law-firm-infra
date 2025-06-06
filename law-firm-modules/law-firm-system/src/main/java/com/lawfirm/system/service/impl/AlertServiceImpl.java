@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * 系统告警服务实现类
@@ -28,22 +27,33 @@ public class AlertServiceImpl implements AlertService {
     @AuditLog(description = "发送系统告警", operateType = "CREATE", businessType = "MONITOR")
     public String sendAlert(String type, String level, String message) {
         try {
-            String alertId = UUID.randomUUID().toString().replace("-", "");
-            
             SysMonitorAlert alert = new SysMonitorAlert();
-            alert.setAlertId(alertId);
+            
+            // 设置默认配置ID（后续可以改为实际配置ID）
+            alert.setConfigId(1L);
+            
+            // 设置告警信息
             alert.setType(type);
             alert.setLevel(level);
             alert.setMessage(message);
-            alert.setAlertStatus("PENDING");  // 待处理状态
-            alert.setCreateTime(LocalDateTime.now());
-            alert.setUpdateTime(LocalDateTime.now());
+            
+            // 转换告警级别
+            alert.setAlertLevel(convertAlertLevel(level));
+            alert.setAlertTitle(String.format("%s告警", type));
+            alert.setAlertContent(message);
+            alert.setAlertTime(LocalDateTime.now());
+            alert.setAlertStatus("PENDING"); // 待处理
             
             alertMapper.insert(alert);
             
-            log.info("已发送告警: [{}] {}, 级别: {}", type, message, level);
+            // 生成业务ID
+            String businessId = "ALERT_" + System.currentTimeMillis() + "_" + alert.getId();
+            alert.setAlertId(businessId);
+            alertMapper.updateById(alert);
             
-            // 记录告警日志，实际项目中可以扩展为发送邮件、短信等
+            log.info("已发送告警: [{}] {}, 级别: {}, ID: {}", type, message, level, businessId);
+            
+            // 记录告警日志
             if ("ERROR".equals(level)) {
                 log.error("系统告警: [{}] {}", type, message);
             } else if ("WARNING".equals(level)) {
@@ -52,7 +62,7 @@ public class AlertServiceImpl implements AlertService {
                 log.info("系统告警: [{}] {}", type, message);
             }
             
-            return alertId;
+            return businessId;
         } catch (Exception e) {
             log.error("发送告警失败: " + e.getMessage(), e);
             return null;
@@ -78,13 +88,28 @@ public class AlertServiceImpl implements AlertService {
     @AuditLog(description = "关闭系统告警", operateType = "UPDATE", businessType = "MONITOR")
     public boolean closeAlert(String alertId) {
         try {
-            SysMonitorAlert alert = new SysMonitorAlert();
-            alert.setAlertId(alertId);
-            alert.setAlertStatus("CLOSED");
-            alert.setHandler("system");
-            alert.setHandleTime(new Date());
+            // 尝试按业务ID查找
+            SysMonitorAlert alert = alertMapper.selectById(alertId);
+            if (alert == null) {
+                // 如果按ID查找不到，尝试按数字ID查找（兼容旧数据）
+                try {
+                    Long id = Long.valueOf(alertId);
+                    alert = alertMapper.selectById(id);
+                } catch (NumberFormatException e) {
+                    log.error("无效的告警ID格式: {}", alertId);
+                    return false;
+                }
+            }
+            
+            if (alert == null) {
+                log.error("告警不存在，告警ID：{}", alertId);
+                return false;
+            }
+            
+            alert.setAlertStatus("CLOSED"); // 已关闭
+            alert.setHandlerName("system");
+            alert.setHandleTime(new java.util.Date());
             alert.setHandleResult("系统自动关闭");
-            alert.setUpdateTime(LocalDateTime.now());
             
             int result = alertMapper.updateById(alert);
             
@@ -94,6 +119,22 @@ public class AlertServiceImpl implements AlertService {
         } catch (Exception e) {
             log.error("关闭告警失败: " + e.getMessage(), e);
             return false;
+        }
+    }
+    
+    /**
+     * 转换告警级别字符串为数字
+     */
+    private Integer convertAlertLevel(String level) {
+        switch (level.toUpperCase()) {
+            case "WARNING":
+                return 1; // 警告
+            case "ERROR":
+                return 2; // 严重
+            case "CRITICAL":
+                return 3; // 紧急
+            default:
+                return 1; // 默认警告
         }
     }
 } 

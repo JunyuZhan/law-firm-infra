@@ -89,14 +89,20 @@ public class MonitorServiceImpl extends BaseServiceImpl<SysMonitorDataMapper, Sy
     @Override
     public boolean handleAlert(String alertId, String handler, String result) {
         try {
-            SysMonitorAlert alert = new SysMonitorAlert();
-            alert.setAlertId(alertId);
-            alert.setAlertStatus("HANDLED");
-            alert.setHandler(handler);
-            alert.setHandleResult(result);
-            alert.setHandleTime(new Date());
+            // 根据alertId查找记录
+            SysMonitorAlert existingAlert = alertMapper.selectById(alertId);
+            if (existingAlert == null) {
+                log.error("告警不存在，告警ID：{}", alertId);
+                return false;
+            }
             
-            return alertMapper.updateById(alert) > 0;
+            // 更新告警信息
+            existingAlert.setAlertStatus("HANDLED");
+            existingAlert.setHandler(handler);
+            existingAlert.setHandleResult(result);
+            existingAlert.setHandleTime(new Date());
+            
+            return alertMapper.updateById(existingAlert) > 0;
         } catch (Exception e) {
             log.error("告警处理失败", e);
             return false;
@@ -222,8 +228,8 @@ public class MonitorServiceImpl extends BaseServiceImpl<SysMonitorDataMapper, Sy
         alerts.forEach(alert -> {
             MonitorAlertDTO dto = new MonitorAlertDTO();
             BeanUtils.copyProperties(alert, dto);
-            dto.setContent(alert.getMessage());
-            dto.setAlertTime(alert.getCreateTime());
+            dto.setContent(alert.getMessage() != null ? alert.getMessage() : alert.getAlertContent());
+            dto.setAlertTime(alert.getAlertTime() != null ? alert.getAlertTime() : alert.getCreateTime());
             dto.setStatus(alert.getAlertStatus());
             result.add(dto);
         });

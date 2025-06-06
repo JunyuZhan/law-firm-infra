@@ -379,6 +379,9 @@ law-firm:
     # AI模块配置
     ai:
       enabled: true
+    # 存储模块配置 - 禁用自动配置，由业务模块管理
+    storage:
+      enabled: false
   
   # 搜索服务配置
   search:

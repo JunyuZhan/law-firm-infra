@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -49,15 +50,15 @@ public class AppCacheConfig {
     }
     
     /**
-     * 提供Redis缓存管理器，用于应用层
-     * 仅在配置了Redis时创建
+     * 主要的Redis缓存管理器，用于应用层
+     * 这是系统的主要缓存管理器
      */
     @Bean("commonAppCacheManager")
     @Primary
     @ConditionalOnProperty(name = "spring.data.redis.host")
-    @ConditionalOnMissingBean(name = "cacheManager")
+    @ConditionalOnMissingBean(name = {"cacheManager", "redisCacheManager"})
     public CacheManager commonAppCacheManager(RedisConnectionFactory connectionFactory) {
-        log.info("初始化应用层Redis缓存管理器");
+        log.info("初始化主要Redis缓存管理器");
         
         // 默认的Redis缓存配置
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
@@ -78,41 +79,14 @@ public class AppCacheConfig {
     }
     
     /**
-     * 为了兼容旧代码，提供一个commonCacheManager的别名，指向commonAppCacheManager
-     * 这样可以确保使用@Qualifier("commonCacheManager")的代码能正常工作
+     * 本地内存缓存管理器（Redis不可用时的备选方案）
      */
-    @Bean("commonCacheManager")
-    @ConditionalOnProperty(name = "spring.data.redis.host")
-    @ConditionalOnMissingBean(name = "commonCacheManager")
-    public CacheManager commonCacheManager(CacheManager commonAppCacheManager) {
-        log.info("创建commonCacheManager别名，指向commonAppCacheManager");
-        return commonAppCacheManager;
-    }
-    
-    /**
-     * 提供备用Redis缓存管理器
-     * 仅在未被其他Bean覆盖且配置了Redis时创建
-     */
-    @Bean("commonFallbackRedisCacheManager")
-    @ConditionalOnProperty(name = "spring.data.redis.enabled", havingValue = "true", matchIfMissing = false)
-    @ConditionalOnMissingBean(name = {"commonAppRedisCacheManager", "commonAppCacheManager"})
-    public CacheManager fallbackRedisCacheManager(RedisConnectionFactory connectionFactory) {
-        log.info("初始化备用Redis缓存管理器");
-        // 默认配置
-        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                // 设置key为String
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                // 设置value为json
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                // 不缓存null
-                .disableCachingNullValues()
-                // 默认缓存过期时间
-                .entryTtl(Duration.ofMinutes(30));
-
-        // 创建Redis缓存管理器
-        return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(defaultCacheConfig)
-                .transactionAware()
-                .build();
+    @Bean("commonLocalCacheManager")
+    @ConditionalOnMissingBean(name = {"commonAppCacheManager", "cacheManager"})
+    public CacheManager commonLocalCacheManager() {
+        log.info("初始化本地内存缓存管理器（Redis不可用）");
+        ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();
+        cacheManager.setAllowNullValues(false);
+        return cacheManager;
     }
 } 

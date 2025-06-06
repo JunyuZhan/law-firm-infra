@@ -253,4 +253,4 @@ CREATE TABLE work_task_comment (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工作任务评论表';
 
 -- 恢复外键约束
-SET FOREIGN_KEY_CHECKS = 1;
+SET FOREIGN_KEY_CHECKS = 1; 

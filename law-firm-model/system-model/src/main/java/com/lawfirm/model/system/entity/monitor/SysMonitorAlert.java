@@ -5,6 +5,7 @@ import com.lawfirm.model.base.entity.ModelBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -18,29 +19,64 @@ public class SysMonitorAlert extends ModelBaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 告警ID
+     * 告警业务ID
      */
     private String alertId;
 
     /**
-     * 告警类型（CPU/Memory/Disk等）
+     * 配置ID
+     */
+    private Long configId;
+
+    /**
+     * 告警类型
      */
     private String type;
 
     /**
-     * 告警级别（INFO/WARNING/ERROR）
+     * 告警级别
      */
     private String level;
 
     /**
-     * 告警信息
+     * 告警消息
      */
     private String message;
 
     /**
-     * 告警状态（PENDING待处理/HANDLING处理中/CLOSED已关闭）
+     * 告警级别(1-警告,2-严重,3-紧急)
+     */
+    private Integer alertLevel;
+
+    /**
+     * 告警标题
+     */
+    private String alertTitle;
+
+    /**
+     * 告警内容
+     */
+    private String alertContent;
+
+    /**
+     * 告警时间
+     */
+    private LocalDateTime alertTime;
+
+    /**
+     * 处理状态
      */
     private String alertStatus;
+
+    /**
+     * 处理人ID
+     */
+    private Long handlerId;
+
+    /**
+     * 处理人姓名
+     */
+    private String handlerName;
 
     /**
      * 处理人
@@ -50,10 +86,31 @@ public class SysMonitorAlert extends ModelBaseEntity {
     /**
      * 处理时间
      */
-    private Date handleTime;
+    private LocalDateTime handleTime;
+
+    /**
+     * 处理时间（兼容Date类型）
+     */
+    private Date handleTimeDate;
 
     /**
      * 处理结果
      */
     private String handleResult;
+
+    // 便捷方法：设置处理时间（Date类型）
+    public void setHandleTime(Date handleTime) {
+        this.handleTimeDate = handleTime;
+        if (handleTime != null) {
+            this.handleTime = new java.sql.Timestamp(handleTime.getTime()).toLocalDateTime();
+        }
+    }
+
+    // 便捷方法：获取处理时间（Date类型）
+    public Date getHandleTimeAsDate() {
+        if (this.handleTime != null) {
+            return java.sql.Timestamp.valueOf(this.handleTime);
+        }
+        return this.handleTimeDate;
+    }
 } 

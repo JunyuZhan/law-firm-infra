@@ -1,58 +1,43 @@
 package com.lawfirm.common.cache.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.CacheResolver;
-import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleCacheResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 
 /**
  * 缓存解析器配置
- * <p>
- * 用于解决多个CacheManager导致的冲突问题
- * </p>
+ * 为缓存注解提供默认的缓存管理器
  */
 @Slf4j
 @Configuration("commonCacheResolverConfig")
 @EnableCaching
-public class CacheResolverConfig implements CachingConfigurer {
+@Order(30) // 在缓存管理器之后加载
+public class CacheResolverConfig {
 
-    private final CacheManager commonCacheManager;
+    private final CacheManager commonAppCacheManager;
 
-    public CacheResolverConfig(@Qualifier("commonCacheManager") CacheManager commonCacheManager) {
-        this.commonCacheManager = commonCacheManager;
+    public CacheResolverConfig(@Qualifier("commonAppCacheManager") CacheManager commonAppCacheManager) {
+        this.commonAppCacheManager = commonAppCacheManager;
     }
 
     /**
-     * 配置默认的缓存解析器
-     * <p>
-     * 指定使用commonCacheManager作为默认缓存管理器
-     * </p>
+     * 配置默认缓存解析器
+     * 指定使用commonAppCacheManager作为默认缓存管理器
      * 
-     * @return 缓存解析器
+     * 这样当@Cacheable等注解没有指定cacheManager时，
+     * 会自动使用这个默认的缓存解析器
+     * 
+     * @return 默认缓存解析器
      */
-    @Bean(name = "commonCacheResolver")
-    @Primary
-    @Override
-    public CacheResolver cacheResolver() {
-        log.info("配置默认缓存解析器，使用commonCacheManager");
-        return new SimpleCacheResolver(commonCacheManager);
-    }
-
-    @Override
-    public KeyGenerator keyGenerator() {
-        return null;
-    }
-
-    @Override
-    public CacheErrorHandler errorHandler() {
-        return null;
+    @Bean("defaultCacheResolver")
+    public CacheResolver defaultCacheResolver() {
+        log.info("配置默认缓存解析器，使用commonAppCacheManager");
+        return new SimpleCacheResolver(commonAppCacheManager);
     }
 } 
